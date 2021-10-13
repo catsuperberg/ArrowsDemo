@@ -6,8 +6,10 @@ public class TestInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
+        var logger = new DebugLogger();
+        Container.Bind<IMessageWriter>().FromInstance(logger);
+        // Container.Bind<IMessageWriter>().To<WarningDebugLogger>().AsSingle();
         Container.Bind<Greeter>().AsSingle().NonLazy();
-        Container.Bind<IMessageWriter>().To<DebugLogger>().AsSingle();
     }
 }
 
@@ -32,5 +34,13 @@ public class DebugLogger : IMessageWriter
     public void WriteMassage(string message)
     {
         Debug.Log(message);
+    }
+}
+
+public class WarningDebugLogger : IMessageWriter
+{
+    public void WriteMassage(string message)
+    {
+        Debug.LogWarning(message);
     }
 }

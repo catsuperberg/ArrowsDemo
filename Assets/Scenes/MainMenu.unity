@@ -3795,7 +3795,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 579315467}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: quitGame
+        m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4770,7 +4770,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 579315467}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: playGame
+        m_MethodName: PlayGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
