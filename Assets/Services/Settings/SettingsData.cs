@@ -6,7 +6,11 @@ namespace GameSettings
 {
     public class SettingsData
     {
-        public float masterVolume;
-        public int randomNumber;    
+        public float MasterVolume;
+        public float MusicVolume;
+        public float SfxVolume;
+        public bool Vibration;
+        public float ResolutionScaling;
+        public int Graphics;
     }
 }

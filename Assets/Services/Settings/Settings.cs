@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -6,17 +7,6 @@ using GameStorage;
 
 namespace GameSettings
 {
-    public enum AudioVisualOptions
-    {
-        MasterVolume,
-        MusicVolume,
-        SfxVolume,
-        Vibration,
-        ResolutionScaling,
-        Graphics,
-        High
-    }
-    
     public class SettingsService : ISettingsService
     {     
         private readonly IGameFolders _gameFolders;
@@ -40,7 +30,8 @@ namespace GameSettings
            
         public void SetOption<T>(AudioVisualOptions optionToSet, T value)
         {
-            
+            Debug.Log("Option to set: " + Enum.GetName(typeof(AudioVisualOptions), optionToSet)
+                + "\tvalue: " + value);
         }
         
         public void ApplySettings()
