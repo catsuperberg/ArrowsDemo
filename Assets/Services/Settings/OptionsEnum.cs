@@ -8,10 +8,16 @@ namespace GameSettings
         Vibration,
         ResolutionScaling,
         Graphics
+    }    
+    
+    public enum GraphicsPresets
+    {
+        Low = 0,
+        Medium = 1,
+        Heigh = 2
     }
     
-    
-    public static class optionsHelper
+    public static class OptionsHelper
     {
         public static System.Type OptionType(AudioVisualOptions option)
         {
@@ -31,6 +37,21 @@ namespace GameSettings
                     return typeof(int);
                 default:
                     return typeof(int);
+            }
+        }
+        
+        public static string GraphicsPresetName(GraphicsPresets presets)
+        {
+            switch (presets)
+            {
+                case GraphicsPresets.Low:
+                    return "Low";
+                case GraphicsPresets.Medium:
+                    return "Medium";
+                case GraphicsPresets.Heigh:
+                    return "Heigh";
+                default:
+                    return "unknown";
             }
         }
     }

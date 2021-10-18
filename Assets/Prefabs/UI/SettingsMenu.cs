@@ -29,7 +29,17 @@ namespace GameSettings
         
         public void SetIntValue(int value)
         {
-            if(validToExecute(value.GetType(), optionsHelper.OptionType(_optionToSet)))
+            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
+                _settingsService.SetOption<int>(_optionToSet, value);
+            else
+                optionDiscardedWarning();
+            resetOption();
+        }
+        
+        public void SetEnumValue(UiUtils.EnumSwitcherHelper enumData)
+        {
+            int value = (int)enumData.CurrentPreset;
+            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
                 _settingsService.SetOption<int>(_optionToSet, value);
             else
                 optionDiscardedWarning();
@@ -38,7 +48,7 @@ namespace GameSettings
         
         public void SetFloatValue(float value)
         {
-            if(validToExecute(value.GetType(), optionsHelper.OptionType(_optionToSet)))
+            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
                 _settingsService.SetOption<float>(_optionToSet, value);
             else
                 optionDiscardedWarning();
@@ -47,7 +57,7 @@ namespace GameSettings
         
         public void SetBoolValue(bool value)
         {
-            if(validToExecute(value.GetType(), optionsHelper.OptionType(_optionToSet)))
+            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
                 _settingsService.SetOption<bool>(_optionToSet, value);
             else
                 optionDiscardedWarning();
@@ -56,7 +66,7 @@ namespace GameSettings
         
         public void SetStringValue(string value)
         {
-            if(validToExecute(value.GetType(), optionsHelper.OptionType(_optionToSet)))
+            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
                 _settingsService.SetOption<string>(_optionToSet, value);
             else
                 optionDiscardedWarning();
