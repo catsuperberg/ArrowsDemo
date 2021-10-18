@@ -38,12 +38,8 @@ namespace GameSettings
         
         public void SetEnumValue(UiUtils.EnumSwitcherHelper enumData)
         {
-            int value = (int)enumData.CurrentPreset;
-            if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))
-                _settingsService.SetOption<int>(_optionToSet, value);
-            else
-                optionDiscardedWarning();
-            resetOption();
+            int value = enumData.CurrentPreset;
+            SetIntValue(value);
         }
         
         public void SetFloatValue(float value)

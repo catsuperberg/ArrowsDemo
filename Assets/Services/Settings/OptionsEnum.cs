@@ -39,20 +39,5 @@ namespace GameSettings
                     return typeof(int);
             }
         }
-        
-        public static string GraphicsPresetName(GraphicsPresets presets)
-        {
-            switch (presets)
-            {
-                case GraphicsPresets.Low:
-                    return "Low";
-                case GraphicsPresets.Medium:
-                    return "Medium";
-                case GraphicsPresets.Heigh:
-                    return "Heigh";
-                default:
-                    return "unknown";
-            }
-        }
     }
 }
