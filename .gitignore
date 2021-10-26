@@ -73,3 +73,11 @@ crashlytics-build.properties
 # Exceptions
 !*.dll
 !*.obj
+Library/ScriptAssemblies/Unity.Timeline.dll
+Library/ScriptAssemblies/Unity.Timeline.Editor.dll
+Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll
+Library/ScriptAssemblies/Unity.VSCode.Editor.dll
+Library/ScriptAssemblies/UnityEditor.TestRunner.dll
+Library/ScriptAssemblies/UnityEditor.UI.dll
+Library/ScriptAssemblies/UnityEngine.TestRunner.dll
+Library/ScriptAssemblies/UnityEngine.UI.dll
