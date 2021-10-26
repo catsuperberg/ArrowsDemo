@@ -12,6 +12,9 @@ namespace GameSettings
         private readonly IGameFolders _gameFolders;
         private readonly IDiskSerialization _dataStorage;
         
+        private SettingsData _currentSettings;
+        private SettingsData _newSettings;
+        
         private string defaultsName = "settings_default";
         private string currentName = "settings";
         
@@ -26,14 +29,38 @@ namespace GameSettings
             _dataStorage = storageAccessImplimentation;
             
             MakeSureSettingsFolderIsPopulated();
+            LoadSettings();
         }
            
         public void SetOption<T>(AudioVisualOptions optionToSet, T value)
         {
             Debug.Log("Option to set: " + Enum.GetName(typeof(AudioVisualOptions), optionToSet)
                 + "\tvalue: " + value);
+            // switch (optionToSet)
+            // {
+            //     case AudioVisualOptions.MasterVolume:
+            //         _newSettings.MasterVolume = Convert.ToSingle(value);
+            //         return;
+            //     case AudioVisualOptions.MusicVolume:
+            //         _newSettings.MusicVolume = Convert.ToSingle(value);
+            //         return;
+            //     case AudioVisualOptions.SfxVolume:
+            //         _newSettings.SfxVolume = Convert.ToSingle(value);
+            //         return;
+            //     case AudioVisualOptions.Vibration:
+            //         _newSettings.Vibration = Convert.ToBoolean(value);
+            //         return;
+            //     case AudioVisualOptions.Graphics:
+            //         _newSettings.Graphics = Convert.ToInt32(value);
+            //         return;
+            //     default:
+            //         Debug.LogWarning("No such option as: " + Enum.GetName(typeof(AudioVisualOptions), optionToSet));
+            //         return;
+            // }
+            ApplySettings();
         }
         
+        // TODO: Write code to actually apply recieved settings
         public void ApplySettings()
         {
             
@@ -41,7 +68,12 @@ namespace GameSettings
         
         public void SaveSettings()
         {
-            
+            _dataStorage.SaveToDisk(_currentSettings, _gameFolders.SettingsFolder(), currentName);
+        }
+        
+        public void LoadSettings()
+        {
+            _currentSettings = _dataStorage.GetDataObjectFromFile<SettingsData>(_gameFolders.SettingsFolder(), currentName);
         }
         
         private void MakeSureSettingsFolderIsPopulated()

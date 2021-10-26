@@ -37,6 +37,8 @@ namespace UiUtils
     }
 }
 
+
+// TODO: Rework so there's no need to instantiate Implementation every time
 namespace UiUtils
 {
     [CustomEditor(typeof(EnumSwitcherHelper))]

@@ -28,7 +28,7 @@ namespace GameStorage
             stream.Close();        
         }
         
-        public object GetDataObjectFromFile<T>(string filePath, string fileName)
+        public T GetDataObjectFromFile<T>(string filePath, string fileName) where T : class
         {
             var pathToFile = Path.Combine(filePath, withExtension(fileName));
             if(File.Exists(pathToFile))
