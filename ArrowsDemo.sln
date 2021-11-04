@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject-Editor", "Zenject-Editor.csproj", "{d9b2daca-1413-e385-2362-ce7aa295bdbd}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{442082b7-2a73-6333-f3b1-03f3fe278679}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,8 @@ Global
 		{70467c4f-9ab3-6290-a039-705edb09da00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{d9b2daca-1413-e385-2362-ce7aa295bdbd}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{d9b2daca-1413-e385-2362-ce7aa295bdbd}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442082b7-2a73-6333-f3b1-03f3fe278679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442082b7-2a73-6333-f3b1-03f3fe278679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
+using Level;
 using Sequence;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
@@ -10,15 +10,20 @@ namespace GamePlay
     public class GameManager
     {
         IMetaGame _meta;
+        ILevelManager _levelManager;
         
-        public GameManager(IMetaGame meta)
+        public GameManager(IMetaGame meta, ILevelManager levelManager)
         {
             if(meta == null)
                 throw new System.Exception("IMetaGame not provided to GameManager");
+            if(levelManager == null)
+                throw new System.Exception("ILevelManager not provided to GameManager");
                         
             _meta = meta;
+            _levelManager = levelManager;
             
-            SequenceContext context = new SequenceContext(100, 5, 15);
+            //TEMP generation test
+            SequenceContext context = new SequenceContext(260, 5, 15);
             BigInteger targetResult = new BigInteger(0);
             
             targetResult = _meta.GetAverageSequenceResult(context, 150);
@@ -31,9 +36,12 @@ namespace GamePlay
             {
                 var leftOperation = Enum.GetName(typeof(Operations), pair.LeftOperation.operationType);
                 var rightOperation = Enum.GetName(typeof(Operations), pair.RighOperation.operationType);
-                Debug.Log("left operation: " + leftOperation + ":" + pair.LeftOperation.value +  
-                    "\t right operation" + rightOperation + ":" + pair.RighOperation.value);
+                // Debug.Log("left operation: " + leftOperation + ":" + pair.LeftOperation.value +  
+                //     "\t right operation" + rightOperation + ":" + pair.RighOperation.value);
             }
+            
+            //TEMP level manager test
+            _levelManager.InitializeLevel(context, sequence);
         }
         // ILevelManager _levelManager;
         

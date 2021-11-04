@@ -62,7 +62,7 @@ namespace GameMeta
             OperationGenerator operationGenerator = new OperationGenerator();
             PairGenerator pairGenerator; 
             SequenceGenerator generator;
-            // HACK can't init OperationPairsSequence with empty list, token.IsCancellationRequested prevents sequnce to be initialized with guarantee
+            //HACK can't init OperationPairsSequence with empty list, token.IsCancellationRequested prevents sequnce to be initialized with guarantee
             OperationPairsSequence sequence = _sequence;
             BigInteger result = new BigInteger(context.InitialValue);
             BigInteger spread = BigInteger.Divide(BigInteger.Multiply(new BigInteger(SpreadPercentage), targetMaxResult), 100);
