@@ -17,11 +17,8 @@ public class GameInstaller : MonoInstaller
     {                
         Container.Bind<OperationExecutor>().AsSingle().NonLazy();
         Container.Bind<IMetaGame>().To<RandomSequenceGenerator>().AsSingle();
-        
-        //HACK pparently instantiating during install is bad, maybe just add managers to scene and get them through inspector 
-        var splineTrackProvider = Container.InstantiateComponent<RandomizedSmoothTrackGenerator>(gameObject);
-        Container.Bind<ISplineTrackProvider>().FromInstance(splineTrackProvider).AsSingle();  
-        // var levelManager = Container.InstantiateComponent<ProceduralLevelManager>(gameObject);
+        Container.Bind<ISplineTrackProvider>().To<RandomizedSmoothTrackGenerator>().FromNewComponentOnNewGameObject().AsSingle();
+        Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ILevelManager>().FromInstance(_levelManager).AsSingle();  
         
         Container.Bind<GameManager>().AsSingle().NonLazy();

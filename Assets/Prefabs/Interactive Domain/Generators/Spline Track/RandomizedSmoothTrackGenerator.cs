@@ -16,7 +16,7 @@ namespace Level
             
             (float Min, float Max) _dirRgt = (-2f, 2f);
             (float Min, float Max) _dirUp  = (-2f, 4f);
-            (float Min, float Max) _dirFwd = (4f, 20f);
+            (float Min, float Max) _dirFwd = (8f, 20f);
             
             
             public GameObject GetRandomizedTrack(float length, GameObject splineMeshPrefab)
@@ -35,7 +35,7 @@ namespace Level
             {
                 var spline = gameObject.AddComponent(typeof(Spline)) as Spline;
                 
-                spline.AddNode(new SplineNode(Vector3.zero,Vector3.forward));  
+                spline.AddNode(new SplineNode(Vector3.zero,Vector3.forward*_dirFwd.Max));  
                 while(spline.Length < length)
                 {
                     spline.AddNode(GenerateNextNodeSmoothly(spline.nodes.Last()));
@@ -72,7 +72,7 @@ namespace Level
                 var previousNode = spline.nodes[spline.nodes.Count-2];
                 var previousNodeDirection = previousNode.Direction - previousNode.Position;
                 previousNode.Position = previousNodeSample.location; 
-                previousNode.Direction = previousNode.Position + previousNodeDirection;                
+                previousNode.Direction = previousNode.Position + previousNodeDirection/2;                
             }
             
         }

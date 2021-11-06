@@ -23,7 +23,7 @@ namespace GamePlay
             _levelManager = levelManager;
             
             //TEMP generation test
-            SequenceContext context = new SequenceContext(260, 5, 15);
+            SequenceContext context = new SequenceContext(750, 5, 35);
             BigInteger targetResult = new BigInteger(0);
             
             targetResult = _meta.GetAverageSequenceResult(context, 150);
@@ -35,7 +35,7 @@ namespace GamePlay
             foreach(OperationPair pair in sequence.Sequence)
             {
                 var leftOperation = Enum.GetName(typeof(Operations), pair.LeftOperation.operationType);
-                var rightOperation = Enum.GetName(typeof(Operations), pair.RighOperation.operationType);
+                var rightOperation = Enum.GetName(typeof(Operations), pair.RightOperation.operationType);
                 // Debug.Log("left operation: " + leftOperation + ":" + pair.LeftOperation.value +  
                 //     "\t right operation" + rightOperation + ":" + pair.RighOperation.value);
             }

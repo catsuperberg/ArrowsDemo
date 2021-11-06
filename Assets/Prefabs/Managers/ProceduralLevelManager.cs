@@ -1,5 +1,6 @@
 using Level.Track;
 using Sequence;
+using SplineMesh;
 using UnityEngine;
 using Zenject;
 
@@ -9,24 +10,34 @@ namespace Level
     {        
         [SerializeField]
         private GameObject _trackSplineMesh;
+        [SerializeField]
+        private GameObject _gatePrefab;
+        
         ISplineTrackProvider _splineMeshGenerator;
+        ITrackPopulator _trackPopulator;
+        
         // ITargerProvider _targetGenerator;
         // primaryContext _context;
         
         // public void 
                 
         [Inject]
-        public void Construct(ISplineTrackProvider splineMeshGenerator)
+        public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator)
         {
              if(splineMeshGenerator == null)
                 throw new System.Exception("ISplineTrackProvider isn't provided to ProceduralLevelManager");
+             if(trackPopulator == null)
+                throw new System.Exception("ITrackPopulator isn't provided to ProceduralLevelManager");
                 
             _splineMeshGenerator = splineMeshGenerator;
+            _trackPopulator = trackPopulator;
         }
         
         public void InitializeLevel(SequenceContext context, OperationPairsSequence sequence)
         {
-            GameObject track = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
+            var track = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
+            var gates = _trackPopulator.PlaceGates(_gatePrefab, track.GetComponent<Spline>(), sequence);
+            
             track.transform.SetParent(gameObject.transform);
         }
         
