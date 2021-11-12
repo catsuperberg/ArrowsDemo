@@ -23,14 +23,18 @@ namespace GamePlay
             _levelManager = levelManager;
             
             //TEMP generation test
-            SequenceContext context = new SequenceContext(750, 5, 35);
+            Debug.Log("Start time is: " + Time.realtimeSinceStartup);
+            
+            SequenceContext context = new SequenceContext(640, 2, 25);
             BigInteger targetResult = new BigInteger(0);
             
-            targetResult = _meta.GetAverageSequenceResult(context, 150);
+            targetResult = _meta.GetAverageSequenceResult(context, 250);
             Debug.Log("Targer result is: " + targetResult);
+            Debug.Log("Average score generated at: " + Time.realtimeSinceStartup);
             
             var spread = 15;
             var sequence = _meta.GenerateSequence(targetResult, spread, context);
+            Debug.Log("Sequence generated at: " + Time.realtimeSinceStartup);
             
             foreach(OperationPair pair in sequence.Sequence)
             {
@@ -41,7 +45,8 @@ namespace GamePlay
             }
             
             //TEMP level manager test
-            _levelManager.InitializeLevel(context, sequence);
+            _levelManager.InitializeLevel(context, sequence, targetResult);
+            Debug.Log("Level initialized at: " + Time.realtimeSinceStartup);
         }
         // ILevelManager _levelManager;
         

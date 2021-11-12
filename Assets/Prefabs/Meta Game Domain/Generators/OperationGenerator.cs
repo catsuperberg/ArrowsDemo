@@ -18,16 +18,16 @@ namespace GameMeta
                 switch (operations)
                 {
                     case Operations.Add:
-                        initValue = GetValueWithProbability(1, 20, 0.5f);
+                        initValue = GetValueWithProbability(1, 10, 0.2f);
                         return initValue;
                     case Operations.Subtract:
                         initValue = GetValueWithProbability(1, 10, 0.5f);
                         return initValue;
                     case Operations.Multiply:
-                        initValue = GetValueWithProbability(1.5f, 10, 0.5f);
+                        initValue = GetValueWithProbability(1.5f, 5, 0.2f);
                         return initValue;
                     case Operations.Divide:
-                        initValue = GetValueWithProbability(1.5f, 3, 0.5f);
+                        initValue = GetValueWithProbability(1.5f, 7, 0.5f);
                         return initValue;         
                     case Operations.Blank:
                         return 0;
@@ -53,11 +53,11 @@ namespace GameMeta
             public Operations GetOperationWithProbability(float coeff)
             {
                 List<Tuple<double, Operations>> probabilityToOperation = new List<Tuple<double, Operations>>();
-                probabilityToOperation.Add(new Tuple<double, Operations>(0.50, Operations.Multiply));
+                probabilityToOperation.Add(new Tuple<double, Operations>(0.36, Operations.Multiply));
                 probabilityToOperation.Add(new Tuple<double, Operations>(0.36, Operations.Divide));
-                probabilityToOperation.Add(new Tuple<double, Operations>(0.24, Operations.Add));
-                probabilityToOperation.Add(new Tuple<double, Operations>(0.18, Operations.Subtract));
-                probabilityToOperation.Add(new Tuple<double, Operations>(0.09, Operations.Blank));
+                probabilityToOperation.Add(new Tuple<double, Operations>(0.28, Operations.Add));
+                probabilityToOperation.Add(new Tuple<double, Operations>(0.22, Operations.Subtract));
+                probabilityToOperation.Add(new Tuple<double, Operations>(0.35, Operations.Blank));
                 
                 var result = -1;
                 while(!Enum.IsDefined(typeof(Operations), result))

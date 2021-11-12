@@ -14,6 +14,11 @@ namespace Utils
         public static System.Double RoundToHalf(System.Double passednumber)
         {
             return Math.Round(passednumber * 2, MidpointRounding.AwayFromZero) / 2;
-        }
+        }    
+            
+        public static int RandomSign()
+        {
+            return (int)((UnityEngine.Random.Range(0,2) - 0.5) * 2);
+        } 
     }    
 }

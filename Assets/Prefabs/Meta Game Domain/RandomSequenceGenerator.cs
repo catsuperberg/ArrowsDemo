@@ -48,10 +48,13 @@ namespace GameMeta
             PairGenerator pairGenerator = new PairGenerator(0.5f, operationGenerator, _exec);
             SequenceGenerator generator = new SequenceGenerator(pairGenerator, _exec); 
             BigInteger result = new BigInteger(0);
-            for(int i = 0; i < numberOfIterations; i++)
+            while(result <= 0)
             {
-                sequence = generator.GetSequenceWithRandomPairs(context.NumberOfOperations);
-                result = BigInteger.Add(result, generator.CalculateBestResult(sequence.Sequence, context.InitialValue));                 
+                for(int i = 0; i < numberOfIterations; i++)
+                {
+                    sequence = generator.GetSequenceWithRandomPairs(context.NumberOfOperations);
+                    result = BigInteger.Add(result, generator.CalculateBestResult(sequence.Sequence, context.InitialValue));                 
+                }
             }
             return result;
         }

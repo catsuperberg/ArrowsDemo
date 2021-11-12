@@ -199,6 +199,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trackSplineMesh: {fileID: 5207430475116805686, guid: cbd7996b71bc54d46b261375c8165398, type: 3}
   _gatePrefab: {fileID: 4261874118034182442, guid: 175ed62225aae634597dfedce69e9def, type: 3}
+  _targetPrefabs:
+  - {fileID: 506338371501036909, guid: fe5ccda50e9f9b5478e3eb1c1f9ce299, type: 3}
+  - {fileID: 3334964963578933788, guid: b9a81f77415ee7a46a2d69677a629cf8, type: 3}
+  - {fileID: 7123181262999544627, guid: cb0a53cc7a365cf49b8f34d5525f306a, type: 3}
 --- !u!1 &620483179
 GameObject:
   m_ObjectHideFlags: 0

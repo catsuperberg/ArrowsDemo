@@ -19,6 +19,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IMetaGame>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISplineTrackProvider>().To<RandomizedSmoothTrackGenerator>().FromNewComponentOnNewGameObject().AsSingle();
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
+        Container.Bind<ITargerProvider>().To<TargetGroupGenerator>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ILevelManager>().FromInstance(_levelManager).AsSingle();  
         
         Container.Bind<GameManager>().AsSingle().NonLazy();
