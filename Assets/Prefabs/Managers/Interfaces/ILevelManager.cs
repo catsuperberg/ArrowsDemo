@@ -1,11 +1,12 @@
 using Sequence;
 using System.Numerics;
+using UnityEngine;
 
 namespace Level
 {
     public interface ILevelManager
     {
-        public void InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult);
+        public GameObject InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult);
     }
 }
     

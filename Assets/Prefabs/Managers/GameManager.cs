@@ -1,5 +1,7 @@
 using Level;
+using GamePlay;
 using Sequence;
+using SplineMesh;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -10,19 +12,23 @@ namespace GamePlay
     public class GameManager
     {
         IMetaGame _meta;
-        ILevelManager _levelManager;
+        ILevelManager _levelManager;        
+        ITrackFollower _follower;
         
-        public GameManager(IMetaGame meta, ILevelManager levelManager)
+        public GameManager(IMetaGame meta, ILevelManager levelManager, ITrackFollower follower)
         {
             if(meta == null)
                 throw new System.Exception("IMetaGame not provided to GameManager");
             if(levelManager == null)
                 throw new System.Exception("ILevelManager not provided to GameManager");
+            if(levelManager == null)
+                throw new System.Exception("ITrackFollower not provided to GameManager");
                         
             _meta = meta;
             _levelManager = levelManager;
+            _follower = follower;
             
-            //TEMP generation test
+            // TEMP generation test
             Debug.Log("Start time is: " + Time.realtimeSinceStartup);
             
             SequenceContext context = new SequenceContext(640, 2, 25);
@@ -40,13 +46,16 @@ namespace GamePlay
             {
                 var leftOperation = Enum.GetName(typeof(Operations), pair.LeftOperation.operationType);
                 var rightOperation = Enum.GetName(typeof(Operations), pair.RightOperation.operationType);
-                // Debug.Log("left operation: " + leftOperation + ":" + pair.LeftOperation.value +  
-                //     "\t right operation" + rightOperation + ":" + pair.RighOperation.value);
             }
             
-            //TEMP level manager test
-            _levelManager.InitializeLevel(context, sequence, targetResult);
+            // TEMP level manager test
+            var level = _levelManager.InitializeLevel(context, sequence, targetResult);
             Debug.Log("Level initialized at: " + Time.realtimeSinceStartup);
+            
+            // TEMP track follower test
+            _follower.SetSplineToFollow(level.GetComponentInChildren<Spline>(), 0);
+            _follower.SetSpeed(60);
+            _follower.StartMovement();
         }
         // ILevelManager _levelManager;
         

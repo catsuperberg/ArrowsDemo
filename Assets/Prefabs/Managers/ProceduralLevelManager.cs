@@ -38,7 +38,7 @@ namespace Level
             _targetGenerator = targetGenerator;
         }
         
-        public void InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult)
+        public GameObject InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult)
         {            
             var track = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
             var gates = _trackPopulator.PlaceGates(_gatePrefab, track.GetComponent<Spline>(), sequence);
@@ -47,6 +47,7 @@ namespace Level
             PlaceAtEnd(targets, track.GetComponent<Spline>(), new Vector3(0, -120, 85));
             
             track.transform.SetParent(gameObject.transform);
+            return gameObject;
         }
         
         void PlaceAtEnd(GameObject entity, Spline spline, Vector3 offset)
