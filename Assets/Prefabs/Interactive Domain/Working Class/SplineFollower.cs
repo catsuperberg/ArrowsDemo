@@ -4,7 +4,10 @@ using SplineMesh;
 namespace GamePlay
 {
     public class SplineFollower : MonoBehaviour, ITrackFollower
-    {        
+    {       
+        public Transform Transform {get {return gameObject.transform;} private set{;}}
+        
+         
         public float Speed {get; private set;} = 0;
         public float Position {get; private set;} = 0;
         public bool Moving {get; private set;} = false;
@@ -61,6 +64,8 @@ namespace GamePlay
             Moving = false;
         }
         
+        
+        
         void goToNextPointOnSpline()
         {
             Position = getNextFramePosition();
@@ -71,7 +76,7 @@ namespace GamePlay
         float getNextFramePosition()
         {
             var newPosition = Position + Speed * Time.deltaTime;
-            if(newPosition == _spline.Length)
+            if(newPosition >= _spline.Length)
             {
                 Moving = false; 
                 Finished = true;
@@ -84,6 +89,6 @@ namespace GamePlay
         {            
             gameObject.transform.position = _sample.location;
             gameObject.transform.rotation = _sample.Rotation;
-        }
+        }        
     }   
 }

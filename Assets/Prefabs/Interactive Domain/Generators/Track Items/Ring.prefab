@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4261874118034182444}
   - component: {fileID: 4261874118034182445}
   - component: {fileID: 4061409613307672162}
+  - component: {fileID: -6953517984309177888}
   m_Layer: 0
   m_Name: Ring
   m_TagString: Untagged
@@ -97,6 +98,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _operationText: {fileID: 4261874119704683872}
+--- !u!64 &-6953517984309177888
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4261874118034182442}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2299002261072476989, guid: fb2e907c4980c9a438e12b2717109ce6, type: 3}
 --- !u!1 &4261874118368494676
 GameObject:
   m_ObjectHideFlags: 0

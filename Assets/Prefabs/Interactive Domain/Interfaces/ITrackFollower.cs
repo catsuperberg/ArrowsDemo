@@ -1,9 +1,12 @@
 using SplineMesh;
+using UnityEngine;
 
 namespace GamePlay
 {
     public interface ITrackFollower
     {
+        public Transform Transform {get;}
+        
         public void SetSplineToFollow(Spline spline, float startingPoint);
         public void MoveToLength(float newPosition);
         public void SetSpeed(float speed);

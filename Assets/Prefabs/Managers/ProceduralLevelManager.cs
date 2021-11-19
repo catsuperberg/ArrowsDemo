@@ -22,6 +22,10 @@ namespace Level
         ISplineTrackProvider _splineMeshGenerator;
         ITrackPopulator _trackPopulator;        
         ITargerProvider _targetGenerator;
+        
+        GameObject _splineTrack = null;
+        GameObject _gates = null;
+        GameObject _targets = null;
                 
         [Inject]
         public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, ITargerProvider targetGenerator)
@@ -40,13 +44,19 @@ namespace Level
         
         public GameObject InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult)
         {            
-            var track = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
-            var gates = _trackPopulator.PlaceGates(_gatePrefab, track.GetComponent<Spline>(), sequence);
+            if(_splineTrack != null)
+                Destroy(_splineTrack);
+            if(_gates != null)
+                Destroy(_gates);
+            if(_gates != null)
+                Destroy(_targets);
+            _splineTrack = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
+            _gates = _trackPopulator.PlaceGates(_gatePrefab, _splineTrack.GetComponent<Spline>(), sequence);
             (int Min, int Max) numberOfTargetsRange = (1, 20);
-            var targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);
-            PlaceAtEnd(targets, track.GetComponent<Spline>(), new Vector3(0, -120, 85));
+            _targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);
+            PlaceAtEnd(_targets, _splineTrack.GetComponent<Spline>(), new Vector3(0, -120, 85));
             
-            track.transform.SetParent(gameObject.transform);
+            _splineTrack.transform.SetParent(gameObject.transform);
             return gameObject;
         }
         
@@ -54,23 +64,6 @@ namespace Level
         {
             var endPoint = spline.nodes.Last().Position;
             entity.transform.position = endPoint + offset;
-        }
-        
-        
-        void UpdateLevel(SequenceContext context)
-        {
-            
-            // var numberOfPrecalculatedTargets = 5;
-            // PopulateTargets(numberOfPrecalculatedTargets);
-        }
-        
-        void PopulateTargets(int listSize)
-        {
-            //TODO how to get length indent per upgrade
-            //TODO target generation goes here (creating target generator, using it's methods)
-            // var context = new TrackContext(length, _context.InitialValue, _context.NumberOfGates);
-            // var targetScore = _trackGenerator.GetAverageMaxScore(context);
-            // _targetGenerator.GetRandomisedTarget(biome, targetScore);
         }
     }    
 }

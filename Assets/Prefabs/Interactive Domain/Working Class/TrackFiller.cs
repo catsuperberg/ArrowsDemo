@@ -2,6 +2,8 @@ using Sequence;
 using SplineMesh;
 using System.Collections.Generic;
 using UnityEngine;
+using Level.Track.Items;
+using Zenject;
 
 namespace Level
 {
@@ -9,7 +11,8 @@ namespace Level
     {
         public class TrackFiller : MonoBehaviour, ITrackPopulator
         {           
-            private Vector3 _gateOffset = new Vector3(4.5f, 3.7f, 0f);
+            private Vector3 _gateOffset = new Vector3(4.5f, 4f, 0f);
+            private OperationExecutor _exec;
              
             public GameObject PlaceGates(GameObject gatePrefab, Spline track, OperationPairsSequence sequence)
             {
@@ -26,6 +29,15 @@ namespace Level
                 }
                 
                 return gates;
+            }
+            
+            [Inject]
+            public void Construct(OperationExecutor exec)
+            {
+                if(exec == null)
+                    throw new System.Exception("OperationExecutor isn't provided to TrackFiller");
+                    
+                _exec = exec;
             }
             
             public GameObject SpreadObjects(List<GameObject> prefabsToSpread, int dencityCoefficient)
@@ -57,7 +69,7 @@ namespace Level
                     var ring = Instantiate(gatePrefab, position, Quaternion.identity);                    
                     ring.name = (isLeft) ? "Left ring" : "Right ring";
                     var ringLogic = ring.GetComponent<Ring>();
-                    ringLogic.Initialize(operation);
+                    ringLogic.Initialize(operation, _exec);
                     return ring;
                 }                 
                 else
