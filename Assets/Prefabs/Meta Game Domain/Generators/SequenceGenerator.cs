@@ -26,12 +26,8 @@ namespace GameMeta
             {
                 List<OperationPair> newSequence = new List<OperationPair>();
                 for(int i = 0; i < SequenceLength; i++)
-                {            
-                    var pair = _pairGenerator.Generate();
-                    newSequence.Add(pair);
-                }
-                var sequence = new OperationPairsSequence(newSequence);
-                return sequence;
+                    newSequence.Add(_pairGenerator.Generate());
+                return new OperationPairsSequence(newSequence);
             }
             
             public BigInteger CalculateBestResult(List<OperationPair> sequence,
@@ -41,6 +37,8 @@ namespace GameMeta
                 foreach(OperationPair pair in sequence)
                 {
                     result = _exec.Perform(pair.BestOperation(), result);
+                    if(result < 1)
+                        return -1;
                 }
                 return result;
             }

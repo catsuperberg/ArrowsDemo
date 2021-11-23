@@ -11,10 +11,10 @@ namespace GameMeta
         {    
             Random _rand = new Random(Guid.NewGuid().GetHashCode());
             
-            public float GenerateValue(Operations operations, float coeff)
+            public int GenerateValue(Operations operations, float coeff)
             {
                 Random _rand = new Random();
-                float initValue;
+                int initValue;
                 switch (operations)
                 {
                     case Operations.Add:
@@ -24,10 +24,10 @@ namespace GameMeta
                         initValue = GetValueWithProbability(1, 10, 0.5f);
                         return initValue;
                     case Operations.Multiply:
-                        initValue = GetValueWithProbability(1.5f, 5, 0.2f);
+                        initValue = GetValueWithProbability(2, 5, 0.2f);
                         return initValue;
                     case Operations.Divide:
-                        initValue = GetValueWithProbability(1.5f, 7, 0.5f);
+                        initValue = GetValueWithProbability(2, 5, 0.5f);
                         return initValue;         
                     case Operations.Blank:
                         return 0;
@@ -36,7 +36,7 @@ namespace GameMeta
                 }
             }
             
-            float GetValueWithProbability(float min, float max, float coeff)
+            int GetValueWithProbability(float min, float max, float coeff)
             {
                 coeff = MathUtils.MathClamp(coeff, 0, 1);
                 var mean = (max-min)*coeff + min;
@@ -47,7 +47,10 @@ namespace GameMeta
                 double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
                 double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
                 randNormal = (double)MathUtils.MathClamp(randNormal, min, max);
-                return (float)MathUtils.RoundToHalf(randNormal);        
+                
+                return (int)System.Math.Round(randNormal); 
+                
+                // return (float)MathUtils.RoundToHalf(randNormal);        
             }
             
             public Operations GetOperationWithProbability(float coeff)

@@ -5,27 +5,27 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637725775773704707
-    m_Hash: 2250907365
+      ticks: 637731880742604918
+    m_Hash: 3408949851
   m_LockFileStatus:
     m_FilePath: C:/Unity/ArrowsDemo/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637725775773794793
-    m_Hash: 3272371229
+      ticks: 637731880742679996
+    m_Hash: 1010078563
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:
   m_Packages:
     m_ResolvedPackages:
-    - packageId: com.unity.ide.visualstudio@2.0.11
+    - packageId: com.unity.ide.visualstudio@2.0.12
       testable: 0
       isDirectDependency: 1
-      version: 2.0.11
+      version: 2.0.12
       source: 1
-      resolvedPath: C:\Unity\ArrowsDemo\Library\PackageCache\com.unity.ide.visualstudio@2.0.11
+      resolvedPath: C:\Unity\ArrowsDemo\Library\PackageCache\com.unity.ide.visualstudio@2.0.12
       assetPath: Packages/com.unity.ide.visualstudio
       name: com.unity.ide.visualstudio
       displayName: Visual Studio Editor
@@ -101,13 +101,13 @@ m_PackageAssets:
       entitlements:
         isAllowed: 1
       isAssetStorePackage: 0
-      datePublishedTicks: 637613656180000000
+      datePublishedTicks: 637720564750000000
       documentationUrl: 
       hasRepository: 1
       repository:
         type: git
         url: https://github.cds.internal.unity3d.com/unity/com.unity.ide.visualstudio.git
-        revision: 680e06d94ffca728223ae2cb14bb919cd354e2c1
+        revision: 8d436ff053b9c59677b5e9799208143553cd02d9
         path: 
     - packageId: com.unity.ide.vscode@1.2.4
       testable: 0
@@ -2579,4 +2579,4 @@ m_PackageAssets:
   m_LocalPackages:
     m_LocalFileStatus: []
 m_ProjectPath: C:/Unity/ArrowsDemo/Packages
-m_EditorVersion: 2020.3.22f1 (e1a7f79fd887)
+m_EditorVersion: 2020.3.23f1 (c5d91304a876)

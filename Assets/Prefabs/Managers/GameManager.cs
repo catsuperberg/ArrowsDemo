@@ -76,10 +76,10 @@ namespace GamePlay
             if(_nextTargets.Any())
             {
                     while(targetResult <= _nextTargets.Last() || targetResult >= _nextTargets.Last().multiplyByFraction(1.3))     
-                    targetResult = _meta.GetAverageSequenceResult(_context, 250);
+                    targetResult = _meta.GetAverageSequenceResult(_context, 2500);
             }
             else
-                targetResult = _meta.GetAverageSequenceResult(_context, 250);
+                targetResult = _meta.GetAverageSequenceResult(_context, 2500);
             _nextTargets.Add(targetResult);     
             Debug.Log("Average score generated at: " + Time.realtimeSinceStartup);
             Debug.Log("Targets results are:");
@@ -96,6 +96,7 @@ namespace GamePlay
                 var targetResult = _nextTargets.First();
                 _nextTargets.Remove(targetResult);
                 var spread = 15;
+                Debug.Log("Sequence generation started at: " + Time.realtimeSinceStartup);
                 var sequence = _meta.GenerateSequence(targetResult, spread, _context);
                 Debug.Log("Sequence generated at: " + Time.realtimeSinceStartup);
                 
