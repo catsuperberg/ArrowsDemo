@@ -208,12 +208,12 @@ namespace SplineMesh {
                 bentVertices.Select(b => b.normal));
         }
 
-        private void FillRepeat() {
+        private void FillRepeat() {            
             float intervalLength = useSpline?
                 (intervalEnd == 0 ? spline.Length : intervalEnd) - intervalStart :
                 curve.Length;
-            int repetitionCount = Mathf.FloorToInt(intervalLength / source.Length);
-
+            int repetitionCount = Mathf.FloorToInt(intervalLength / source.Length);    
+            var scaleCoeff = intervalLength/(source.Length*repetitionCount); // MYCHANGE stretching repeated to full length
 
             // building triangles and UVs for the repeated mesh
             var triangles = new List<int>();
@@ -249,7 +249,8 @@ namespace SplineMesh {
                 sampleCache.Clear();
                 // for each mesh vertex, we found its projection on the curve
                 foreach (var vert in source.Vertices) {
-                    float distance = vert.position.x - source.MinX + offset;
+                    float distance = vert.position.x - source.MinX + offset;                    
+                    distance *= scaleCoeff-0.0001f; // MYCHANGE stretching repeated to full length
                     CurveSample sample;
                     if (!sampleCache.TryGetValue(distance, out sample)) {
                         if (!useSpline) {
@@ -271,7 +272,7 @@ namespace SplineMesh {
                     bentVertices.Add(sample.GetBent(vert));
                 }
                 offset += source.Length;
-            }
+            }                
 
             MeshUtility.Update(result,
                 source.Mesh,

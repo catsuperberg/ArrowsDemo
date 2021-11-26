@@ -48,6 +48,8 @@ namespace GamePlay
             var gameplayControlls = new Controls();
             gameplayControlls.Debug.Enable();
             gameplayControlls.Debug.SetCallbacks(this);
+            
+            Application.targetFrameRate = 300;
         }
              
         public void OnGenerateNewTarget(InputAction.CallbackContext context)

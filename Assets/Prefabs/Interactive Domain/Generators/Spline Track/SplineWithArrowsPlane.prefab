@@ -41,6 +41,8 @@ GameObject:
   - component: {fileID: 12418144319707412}
   - component: {fileID: 300300365976154043}
   - component: {fileID: 3433523161051349839}
+  - component: {fileID: 1324163750861712445}
+  - component: {fileID: 177231766947315817}
   m_Layer: 0
   m_Name: SplineWithArrowsPlane
   m_TagString: Untagged
@@ -81,38 +83,8 @@ MonoBehaviour:
     up: {x: 0, y: 1, z: 0}
     scale: {x: 1, y: 1}
     roll: 0
-  curves:
-  - n1:
-      position: {x: 5, y: 0, z: 0}
-      direction: {x: 5, y: 0, z: -3}
-      up: {x: 0, y: 1, z: 0}
-      scale: {x: 1, y: 1}
-      roll: 0
-    n2:
-      position: {x: 5, y: 0, z: -3}
-      direction: {x: 5, y: 0, z: -6}
-      up: {x: 0, y: 1, z: 0}
-      scale: {x: 1, y: 1}
-      roll: 0
-    Changed:
-      m_PersistentCalls:
-        m_Calls: []
-  - n1:
-      position: {x: 5, y: 0, z: -3}
-      direction: {x: 5, y: 0, z: -6}
-      up: {x: 0, y: 1, z: 0}
-      scale: {x: 1, y: 1}
-      roll: 0
-    n2:
-      position: {x: 29.522644, y: 0, z: -4.0403748}
-      direction: {x: 29.522644, y: 0, z: -1.0403748}
-      up: {x: 0, y: 1, z: 0}
-      scale: {x: 1, y: 1}
-      roll: 0
-    Changed:
-      m_PersistentCalls:
-        m_Calls: []
-  Length: 28.702517
+  curves: []
+  Length: 0
   isLoop: 0
   CurveChanged:
     m_PersistentCalls:
@@ -139,3 +111,30 @@ MonoBehaviour:
   updateInPlayMode: 1
   curveSpace: 0
   mode: 1
+--- !u!114 &1324163750861712445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207430475116805686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77fb928b067a91c4dbc6b7acac036a4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 0.5
+--- !u!114 &177231766947315817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207430475116805686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd9f429662b66a4d9dd52c098dcf002, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 1
+  _range: 0.3

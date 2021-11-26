@@ -15,7 +15,7 @@ namespace SplineMesh {
     public struct SourceMesh {
         private Vector3 translation;
         private Quaternion rotation;
-        private Vector3 scale;
+        public Vector3 scale;
 
         internal Mesh Mesh { get; }
 

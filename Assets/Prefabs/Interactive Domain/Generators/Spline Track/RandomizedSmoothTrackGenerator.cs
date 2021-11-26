@@ -31,23 +31,17 @@ namespace Level
             
             public void randomizeSplineToLength(Spline spline, float length)
             {
-                UnityEngine.Profiling.Profiler.BeginSample("getRanomSplineWithLength");  
-                
                 if(spline.nodes.Any())
                     spline.nodes.Clear();
                 spline.AddNode(new SplineNode(Vector3.zero,Vector3.forward*_dirFwd.Max));  
                 
                 while(spline.Length < length)
                     spline.AddNode(GenerateNextNodeSmoothly(spline.nodes.Last()));
-                TrimSplineToLength(spline, length);
-                
-                UnityEngine.Profiling.Profiler.EndSample();   
+                TrimSplineToLength(spline, length); 
             }
             
             public SplineNode GenerateNextNodeSmoothly(SplineNode previousNode)
             {                              
-                UnityEngine.Profiling.Profiler.BeginSample("GenerateNextNodeSmoothly");  
-                
                 var node = new SplineNode(Vector3.zero, Vector3.zero);
                 var randomPosition = new Vector3(Random.Range(_posRgt.Min, _posRgt.Max),
                     Random.Range(_posUp.Min, _posUp.Max),
@@ -57,15 +51,11 @@ namespace Level
                     Random.Range(_dirFwd.Min, _dirFwd.Max));
                 node.Position = previousNode.Position + randomPosition;
                 node.Direction = node.Position + randomDirection;
-                                
-                UnityEngine.Profiling.Profiler.EndSample();     
                 return node;                         
             }
             
             public void TrimSplineToLength(Spline spline, float length)
             {              
-                UnityEngine.Profiling.Profiler.BeginSample("TrimSplineToLength");
-                
                 var endSample = spline.GetSampleAtDistance(length);
                 var offset = _posFwd.Min*0.5f;
                 var previousNodeSample = spline.GetSampleAtDistance(length-offset);
@@ -77,9 +67,11 @@ namespace Level
                 var previousNode = spline.nodes[spline.nodes.Count-2];
                 var previousNodeDirection = previousNode.Direction - previousNode.Position;
                 previousNode.Position = previousNodeSample.location; 
-                previousNode.Direction = previousNode.Position + previousNodeDirection/2;
+                previousNode.Direction = previousNode.Position + previousNodeDirection/2; 
                 
-                UnityEngine.Profiling.Profiler.EndSample();              
+                
+                var tiling = gameObject.GetComponent<SplineMeshTiling>();
+                // tiling.
             }
             
         }

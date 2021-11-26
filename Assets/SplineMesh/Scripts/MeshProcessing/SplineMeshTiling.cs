@@ -19,7 +19,7 @@ namespace SplineMesh {
     [DisallowMultipleComponent]
     public class SplineMeshTiling : MonoBehaviour {
         private GameObject generated;
-        private Spline spline = null;
+        private Spline spline = null;    
         private bool toUpdate = false;
 
         [Tooltip("Mesh to bend along the spline.")]
