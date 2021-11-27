@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using TMPro;
 using UnityEngine;
+using Utils;
 using Vector3 = UnityEngine.Vector3;
 
 namespace GamePlay
@@ -58,14 +59,7 @@ namespace GamePlay
             {
                 var arrowsToAdd = (int)Count - _arrows.Count;
                 if(arrowsToAdd > 0)
-                {
-                    for(int i = 0; i < arrowsToAdd; i++)
-                    {
-                        var arrow = Instantiate(ArrowAsset, GetPositionOnSpiral(_arrows.Count), UnityEngine.Quaternion.identity);
-                        arrow.transform.SetParent(transform, false);
-                        _arrows.Add(arrow);
-                    }
-                }
+                    AddArrows(arrowsToAdd);
                 else
                 {
                     for(int i = 0; i < arrowsToAdd; i++)
@@ -78,14 +72,7 @@ namespace GamePlay
                 {
                     var arrowsToAdd = maxArrows - _arrows.Count;
                     if(arrowsToAdd > 0)
-                    {
-                        for(int i = 0; i < arrowsToAdd; i++)
-                        {
-                            var arrow = Instantiate(ArrowAsset, GetPositionOnSpiral(_arrows.Count), UnityEngine.Quaternion.identity);
-                            arrow.transform.SetParent(transform, false);
-                            _arrows.Add(arrow);
-                        }
-                    }
+                        AddArrows(arrowsToAdd);
                 }   
                 else
                 {
@@ -97,46 +84,19 @@ namespace GamePlay
         
         Vector3 GetPositionOnSpiral(int index)
         {
-            var gridCoords = GetPositionOnGrid(index);
+            var gridCoords = MathUtils.GetPositionOnSpiralGrid(index);
             var position = new Vector3(gridCoords.Item1*0.7f*Random.Range(0.7f, 1.3f),gridCoords.Item2*0.7f*Random.Range(0.7f, 1.3f), 0);
             return position;
         }
         
-        (int, int) GetPositionOnGrid(int index)
+        void AddArrows(int countToAdd)
         {
-            // (di, dj) is a vector - direction in which we move right now
-            int di = 1;
-            int dj = 0;
-            // length of current segment
-            int segment_length = 1;
-
-            // current position (i, j) and how much of current segment we passed
-            int i = 0;
-            int j = 0;
-            int segment_passed = 0;
-            for (int k = 0; k < index; ++k) 
+            for(int i = 0; i < countToAdd; i++)
             {
-                // make a step, add 'direction' vector (di, dj) to current position (i, j)
-                i += di;
-                j += dj;
-                ++segment_passed;
-
-                if (segment_passed == segment_length) 
-                {
-                    // done with current segment
-                    segment_passed = 0;
-
-                    // 'rotate' directions
-                    int buffer = di;
-                    di = -dj;
-                    dj = buffer;
-
-                    // increase segment length if necessary
-                    if (dj == 0) 
-                        ++segment_length;
-                }
+                var arrow = Instantiate(ArrowAsset, GetPositionOnSpiral(_arrows.Count), UnityEngine.Quaternion.identity);
+                arrow.transform.SetParent(transform, false);
+                _arrows.Add(arrow);
             }
-            return (i, j);
         }
         
         public void moveRight(float distance)

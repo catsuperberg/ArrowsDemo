@@ -1,8 +1,9 @@
 using Level;
 using Level.Track;
 using Level.Track.Items;
-using GamePlay;
 using GameMeta;
+using GamePlay;
+using State;
 using Sequence;
 using UnityEngine;
 using Zenject;
@@ -25,6 +26,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
         Container.Bind<ILevelManager>().FromInstance(_levelManager).AsSingle();  
         
-        Container.Bind<GameManager>().AsSingle().NonLazy();
+        Container.Bind<IGamePlayManager>().To<GamePlayManager>().AsSingle();
+        
+        Container.Bind<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
     }
 }

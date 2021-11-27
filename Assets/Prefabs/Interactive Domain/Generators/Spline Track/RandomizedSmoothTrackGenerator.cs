@@ -68,10 +68,6 @@ namespace Level
                 var previousNodeDirection = previousNode.Direction - previousNode.Position;
                 previousNode.Position = previousNodeSample.location; 
                 previousNode.Direction = previousNode.Position + previousNodeDirection/2; 
-                
-                
-                var tiling = gameObject.GetComponent<SplineMeshTiling>();
-                // tiling.
             }
             
         }

@@ -14,15 +14,24 @@ public class PulsatingTransparency : MonoBehaviour
     
     void Start()
     {
+        StartCoroutine(LateStart(0.1f));        
+    }
+    
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
         _rend = GetComponentInChildren<Renderer>();
         _baseTransparency = _rend.material.color.a;
     }
     
     void Update()
     {
-        var transparency = _baseTransparency + _baseTransparency * Mathf.Sin(Time.time*_speed)*_range;
-        var color = _rend.material.color;
-        color.a = transparency;
-        _rend.material.color = color;
+        if(_rend != null)
+        {
+            var transparency = _baseTransparency + _baseTransparency * Mathf.Sin(Time.time*_speed)*_range;
+            var color = _rend.material.color;
+            color.a = transparency;
+            _rend.material.color = color;            
+        }
     }
 }

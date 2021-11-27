@@ -7,16 +7,25 @@ public class ScrollTexture : MonoBehaviour
     [SerializeField]
     private float _speed = 0.5f;
     
-    Renderer _rend;
+    private Renderer _rend;
     
     void Start()
     {
+        StartCoroutine(LateStart(0.1f));        
+    }
+    
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
         _rend = GetComponentInChildren<Renderer>();
     }
     
     void Update()
     {
-        var offset = Time.time * _speed;
-        _rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+        if(_rend != null)
+        {
+            var offset = Time.time * _speed;
+            _rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+        }
     }
 }
