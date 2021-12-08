@@ -10,7 +10,7 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace GamePlay
 {
-    public class ArrowBundle : MonoBehaviour, IProjectileObject, IMovable
+    public class ArrowBundle : MonoBehaviour, IProjectileObject, IMovable, IDamageable
     {
         [SerializeField]
         public float MovementWidth;
@@ -25,8 +25,11 @@ namespace GamePlay
         private int maxArrows = 50;
         
         
+        
+        public BigInteger DamagePoints {get {return Count;}}
         public Vector3 Position {get {return transform.position;}}
         public BigInteger Count {get; private set;} = new BigInteger(1);
+        
         
         
         public void Initialize(BigInteger initialCount, float movementWidth)
@@ -116,6 +119,16 @@ namespace GamePlay
             tempPosition.x += position.x;
             transform.localPosition = tempPosition;
             ClampPosition();
+        }
+        
+        
+        public void Damage(BigInteger value)
+        {
+            if(value > Count)
+                throw new System.Exception("Triying to damage Arrow bundle more than possible");
+                    
+            Count -= value;
+            UpdateAppearance();
         }
         
         void ClampPosition()

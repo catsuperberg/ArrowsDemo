@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Utils
 {
@@ -58,7 +58,7 @@ namespace Utils
                 }
             }
             return (i, j);
-        }
+        }        
         
         /// <summary>
         /// Partitions the given list around a pivot element such that all elements on left of pivot are <= pivot
