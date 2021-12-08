@@ -7,6 +7,6 @@ namespace GameMeta
     {
         public SequenceContext GetContext();
         public BigInteger GetNextTargetScore();
-        public OperationPairsSequence GenerateSequence();
+        public OperationPairsSequence GenerateSequence(BigInteger targetScore, int spread);
     }    
 }

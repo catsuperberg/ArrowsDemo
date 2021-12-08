@@ -13,11 +13,12 @@ namespace Level
         {           
             private Vector3 _gateOffset = new Vector3(4.5f, 4f, 0f);
             private OperationExecutor _exec;
+            private float runUpLength = 40;
              
             public GameObject PlaceGates(GameObject gatePrefab, Spline track, OperationPairsSequence sequence)
             {
-                var positionIndent = track.Length / (sequence.Sequence.Count+1);
-                var offsetOnTrack = positionIndent;              
+                var positionIndent = (track.Length - runUpLength) / (sequence.Sequence.Count+1);
+                var offsetOnTrack = positionIndent + runUpLength;              
                 var gates = Instantiate(gameObject, track.gameObject.transform.position, Quaternion.identity);
                 gates.name = "Gates";
                 foreach(OperationPair operationPair in sequence.Sequence)

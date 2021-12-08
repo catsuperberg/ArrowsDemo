@@ -23,9 +23,9 @@ namespace Level
         ITrackPopulator _trackPopulator;        
         ITargerProvider _targetGenerator;
         
-        GameObject _splineTrack = null;
-        GameObject _gates = null;
-        GameObject _targets = null;
+        public GameObject SplineTrack {get; private set;} = null;
+        public GameObject Gates {get; private set;}  = null;
+        public GameObject Targets {get; private set;}  = null;
                 
         [Inject]
         public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, ITargerProvider targetGenerator)
@@ -44,20 +44,25 @@ namespace Level
         
         public GameObject InitializeLevel(SequenceContext context, OperationPairsSequence sequence, BigInteger targetResult)
         {            
-            if(_splineTrack != null)
-                Destroy(_splineTrack);
-            if(_gates != null)
-                Destroy(_gates);
-            if(_gates != null)
-                Destroy(_targets);
-            _splineTrack = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
-            _gates = _trackPopulator.PlaceGates(_gatePrefab, _splineTrack.GetComponent<Spline>(), sequence);
-            (int Min, int Max) numberOfTargetsRange = (1, 20);
-            _targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);
-            PlaceAtEnd(_targets, _splineTrack.GetComponent<Spline>(), new Vector3(0, -120, 85));
+            if(SplineTrack != null)
+                Destroy(SplineTrack);
+            if(Gates != null)
+                Destroy(Gates);
+            if(Gates != null)
+                Destroy(Targets);
+                
+            var track = new GameObject("Track");       
             
-            _splineTrack.transform.SetParent(gameObject.transform);
-            return gameObject;
+            SplineTrack = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
+            Gates = _trackPopulator.PlaceGates(_gatePrefab, SplineTrack.GetComponent<Spline>(), sequence);
+            (int Min, int Max) numberOfTargetsRange = (1, 20);
+            Targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);
+            PlaceAtEnd(Targets, SplineTrack.GetComponent<Spline>(), new Vector3(0, -105, 105));
+            
+            SplineTrack.transform.SetParent(track.transform);
+            Targets.transform.SetParent(track.transform);
+            Gates.transform.SetParent(track.transform);
+            return track;
         }
         
         void PlaceAtEnd(GameObject entity, Spline spline, Vector3 offset)

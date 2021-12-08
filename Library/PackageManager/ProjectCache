@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637731880742604918
-    m_Hash: 3408949851
+      ticks: 637741241584347196
+    m_Hash: 3368064873
   m_LockFileStatus:
     m_FilePath: C:/Unity/ArrowsDemo/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637731880742679996
-    m_Hash: 1010078563
+      ticks: 637741241670074808
+    m_Hash: 667473819
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:
@@ -180,12 +180,12 @@ m_PackageAssets:
         url: git+https://github.com/Unity-Technologies/com.unity.ide.vscode.git
         revision: 1f4f605d5c988cb610c372b5c5216c46cc8f5d30
         path: 
-    - packageId: com.unity.inputsystem@1.0.2
+    - packageId: com.unity.inputsystem@1.2.0
       testable: 0
       isDirectDependency: 1
-      version: 1.0.2
+      version: 1.2.0
       source: 1
-      resolvedPath: C:\Unity\ArrowsDemo\Library\PackageCache\com.unity.inputsystem@1.0.2
+      resolvedPath: C:\Unity\ArrowsDemo\Library\PackageCache\com.unity.inputsystem@1.2.0
       assetPath: Packages/com.unity.inputsystem
       name: com.unity.inputsystem
       displayName: Input System
@@ -264,9 +264,21 @@ m_PackageAssets:
         - 1.1.0-preview.3
         - 1.1.1
         - 1.2.0
-        verified: 1.0.2
-      dependencies: []
-      resolvedDependencies: []
+        verified: 1.2.0
+      dependencies:
+      - name: com.unity.modules.uielements
+        version: 1.0.0
+      resolvedDependencies:
+      - name: com.unity.modules.uielements
+        version: 1.0.0
+      - name: com.unity.modules.ui
+        version: 1.0.0
+      - name: com.unity.modules.imgui
+        version: 1.0.0
+      - name: com.unity.modules.jsonserialize
+        version: 1.0.0
+      - name: com.unity.modules.uielementsnative
+        version: 1.0.0
       keywords:
       - input
       - events
@@ -288,13 +300,13 @@ m_PackageAssets:
       entitlements:
         isAllowed: 1
       isAssetStorePackage: 0
-      datePublishedTicks: 637468486210000000
+      datePublishedTicks: 637714457070000000
       documentationUrl: 
       hasRepository: 1
       repository:
         type: git
-        url: git+https://github.com/Unity-Technologies/InputSystem.git
-        revision: 041def76515febb36a83d1f928cfb7aefb85176c
+        url: https://github.com/Unity-Technologies/InputSystem.git
+        revision: 0343e557f75946cf6fad4be48dd10276d535f490
         path: 
     - packageId: com.unity.test-framework@1.1.30
       testable: 0
@@ -2579,4 +2591,4 @@ m_PackageAssets:
   m_LocalPackages:
     m_LocalFileStatus: []
 m_ProjectPath: C:/Unity/ArrowsDemo/Packages
-m_EditorVersion: 2020.3.23f1 (c5d91304a876)
+m_EditorVersion: 2020.3.24f1 (79c78de19888)

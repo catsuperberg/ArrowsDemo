@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace GamePlay
 {
-    public interface IGamePlayManager
-    {
+    public interface IGamePlayManager : IFinishNotification
+    {        
+        public GameObject ActiveProjectile {get;}
         public void StartFromBeginning(GameObject level, SequenceContext context);
         // public void SetPause(bool toPause);
     }

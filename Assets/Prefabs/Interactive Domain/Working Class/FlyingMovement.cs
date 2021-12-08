@@ -30,7 +30,8 @@ namespace GamePlay
         {
             transform.localPosition = new Vector3(Mathf.Sin(Time.time*_speedRight)*_rangeRight, 
                 Mathf.Sin(Time.time*_speedUp)*_rangeUp, 
-                _baseZ + Mathf.Sin(Time.time*_speedFront)*_rangeFront);
+                Mathf.Sin(Time.time*_speedFront)*_rangeFront);
+                // _baseZ + Mathf.Sin(Time.time*_speedFront)*_rangeFront);
         }
     }
 }

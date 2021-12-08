@@ -4,18 +4,36 @@ using UnityEngine.InputSystem;
 namespace GamePlay
 {    
     public class ButtonsMovementController : MonoBehaviour, Controls.IMovementActions
-    {        
-        [SerializeField]
-        private float _speed = 15f;
+    {              
         IMovable _movableObject;
         bool _x_axisActive = false;
         bool _y_axisActive = false;
         float _x_axisValue = 0;
         float _y_axisValue = 0;
         
+        const float defaultSpeed = 25;
+        public float _speed {get; private set;} = defaultSpeed;  
+        private bool _initialized = false;
+        
+        public void Init(float speed = defaultSpeed)
+        {
+            if(!_initialized)
+            {
+                _speed = speed;            
+                EnableControlls();
+                _initialized = true;
+            }
+        }
+        
         void Awake()
         {
             _movableObject = gameObject.GetComponent<IMovable>();
+            if(!_initialized)
+                EnableControlls();
+        }
+        
+        void EnableControlls()
+        {            
             var gameplayControlls = new Controls();
             gameplayControlls.Movement.Enable();
             gameplayControlls.Movement.SetCallbacks(this);

@@ -1,9 +1,10 @@
 using SplineMesh;
 using UnityEngine;
+using System;
 
 namespace GamePlay
 {
-    public interface ITrackFollower
+    public interface ITrackFollower : IFinishNotification
     {
         public Transform Transform {get;}
         

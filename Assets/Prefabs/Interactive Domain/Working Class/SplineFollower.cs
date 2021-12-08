@@ -1,12 +1,13 @@
 using UnityEngine;
 using SplineMesh;
+using System;
 
 namespace GamePlay
 {
     public class SplineFollower : MonoBehaviour, ITrackFollower
     {       
         public Transform Transform {get {return gameObject.transform;} private set{;}}
-        
+        public event EventHandler OnFinished;
          
         public float Speed {get; private set;} = 0;
         public float Position {get; private set;} = 0;
@@ -80,6 +81,7 @@ namespace GamePlay
             {
                 Moving = false; 
                 Finished = true;
+                OnFinished?.Invoke(this, EventArgs.Empty);
                 return Position;
             } 
             return newPosition;
