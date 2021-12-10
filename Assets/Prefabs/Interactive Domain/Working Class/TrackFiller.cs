@@ -13,12 +13,14 @@ namespace Level
         {           
             private Vector3 _gateOffset = new Vector3(4.5f, 4f, 0f);
             private OperationExecutor _exec;
-            private float runUpLength = 40;
+            private float _runUpLength = 40;
+            private int _nextPairID = 0;
+            
              
             public GameObject PlaceGates(GameObject gatePrefab, Spline track, OperationPairsSequence sequence)
             {
-                var positionIndent = (track.Length - runUpLength) / (sequence.Sequence.Count+1);
-                var offsetOnTrack = positionIndent + runUpLength;              
+                var positionIndent = (track.Length - _runUpLength) / (sequence.Sequence.Count+1);
+                var offsetOnTrack = positionIndent + _runUpLength;              
                 var gates = Instantiate(gameObject, track.gameObject.transform.position, Quaternion.identity);
                 gates.name = "Gates";
                 foreach(OperationPair operationPair in sequence.Sequence)
@@ -54,8 +56,17 @@ namespace Level
                 
                 var leftGate = CreateGate(gatePrefab, pair.LeftOperation, true);
                 var rightGate = CreateGate(gatePrefab, pair.RightOperation, false);
-                if(leftGate != null) leftGate.transform.SetParent(pairInstance.transform, false);          
-                if(rightGate != null) rightGate.transform.SetParent(pairInstance.transform, false);  
+                if(leftGate != null) 
+                {
+                    leftGate.transform.SetParent(pairInstance.transform, false);  
+                    leftGate.name = "Gate - " + _nextPairID.ToString();  
+                }      
+                if(rightGate != null) 
+                {
+                    rightGate.transform.SetParent(pairInstance.transform, false);  
+                    rightGate.name = "Gate - " + _nextPairID.ToString(); 
+                }
+                _nextPairID++;
                 return pairInstance;        
             }
             

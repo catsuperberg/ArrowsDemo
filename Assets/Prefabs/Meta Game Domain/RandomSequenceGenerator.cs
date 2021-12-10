@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 
+using System.Linq;
+
 namespace GameMeta
 {
     public class RandomSequenceGenerator : IMetaGame
     {        
         float _coefficient = 0.7f;
-        OperationPairsSequence _sequence;
+        OperationPairsSequence _sequence = null;
         
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
             SequenceContext context)
@@ -25,6 +27,21 @@ namespace GameMeta
                     targetMaxResult, SpreadPercentage, context), tokenSource, numThreads);
             Task.WaitAny(threads); 
             tokenSource.Cancel();  
+            
+            // show best sequence
+            var testResult = new BigInteger(context.InitialValue);
+            OperationExecutor exec = new OperationExecutor();
+            Debug.Log("==================================================================");
+            Debug.Log("==================================================================");
+            Debug.Log("==================================================================");
+            foreach(OperationPair pair in _sequence.Sequence)
+            {
+                Debug.Log("Pair: " + pair.LeftOperation.operationType.ToString() + " " + pair.LeftOperation.value + "  |||  " + pair.RightOperation.operationType.ToString() + " " + pair.RightOperation.value);
+                Debug.Log("Best operation is: " + pair.BestOperation(testResult, exec).operationType.ToString() + " " + pair.BestOperation(testResult, exec).value);
+                testResult = exec.Perform(pair.BestOperation(testResult, exec), testResult);
+                Debug.Log("Result after operation = " + testResult);
+            }
+            
             return _sequence;    
         }
         
@@ -67,7 +84,7 @@ namespace GameMeta
             var exec = new OperationExecutor();        
             OperationPairsSequence sequence;      
             OperationGenerator operationGenerator = new OperationGenerator();                 
-            PairGenerator pairGenerator = new PairGenerator(0.5f, operationGenerator, exec);
+            PairGenerator pairGenerator = new PairGenerator(0.5f, operationGenerator);
             SequenceGenerator generator = new SequenceGenerator(pairGenerator, exec); 
             var partialResult = new BigInteger(0);
             var tempResult = new BigInteger(0);
@@ -88,19 +105,22 @@ namespace GameMeta
             float tempCoeff = _coefficient;
             var exec = new OperationExecutor();
             OperationGenerator operationGenerator = new OperationGenerator();
-            PairGenerator pairGenerator = new PairGenerator(tempCoeff, operationGenerator, exec); 
+            PairGenerator pairGenerator = new PairGenerator(tempCoeff, operationGenerator); 
             SequenceGenerator generator = new SequenceGenerator(pairGenerator, exec);
             OperationPairsSequence sequence = new OperationPairsSequence(new List<OperationPair>{null});
-            BigInteger result = new BigInteger(context.InitialValue);
-            BigInteger spread = BigInteger.Divide(BigInteger.Multiply(new BigInteger(SpreadPercentage), targetMaxResult), 100);
+            BigInteger result = new BigInteger(0);
+            result += context.InitialValue;
+            BigInteger spread = (new BigInteger(SpreadPercentage) * targetMaxResult)/new BigInteger(100);
             do
             {
                 if(token.IsCancellationRequested)
-                    break;
-                sequence = generator.GetSequenceWithRandomPairs(context.NumberOfOperations);
+                    return;
+                sequence = generator.GetSequenceWithRandomPairs(context.NumberOfOperations, context.InitialValue);
                 result = generator.CalculateBestResult(sequence.Sequence, context.InitialValue);             
-            } while(BigInteger.Abs(BigInteger.Subtract(targetMaxResult, result)) >= spread);
-            _sequence = sequence;
+            } while(BigInteger.Abs(targetMaxResult - result) >= spread);              
+            
+            if(_sequence == null)
+                _sequence = sequence;   
         }
         
         Task[] SpreadTaskToThreads(System.Action action, CancellationTokenSource tokenSource, int numThreads)

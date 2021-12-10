@@ -22,11 +22,23 @@ namespace GameMeta
                 _exec = exec;
             }
             
-            public OperationPairsSequence GetSequenceWithRandomPairs(int SequenceLength)
+            public OperationPairsSequence GetSequenceWithRandomPairs(int SequenceLength, int initValue = 1)
             {
+                var result = new BigInteger(initValue);
+                var tempResult = new BigInteger(0);
+                OperationPair pair;
                 List<OperationPair> newSequence = new List<OperationPair>();
                 for(int i = 0; i < SequenceLength; i++)
-                    newSequence.Add(_pairGenerator.Generate());
+                {                    
+                    do
+                    {
+                        tempResult = result;
+                        pair = _pairGenerator.Generate();    
+                        tempResult = _exec.Perform(pair.BestOperation(initValue, _exec), tempResult);                   
+                    } while (tempResult < 1); // reroll if best choice can be less than 1
+                    result = tempResult;
+                    newSequence.Add(pair);
+                }
                 return new OperationPairsSequence(newSequence);
             }
             
@@ -36,9 +48,9 @@ namespace GameMeta
                 BigInteger result = new BigInteger(initialValue);
                 foreach(OperationPair pair in sequence)
                 {
-                    result = _exec.Perform(pair.BestOperation(), result);
-                    if(result < 1)
-                        return -1;
+                    result = _exec.Perform(pair.BestOperation(initialValue,  _exec), result);
+                    // if(result < 1)
+                    //     return -1; // discard sequence if at some point less than 1
                 }
                 return result;
             }

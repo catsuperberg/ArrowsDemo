@@ -7,13 +7,11 @@ namespace GameMeta
     {
         public class PairGenerator
         {   
-            OperationExecutor _exec;
             OperationGenerator _instanceGenerator;
             float _coefficient;
             
-            public PairGenerator(float coeff, OperationGenerator instanceGenerator, OperationExecutor exec)
+            public PairGenerator(float coeff, OperationGenerator instanceGenerator)
             {
-                _exec = exec;
                 _coefficient = coeff;
                 _instanceGenerator = instanceGenerator;
             }
@@ -22,8 +20,7 @@ namespace GameMeta
             {        
                 OperationPair pair = new OperationPair(
                     GenerateInstance(_coefficient),
-                    GenerateInstance(_coefficient),
-                    _exec);
+                    GenerateInstance(_coefficient));
                 return pair;
             }   
             

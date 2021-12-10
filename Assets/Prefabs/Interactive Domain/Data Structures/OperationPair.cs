@@ -6,9 +6,8 @@ namespace Sequence
     {
         public OperationInstance LeftOperation {get; private set;}
         public OperationInstance RightOperation {get; private set;}
-        public bool LeftIsBest {get; private set;}
         
-        public OperationPair(OperationInstance left, OperationInstance right, OperationExecutor exec)
+        public OperationPair(OperationInstance left, OperationInstance right)
         {        
             if(left.Equals(default(OperationInstance)))
                 throw new System.Exception("LeftOperation isn't provided to OpetationsPair");
@@ -17,17 +16,17 @@ namespace Sequence
                 
             LeftOperation = left;
             RightOperation = right;   
-            LeftIsBest = exec.Perform(LeftOperation, 1) > exec.Perform(RightOperation, 1);
         }
         
-        public OperationInstance BestOperation()
+        public OperationInstance BestOperation(BigInteger initialValue, OperationExecutor exec)
         {
+            var LeftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
             return (LeftIsBest) ? LeftOperation : RightOperation;
         }
             
-        public OperationInstance WorstOperation()
-        {
-            return (LeftIsBest) ? RightOperation : LeftOperation;
-        }
+        // public OperationInstance WorstOperation()
+        // {
+        //     return (LeftIsBest) ? RightOperation : LeftOperation;
+        // }
     }
 }

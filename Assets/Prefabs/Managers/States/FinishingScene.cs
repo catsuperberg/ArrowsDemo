@@ -20,12 +20,15 @@ namespace State
     {        
         IDamageable _projectile;
         IDamageable _target;
+        IDamageable _smallerDamageable;
+        IDamageable _largerDamageable;
         
         enum State
         {   
             HalfLifeCalculation,
             ConstantCalculation,
             Overkill,
+            Finished,
             Blank
         }
         
@@ -33,7 +36,8 @@ namespace State
         
         double _halfLifeTime = 4;
         double _constantSpeedTime = 1;
-        double _constantSpeed {get {return (double)_stopHalfLifeAt/_constantSpeedTime;}}
+        double _finishingSpeed;
+        double _overkillSpeed;
         BigInteger _stopHalfLifeAt = new BigInteger(500);
         ResultType _result = ResultType.Blank;
         State _state = State.Blank;
@@ -49,9 +53,11 @@ namespace State
             
             _projectile = projectile;
             _target = target;
-            
-            _result = CheckResult();            
-            _damageCalculator =  GetCalculator(_result);
+            _result = CheckResult();                     
+            SetValuesToDecay(); 
+            _finishingSpeed = (double)_stopHalfLifeAt/_constantSpeedTime;
+            _overkillSpeed = (_result == ResultType.Overkill) ? (double)(_projectile.DamagePoints - _target.DamagePoints)/_constantSpeedTime : 0; 
+            _damageCalculator =  new HalfLifeCalculator(_smallerDamageable.DamagePoints, _stopHalfLifeAt, _halfLifeTime);
             _state = State.HalfLifeCalculation;
         }
         
@@ -60,80 +66,56 @@ namespace State
             switch (_state)
             {
                 case State.HalfLifeCalculation:
-                    DecreaseCountWithHalfLife();
+                    DecreaseCountWithHalfLife(_smallerDamageable);
                     break;                    
-                case State.ConstantCalculation:
-                    DecreaseCountConstantly();
+                case State.ConstantCalculation:                    
+                    DecreaseCountConstantly(_smallerDamageable, _finishingSpeed);
+                    break;  
+                case State.Overkill:
+                    DecreaseCountConstantly(_largerDamageable, _overkillSpeed);                  
                     break;
             }
         } 
         
-        HalfLifeCalculator GetCalculator(ResultType result)
+        void SetValuesToDecay()
         {
-            switch (result)
-            {
-                case ResultType.Fail:
-                case ResultType.Exact:
-                     return new HalfLifeCalculator(_projectile.DamagePoints, _stopHalfLifeAt, _halfLifeTime);
-                case ResultType.Overkill:
-                     return new HalfLifeCalculator(_target.DamagePoints, _stopHalfLifeAt, _halfLifeTime);
-                default:
-                    return null;
-            }
-        }
-        
-        void DecreaseCountWithHalfLife()
-        {
-            BigInteger damage = new BigInteger(0);
-            switch (_result)
-            {
-                case ResultType.Fail:
-                case ResultType.Exact:                     
-                    damage = _damageCalculator.CalculateDecayed(_projectile.DamagePoints, Time.deltaTime);
-                    _target.Damage(damage);
-                    _projectile.Damage(damage);
-                    if(_projectile.DamagePoints < _stopHalfLifeAt)
-                        _state = State.ConstantCalculation;
-                    break;
-                case ResultType.Overkill:                     
-                    damage = _damageCalculator.CalculateDecayed(_target.DamagePoints, Time.deltaTime);
-                    _target.Damage(damage);
-                    _projectile.Damage(damage);
-                    if(_target.DamagePoints < _stopHalfLifeAt)
-                        _state = State.ConstantCalculation;
-                    break;
-            }
-        }
-        
-        void DecreaseCountConstantly()
-        {
-            var damage = new BigInteger(Time.deltaTime*_constantSpeed);
-            damage = (damage >= 1) ? damage : 1;
-            BigInteger delta = new BigInteger(0);
             switch (_result)
             {
                 case ResultType.Fail:
                 case ResultType.Exact:
-                    delta = _projectile.DamagePoints - damage;
-                    if(delta <= 0)
-                    {
-                        damage = damage - delta;
-                        _state = State.Blank;                  
-                    } 
-                    _target.Damage(damage);
-                    _projectile.Damage(damage);           
-                     break;
+                    _smallerDamageable = _projectile;
+                    _largerDamageable = _target;
+                    break;
                 case ResultType.Overkill:
-                    delta = _target.DamagePoints - damage;
-                    if(delta <= 0)
-                    {
-                        damage = damage - delta;   
-                        _state = State.Overkill;                           
-                    } 
-                    _target.Damage(damage);
-                    _projectile.Damage(damage);           
-                     break;                    
-            }
+                    _smallerDamageable = _target;
+                    _largerDamageable = _projectile;
+                    break;
+            }             
+        }
+        
+        void DecreaseCountWithHalfLife(IDamageable decayTarget)
+        {
+            var damage = _damageCalculator.CalculateDecayed(decayTarget.DamagePoints, Time.deltaTime);
+            if(_target.DamagePoints > 0)
+                _target.Damage(damage);
+            _projectile.Damage(damage);
+            if(decayTarget.DamagePoints < _stopHalfLifeAt)
+                _state = State.ConstantCalculation;
+        }
+        
+        void DecreaseCountConstantly(IDamageable decayTarget, double speed)
+        {
+            var damage = new BigInteger(Time.deltaTime*speed);
+            damage = (damage >= 1) ? damage : 1;            
+            var delta = decayTarget.DamagePoints - damage;
+            if(delta <= 0)
+            {
+                damage += delta;
+                _state = (_state != State.Overkill && _result == ResultType.Overkill) ? State.Overkill : State.Finished;                  
+            } 
+            if(_target.DamagePoints > 0)
+                _target.Damage(damage);
+            _projectile.Damage(damage);             
         }
         
         ResultType CheckResult()

@@ -29,8 +29,6 @@ namespace Level
             
             public void Damage(BigInteger value)
             {
-                Debug.Log("Targets count: " + Count);
-                Debug.Log("Targets damage value: " + value);
                 if(value > Count)
                     throw new System.Exception("Triying to damage targets more than possible");
                     

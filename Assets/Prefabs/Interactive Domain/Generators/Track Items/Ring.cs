@@ -1,6 +1,7 @@
 using Sequence;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TMPro;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Level
                 
                 private OperationInstance _operation;
                 private OperationExecutor _exec;
+                private bool _spent = false;
                 
                 public void Initialize(OperationInstance newOperation, OperationExecutor exec)
                 {
@@ -27,6 +29,11 @@ namespace Level
                     _exec = exec;                        
                     _operation = newOperation;
                     UpdateApearance();
+                }
+                
+                public void Spend()
+                {
+                    _spent = true;
                 }
                 
                 void UpdateApearance()
@@ -38,10 +45,32 @@ namespace Level
                 
                 public BigInteger ApplyOperation(BigInteger initialValue)
                 {
-                    if(_exec == null)
-                        throw new System.Exception("Ring wasn't initialized");
-                    var newValue = _exec.Perform(_operation, initialValue);
-                    return newValue;
+                    if(!_spent)
+                    {
+                        if(_exec == null)
+                            throw new System.Exception("Ring wasn't initialized");
+                        var newValue = _exec.Perform(_operation, initialValue);
+                        SpendAllInList(FindRingsInPair());
+                        return newValue;
+                    }
+                    else
+                        return initialValue;
+                }
+                
+                void SpendAllInList(List<Ring> rings)
+                {
+                    foreach(Ring ring in rings)
+                        ring.Spend();
+                }
+                
+                List<Ring> FindRingsInPair()
+                {
+                    var pairObjectContainer = gameObject.transform.parent.gameObject;
+                    var rings = pairObjectContainer.GetComponentsInChildren<Ring>().ToList();
+                    foreach(Ring ring in rings)
+                        if(ring.gameObject.name != gameObject.name)
+                            rings.Remove(ring);
+                    return rings;
                 }
             }
         }
