@@ -27,11 +27,11 @@ namespace Level
                 var randomPrefab = targetPrefabs[Random.Range(0,targetPrefabs.Count)];
                 targets.AddObjectToList(CreateTargetFromPrefab(randomPrefab, score));
             }
-            var targetsArea = GameObjectUtils.GetAreaOfObjectsWithColliders(targets.Objects)*1.5;
+            var targetsArea = GameObjectUtils.GetAreaOfObjectsWithColliders(targets.TargetObjects)*1.5;
             var radius = (float)System.Math.Sqrt(targetsArea/System.Math.PI);
-            PlaceInsideCircle(targets.Objects, radius);
+            PlaceInsideCircle(targets.TargetObjects, radius);
             
-            foreach(GameObject entry in targets.Objects)
+            foreach(GameObject entry in targets.TargetObjects)
                 entry.transform.SetParent(targetGroup.transform, false);
             
             return targetGroup;

@@ -26,22 +26,7 @@ namespace GameMeta
             var threads = SpreadTaskToThreads(() => GenerateSequenceUntilSuccesfull(ct, 
                     targetMaxResult, SpreadPercentage, context), tokenSource, numThreads);
             Task.WaitAny(threads); 
-            tokenSource.Cancel();  
-            
-            // show best sequence
-            var testResult = new BigInteger(context.InitialValue);
-            OperationExecutor exec = new OperationExecutor();
-            Debug.Log("==================================================================");
-            Debug.Log("==================================================================");
-            Debug.Log("==================================================================");
-            foreach(OperationPair pair in _sequence.Sequence)
-            {
-                Debug.Log("Pair: " + pair.LeftOperation.operationType.ToString() + " " + pair.LeftOperation.value + "  |||  " + pair.RightOperation.operationType.ToString() + " " + pair.RightOperation.value);
-                Debug.Log("Best operation is: " + pair.BestOperation(testResult, exec).operationType.ToString() + " " + pair.BestOperation(testResult, exec).value);
-                testResult = exec.Perform(pair.BestOperation(testResult, exec), testResult);
-                Debug.Log("Result after operation = " + testResult);
-            }
-            
+            tokenSource.Cancel();              
             return _sequence;    
         }
         

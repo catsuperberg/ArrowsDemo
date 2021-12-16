@@ -7,14 +7,14 @@ using TMPro;
 using UnityEngine;
 using Utils;
 using Vector3 = UnityEngine.Vector3;
+using Random = UnityEngine.Random;
 
 namespace GamePlay
 {
-    public class ArrowBundle : MonoBehaviour, IProjectileObject, IMovable, IDamageable
+    public class ArrowBundle : MonoBehaviour, IProjectileObject, IMovable, IDamageableWithTransforms
     {
         [SerializeField]
         public float MovementWidth;
-        // public float MovementWidth {get{return MovementWidth;} set {MovementWidth = value; ClampPosition();}}
         [SerializeField]
         public float UpwardOffset = 4;
         [SerializeField]
@@ -22,9 +22,11 @@ namespace GamePlay
         [SerializeField]
         private TMP_Text _CountIndicator;
         private List<GameObject> _arrows = new List<GameObject>();
-        private int maxArrows = 50;
+        private int maxArrows = 70;
         
-        
+        public GameObject ProjectilePrefab {get {return ArrowAsset;}}        
+        public Transform MainTransform {get {return gameObject.transform;}}
+        public List<Transform> ChildrenTransforms {get {return _arrows.Select(go => go.transform).ToList();}}
         
         public BigInteger DamagePoints {get {return Count;}}
         public Vector3 Position {get {return transform.position;}}
@@ -63,10 +65,14 @@ namespace GamePlay
                 var arrowsToAdd = (int)Count - _arrows.Count;
                 if(arrowsToAdd > 0)
                     AddArrows(arrowsToAdd);
-                else
+                else if (arrowsToAdd < 0)
                 {
-                    for(int i = 0; i < arrowsToAdd; i++)
-                        Destroy(_arrows[_arrows.Count - (1 + arrowsToAdd)]);
+                    for(int i = 0; i < -arrowsToAdd; i++)
+                    {
+                        var arrowToRemove = _arrows[_arrows.Count - (1 + i)];
+                        _arrows.Remove(arrowToRemove);
+                        Destroy(arrowToRemove);                        
+                    }
                 }
             }
             else
@@ -78,10 +84,9 @@ namespace GamePlay
                         AddArrows(arrowsToAdd);
                 }   
                 else
-                {
                     for(int i = 0; i < _arrows.Count; i++)
-                        _arrows[i].transform.localPosition = GetPositionOnSpiral(i);
-                }             
+                        if(Random.Range(1, 5) >= 2)
+                            _arrows[i].transform.localPosition = GetPositionOnSpiral(i);
             }
         }
         

@@ -15,6 +15,9 @@ namespace State
         IMetaManager _metaManager;      
         IGamePlayManager _gamePlayManager;    
         ILevelManager _levelManager;  
+        
+         
+        FinishingScene _finishingScene;    
                 
         States _previousState = States.StartScreen;
         States _currentState = States.StartScreen;
@@ -82,14 +85,22 @@ namespace State
         
         void ProcessFinishingCutscene()
         {
-            var scene = gameObject.AddComponent<FinishingScene>();
-            scene.StartScene(_gamePlayManager.ActiveProjectile.GetComponent<IDamageable>(), _levelManager.Targets.GetComponent<IDamageable>());
+            _finishingScene = gameObject.AddComponent<FinishingScene>();
+            _finishingScene.OnFinished += OnFinishingSceneFinished;
+            _finishingScene.StartScene(_gamePlayManager.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), _levelManager.Targets.GetComponent<IDamageableWithTransforms>());
         }
         
         void OnGamePlayFinished(object sender, EventArgs e)
         {
             _gamePlayManager.OnFinished -= OnGamePlayFinished;
             _currentState = States.FinishingCutscene;
+            Debug.Log("Finished");
+        }     
+        
+        void OnFinishingSceneFinished(object sender, EventArgs e)
+        {
+            _finishingScene.OnFinished -= OnFinishingSceneFinished;
+            _currentState = States.StartScreen;
             Debug.Log("Finished");
         }     
         

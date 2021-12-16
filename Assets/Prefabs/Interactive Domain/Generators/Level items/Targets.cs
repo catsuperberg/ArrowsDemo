@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using TMPro;
@@ -9,18 +10,21 @@ namespace Level
 {
     namespace Target
     {
-        public class Targets : MonoBehaviour, IGameObjectFillable, ITargetGroup
+        public class Targets : MonoBehaviour, IGameObjectFillable, ITargetGroup, IDamageableWithTransforms
         {
             [SerializeField]
             private TMP_Text _CountIndicator;
             
             public BigInteger Count {get ; private set;}
             public BigInteger DamagePoints {get {return Count;}}
-            public List<GameObject> Objects {get;} = new List<GameObject>();
+            public List<GameObject> TargetObjects {get;} = new List<GameObject>();
+            
+            public Transform MainTransform {get {return gameObject.transform;}}
+            public List<Transform> ChildrenTransforms {get {return TargetObjects.Select(go => go.transform).ToList();}}
             
             public void AddObjectToList(GameObject objectToAdd)
             {
-                Objects.Add(objectToAdd);
+                TargetObjects.Add(objectToAdd);
                 objectToAdd.transform.SetParent(transform);
                 
                 UpdateCount();
@@ -40,7 +44,7 @@ namespace Level
                     if(target.Points <= damageCount)
                     {
                         damageCount -= target.Points;
-                        Objects.Remove(target.gameObject);
+                        TargetObjects.Remove(target.gameObject);
                         Destroy(target.gameObject);
                     }
                     else
@@ -80,7 +84,7 @@ namespace Level
             List<Target> GetTargetComponentss()
             {
                 var targetScripts = new List<Target>();
-                foreach(GameObject target in Objects)
+                foreach(GameObject target in TargetObjects)
                 {
                     var tempScript = target.GetComponent<Target>();
                     if(tempScript != null)

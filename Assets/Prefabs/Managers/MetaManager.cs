@@ -12,7 +12,7 @@ namespace GameMeta
         IMetaGame _meta;
         
         const int _numIterationsForAverage = 1600;
-        SequenceContext _context = new SequenceContext(1000, 10, 35); // TEMP should be caculated from user data wich chould be loaded from disk
+        SequenceContext _context = new SequenceContext(1000, 15, 35); // TEMP should be caculated from user data wich chould be loaded from disk
         int _targetsListSize = 5;
         List<BigInteger> _nextTargets = new List<BigInteger>();
         

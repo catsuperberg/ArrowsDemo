@@ -1,10 +1,15 @@
 using GamePlay;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using Utils;
+
+using Vector3 = UnityEngine.Vector3;
+using Quaternion = UnityEngine.Quaternion;
+using Random = UnityEngine.Random;
 
 namespace State
 {
@@ -18,8 +23,8 @@ namespace State
         
     public class FinishingScene : MonoBehaviour, IFinishNotification
     {        
-        IDamageable _projectile;
-        IDamageable _target;
+        IDamageableWithTransforms _projectile;
+        IDamageableWithTransforms _target;
         IDamageable _smallerDamageable;
         IDamageable _largerDamageable;
         
@@ -42,18 +47,21 @@ namespace State
         ResultType _result = ResultType.Blank;
         State _state = State.Blank;
         HalfLifeCalculator _damageCalculator;
+        
+        int _maxAnimatedProjectiles = 300;
+        List<GameObject> _animatedProjectiles = new List<GameObject>();
                 
-        public void StartScene(IDamageable projectile, IDamageable target)
+        public void StartScene(IDamageableWithTransforms projectile, IDamageableWithTransforms target)
         {     
              if(projectile == null)
-                throw new System.Exception("IProjectileObject isn't provided to FinishingScene");
+                throw new System.Exception("IDamageableWithTransforms 'projectile' isn't provided to FinishingScene");
              if(target == null)
-                throw new System.Exception("IDamageable isn't provided to FinishingScene");    
+                throw new System.Exception("IDamageableWithTransforms 'target' isn't provided to FinishingScene");    
             
             
             _projectile = projectile;
             _target = target;
-            _result = CheckResult();                     
+            _result = CheckResult();               
             SetValuesToDecay(); 
             _finishingSpeed = (double)_stopHalfLifeAt/_constantSpeedTime;
             _overkillSpeed = (_result == ResultType.Overkill) ? (double)(_projectile.DamagePoints - _target.DamagePoints)/_constantSpeedTime : 0; 
@@ -74,8 +82,62 @@ namespace State
                 case State.Overkill:
                     DecreaseCountConstantly(_largerDamageable, _overkillSpeed);                  
                     break;
-            }
+                case State.Finished:
+                    OnFinished?.Invoke(this, EventArgs.Empty);
+                    break;
+            }            
+            SpawnFlyingProjectiles();
         } 
+        
+        Transform _randomProjectileTransform
+        {
+            get
+            {
+                var projectileIndex = Random.Range(0, _projectile.ChildrenTransforms.Count);
+                return _projectile.ChildrenTransforms[projectileIndex];
+            }
+        }
+        
+        Transform _randomTargetTransform
+        {
+            get
+            {
+                var targetCount = _target.ChildrenTransforms.Count;
+                Transform tempTransform;
+                if(targetCount <=0)
+                    tempTransform = _target.MainTransform;
+                else                    
+                    tempTransform = _target.ChildrenTransforms[Random.Range(0, targetCount)];
+                var tempObj = new GameObject();                
+                tempObj.transform.position = tempTransform.position;
+                tempObj.transform.rotation = Quaternion.LookRotation(Vector3.down);
+                return tempObj.transform;
+            }
+        }
+        
+        void SpawnFlyingProjectiles()
+        {
+            var projectileCount = (_animatedProjectiles.Any()) ? _animatedProjectiles.Count : 0;
+            Debug.Log(projectileCount);
+            if(projectileCount <= _maxAnimatedProjectiles && Random.Range(1, 20) > 3)
+            {
+                var moverGameObject = new GameObject("Ballistic mover");
+                var startTransform = _randomProjectileTransform;
+                moverGameObject.transform.position = startTransform.position;
+                moverGameObject.transform.rotation = startTransform.rotation;                
+                var mover = moverGameObject.AddComponent<BallisticMover>();
+                var projectile = Instantiate((_projectile as IProjectileObject).ProjectilePrefab, Vector3.zero, Quaternion.identity);
+                mover.initialize(startTransform, _randomTargetTransform, 0.85f);
+                mover.StartMover(200f);
+                projectile.transform.SetParent(moverGameObject.transform, false);
+                _animatedProjectiles.Add(moverGameObject);                
+            }
+            // if decided add arrow
+                // select source arrow transform
+                // select target transform
+                // create arrow
+                // create balistic mover and attach arrow to it
+        }
         
         void SetValuesToDecay()
         {
@@ -83,12 +145,12 @@ namespace State
             {
                 case ResultType.Fail:
                 case ResultType.Exact:
-                    _smallerDamageable = _projectile;
-                    _largerDamageable = _target;
+                    _smallerDamageable = _projectile as IDamageable;
+                    _largerDamageable = _target as IDamageable;
                     break;
                 case ResultType.Overkill:
-                    _smallerDamageable = _target;
-                    _largerDamageable = _projectile;
+                    _smallerDamageable = _target as IDamageable;
+                    _largerDamageable = _projectile as IDamageable;
                     break;
             }             
         }

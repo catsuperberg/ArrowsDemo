@@ -23,10 +23,5 @@ namespace Sequence
             var LeftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
             return (LeftIsBest) ? LeftOperation : RightOperation;
         }
-            
-        // public OperationInstance WorstOperation()
-        // {
-        //     return (LeftIsBest) ? RightOperation : LeftOperation;
-        // }
     }
 }

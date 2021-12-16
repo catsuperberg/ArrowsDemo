@@ -10,8 +10,8 @@ namespace Utils
         
         public HalfLifeCalculator(BigInteger startValue, BigInteger endValue, double timeToReachEnd)
         {            
-            EInteger count = EInteger.FromString(startValue.ToString());
-            EInteger finalCount = EInteger.FromString(endValue.ToString());
+            var count = EInteger.FromString(startValue.ToString());
+            var finalCount = EInteger.FromString(endValue.ToString());
             var finalCountPart = EDecimal.FromEInteger(finalCount).Divide(EDecimal.FromEInteger(count), EContext.Binary64);            
             var k = finalCountPart.Log(EContext.Binary64).Divide(EDecimal.FromDouble(timeToReachEnd), EContext.Binary64);
             _halfLife = EDecimal.FromDouble(Math.Log(0.5)).Divide(k, EContext.Binary64);
