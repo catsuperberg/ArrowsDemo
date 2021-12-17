@@ -35,9 +35,14 @@ namespace GamePlay
         
         void GamePlayFinished(object sender, EventArgs e)
         {
-            var movementController = ActiveProjectile.GetComponent<ButtonsMovementController>(); // HACK i think what class is used for contrller should be defined in construction root
+            var movementController = ActiveProjectile.GetComponent<ButtonsMovementController>(); // HACK i think what class is used for contrller should be defined in composition root
             if(movementController != null)
                 GameObject.Destroy(movementController);
+                
+            var movementController2 = ActiveProjectile.GetComponent<TouchTranslationMovementController>(); // HACK i think what class is used for contrller should be defined in composition root
+            if(movementController2 != null)
+                GameObject.Destroy(movementController);
+                
             ActiveProjectile.transform.SetParent(null);
             
             var newCameraTarget = new GameObject("CameraTarget");
@@ -66,8 +71,11 @@ namespace GamePlay
                 
                 ActiveProjectile = _projectileGenerator.CreateArrows(context.InitialValue, 12f); // HACK arbitrary width used for movement width
                 ActiveProjectile.transform.SetParent(_follower.Transform);
+                
                 var movementController = ActiveProjectile.AddComponent<ButtonsMovementController>(); // HACK i think what class is used for contrller should be defined in construction root
                 movementController.Init();
+                var movementController2 = ActiveProjectile.AddComponent<TouchTranslationMovementController>();
+                movementController2.Init();
                 
                 _follower.SetSpeed(35);
                 _follower.StartMovement();

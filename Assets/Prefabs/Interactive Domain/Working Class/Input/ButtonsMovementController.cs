@@ -49,7 +49,7 @@ namespace GamePlay
                     _movableObject.moveUp(_y_axisValue*_speed*Time.deltaTime);
             }
         }
-        
+                
         public void OnX_axis(InputAction.CallbackContext context)
         {
             if(context.started)
