@@ -8,7 +8,7 @@ public class SmoothFollow : MonoBehaviour
     [SerializeField]
     private float smoothSpeed = 0.6f;
     [SerializeField]
-    private float angleSpeedCoefficient = 5f;   
+    private float angleSpeedCoefficient = 1f;   
     [SerializeField]
     private Vector3 Offset;
     [SerializeField]

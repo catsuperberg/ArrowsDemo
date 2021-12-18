@@ -16,6 +16,8 @@ public class GameInstaller : MonoInstaller
     private ProjectileGenerator _projectileGenerator; 
     [SerializeField]
     private TargetGroupGenerator _targetGenerator; 
+    [SerializeField]
+    private UI_StateManager _UI_Manager; 
     
     public override void InstallBindings()
     {                
@@ -31,6 +33,8 @@ public class GameInstaller : MonoInstaller
         
         Container.Bind<IGamePlayManager>().To<GamePlayManager>().AsSingle();
         
-        Container.Bind<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind<IStateChangeNotifier>().To<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        
+        Container.Bind<UI_StateManager>().FromInstance(_UI_Manager).AsSingle();  
     }
 }

@@ -118,7 +118,6 @@ namespace State
         void SpawnFlyingProjectiles()
         {
             var projectileCount = (_animatedProjectiles.Any()) ? _animatedProjectiles.Count : 0;
-            Debug.Log(projectileCount);
             if(projectileCount <= _maxAnimatedProjectiles && Random.Range(1, 20) > 3)
             {
                 var moverGameObject = new GameObject("Ballistic mover");

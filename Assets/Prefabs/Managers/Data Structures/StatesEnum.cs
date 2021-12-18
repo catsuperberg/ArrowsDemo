@@ -1,13 +1,14 @@
 namespace State
 {
-    public enum States
+    public enum AppState
     {   
         StartScreen,
         GamePlay,
         Menu,
         FinishingCutscene,
         PreAdTease,
-        Ad
+        Ad,
+        Blank
     }
     
     // static class OperationsMethods

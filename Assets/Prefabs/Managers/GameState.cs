@@ -10,17 +10,28 @@ using Zenject;
 
 namespace State
 {
-    public class GameState : MonoBehaviour, Controls.IDebugActions
+    public class StateEventArgs : EventArgs
+    {
+        public StateEventArgs(AppState state)
+        {
+            State = state;
+        }
+
+        public AppState State { get; set; }
+    }
+    
+    public class GameState : MonoBehaviour, Controls.IDebugActions, IStateChangeNotifier
     {
         IMetaManager _metaManager;      
         IGamePlayManager _gamePlayManager;    
         ILevelManager _levelManager;  
         
+        public event EventHandler<StateEventArgs> OnStateChanged;
          
         FinishingScene _finishingScene;    
                 
-        States _previousState = States.StartScreen;
-        States _currentState = States.StartScreen;
+        AppState _previousState = AppState.Blank;
+        AppState _currentState = AppState.Blank;
         
         bool _stateChanged {get {return _currentState != _previousState;}}         
         
@@ -37,6 +48,8 @@ namespace State
             _metaManager = meta;
             _gamePlayManager = gamePlayManager;
             _levelManager = levelManager;
+            
+            _currentState = AppState.StartScreen;
         }
         
         void Awake()
@@ -52,17 +65,18 @@ namespace State
             {
                 ProcessState(_currentState);
                 _previousState = _currentState;
+                OnStateChanged?.Invoke(this, new StateEventArgs(_currentState));
             }
         }
         
-        void ProcessState(States newState)
+        void ProcessState(AppState newState)
         {
             switch (newState)
             {
-                case States.GamePlay:
+                case AppState.GamePlay:
                     ProcessGamePlay();
                     break;
-                case States.FinishingCutscene:
+                case AppState.FinishingCutscene:
                     ProcessFinishingCutscene();
                     break;
             }
@@ -70,7 +84,7 @@ namespace State
         
         void ProcessGamePlay()
         {
-            if(_previousState == States.StartScreen)
+            if(_previousState == AppState.StartScreen)
             {
                 var context = _metaManager.GetContext();
                 var targetResult = _metaManager.GetNextTargetScore();
@@ -93,14 +107,14 @@ namespace State
         void OnGamePlayFinished(object sender, EventArgs e)
         {
             _gamePlayManager.OnFinished -= OnGamePlayFinished;
-            _currentState = States.FinishingCutscene;
+            _currentState = AppState.FinishingCutscene;
             Debug.Log("Finished");
         }     
         
         void OnFinishingSceneFinished(object sender, EventArgs e)
         {
             _finishingScene.OnFinished -= OnFinishingSceneFinished;
-            _currentState = States.StartScreen;
+            _currentState = AppState.StartScreen;
             Debug.Log("Finished");
         }     
         
@@ -118,7 +132,7 @@ namespace State
         public void OnStartGame(InputAction.CallbackContext context)
         {
             if(context.performed)
-                _currentState = States.GamePlay;
+                _currentState = AppState.GamePlay;
         }
     }
 }
