@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Linq;
@@ -35,12 +36,8 @@ namespace UiUtils
         }
         
     }
-}
-
-
-// TODO: Rework so there's no need to instantiate Implementation every time
-namespace UiUtils
-{
+    
+    // TODO: Rework so there's no need to instantiate Implementation every time
     [CustomEditor(typeof(EnumSwitcherHelper))]
     class EnumSwitcherHelperInspector : Editor
     {
@@ -87,3 +84,4 @@ namespace UiUtils
         }
     }
 }
+#endif

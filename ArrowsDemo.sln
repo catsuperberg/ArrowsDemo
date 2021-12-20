@@ -5,7 +5,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject", "Zenject.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{70467c4f-9ab3-6290-a039-705edb09da00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tayx.Graphy", "Tayx.Graphy.csproj", "{3d78dd79-31eb-c471-f95c-fc4bf32a7824}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject-Editor", "Zenject-Editor.csproj", "{d9b2daca-1413-e385-2362-ce7aa295bdbd}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tayx.Graphy.Editor", "Tayx.Graphy.Editor.csproj", "{f45ec511-0261-29c7-c919-2a3a4348b15e}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{442082b7-2a73-6333-f3b1-03f3fe278679}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,8 +22,14 @@ Global
 		{a98ff4b6-e592-fac2-cf0b-711c285d4c9a}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70467c4f-9ab3-6290-a039-705edb09da00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70467c4f-9ab3-6290-a039-705edb09da00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3d78dd79-31eb-c471-f95c-fc4bf32a7824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3d78dd79-31eb-c471-f95c-fc4bf32a7824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{d9b2daca-1413-e385-2362-ce7aa295bdbd}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{d9b2daca-1413-e385-2362-ce7aa295bdbd}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{f45ec511-0261-29c7-c919-2a3a4348b15e}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{f45ec511-0261-29c7-c919-2a3a4348b15e}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442082b7-2a73-6333-f3b1-03f3fe278679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442082b7-2a73-6333-f3b1-03f3fe278679}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

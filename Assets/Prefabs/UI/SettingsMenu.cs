@@ -47,12 +47,14 @@ namespace GameSettings
             ExecuteOptionForValue<string>(value);
         }
         
+        #if UNITY_EDITOR
         public void SetEnumValue(UiUtils.EnumSwitcherHelper enumHandler)
         {
             int value = enumHandler.CurrentPreset;
             SetIntValue(value);
         }
-        
+        #endif
+                        
         private void ExecuteOptionForValue<T>(T value)
         {
             if(validToExecute(value.GetType(), OptionsHelper.OptionType(_optionToSet)))

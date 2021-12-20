@@ -1,0 +1,96 @@
+Date : 2021-11-26 15:44:37
+Directory : c:\Unity\ArrowsDemo\Assets\Prefabs
+Total : 49 files,  2068 codes, 137 comments, 279 blanks, all 2484 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |         49 |      2,068 |        137 |        279 |      2,484 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                            | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                               |         49 |      2,068 |        137 |        279 |      2,484 |
+| Input                                                                                                           |          1 |        312 |          5 |         14 |        331 |
+| Interactive Domain                                                                                              |         29 |        998 |         10 |        143 |      1,151 |
+| Interactive Domain\Data Structures                                                                              |          6 |        151 |          2 |         15 |        168 |
+| Interactive Domain\Generators                                                                                   |          5 |        156 |          0 |         29 |        185 |
+| Interactive Domain\Generators\Interfaces                                                                        |          2 |         21 |          0 |          4 |         25 |
+| Interactive Domain\Generators\Spline Track                                                                      |          1 |         63 |          0 |         14 |         77 |
+| Interactive Domain\Generators\Track Items                                                                       |          2 |         72 |          0 |         11 |         83 |
+| Interactive Domain\Interfaces                                                                                   |          6 |         74 |          0 |          7 |         81 |
+| Interactive Domain\Working Class                                                                                |         11 |        606 |          8 |         90 |        704 |
+| Interactive Domain\Working Class\Camera                                                                         |          1 |         31 |          0 |          5 |         36 |
+| Interactive Domain\Working Class\Projectiles                                                                    |          2 |        143 |          1 |         20 |        164 |
+| Interactive Domain\Working Class\Projectiles\Arrows                                                             |          1 |        116 |          1 |         16 |        133 |
+| Interactive Domain\Working Class\Visuals                                                                        |          2 |         58 |          0 |         12 |         70 |
+| Managers                                                                                                        |          6 |        220 |        107 |         46 |        373 |
+| Managers\Data Structures                                                                                        |          1 |         12 |         21 |          1 |         34 |
+| Managers\Interfaces                                                                                             |          2 |         20 |          1 |          3 |         24 |
+| Meta Game Domain                                                                                                |          4 |        216 |          1 |         21 |        238 |
+| Meta Game Domain\Generators                                                                                     |          3 |        146 |          1 |         17 |        164 |
+| UI                                                                                                              |          6 |        238 |          6 |         45 |        289 |
+| UI\C#Interfaces                                                                                                 |          1 |         10 |          0 |          2 |         12 |
+| UI\Utils                                                                                                        |          3 |        137 |          6 |         27 |        170 |
+| UI\Utils\EnumSwitcher                                                                                           |          2 |        108 |          6 |         22 |        136 |
+| Utils                                                                                                           |          3 |         84 |          8 |         10 |        102 |
++-----------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                        | language | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Input\Controls.cs                                                            | C#       |        312 |          5 |         14 |        331 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\Operation.cs                              | C#       |          8 |          0 |          1 |          9 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\OperationPair.cs                          | C#       |         28 |          0 |          6 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\OperationPairsSequence.cs                 | C#       |         15 |          2 |          3 |         20 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\OperationsEnum.cs                         | C#       |         32 |          0 |          1 |         33 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\SequenceContext.cs                        | C#       |         15 |          0 |          1 |         16 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Data Structures\TargerGradesEnum.cs                       | C#       |         53 |          0 |          3 |         56 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Generators\Interfaces\IMathContainer.cs                   | C#       |          8 |          0 |          2 |         10 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Generators\Interfaces\ISplineTrackProvider.cs             | C#       |         13 |          0 |          2 |         15 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Generators\Spline Track\RandomizedSmoothTrackGenerator.cs | C#       |         63 |          0 |         14 |         77 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Generators\Track Items\Ring.cs                            | C#       |         44 |          0 |          5 |         49 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Generators\Track Items\Target.cs                          | C#       |         28 |          0 |          6 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\IMetaGame.cs                                              | C#       |         11 |          0 |          2 |         13 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\IMovable.cs                                    | C#       |         12 |          0 |          1 |         13 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\IProjectileObject.cs                           | C#       |         10 |          0 |          1 |         11 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\IProjectileProvider.cs                         | C#       |          9 |          0 |          1 |         10 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\ITargerProvider.cs                             | C#       |         13 |          0 |          1 |         14 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\ITrackFollower.cs                              | C#       |         15 |          0 |          2 |         17 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Interfaces\ITrackPopulator.cs                             | C#       |         15 |          0 |          1 |         16 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\ButtonsMovementController.cs                | C#       |         52 |          0 |          5 |         57 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\Camera\SmoothFollow.cs                      | C#       |         31 |          0 |          5 |         36 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\FlyingMovement.cs                           | C#       |         30 |          0 |          6 |         36 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\OperationExecutor.cs                        | C#       |         25 |          6 |          1 |         32 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\Projectiles\Arrows\ArrowBundle.cs           | C#       |        116 |          1 |         16 |        133 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\Projectiles\ProjectileGenerator.cs          | C#       |         27 |          0 |          4 |         31 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\SplineFollower.cs                           | C#       |         78 |          0 |         16 |         94 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\TargetGroupGenerator.cs                     | C#       |        119 |          1 |         15 |        135 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\TrackFiller.cs                              | C#       |         70 |          0 |         10 |         80 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\Visuals\PulsatingTransparency.cs            | C#       |         32 |          0 |          6 |         38 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Interactive Domain\Working Class\Visuals\ScrollTexture.cs                    | C#       |         26 |          0 |          6 |         32 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\Data Structures\StatesEnum.cs                                       | C#       |         12 |         21 |          1 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\GamePlayManager.cs                                                  | C#       |         46 |         84 |         20 |        150 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\GameState.cs                                                        | C#       |         81 |          1 |         14 |         96 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\Interfaces\IGamePlayManager.cs                                      | C#       |         10 |          1 |          1 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\Interfaces\ILevelManager.cs                                         | C#       |         10 |          0 |          2 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Managers\ProceduralLevelManager.cs                                           | C#       |         61 |          0 |          8 |         69 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Meta Game Domain\Generators\OperationGenerator.cs                            | C#       |         70 |          1 |          8 |         79 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Meta Game Domain\Generators\PairGenerator.cs                                 | C#       |         34 |          0 |          4 |         38 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Meta Game Domain\Generators\SequenceGenerator.cs                             | C#       |         42 |          0 |          5 |         47 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Meta Game Domain\RandomSequenceGenerator.cs                                  | C#       |         70 |          0 |          4 |         74 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\C#Interfaces\IEnumSelectable.cs                                           | C#       |         10 |          0 |          2 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\MainMenu.cs                                                               | C#       |         16 |          0 |          3 |         19 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\SettingsMenu.cs                                                           | C#       |         75 |          0 |         13 |         88 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\Utils\EnumSwitcher\EnumSwitcherHelper.cs                                  | C#       |         67 |          6 |         16 |         89 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\Utils\EnumSwitcher\GraphicsSelectable.cs                                  | C#       |         41 |          0 |          6 |         47 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\UI\Utils\ToggleHelper.cs                                                     | C#       |         29 |          0 |          5 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Utils\ExtensionMethods.cs                                                    | C#       |         17 |          0 |          1 |         18 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Utils\GameObjectUtils.cs                                                     | C#       |         21 |          1 |          1 |         23 |
+| c:\Unity\ArrowsDemo\Assets\Prefabs\Utils\MathUtils.cs                                                           | C#       |         46 |          7 |          8 |         61 |
+| Total                                                                                                           |          |      2,068 |        137 |        279 |      2,484 |
++-----------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
