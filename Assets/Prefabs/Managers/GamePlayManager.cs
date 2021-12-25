@@ -35,15 +35,15 @@ namespace GamePlay
         
         void GamePlayFinished(object sender, EventArgs e)
         {
+            var movementController2 = ActiveProjectile.GetComponent<TouchTranslationMovementController>(); // HACK i think what class is used for contrller should be defined in composition root
+            if(movementController2 != null)
+                GameObject.Destroy(movementController2);  
+                
             var movementController = ActiveProjectile.GetComponent<ButtonsMovementController>(); // HACK i think what class is used for contrller should be defined in composition root
             if(movementController != null)
                 GameObject.Destroy(movementController);
                 
-            var movementController2 = ActiveProjectile.GetComponent<TouchTranslationMovementController>(); // HACK i think what class is used for contrller should be defined in composition root
-            if(movementController2 != null)
-                GameObject.Destroy(movementController);
-                
-            ActiveProjectile.transform.SetParent(null);
+            // ActiveProjectile.transform.SetParent(null);
             
             var newCameraTarget = new GameObject("CameraTarget");
             var arrowsTransform = ActiveProjectile.GetComponentInChildren<TMPro.TMP_Text>().gameObject.transform;
@@ -59,16 +59,20 @@ namespace GamePlay
              
         public void StartFromBeginning(GameObject level, SequenceContext context)
         {
+            if(ActiveProjectile != null)
+            {                
+                foreach(Transform child in ActiveProjectile.transform)
+                    GameObject.Destroy(child.gameObject);
+                GameObject.Destroy(ActiveProjectile);
+            }
+            
             var spline = level.GetComponentInChildren<Spline>();
             if(spline != null)
             {                
                 _follower.SetSplineToFollow(spline, 0);
                 var smoothCamera = Camera.main.GetComponent<SmoothFollow>();
                 smoothCamera.target = _follower.Transform;
-                
-                if(ActiveProjectile != null)
-                    GameObject.Destroy(ActiveProjectile);
-                
+                                
                 ActiveProjectile = _projectileGenerator.CreateArrows(context.InitialValue, 12f); // HACK arbitrary width used for movement width
                 ActiveProjectile.transform.SetParent(_follower.Transform);
                 

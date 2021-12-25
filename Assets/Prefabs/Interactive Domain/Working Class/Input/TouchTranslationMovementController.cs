@@ -8,10 +8,13 @@ namespace GamePlay
         IMovable _movableObject;
         float _x_axisValue = 0;
         float _y_axisValue = 0;
+        float _x_delta = 0;
+        float _y_delta = 0;
         
-        const float defaultCoefficient = 0.1f;
+        const float defaultCoefficient = 0.03f;
         public float _outputValuePerInput {get; private set;} = defaultCoefficient;  
         private bool _initialized = false;
+        Controls _gameplayControlls;
         
         public void Init(float outputValuePerInput = defaultCoefficient)
         {
@@ -32,9 +35,20 @@ namespace GamePlay
         
         void EnableControlls()
         {            
-            var gameplayControlls = new Controls();
-            gameplayControlls.TouchMovement.Enable();
-            gameplayControlls.TouchMovement.SetCallbacks(this);
+            _gameplayControlls = new Controls();
+            _gameplayControlls.TouchMovement.Enable();
+            _gameplayControlls.TouchMovement.SetCallbacks(this);
+        }
+        
+        // FIXME Should probably unsubscribe on destroy
+        
+        void Update()
+        {      
+            if(_movableObject != null)
+            {      
+                _movableObject.moveRight(_x_delta);
+                _movableObject.moveUp(_y_delta);
+            }
         }
         
         public void OnPrimaryContact(InputAction.CallbackContext context)
@@ -47,14 +61,15 @@ namespace GamePlay
         {
             var x_Delta = context.ReadValue<Vector2>().x - _x_axisValue;
             var y_Delta = context.ReadValue<Vector2>().y - _y_axisValue;
-            x_Delta *= _outputValuePerInput;
-            y_Delta *= _outputValuePerInput;
+            if(x_Delta != 0 || y_Delta != 0)
+            {
+                _x_delta = _outputValuePerInput * x_Delta;
+                _y_delta = _outputValuePerInput * y_Delta;                
+            }
             
-            _movableObject.moveRight(x_Delta);
-            _movableObject.moveUp(y_Delta);
             
             _x_axisValue = context.ReadValue<Vector2>().x;
-            _y_axisValue = context.ReadValue<Vector2>().y;
+            _y_axisValue = context.ReadValue<Vector2>().y;     
         }
     }    
 }

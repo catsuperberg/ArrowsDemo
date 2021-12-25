@@ -442,6 +442,19 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @PrimaryPosition.canceled += instance.OnPrimaryPosition;
             }
         }
+        public void ClearCallbacks(ITouchMovementActions instance)
+        {
+            m_Wrapper.m_TouchMovementActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @PrimaryContact.started -= instance.OnPrimaryContact;
+                @PrimaryContact.performed -= instance.OnPrimaryContact;
+                @PrimaryContact.canceled -= instance.OnPrimaryContact;
+                @PrimaryPosition.started -= instance.OnPrimaryPosition;
+                @PrimaryPosition.performed -= instance.OnPrimaryPosition;
+                @PrimaryPosition.canceled -= instance.OnPrimaryPosition;
+            }
+        }
     }
     public TouchMovementActions @TouchMovement => new TouchMovementActions(this);
     public interface IDebugActions

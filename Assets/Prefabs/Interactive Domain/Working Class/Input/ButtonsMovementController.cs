@@ -14,6 +14,7 @@ namespace GamePlay
         const float defaultSpeed = 25;
         public float _speed {get; private set;} = defaultSpeed;  
         private bool _initialized = false;
+        Controls _gameplayControlls;
         
         public void Init(float speed = defaultSpeed)
         {
@@ -34,9 +35,9 @@ namespace GamePlay
         
         void EnableControlls()
         {            
-            var gameplayControlls = new Controls();
-            gameplayControlls.Movement.Enable();
-            gameplayControlls.Movement.SetCallbacks(this);
+            _gameplayControlls = new Controls();
+            _gameplayControlls.Movement.Enable();
+            _gameplayControlls.Movement.SetCallbacks(this);
         }
         
         void Update()
@@ -58,7 +59,7 @@ namespace GamePlay
                 _x_axisValue = context.ReadValue<float>();  
             }
             if(context.canceled)
-              _x_axisActive = false;  
+            _x_axisActive = false;  
         }
         
         public void OnY_axis(InputAction.CallbackContext context)
@@ -69,7 +70,7 @@ namespace GamePlay
                 _y_axisValue = context.ReadValue<float>();                
             }
             if(context.canceled)
-              _y_axisActive = false;  
+            _y_axisActive = false;
         }
     }    
 }

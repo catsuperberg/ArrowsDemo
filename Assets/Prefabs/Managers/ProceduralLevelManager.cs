@@ -26,6 +26,7 @@ namespace Level
         public GameObject SplineTrack {get; private set;} = null;
         public GameObject Gates {get; private set;}  = null;
         public GameObject Targets {get; private set;}  = null;
+        public GameObject Level {get; private set;}  = null;
                 
         [Inject]
         public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, ITargerProvider targetGenerator)
@@ -51,6 +52,7 @@ namespace Level
             if(Gates != null)
                 Destroy(Targets);
                 
+            Debug.Log("initializing track");
             var track = new GameObject("Track");       
             
             SplineTrack = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
@@ -62,6 +64,7 @@ namespace Level
             SplineTrack.transform.SetParent(track.transform);
             Targets.transform.SetParent(track.transform);
             Gates.transform.SetParent(track.transform);
+            Level = track;
             return track;
         }
         

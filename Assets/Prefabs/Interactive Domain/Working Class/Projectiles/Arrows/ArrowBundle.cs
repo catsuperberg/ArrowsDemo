@@ -46,8 +46,9 @@ namespace GamePlay
         {
             IMathContainer MathContainer = collider.gameObject.GetComponent<IMathContainer>();
             if(MathContainer != null)
-            {
+            {                
                 Count = MathContainer.ApplyOperation(Count);
+                Debug.Log(Count);
                 UpdateAppearance();
             }
         }
@@ -67,9 +68,11 @@ namespace GamePlay
                     AddArrows(arrowsToAdd);
                 else if (arrowsToAdd < 0)
                 {
-                    for(int i = 0; i < -arrowsToAdd; i++)
+                    var arrowsToDestroy = Mathf.Clamp(-arrowsToAdd, 0, _arrows.Count);
+                    var arrowsAfterDestoy = _arrows.Count - arrowsToDestroy;
+                    for(int i = _arrows.Count; i > arrowsAfterDestoy; i--)
                     {
-                        var arrowToRemove = _arrows[_arrows.Count - (1 + i)];
+                        var arrowToRemove = _arrows[i-1];
                         _arrows.Remove(arrowToRemove);
                         Destroy(arrowToRemove);                        
                     }
@@ -84,7 +87,7 @@ namespace GamePlay
                         AddArrows(arrowsToAdd);
                 }   
                 else
-                    for(int i = 0; i < _arrows.Count; i++)
+                    for(int i = 1; i < _arrows.Count-1; i++) // not from 0 as first arrow shouldn't change position
                         if(Random.Range(1, 5) >= 2)
                             _arrows[i].transform.localPosition = GetPositionOnSpiral(i);
             }

@@ -1,7 +1,10 @@
+using UnityEngine;
+
 namespace State
 {
     public enum AppState
     {   
+        GameLaunch,
         StartScreen,
         GamePlay,
         Menu,
@@ -10,26 +13,34 @@ namespace State
         Ad,
         Blank
     }
+        
+    public enum SubState
+    {   
+        Generation,
+        PauseMenu,
+        Blank
+    }
+        
+    public enum ProcessState
+    {   
+        Blank               = 1,
+        Processing          = 1 << 1,
+        ResultAvailable     = 1 << 2,
+        Finished            = 1 << 3
+    }
     
-    // static class OperationsMethods
-    // {
-    //     public static string ToSymbol(this Operations operationType)
-    //     {
-    //         switch (operationType)
-    //         {
-    //             case Operations.Multiply:
-    //                 return "*";
-    //             case Operations.Divide:
-    //                 return "/";
-    //             case Operations.Add:
-    //                 return "+";
-    //             case Operations.Subtract:
-    //                 return "-";
-    //             case Operations.Blank:
-    //                 return "";
-    //             default:
-    //                 return "No symbol for operationType: " + operationType.ToString();
-    //         }
-    //     }
-    // }
+    static class ProcessStateMethods
+    {
+        public static ProcessState SetFlag(this ProcessState enumContainer, ProcessState state)
+        {
+            return enumContainer | state;
+        }
+        
+        public static ProcessState ClearFlag(this ProcessState enumContainer, ProcessState state)
+        {
+            var tempEnum = enumContainer;
+            tempEnum &= ~state;  
+            return tempEnum;          
+        }
+    }
 }

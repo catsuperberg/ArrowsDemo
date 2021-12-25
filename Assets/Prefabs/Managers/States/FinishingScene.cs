@@ -108,10 +108,12 @@ namespace State
                     tempTransform = _target.MainTransform;
                 else                    
                     tempTransform = _target.ChildrenTransforms[Random.Range(0, targetCount)];
-                var tempObj = new GameObject();                
+                var tempObj = new GameObject("temp object, for transform only (selecting random target)");                
                 tempObj.transform.position = tempTransform.position;
                 tempObj.transform.rotation = Quaternion.LookRotation(Vector3.down);
-                return tempObj.transform;
+                Transform anotherTransform = tempObj.transform;
+                Destroy(tempObj);
+                return anotherTransform;
             }
         }
         

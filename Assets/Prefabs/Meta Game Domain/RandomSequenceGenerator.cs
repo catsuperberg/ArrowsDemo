@@ -16,13 +16,19 @@ namespace GameMeta
     {        
         float _coefficient = 0.7f;
         OperationPairsSequence _sequence = null;
+        int _CPU_count = 1;
+        
+        RandomSequenceGenerator()
+        {
+            _CPU_count = SystemInfo.processorCount;
+        }
         
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
             SequenceContext context)
-        {
-            var numThreads = SystemInfo.processorCount - 1;
+        {        
+            var numThreads = _CPU_count - 1;
             CancellationTokenSource tokenSource= new CancellationTokenSource(); 
-            CancellationToken ct = tokenSource.Token;            
+            CancellationToken ct = tokenSource.Token;    
             var threads = SpreadTaskToThreads(() => GenerateSequenceUntilSuccesfull(ct, 
                     targetMaxResult, SpreadPercentage, context), tokenSource, numThreads);
             Task.WaitAny(threads); 
@@ -112,7 +118,7 @@ namespace GameMeta
         { 
             Task[] threads = new Task[numThreads];        
             for(int thread = 0; thread < numThreads; thread++)
-                threads[thread] = Task.Factory.StartNew(action, tokenSource.Token);
+                threads[thread] = Task.Run(action, tokenSource.Token);
             return threads;
         }
     }    

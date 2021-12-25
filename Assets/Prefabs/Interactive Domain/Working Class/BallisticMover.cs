@@ -13,7 +13,7 @@ namespace GamePlay
             var splineTrajectory = new GameObject("Ballistic spline");
             splineTrajectory.transform.SetParent(null);
             
-            var tempObj = new GameObject();
+            var tempObj = new GameObject("temp object, for transform only");
             var spread = Random.insideUnitSphere*5;
             tempObj.transform.position = endTransform.position + spread;
             tempObj.transform.rotation = endTransform.rotation;
@@ -25,6 +25,8 @@ namespace GamePlay
                                     
             _spline = splineTrajectory.AddComponent<SimpleSpline>();
             _spline.initialize(startTransform, endTransformWithSpread, enterMagnitude, exitMagnitude);
+            
+            Destroy(endTransformWithSpread.gameObject);
         }
         
         public void StartMover(float speed)
