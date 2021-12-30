@@ -93,8 +93,13 @@ namespace State
         {
             get
             {
-                var projectileIndex = Random.Range(0, _projectile.ChildrenTransforms.Count);
-                return _projectile.ChildrenTransforms[projectileIndex];
+                if(_projectile.ChildrenTransforms.Any())
+                {                    
+                    var projectileIndex = Random.Range(0, _projectile.ChildrenTransforms.Count);
+                    return _projectile.ChildrenTransforms[projectileIndex];
+                }
+                else
+                    return _projectile.MainTransform;
             }
         }
         

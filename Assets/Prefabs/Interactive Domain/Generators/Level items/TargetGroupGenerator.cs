@@ -120,10 +120,10 @@ namespace Level
                     {                           
                         collisions = true; 
                         hits++;                             
-                        if(hits >= 1000)
+                        if(hits >= 80) // OPTIMISATION_POINT
                         {
                             hits = 0;
-                            tempRadius *= 1.2f;
+                            tempRadius *= 1.4f;
                         }                   
                         break;
                     }                         

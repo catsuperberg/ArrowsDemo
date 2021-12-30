@@ -26,6 +26,7 @@ namespace GameMeta
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
             SequenceContext context)
         {        
+            _sequence = null;
             var numThreads = _CPU_count - 1;
             CancellationTokenSource tokenSource= new CancellationTokenSource(); 
             CancellationToken ct = tokenSource.Token;    

@@ -9,15 +9,17 @@ using Zenject;
 public class UI_StateManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject _startScreenMessage;
-    [SerializeField]
     GameObject _LoadingScreen;
     [SerializeField]
-    GameObject _GenerationIcon;
+    GameObject _startScreenMessage;
     [SerializeField]
-    GameObject _PauseMenu;
+    GameObject _generationIcon;
     [SerializeField]
-    GameObject _DebugMenu;
+    GameObject _gameplayHUD;
+    [SerializeField]
+    GameObject _pauseMenu;
+    [SerializeField]
+    GameObject _debugMenu;
     
     GameObject _activeCanvas = null;
     HashSet<SubState> _subStates;
@@ -31,7 +33,8 @@ public class UI_StateManager : MonoBehaviour
     
     void OnStateNotification(object sender, StateEventArgs e)
     {
-        Debug.LogWarning(e.State);
+        Debug.LogWarning("============ UI state manager start ============");
+        Debug.Log(e.State);
         if(Enum.IsDefined(typeof(AppState), e.State))
         {                
             switch (e.State)
@@ -43,7 +46,7 @@ public class UI_StateManager : MonoBehaviour
                     SwitchToScreen(_startScreenMessage);
                     break;
                 case AppState.GamePlay:
-                    SwitchToScreen(null);
+                    SwitchToScreen(_gameplayHUD);
                     break;
                 case AppState.FinishingCutscene:
                     
@@ -51,8 +54,11 @@ public class UI_StateManager : MonoBehaviour
                 case AppState.PreAdTease:
                     
                     break;  
-                case AppState.Menu:
-                    
+                case AppState.Menu:                    
+                    SwitchToScreen(_pauseMenu);
+                    break;    
+                case AppState.DebugMenu:                    
+                    SwitchToScreen(_debugMenu);
                     break;    
                 case AppState.Blank:
                     
@@ -70,10 +76,10 @@ public class UI_StateManager : MonoBehaviour
                 switch (subState)
                 {
                     case SubState.Generation:
-                        subCanvasesToShow.Add(_GenerationIcon);
+                        subCanvasesToShow.Add(_generationIcon);
                         break;
                     case SubState.PauseMenu:
-                        subCanvasesToShow.Add(_PauseMenu);
+                        subCanvasesToShow.Add(_pauseMenu);
                         break;            
                 }
             }
@@ -98,6 +104,7 @@ public class UI_StateManager : MonoBehaviour
                 canvas.SetActive(true);
             _activeSubCanvases.AddRange(subCanvasesToEnable);
         }
+        Debug.LogWarning("============ UI state manager end ==============");
     }
     
     void SwitchToScreen(GameObject screen)

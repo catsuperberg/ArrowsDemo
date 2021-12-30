@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
 using UnityEngine;
-using Vector3 = UnityEngine.Vector3;
 using Zenject;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Level
 {
@@ -48,17 +48,40 @@ namespace Level
             if(SplineTrack != null)
                 Destroy(SplineTrack);
             if(Gates != null)
-                Destroy(Gates);
-            if(Gates != null)
-                Destroy(Targets);
-                
-            Debug.Log("initializing track");
+            {
+                foreach(Transform child in Gates.transform)
+                    Destroy(child.gameObject); 
+                Destroy(Gates);                
+            }
+            if(Targets != null)
+            {
+                foreach(Transform child in Targets.transform)
+                    Destroy(child.gameObject); 
+                Destroy(Targets);                
+            }     
+            
             var track = new GameObject("Track");       
             
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            
             SplineTrack = _splineMeshGenerator.GetRandomizedTrack(context.Length, _trackSplineMesh);
+            stopwatch.Stop();
+            Debug.Log("Generating track took: " + stopwatch.ElapsedMilliseconds + " ms");            
+            stopwatch.Restart();
+            
+            
             Gates = _trackPopulator.PlaceGates(_gatePrefab, SplineTrack.GetComponent<Spline>(), sequence);
-            (int Min, int Max) numberOfTargetsRange = (1, 20);
-            Targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);
+            stopwatch.Stop();
+            Debug.Log("Placing gates took: " + stopwatch.ElapsedMilliseconds + " ms");      
+            stopwatch.Restart();
+            
+            
+            (int Min, int Max) numberOfTargetsRange = (1, 20);  
+            Targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetResult, numberOfTargetsRange);   
+            stopwatch.Stop();
+            Debug.Log("Generating target took: " + stopwatch.ElapsedMilliseconds + " ms"); 
+            
+            
             PlaceAtEnd(Targets, SplineTrack.GetComponent<Spline>(), new Vector3(0, -105, 105));
             
             SplineTrack.transform.SetParent(track.transform);

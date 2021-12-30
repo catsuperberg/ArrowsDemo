@@ -24,85 +24,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     ""name"": ""Controls"",
     ""maps"": [
         {
-            ""name"": ""Debug"",
-            ""id"": ""3e3929c6-85c3-445a-b5e8-97b992f7970c"",
-            ""actions"": [
-                {
-                    ""name"": ""StartGame"",
-                    ""type"": ""Button"",
-                    ""id"": ""d6bbe472-c291-4f29-b08d-1e1e4b915e9d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""GenerateNewTarget"",
-                    ""type"": ""Button"",
-                    ""id"": ""28396063-f112-4fdc-9553-f6553091d2ba"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""GenerateTrackForFirstTarget"",
-                    ""type"": ""Button"",
-                    ""id"": ""a7594f6f-8b00-4c85-9e66-1c76fc83f9f1"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press"",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""d5cea6d3-1e22-4846-a5f1-e741e37779df"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""StartGame"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""afba2ef2-1beb-42b9-a1ba-c91b34a0b4b7"",
-                    ""path"": ""<Touchscreen>/primaryTouch/press"",
-                    ""interactions"": ""Hold(duration=2)"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""StartGame"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3974af06-b741-4cb7-b3c3-20f7d9a6fa19"",
-                    ""path"": ""<Keyboard>/f1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""GenerateNewTarget"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""edb47982-1f8e-4fe7-b2ad-e0370e8a969f"",
-                    ""path"": ""<Keyboard>/f2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""GenerateTrackForFirstTarget"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""Movement"",
             ""id"": ""0244154c-d07c-480d-8a14-3351962b1372"",
             ""actions"": [
@@ -195,6 +116,105 @@ public partial class @Controls : IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""State"",
+            ""id"": ""40055903-c820-4622-966e-5d613a4b2cda"",
+            ""actions"": [
+                {
+                    ""name"": ""StartGame"",
+                    ""type"": ""Button"",
+                    ""id"": ""2a355892-647e-4557-90d3-951dad249f14"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""45a7ff03-af90-49b5-a705-9e3f91718ea3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DebugMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""af9d2895-f5a3-46ca-9662-0224436fa4aa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""606d8385-f3f1-4320-bece-2aa747e87fa2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""89ed7faa-4258-489f-ba0e-5866a7d98b3e"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""620d81b0-90b6-4cf1-b8f1-41e525795e40"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DebugMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""98821a2d-ce6b-4b40-b07b-e491db3a8959"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6580b1ec-b383-4ac9-9391-22acb5f35943"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
+                    ""interactions"": ""Hold(duration=2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f9aa388-11d5-4d2f-884b-492038656272"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""TouchMovement"",
             ""id"": ""8048c009-6412-47e5-9d85-8af5372b33e2"",
             ""actions"": [
@@ -245,15 +265,16 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // Debug
-        m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
-        m_Debug_StartGame = m_Debug.FindAction("StartGame", throwIfNotFound: true);
-        m_Debug_GenerateNewTarget = m_Debug.FindAction("GenerateNewTarget", throwIfNotFound: true);
-        m_Debug_GenerateTrackForFirstTarget = m_Debug.FindAction("GenerateTrackForFirstTarget", throwIfNotFound: true);
         // Movement
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_X_axis = m_Movement.FindAction("X_axis", throwIfNotFound: true);
         m_Movement_Y_axis = m_Movement.FindAction("Y_axis", throwIfNotFound: true);
+        // State
+        m_State = asset.FindActionMap("State", throwIfNotFound: true);
+        m_State_StartGame = m_State.FindAction("StartGame", throwIfNotFound: true);
+        m_State_PauseMenu = m_State.FindAction("PauseMenu", throwIfNotFound: true);
+        m_State_DebugMenu = m_State.FindAction("DebugMenu", throwIfNotFound: true);
+        m_State_Back = m_State.FindAction("Back", throwIfNotFound: true);
         // TouchMovement
         m_TouchMovement = asset.FindActionMap("TouchMovement", throwIfNotFound: true);
         m_TouchMovement_PrimaryContact = m_TouchMovement.FindAction("PrimaryContact", throwIfNotFound: true);
@@ -314,55 +335,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Debug
-    private readonly InputActionMap m_Debug;
-    private IDebugActions m_DebugActionsCallbackInterface;
-    private readonly InputAction m_Debug_StartGame;
-    private readonly InputAction m_Debug_GenerateNewTarget;
-    private readonly InputAction m_Debug_GenerateTrackForFirstTarget;
-    public struct DebugActions
-    {
-        private @Controls m_Wrapper;
-        public DebugActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @StartGame => m_Wrapper.m_Debug_StartGame;
-        public InputAction @GenerateNewTarget => m_Wrapper.m_Debug_GenerateNewTarget;
-        public InputAction @GenerateTrackForFirstTarget => m_Wrapper.m_Debug_GenerateTrackForFirstTarget;
-        public InputActionMap Get() { return m_Wrapper.m_Debug; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(DebugActions set) { return set.Get(); }
-        public void SetCallbacks(IDebugActions instance)
-        {
-            if (m_Wrapper.m_DebugActionsCallbackInterface != null)
-            {
-                @StartGame.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnStartGame;
-                @StartGame.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnStartGame;
-                @StartGame.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnStartGame;
-                @GenerateNewTarget.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateNewTarget;
-                @GenerateNewTarget.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateNewTarget;
-                @GenerateNewTarget.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateNewTarget;
-                @GenerateTrackForFirstTarget.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateTrackForFirstTarget;
-                @GenerateTrackForFirstTarget.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateTrackForFirstTarget;
-                @GenerateTrackForFirstTarget.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnGenerateTrackForFirstTarget;
-            }
-            m_Wrapper.m_DebugActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @StartGame.started += instance.OnStartGame;
-                @StartGame.performed += instance.OnStartGame;
-                @StartGame.canceled += instance.OnStartGame;
-                @GenerateNewTarget.started += instance.OnGenerateNewTarget;
-                @GenerateNewTarget.performed += instance.OnGenerateNewTarget;
-                @GenerateNewTarget.canceled += instance.OnGenerateNewTarget;
-                @GenerateTrackForFirstTarget.started += instance.OnGenerateTrackForFirstTarget;
-                @GenerateTrackForFirstTarget.performed += instance.OnGenerateTrackForFirstTarget;
-                @GenerateTrackForFirstTarget.canceled += instance.OnGenerateTrackForFirstTarget;
-            }
-        }
-    }
-    public DebugActions @Debug => new DebugActions(this);
-
     // Movement
     private readonly InputActionMap m_Movement;
     private IMovementActions m_MovementActionsCallbackInterface;
@@ -404,6 +376,63 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     }
     public MovementActions @Movement => new MovementActions(this);
 
+    // State
+    private readonly InputActionMap m_State;
+    private IStateActions m_StateActionsCallbackInterface;
+    private readonly InputAction m_State_StartGame;
+    private readonly InputAction m_State_PauseMenu;
+    private readonly InputAction m_State_DebugMenu;
+    private readonly InputAction m_State_Back;
+    public struct StateActions
+    {
+        private @Controls m_Wrapper;
+        public StateActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @StartGame => m_Wrapper.m_State_StartGame;
+        public InputAction @PauseMenu => m_Wrapper.m_State_PauseMenu;
+        public InputAction @DebugMenu => m_Wrapper.m_State_DebugMenu;
+        public InputAction @Back => m_Wrapper.m_State_Back;
+        public InputActionMap Get() { return m_Wrapper.m_State; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(StateActions set) { return set.Get(); }
+        public void SetCallbacks(IStateActions instance)
+        {
+            if (m_Wrapper.m_StateActionsCallbackInterface != null)
+            {
+                @StartGame.started -= m_Wrapper.m_StateActionsCallbackInterface.OnStartGame;
+                @StartGame.performed -= m_Wrapper.m_StateActionsCallbackInterface.OnStartGame;
+                @StartGame.canceled -= m_Wrapper.m_StateActionsCallbackInterface.OnStartGame;
+                @PauseMenu.started -= m_Wrapper.m_StateActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.performed -= m_Wrapper.m_StateActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.canceled -= m_Wrapper.m_StateActionsCallbackInterface.OnPauseMenu;
+                @DebugMenu.started -= m_Wrapper.m_StateActionsCallbackInterface.OnDebugMenu;
+                @DebugMenu.performed -= m_Wrapper.m_StateActionsCallbackInterface.OnDebugMenu;
+                @DebugMenu.canceled -= m_Wrapper.m_StateActionsCallbackInterface.OnDebugMenu;
+                @Back.started -= m_Wrapper.m_StateActionsCallbackInterface.OnBack;
+                @Back.performed -= m_Wrapper.m_StateActionsCallbackInterface.OnBack;
+                @Back.canceled -= m_Wrapper.m_StateActionsCallbackInterface.OnBack;
+            }
+            m_Wrapper.m_StateActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @StartGame.started += instance.OnStartGame;
+                @StartGame.performed += instance.OnStartGame;
+                @StartGame.canceled += instance.OnStartGame;
+                @PauseMenu.started += instance.OnPauseMenu;
+                @PauseMenu.performed += instance.OnPauseMenu;
+                @PauseMenu.canceled += instance.OnPauseMenu;
+                @DebugMenu.started += instance.OnDebugMenu;
+                @DebugMenu.performed += instance.OnDebugMenu;
+                @DebugMenu.canceled += instance.OnDebugMenu;
+                @Back.started += instance.OnBack;
+                @Back.performed += instance.OnBack;
+                @Back.canceled += instance.OnBack;
+            }
+        }
+    }
+    public StateActions @State => new StateActions(this);
+
     // TouchMovement
     private readonly InputActionMap m_TouchMovement;
     private ITouchMovementActions m_TouchMovementActionsCallbackInterface;
@@ -442,31 +471,19 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @PrimaryPosition.canceled += instance.OnPrimaryPosition;
             }
         }
-        public void ClearCallbacks(ITouchMovementActions instance)
-        {
-            m_Wrapper.m_TouchMovementActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @PrimaryContact.started -= instance.OnPrimaryContact;
-                @PrimaryContact.performed -= instance.OnPrimaryContact;
-                @PrimaryContact.canceled -= instance.OnPrimaryContact;
-                @PrimaryPosition.started -= instance.OnPrimaryPosition;
-                @PrimaryPosition.performed -= instance.OnPrimaryPosition;
-                @PrimaryPosition.canceled -= instance.OnPrimaryPosition;
-            }
-        }
     }
     public TouchMovementActions @TouchMovement => new TouchMovementActions(this);
-    public interface IDebugActions
-    {
-        void OnStartGame(InputAction.CallbackContext context);
-        void OnGenerateNewTarget(InputAction.CallbackContext context);
-        void OnGenerateTrackForFirstTarget(InputAction.CallbackContext context);
-    }
     public interface IMovementActions
     {
         void OnX_axis(InputAction.CallbackContext context);
         void OnY_axis(InputAction.CallbackContext context);
+    }
+    public interface IStateActions
+    {
+        void OnStartGame(InputAction.CallbackContext context);
+        void OnPauseMenu(InputAction.CallbackContext context);
+        void OnDebugMenu(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
     public interface ITouchMovementActions
     {

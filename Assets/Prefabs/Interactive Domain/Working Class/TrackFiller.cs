@@ -23,13 +23,33 @@ namespace Level
                 var offsetOnTrack = positionIndent + _runUpLength;              
                 var gates = Instantiate(gameObject, track.gameObject.transform.position, Quaternion.identity);
                 gates.name = "Gates";
-                foreach(OperationPair operationPair in sequence.Sequence)
-                {
-                    var pointOnTrack = track.GetSampleAtDistance(offsetOnTrack);
-                    offsetOnTrack += positionIndent;                    
-                    var gatePair = CreateGatePair(gatePrefab, operationPair, pointOnTrack.location, pointOnTrack.Rotation);
-                    gatePair.transform.SetParent(gates.transform);
+                
+                
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                
+                var pointsOnTrack = new List<SplineMesh.CurveSample>();
+                
+                for(int point = 0; point < sequence.Sequence.Count; point++)
+                {                    
+                    pointsOnTrack.Add(track.GetSampleAtDistance(offsetOnTrack));
+                    offsetOnTrack += positionIndent;    
                 }
+                
+                var gatesArray = new List<GameObject>();
+                var index = 0;
+                
+                foreach(var operationPair in sequence.Sequence)
+                {               
+                    gatesArray.Add(CreateGatePair(gatePrefab, operationPair, pointsOnTrack[index].location, pointsOnTrack[index].Rotation));
+                    index++;
+                }
+                
+                foreach(var gatePair in gatesArray)
+                    gatePair.transform.SetParent(gates.transform);
+                
+                stopwatch.Stop();
+                Debug.LogWarning("Gates foreach took: " + stopwatch.ElapsedMilliseconds + " ms");    
+                Debug.LogWarning("Gates foreach took: " + stopwatch.ElapsedTicks + " ticks");  
                 
                 return gates;
             }
@@ -56,18 +76,19 @@ namespace Level
                 
                 var leftGate = CreateGate(gatePrefab, pair.LeftOperation, true);
                 var rightGate = CreateGate(gatePrefab, pair.RightOperation, false);
-                if(leftGate != null) 
-                {
-                    leftGate.transform.SetParent(pairInstance.transform, false);  
-                    leftGate.name = "Gate - " + _nextPairID.ToString();  
-                }      
-                if(rightGate != null) 
-                {
-                    rightGate.transform.SetParent(pairInstance.transform, false);  
-                    rightGate.name = "Gate - " + _nextPairID.ToString(); 
-                }
+                UnityMainThreadDispatcher.Instance().Enqueue(() => InitializeGate(leftGate, pairInstance, _nextPairID)); // OPTIMISATION_POINT register to be done later so to optimise creation loop for cache
+                UnityMainThreadDispatcher.Instance().Enqueue(() => InitializeGate(rightGate, pairInstance, _nextPairID));
                 _nextPairID++;
                 return pairInstance;        
+            }
+            
+            void InitializeGate(GameObject gate, GameObject pairInstance, int id)
+            {
+                if(gate == null)
+                    return;
+                
+                gate.transform.SetParent(pairInstance.transform, false);  
+                gate.name = "Gate - " + id.ToString();                 
             }
             
             GameObject CreateGate(GameObject gatePrefab, OperationInstance operation, bool isLeft)

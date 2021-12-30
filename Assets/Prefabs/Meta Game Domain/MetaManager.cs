@@ -2,6 +2,7 @@ using Sequence;
 using State;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Numerics;
@@ -18,9 +19,9 @@ namespace GameMeta
         public event EventHandler<ProcessStateEventArgs> OnStateChanged;   
         
         const int _numIterationsForAverage = 1600;
-        SequenceContext _context = new SequenceContext(1000, 15, 35); // TEMP should be caculated from user data wich chould be loaded from disk
+        SequenceContext _context = new SequenceContext(4000, 80000, 95); // TEMP should be caculated from user data wich chould be loaded from disk
         int _targetsListSize = 5;
-        List<BigInteger> _nextTargets = new List<BigInteger>();
+        ConcurrentQueue<BigInteger> _nextTargets = new ConcurrentQueue<BigInteger>();
         Task _fillingTargets = null;
                 
         public MetaManager(IMetaGame meta)
@@ -30,7 +31,6 @@ namespace GameMeta
                 
             _meta = meta;
             
-            _nextTargets.Capacity = _targetsListSize;
             _fillingTargets = Task.Run(() => {FillTargets();});
         }
         
@@ -40,26 +40,23 @@ namespace GameMeta
         }
         
         public BigInteger GetNextTargetScore()
-        {
-            Debug.LogWarning("GetNextTargetScore() called");                
+        {       
             var target = PopTarget();   
-            if(target == -1)
-            {
-                PushTarget(GenerateAverageTarget()); 
-                target = PopTarget();
+            if(target == -1)            
+            {               
+                if (!_fillingTargets.Status.Equals(TaskStatus.Running))
+                    _fillingTargets = Task.Run(() => {FillTargets();});
+                while(target == -1)
+                {
+                    target = PopTarget();
+                }
             }
-            else
-            {
-                _fillingTargets = Task.Run(() => {FillTargets();});
-            }
-                                       
-            Debug.Log("GetNextTargetScore() result is: " + target); 
+                                                   
             return target;
         }
         
         public OperationPairsSequence GenerateSequence(BigInteger targetScore, int spread)
         {
-            Debug.LogWarning("GenerateSequence() called"); 
             State = State.SetFlag(ProcessState.Processing); 
             OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State)); 
             
@@ -78,32 +75,13 @@ namespace GameMeta
         {
             State = State.SetFlag(ProcessState.Processing);
             OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State)); 
-            
-            AddTargetsToMax();
+                        
+            while(_nextTargets.Count < _targetsListSize)
+                PushTarget(GenerateAverageTarget()); 
             
             State = State.SetFlag(ProcessState.ResultAvailable);
             State = State.ClearFlag(ProcessState.Processing);
             OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State)); 
-        }
-        
-        void AddTargetsToMax()
-        {         
-            var targetsToAdd = _targetsListSize - _nextTargets.Count; 
-            if(targetsToAdd > 0)
-            {               
-                BigInteger tempTarget = new BigInteger(0);                 
-                for(int i = 0; i < targetsToAdd-1; i++)
-                {
-                    tempTarget = GenerateAverageTarget();
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => PushTarget(tempTarget)); 
-                }
-                              
-                UnityMainThreadDispatcher.Instance().Enqueue(() => 
-                {              
-                    foreach(var result in _nextTargets)
-                        Debug.Log(result);    
-                });
-            }           
         }
         
         BigInteger GenerateAverageTarget()
@@ -113,7 +91,7 @@ namespace GameMeta
         
         void PushTarget(BigInteger target)
         {
-            _nextTargets.Add(target);
+            _nextTargets.Enqueue(target);
             if(!State.HasFlag(ProcessState.ResultAvailable))
             {
                 State = State.SetFlag(ProcessState.ResultAvailable);
@@ -122,18 +100,17 @@ namespace GameMeta
         }
         
         BigInteger PopTarget()
-        {
-            if(!_nextTargets.Any())
-                return -1; // should be NaN but big integer doesn't have it
-            
-            var target = _nextTargets.First();
-            _nextTargets.Remove(target);
-            if(!_nextTargets.Any())
+        {            
+            BigInteger target; 
+            var success = _nextTargets.TryDequeue(out target);
+            if(success)
             {
                 State = State.ClearFlag(ProcessState.ResultAvailable);
-                OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State));                 
+                OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State)); 
+                return target;
             }
-            return target;
+            else
+                return -1; // should be NaN but big integer doesn't have it
         }
     }
 }

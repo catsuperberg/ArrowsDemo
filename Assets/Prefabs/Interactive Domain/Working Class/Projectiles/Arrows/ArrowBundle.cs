@@ -48,7 +48,6 @@ namespace GamePlay
             if(MathContainer != null)
             {                
                 Count = MathContainer.ApplyOperation(Count);
-                Debug.Log(Count);
                 UpdateAppearance();
             }
         }

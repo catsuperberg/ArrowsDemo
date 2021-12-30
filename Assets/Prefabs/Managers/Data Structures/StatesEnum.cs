@@ -8,6 +8,7 @@ namespace State
         StartScreen,
         GamePlay,
         Menu,
+        DebugMenu,
         FinishingCutscene,
         PreAdTease,
         Ad,

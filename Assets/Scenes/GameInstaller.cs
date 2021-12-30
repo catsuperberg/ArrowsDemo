@@ -18,6 +18,8 @@ public class GameInstaller : MonoInstaller
     private TargetGroupGenerator _targetGenerator; 
     [SerializeField]
     private UI_StateManager _UI_Manager; 
+    [SerializeField]
+    private UIStateInputs _UIStateInputs; 
     
     public override void InstallBindings()
     {                
@@ -33,7 +35,9 @@ public class GameInstaller : MonoInstaller
         
         Container.Bind<IGamePlayManager>().To<GamePlayManager>().AsSingle();
         
-        Container.Bind<IStateChangeNotifier>().To<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind(typeof(IStateChangeNotifier), typeof(IStateSignal)).To<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind<ControlStateInputs>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        Container.Bind<UIStateInputs>().FromInstance(_UIStateInputs).AsSingle();  
         
         Container.Bind<UI_StateManager>().FromInstance(_UI_Manager).AsSingle();  
     }

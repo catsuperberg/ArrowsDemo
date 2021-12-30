@@ -11,7 +11,8 @@ namespace GamePlay
         float _x_delta = 0;
         float _y_delta = 0;
         
-        const float defaultCoefficient = 0.03f;
+        const float defaultCoefficient = 8f;
+        float _dpi = 130;
         public float _outputValuePerInput {get; private set;} = defaultCoefficient;  
         private bool _initialized = false;
         Controls _gameplayControlls;
@@ -28,6 +29,10 @@ namespace GamePlay
         
         void Awake()
         {
+            var dpi = Screen.dpi;
+            if(dpi != 0)
+                _dpi = dpi;
+            
             _movableObject = gameObject.GetComponent<IMovable>();
             if(!_initialized)
                 EnableControlls();
@@ -44,11 +49,13 @@ namespace GamePlay
         
         void Update()
         {      
-            if(_movableObject != null)
-            {      
-                _movableObject.moveRight(_x_delta);
-                _movableObject.moveUp(_y_delta);
-            }
+            if(_movableObject == null)
+                return;
+                
+            _movableObject.moveRight(_x_delta);
+            _movableObject.moveUp(_y_delta);
+            _x_delta = 0;
+            _y_delta = 0;
         }
         
         public void OnPrimaryContact(InputAction.CallbackContext context)
@@ -59,17 +66,27 @@ namespace GamePlay
         
         public void OnPrimaryPosition(InputAction.CallbackContext context)
         {
-            var x_Delta = context.ReadValue<Vector2>().x - _x_axisValue;
-            var y_Delta = context.ReadValue<Vector2>().y - _y_axisValue;
-            if(x_Delta != 0 || y_Delta != 0)
+            var currentPositon = context.ReadValue<Vector2>();
+            var currentPositonInch = currentPositon/_dpi;
+            if(context.started)
             {
-                _x_delta = _outputValuePerInput * x_Delta;
-                _y_delta = _outputValuePerInput * y_Delta;                
+                _x_axisValue = currentPositonInch.x;
+                _y_axisValue = currentPositonInch.y;                
             }
-            
-            
-            _x_axisValue = context.ReadValue<Vector2>().x;
-            _y_axisValue = context.ReadValue<Vector2>().y;     
+            if(context.performed)
+            {
+                var x_Delta = currentPositonInch.x - _x_axisValue;
+                var y_Delta = currentPositonInch.y - _y_axisValue;
+                if(x_Delta != 0 || y_Delta != 0)
+                {
+                    _x_delta = _outputValuePerInput * x_Delta;
+                    _y_delta = _outputValuePerInput * y_Delta;                
+                }
+                
+                
+                _x_axisValue = currentPositonInch.x;
+                _y_axisValue = currentPositonInch.y;     
+            }
         }
     }    
 }
