@@ -8,17 +8,14 @@ namespace GameStorage
         public string GetTextFromFile(string pathAtStreamingAssets)
         {
             var fullPath = Path.Combine(Application.streamingAssetsPath, pathAtStreamingAssets);
-            if(File.Exists(fullPath))
+            UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(fullPath);
+            www.SendWebRequest();
+            while (!www.isDone)
             {
-                UnityEngine.Networking.UnityWebRequest www = UnityEngine.Networking.UnityWebRequest.Get(fullPath);
-                www.SendWebRequest();
-                while (!www.isDone)
-                {
-                }
-                return www.downloadHandler.text;
             }
-            else
-                return "";
+            if(www.downloadHandler.text == "")
+                throw new System.Exception("No text was found at StreamingAssets file: " + fullPath);
+            return www.downloadHandler.text;
         }
     }
 }

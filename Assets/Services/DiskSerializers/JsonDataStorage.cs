@@ -43,7 +43,10 @@ namespace GameStorage
                 return JsonUtility.FromJson<T>(json);
             }
             else
+            {
+                Debug.Log("No file at: " + pathToFile);
                 return null;
+            }
         }
         
         public bool FileExists(string filePath, string fileName)
@@ -55,7 +58,7 @@ namespace GameStorage
         public void CreateFileFromStreamingAssets<T>(string sourcePathAtStreamingAssets, string sourceFileName, string destinationPath, string destinationFileName)
         {
             var sourceFilePath = Path.Combine(sourcePathAtStreamingAssets, withExtension(sourceFileName));
-            var json = _streamingAssets.GetTextFromFile(sourceFilePath);                   
+            var json = _streamingAssets.GetTextFromFile(sourceFilePath);                
             
             FileStream stream = new FileStream(Path.Combine(destinationPath, withExtension(destinationFileName)), FileMode.Create);        
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));            
@@ -65,9 +68,11 @@ namespace GameStorage
         public void CopyFileData(string sourcePath, string sourceFileName, string destinationPath, string destinationFileName)
         {
             var pathToSourceFile = Path.Combine(sourcePath, withExtension(sourceFileName));
-            var pathToSourceOutput = Path.Combine(destinationPath, withExtension(destinationFileName));
+            var pathToOutputFile = Path.Combine(destinationPath, withExtension(destinationFileName));
             if(File.Exists(pathToSourceFile))
-                File.Copy(pathToSourceFile, pathToSourceOutput);
+                File.Copy(pathToSourceFile, pathToOutputFile, overwrite: true);
+            else
+                throw new System.Exception("Copy failed, no file found at: " + pathToSourceFile);
         }
         
         private string withExtension(string fileName)

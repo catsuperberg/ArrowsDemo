@@ -159,28 +159,6 @@
                 },
                 {
                     "name": "",
-                    "id": "98821a2d-ce6b-4b40-b07b-e491db3a8959",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6580b1ec-b383-4ac9-9391-22acb5f35943",
-                    "path": "<Touchscreen>/primaryTouch/press",
-                    "interactions": "Hold(duration=2)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5f9aa388-11d5-4d2f-884b-492038656272",
                     "path": "<Keyboard>/backspace",
                     "interactions": "",
@@ -198,12 +176,12 @@
             "actions": [
                 {
                     "name": "PrimaryContact",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "8324c267-a7d2-44e7-ae2c-9f828966f1ac",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PrimaryPosition",
@@ -219,7 +197,7 @@
                 {
                     "name": "",
                     "id": "419561db-0a9f-48df-9fc0-7e60923ce7b7",
-                    "path": "<Touchscreen>/primaryTouch/press",
+                    "path": "<Touchscreen>/primaryTouch/startPosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

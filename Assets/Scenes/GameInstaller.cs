@@ -3,6 +3,8 @@ using Level.Track;
 using Level.Track.Items;
 using GameMeta;
 using GamePlay;
+using GameSettings;
+using GameStorage;
 using State;
 using Sequence;
 using UnityEngine;
@@ -20,6 +22,8 @@ public class GameInstaller : MonoInstaller
     private UI_StateManager _UI_Manager; 
     [SerializeField]
     private UIStateInputs _UIStateInputs; 
+    [SerializeField]
+    SettingsMenu _settingMenuScript;
     
     public override void InstallBindings()
     {                
@@ -40,5 +44,16 @@ public class GameInstaller : MonoInstaller
         Container.Bind<UIStateInputs>().FromInstance(_UIStateInputs).AsSingle();  
         
         Container.Bind<UI_StateManager>().FromInstance(_UI_Manager).AsSingle();  
+        
+        Container.Bind<IDiskSerialization>().To<JsonDataStorage>().AsSingle();
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+            Container.Bind<IStreamingAssetsReader>().To<WinStreamingAssets>().AsSingle();
+        else if (Application.platform == RuntimePlatform.Android)
+            Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
+        Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
+        Container.Bind<ISettingsExecutorService>().To<ChangedSettingsExecutorService>().AsSingle();
+        
+        Container.Bind<ISettingsService>().To<SettingsService>().AsSingle();
+        Container.Bind<SettingsMenu>().FromInstance(_settingMenuScript);
     }
 }

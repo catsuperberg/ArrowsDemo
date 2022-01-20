@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 
@@ -65,6 +66,11 @@ namespace State
             SetValuesToDecay(); 
             _finishingSpeed = (double)_stopHalfLifeAt/_constantSpeedTime;
             _overkillSpeed = (_result == ResultType.Overkill) ? (double)(_projectile.DamagePoints - _target.DamagePoints)/_constantSpeedTime : 0; 
+            Task.Run(() => CreateCalculatorAndSetState());  // HACK waiting to create HalfLifeCalculator, only than changing state           
+        }
+        
+        void CreateCalculatorAndSetState()
+        {
             _damageCalculator =  new HalfLifeCalculator(_smallerDamageable.DamagePoints, _stopHalfLifeAt, _halfLifeTime);
             _state = State.HalfLifeCalculation;
         }

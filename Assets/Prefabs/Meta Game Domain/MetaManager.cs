@@ -19,7 +19,7 @@ namespace GameMeta
         public event EventHandler<ProcessStateEventArgs> OnStateChanged;   
         
         const int _numIterationsForAverage = 1600;
-        SequenceContext _context = new SequenceContext(4000, 80000, 95); // TEMP should be caculated from user data wich chould be loaded from disk
+        SequenceContext _context = new SequenceContext(1000, 35, 35); // TEMP should be caculated from user data wich chould be loaded from disk
         int _targetsListSize = 5;
         ConcurrentQueue<BigInteger> _nextTargets = new ConcurrentQueue<BigInteger>();
         Task _fillingTargets = null;

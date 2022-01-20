@@ -37,7 +37,7 @@ namespace Level
                     throw new System.Exception("Triying to damage targets more than possible");
                     
                 var damageCount = value;
-                var targets = GetTargetComponentss();
+                var targets = GetTargetComponents();
                 
                 foreach(Target target in targets)
                 {
@@ -62,7 +62,7 @@ namespace Level
             
             BigInteger SumOfTargetCounts()
             {
-                var targets = GetTargetComponentss();
+                var targets = GetTargetComponents();
                 
                 var sum = new BigInteger(0);
                 foreach(Target target in targets)
@@ -81,7 +81,7 @@ namespace Level
                 Count = SumOfTargetCounts();
             }
             
-            List<Target> GetTargetComponentss()
+            List<Target> GetTargetComponents()
             {
                 var targetScripts = new List<Target>();
                 foreach(GameObject target in TargetObjects)

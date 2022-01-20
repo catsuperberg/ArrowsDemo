@@ -3,6 +3,7 @@
     "MusicVolume": 0.0,
     "SfxVolume": 0.0,
     "Vibration": true,
+    "TouchSensitivity": 1.0,
     "ResolutionScaling": 1.0,
     "Graphics": 2
 }

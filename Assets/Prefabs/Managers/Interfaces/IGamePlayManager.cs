@@ -7,7 +7,8 @@ namespace GamePlay
     public interface IGamePlayManager : IFinishNotification
     {        
         public GameObject ActiveProjectile {get;}
-        public void StartFromBeginning(GameObject level, SequenceContext context);
+        public void InitialiseRun(GameObject level, SequenceContext context);
+        public void StartRun();
         // public void SetPause(bool toPause);
     }
 }

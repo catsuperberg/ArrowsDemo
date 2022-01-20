@@ -20,6 +20,8 @@ public class UI_StateManager : MonoBehaviour
     GameObject _pauseMenu;
     [SerializeField]
     GameObject _debugMenu;
+    [SerializeField]
+    GameObject _preAdTease;
     
     GameObject _activeCanvas = null;
     HashSet<SubState> _subStates;
@@ -52,7 +54,7 @@ public class UI_StateManager : MonoBehaviour
                     
                     break;
                 case AppState.PreAdTease:
-                    
+                    SwitchToScreen(_preAdTease);
                     break;  
                 case AppState.Menu:                    
                     SwitchToScreen(_pauseMenu);

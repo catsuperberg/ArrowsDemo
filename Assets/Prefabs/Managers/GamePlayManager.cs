@@ -57,7 +57,7 @@ namespace GamePlay
             OnFinished?.Invoke(this, EventArgs.Empty);
         }     
              
-        public void StartFromBeginning(GameObject level, SequenceContext context)
+        public void InitialiseRun(GameObject level, SequenceContext context)
         {
             if(ActiveProjectile != null)
             {                
@@ -80,12 +80,15 @@ namespace GamePlay
                 movementController.Init();
                 var movementController2 = ActiveProjectile.AddComponent<TouchTranslationMovementController>();
                 movementController2.Init();
-                
-                _follower.SetSpeed(35);
-                _follower.StartMovement();
             }
             else
                 Debug.LogWarning("Illegalass GameObject provided as track in GamePlayManager.StartFromBeginning(GameObject level)");
+        }
+        
+        public void StartRun()
+        {          
+            _follower.SetSpeed(35);
+            _follower.StartMovement();
         }
     }
 }

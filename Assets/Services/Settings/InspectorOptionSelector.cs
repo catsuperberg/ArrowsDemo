@@ -6,6 +6,6 @@ namespace GameSettings
 {
     public class InspectorOptionSelector : MonoBehaviour
     {
-        public AudioVisualOptions OptionToSet;
+        public Settings OptionToSet;
     }
 }

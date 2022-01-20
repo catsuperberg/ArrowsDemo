@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace GamePlay
 {    
-    public class TouchTranslationMovementController : MonoBehaviour, Controls.ITouchMovementActions
+    public class TouchTranslationMovementController : MonoBehaviour, Controls.ITouchMovementActions, ISensitivitySetable
     {              
         IMovable _movableObject;
         float _x_axisValue = 0;
@@ -49,7 +49,7 @@ namespace GamePlay
         
         void Update()
         {      
-            if(_movableObject == null)
+            if(_movableObject == null || Time.timeScale == 0)
                 return;
                 
             _movableObject.moveRight(_x_delta);
@@ -60,19 +60,19 @@ namespace GamePlay
         
         public void OnPrimaryContact(InputAction.CallbackContext context)
         {
-            // _x_axisValue = context.ReadValue<Vector2>().x;
-            // _y_axisValue = context.ReadValue<Vector2>().y;
+            var currentPositon = context.ReadValue<Vector2>();
+            var currentPositonInch = currentPositon/_dpi;
+            if(context.performed)
+            {
+                _x_axisValue = currentPositonInch.x;
+                _y_axisValue = currentPositonInch.y;                
+            }
         }
         
         public void OnPrimaryPosition(InputAction.CallbackContext context)
         {
             var currentPositon = context.ReadValue<Vector2>();
             var currentPositonInch = currentPositon/_dpi;
-            if(context.started)
-            {
-                _x_axisValue = currentPositonInch.x;
-                _y_axisValue = currentPositonInch.y;                
-            }
             if(context.performed)
             {
                 var x_Delta = currentPositonInch.x - _x_axisValue;
@@ -87,6 +87,12 @@ namespace GamePlay
                 _x_axisValue = currentPositonInch.x;
                 _y_axisValue = currentPositonInch.y;     
             }
+        }
+        
+        public void UpdateSensitivity(float sensitivity)
+        {
+            Debug.Log("UpdateSensitivity() called");
+            _outputValuePerInput = sensitivity;
         }
     }    
 }
