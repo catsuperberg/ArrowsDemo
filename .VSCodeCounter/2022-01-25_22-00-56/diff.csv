@@ -1,0 +1,95 @@
+"filename", "language", "C#", "comment", "blank", "total"
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Movement\Balistic Mover\BallisticMover.cs", "C#", 46, 0, 9, 55
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Movement\Balistic Mover\Spline\SimpleSpline.cs", "C#", 84, 286, 74, 444
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Movement\Balistic Mover\Spline\SimpleSplineEditor.cs", "C#", 0, 19, 2, 21
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Movement\FlyingMovement.cs", "C#", 30, 1, 6, 37
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Visuals\PulsatingGlow.cs", "C#", 30, 0, 6, 36
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Visuals\PulsatingTransparency.cs", "C#", 32, 0, 6, 38
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Visuals\ScrollTexture.cs", "C#", 26, 0, 6, 32
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\DiskSerializers\IDiskSerialization.cs", "C#", 11, 0, 1, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\DiskSerializers\JsonDataStorage.cs", "C#", 72, 0, 12, 84
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\DiskSerializers\WinStreamingAssets.cs", "C#", 25, 0, 1, 26
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\Game Folders\AndroidStreamingAssets.cs", "C#", 20, 0, 1, 21
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\Game Folders\GameFolders.cs", "C#", 90, 0, 11, 101
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\Game Folders\IGameFolders.cs", "C#", 9, 0, 1, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Data Access\Disk Access\Game Folders\IStreamingAssetsReader.cs", "C#", 7, 0, 1, 8
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\GameState.cs", "C#", 217, 3, 32, 252
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\IStateChangeNotifier.cs", "C#", 19, 0, 4, 23
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\IStateReportableProcess.cs", "C#", 17, 0, 3, 20
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\IStateSignal.cs", "C#", 10, 0, 0, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\StatesEnum.cs", "C#", 42, 0, 5, 47
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\General Use Interfaces\IDamageable.cs", "C#", 10, 0, 2, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\General Use Interfaces\IGameObjectFillable.cs", "C#", 7, 0, 2, 9
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\General Use Interfaces\IMovable.cs", "C#", 12, 0, 1, 13
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\General Use Interfaces\ITransformContainer.cs", "C#", 7, 0, 1, 8
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\ILevelManager.cs", "C#", 14, 0, 3, 17
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\ProceduralLevelManager.cs", "C#", 83, 0, 17, 100
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Target\ITargetGroup.cs", "C#", 12, 0, 1, 13
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Target\ITargetProvider.cs", "C#", 10, 0, 1, 11
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Target\Target.cs", "C#", 33, 0, 8, 41
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Target\TargetGroupGenerator.cs", "C#", 118, 0, 16, 134
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Target\Targets.cs", "C#", 82, 0, 15, 97
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\ISplineTrackProvider.cs", "C#", 13, 0, 2, 15
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\ITrackFollower.cs", "C#", 16, 0, 2, 18
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\ITrackPopulator.cs", "C#", 15, 0, 1, 16
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\RandomizedSmoothTrackGenerator.cs", "C#", 63, 0, 14, 77
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\SplineFollower.cs", "C#", 81, 0, 15, 96
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\Track Items\IMathContainer.cs", "C#", 8, 0, 2, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\Track Items\Ring.cs", "C#", 70, 0, 8, 78
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Level\Track\TrackFiller.cs", "C#", 92, 0, 21, 113
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Generators\OperationGenerator.cs", "C#", 70, 0, 7, 77
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Generators\PairGenerator.cs", "C#", 31, 0, 4, 35
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Generators\SequenceGenerator.cs", "C#", 52, 2, 5, 59
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\ISequenceCalculator.cs", "C#", 11, 0, 2, 13
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\ISequenceManager.cs", "C#", 12, 0, 1, 13
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\Operation.cs", "C#", 8, 0, 1, 9
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\OperationExecutor.cs", "C#", 25, 0, 1, 26
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\OperationPair.cs", "C#", 23, 0, 5, 28
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\OperationPairsSequence.cs", "C#", 15, 2, 3, 20
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\OperationsEnum.cs", "C#", 32, 0, 1, 33
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\Operation\TargerGradesEnum.cs", "C#", 50, 0, 3, 53
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\RandomSequenceGenerator.cs", "C#", 117, 0, 9, 126
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\SequenceContext.cs", "C#", 15, 0, 1, 16
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Operation Sequence\SequenceManager.cs", "C#", 96, 0, 19, 115
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Camera\ResolutionScaler.cs", "C#", 17, 0, 4, 21
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Camera\SmoothFollow.cs", "C#", 31, 0, 5, 36
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Projectiles\Arrows\ArrowBundle.cs", "C#", 133, 0, 20, 153
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Projectiles\IProjectile.cs", "C#", 11, 0, 1, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Projectiles\IProjectileProvider.cs", "C#", 9, 0, 1, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\Projectiles\ProjectileGenerator.cs", "C#", 27, 0, 4, 31
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\States\FinishingScene.cs", "C#", 183, 5, 20, 208
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\States\GamePlayManager.cs", "C#", 75, 1, 17, 93
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Runtime\Run Scene\States\IGamePlayManager.cs", "C#", 12, 1, 1, 14
+"c:\Unity\ArrowsDemo\Assets\Code\General Use Interfaces\IFinishNotification.cs", "C#", 5, 0, 1, 6
+"c:\Unity\ArrowsDemo\Assets\Code\Input\ControlStateInputs.cs", "C#", 68, 0, 13, 81
+"c:\Unity\ArrowsDemo\Assets\Code\Input\Controller Components\ButtonsMovementController.cs", "C#", 68, 0, 8, 76
+"c:\Unity\ArrowsDemo\Assets\Code\Input\Controller Components\ISensitivitySetable.cs", "C#", 7, 0, 0, 7
+"c:\Unity\ArrowsDemo\Assets\Code\Input\Controller Components\TouchTranslationMovementController.cs", "C#", 83, 1, 14, 98
+"c:\Unity\ArrowsDemo\Assets\Code\Input\Controls.cs", "C#", 440, 16, 16, 472
+"c:\Unity\ArrowsDemo\Assets\Code\Math\Extension Methods\BigIntegerOperations.cs", "C#", 14, 0, 1, 15
+"c:\Unity\ArrowsDemo\Assets\Code\Math\HalfLifeCalculator.cs", "C#", 26, 0, 3, 29
+"c:\Unity\ArrowsDemo\Assets\Code\Math\MathUtils.cs", "C#", 97, 22, 15, 134
+"c:\Unity\ArrowsDemo\Assets\Code\Scene Installers\GameInstaller.cs", "C#", 52, 0, 7, 59
+"c:\Unity\ArrowsDemo\Assets\Code\Scene Installers\MenuSceneInstaller.cs", "C#", 17, 1, 2, 20
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\ISettingsService.cs", "C#", 11, 0, 2, 13
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\InspectorOptionSelector.cs", "C#", 10, 0, 2, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionExecution\ISettingsCommandService.cs", "C#", 7, 0, 0, 7
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionExecution\ISettingsExecutorService.cs", "C#", 8, 0, 1, 9
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionExecution\SettingsExecutorService.cs", "C#", 23, 0, 1, 24
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionExecution\UpdateResolutionScalingService.cs", "C#", 20, 0, 2, 22
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionExecution\UpdateTouchSensitivityService.cs", "C#", 25, 0, 2, 27
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionsEnum.cs", "C#", 36, 0, 4, 40
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\OptionsExecutor.cs", "C#", 31, 0, 3, 34
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\SettingsContainer.cs", "C#", 119, 1, 10, 130
+"c:\Unity\ArrowsDemo\Assets\Code\Settings\SettingsService.cs", "C#", 82, 0, 15, 97
+"c:\Unity\ArrowsDemo\Assets\Code\UI\EnumSwitcher\EnumSwitcherHelper.cs", "C#", 32, 0, 6, 38
+"c:\Unity\ArrowsDemo\Assets\Code\UI\EnumSwitcher\EnumSwitcherHelperInspector.cs", "C#", 44, 6, 9, 59
+"c:\Unity\ArrowsDemo\Assets\Code\UI\EnumSwitcher\GraphicsSelectable.cs", "C#", 41, 0, 6, 47
+"c:\Unity\ArrowsDemo\Assets\Code\UI\EnumSwitcher\IEnumSelectable.cs", "C#", 10, 0, 2, 12
+"c:\Unity\ArrowsDemo\Assets\Code\UI\MainMenu.cs", "C#", 16, 0, 3, 19
+"c:\Unity\ArrowsDemo\Assets\Code\UI\SettingsMenu.cs", "C#", 64, 19, 14, 97
+"c:\Unity\ArrowsDemo\Assets\Code\UI\ToggleHelper.cs", "C#", 29, 0, 5, 34
+"c:\Unity\ArrowsDemo\Assets\Code\UI\UIStateInputs.cs", "C#", 45, 0, 10, 55
+"c:\Unity\ArrowsDemo\Assets\Code\UI\UI_StateManager.cs", "C#", 120, 0, 11, 131
+"c:\Unity\ArrowsDemo\Assets\Code\Utils\GameObjectUtils.cs", "C#", 21, 1, 1, 23
+"Total", "-", 4259, 387, 637, 5283

@@ -362,13 +362,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 144695606}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -772,8 +771,8 @@ RectTransform:
   m_Father: {fileID: 633521974}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.57894737, y: 0}
-  m_AnchorMax: {x: 0.57894737, y: 1}
+  m_AnchorMin: {x: 0.2820513, y: 0}
+  m_AnchorMax: {x: 0.2820513, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1017,7 +1016,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 408783118}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8de3f326736b9240b83070410b7651f, type: 3}
+  m_Script: {fileID: 11500000, guid: b47a2e3ca69fa4b4786a6b0f65d76e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &408783120
@@ -1079,7 +1078,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 442026948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d511e4480283bd24381b7f31eace8c6d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ed5ce4a6514ce64897bad8507aa50a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _trackSplineMesh: {fileID: 5207430475116805686, guid: cbd7996b71bc54d46b261375c8165398, type: 3}
@@ -2859,7 +2858,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.57894737, y: 1}
+  m_AnchorMax: {x: 0.2820513, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3304,7 +3303,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1693222323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ca015ac699ea244993d2d1ff25fedd5, type: 3}
+  m_Script: {fileID: 11500000, guid: bbe25da9956f78b4385f3c0ed6621f30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _targetGroupPrefab: {fileID: 3571217923180350739, guid: 45397f2d3ce419149b9ccdd9cef367ef, type: 3}
@@ -4347,10 +4346,10 @@ RectTransform:
   m_Father: {fileID: 785238999}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -21.208008}
-  m_SizeDelta: {x: -238, y: -726}
+  m_SizeDelta: {x: 400, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2728386472407046631
 CanvasRenderer:
@@ -5014,13 +5013,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 2728386473889003689}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6268,13 +6266,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6242695926059177765}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6380,13 +6377,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6242695926203136067}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6583,13 +6579,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6242695926494291201}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6687,7 +6682,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6242695926780188494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04e1eecc9572aab42a87e4125e110652, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f6b2f1daf375a844afcda00f1074c00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OnStateOverlay: {fileID: 6242695925861413460}
@@ -7547,13 +7542,12 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 2728386472407046617}
-        m_TargetAssemblyTypeName: GameSettings.SettingsMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: UI.SettingsMenu, Assembly-CSharp
         m_MethodName: SetOptionToChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 6242695927107527327}
-          m_ObjectArgumentAssemblyTypeName: GameSettings.InspectorOptionSelector,
-            Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Settings.InspectorOptionSelector, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
