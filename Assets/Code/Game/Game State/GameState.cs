@@ -1,7 +1,9 @@
-using Game.Gameplay.Runtime.GeneralUseInterfaces;
-using Game.Gameplay.Runtime.Level;
-using Game.Gameplay.Runtime.OperationSequence;
-using Game.Gameplay.Runtime.RunScene.States;
+using Game.Gameplay.Realtime;
+using Game.Gameplay.Realtime.GameplayComponents;
+using Game.Gameplay.Realtime.GameplayComponents.States;
+using Game.Gameplay.Realtime.GeneralUseInterfaces;
+using Game.Gameplay.Realtime.OperationSequence;
+using Game.Gameplay.Realtime.PlayfildComponents;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +13,8 @@ using Zenject;
 namespace Game.GameState
 {    
     public class GameState : MonoBehaviour, IStateChangeNotifier, IStateSignal
-    {
-        ISequenceManager _sequenceManager;      
-        IGamePlayManager _gamePlayManager;    
-        ILevelManager _levelManager;  
+    {      
+        IRuntimeFactory _runtimeFactory;  
         
         public event EventHandler<StateEventArgs> OnStateChanged;
          
@@ -30,28 +30,27 @@ namespace Game.GameState
         bool _stateChanged {get {return _currentState != _lastFrameState;}}         
         Task _CurrentStateTask;
         
+        Playfield _level;
+        Runthrough _runthrough;
+        
         [Inject]
-        public void Construct(ISequenceManager meta, IGamePlayManager gamePlayManager, ILevelManager levelManager)
+        public void Construct(IRuntimeFactory runtimeFactory, ISequenceManager sequenceManager)
         {
-             if(meta == null)
-                throw new System.Exception("IMetaManager isn't provided to GameState");
-             if(gamePlayManager == null)
-                throw new System.Exception("IGamePlayManager isn't provided to GameState");
-             if(levelManager == null)
-                throw new System.Exception("ILevelManager isn't provided to GameState");
+             if(runtimeFactory == null)
+                throw new System.Exception("IRuntimeFactory isn't provided to GameState");
+             if(sequenceManager == null)
+                throw new System.Exception("ISequenceManager isn't provided to GameState");
                 
-            _sequenceManager = meta;
-            _gamePlayManager = gamePlayManager;
-            _levelManager = levelManager;
+            _runtimeFactory = runtimeFactory;
             
             
-            _processes.Add((IStateReportableProcess)_sequenceManager);
+            _processes.Add((IStateReportableProcess)sequenceManager);
             
             foreach(var process in _processes)
             {
                 process.OnStateChanged += CollectSubProcessUpdate;                
             }
-            CollectSubProcessUpdate(_sequenceManager, new ProcessStateEventArgs(((IStateReportableProcess)_sequenceManager).State));
+            CollectSubProcessUpdate(sequenceManager, new ProcessStateEventArgs(((IStateReportableProcess)sequenceManager).State));
             _CurrentStateTask = StateTick(_currentState);
         }
         
@@ -138,17 +137,10 @@ namespace Game.GameState
         }
         
         void CreateLevel()
-        {
-            var targetResult = _sequenceManager.GetNextTargetScore();
-            var context = _sequenceManager.GetContext();
-            var spread = 15;
-            var sequence =_sequenceManager.GenerateSequence(targetResult, spread);   
+        { 
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-                _levelManager.InitializeLevel(context, sequence, targetResult);                
-                stopwatch.Stop();
-                _gamePlayManager.InitialiseRun(_levelManager.Level, _sequenceManager.GetContext());
-                Debug.LogWarning("InitializeLevel() took: " + stopwatch.ElapsedMilliseconds + " ms");   
+                _level = _runtimeFactory.GetLevel();
+                _runthrough = _runtimeFactory.GetRunthrough(_level);
                 }); 
         }
         
@@ -170,9 +162,9 @@ namespace Game.GameState
             {
                 await Task.Run(() => 
                 {
-                    _gamePlayManager.OnFinished += OnGamePlayFinished;                    
+                    _runthrough.OnFinished += OnGamePlayFinished;                    
                     UnityMainThreadDispatcher.Instance().Enqueue(
-                        () => _gamePlayManager.StartRun());
+                        () => _runthrough.StartRun());
                 });
             }
         }
@@ -187,8 +179,8 @@ namespace Game.GameState
                     {
                         _finishingScene = gameObject.AddComponent<FinishingScene>();
                         _finishingScene.OnFinished += OnFinishingSceneFinished;
-                        _finishingScene.StartScene(_gamePlayManager.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 
-                            _levelManager.Targets.GetComponent<IDamageableWithTransforms>());
+                        _finishingScene.StartScene(_runthrough.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 
+                            _level.Targets.GetComponent<IDamageableWithTransforms>());
                     });    
                 });
             }
@@ -197,14 +189,14 @@ namespace Game.GameState
         async Task ProcessPreAdTease()
         {
             if(_lastFrameState != AppState.PreAdTease)
-            {
+            {                
                 await Task.Delay(1500).ContinueWith(t => {_currentState = AppState.StartScreen;});
             }
         }
         
         void OnGamePlayFinished(object sender, EventArgs e)
         {
-            _gamePlayManager.OnFinished -= OnGamePlayFinished;
+            _runthrough.OnFinished -= OnGamePlayFinished;
             _currentState = AppState.FinishingCutscene;
             Debug.Log("Gameplay Fnished");
         }     
@@ -213,6 +205,11 @@ namespace Game.GameState
         {
             _finishingScene.OnFinished -= OnFinishingSceneFinished;
             _currentState = AppState.PreAdTease;
+            
+            GameObject.Destroy(_finishingScene);
+            _runthrough = null;
+            GameObject.Destroy(_level.GameObject);
+            _level = null;
             Debug.Log("Finishing scene ended");
         }     
         
@@ -220,9 +217,7 @@ namespace Game.GameState
         public void SendStartGame()
         {
             if(_currentState == AppState.StartScreen)
-                _currentState = AppState.GamePlay;                
-            // else if (_currentState == AppState.PreAdTease) // TEMP until tease and ad working
-            //     _currentState = AppState.StartScreen;
+                _currentState = AppState.GamePlay;    
         }
         
         public void SendPauseMenu()

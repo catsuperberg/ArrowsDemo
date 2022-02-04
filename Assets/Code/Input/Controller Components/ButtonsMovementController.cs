@@ -1,4 +1,4 @@
-using Game.Gameplay.Runtime.GeneralUseInterfaces;
+using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

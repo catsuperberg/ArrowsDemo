@@ -1,12 +1,13 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
-using Game.Gameplay.Runtime.Level;
-using Game.Gameplay.Runtime.Level.Target;
-using Game.Gameplay.Runtime.Level.Track;
-using Game.Gameplay.Runtime.OperationSequence;
-using Game.Gameplay.Runtime.OperationSequence.Operation;
-using Game.Gameplay.Runtime.RunScene.Projectiles;
-using Game.Gameplay.Runtime.RunScene.States;
+using Game.Gameplay.Meta;
+using Game.Gameplay.Realtime;
+using Game.Gameplay.Realtime.GameplayComponents;
+using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
+using Game.Gameplay.Realtime.OperationSequence;
+using Game.Gameplay.Realtime.OperationSequence.Operation;
+using Game.Gameplay.Realtime.PlayfildComponents.Target;
+using Game.Gameplay.Realtime.PlayfildComponents.Track;
 using Game.GameState;
 using Game.GameState.StateSignalSenders;
 using Settings;
@@ -17,7 +18,7 @@ using Zenject;
 public class GameInstaller : MonoInstaller
 {    
     [SerializeField]
-    private ProceduralLevelManager _levelManager;
+    private ArrowsRuntimeFactory _RuntimeFactory;
     [SerializeField]
     private ProjectileGenerator _projectileGenerator; 
     [SerializeField]
@@ -39,9 +40,12 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<ITrackFollower>().To<SplineFollower>().FromNewComponentOnNewGameObject().AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
-        Container.Bind<ILevelManager>().FromInstance(_levelManager).AsSingle();  
+            
+        Container.Bind<IUserContextRetriver>().To<UserContextManager>().AsSingle();   
+        Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();
+        Container.Bind<IRuntimeFactory>().FromInstance(_RuntimeFactory).AsSingle();  
         
-        Container.Bind<IGamePlayManager>().To<GamePlayManager>().AsSingle();
+        Container.Bind<IRunSceneManager>().To<RunSceneManager>().AsSingle();
         
         Container.Bind(typeof(IStateChangeNotifier), typeof(IStateSignal)).To<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         Container.Bind<ControlStateInputs>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();

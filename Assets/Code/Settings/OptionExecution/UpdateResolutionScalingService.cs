@@ -1,4 +1,4 @@
-using Game.Gameplay.Runtime.RunScene.GameCamera;
+using Game.Gameplay.Realtime.GameplayComponents.GameCamera;
 using System;
 using UnityEngine; 
 
