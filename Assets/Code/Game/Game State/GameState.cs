@@ -220,6 +220,14 @@ namespace Game.GameState
                 _currentState = AppState.GamePlay;    
         }
         
+        public void SendUpgradeShop()
+        {
+            if(_currentState != AppState.UpgradeShop ||  _previousState == AppState.DebugMenu ||  _previousState == AppState.GameLaunch ||  _previousState == AppState.PreAdTease || _previousState == AppState.Ad)
+                _currentState = AppState.UpgradeShop;
+            else
+                _currentState = _previousState;
+        }
+        
         public void SendPauseMenu()
         {
             if(_currentState != AppState.Menu ||  _previousState == AppState.DebugMenu ||  _previousState == AppState.GameLaunch ||  _previousState == AppState.PreAdTease || _previousState == AppState.Ad)

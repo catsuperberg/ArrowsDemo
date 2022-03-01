@@ -6,6 +6,7 @@ namespace Game.GameState
     {   
         GameLaunch,
         StartScreen,
+        UpgradeShop,
         GamePlay,
         Menu,
         DebugMenu,

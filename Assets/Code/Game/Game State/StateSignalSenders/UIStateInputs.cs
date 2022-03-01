@@ -27,6 +27,12 @@ namespace Game.GameState.StateSignalSenders
             _gameState.SendStartGame();
         }
         
+        public void SendUpgradeShop()
+        {
+            ThrowIfNoGameStateObject();
+            _gameState.SendUpgradeShop();
+        }
+        
         public void SendPauseMenu()
         {
             ThrowIfNoGameStateObject();

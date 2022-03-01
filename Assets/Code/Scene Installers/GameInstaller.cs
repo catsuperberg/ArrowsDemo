@@ -1,5 +1,6 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
+using DataManagement;
 using Game.Gameplay.Meta;
 using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents;
@@ -18,7 +19,7 @@ using Zenject;
 public class GameInstaller : MonoInstaller
 {    
     [SerializeField]
-    private ArrowsRuntimeFactory _RuntimeFactory;
+    private ArrowsRuntimeFactory _runtimeFactory;
     [SerializeField]
     private ProjectileGenerator _projectileGenerator; 
     [SerializeField]
@@ -29,10 +30,15 @@ public class GameInstaller : MonoInstaller
     private UIStateInputs _UIStateInputs; 
     [SerializeField]
     SettingsMenu _settingMenuScript;
+    [SerializeField]
+    private UpgradeShop _upgradeShop;
+    
+    Registry _userRegistry;    
     
     public override void InstallBindings()
     {                
         Container.Bind<OperationExecutor>().AsTransient().NonLazy();
+        Container.Bind<UpgradeShop>().FromInstance(_upgradeShop).AsTransient();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();
         Container.Bind<ISplineTrackProvider>().To<RandomizedSmoothTrackGenerator>().FromNewComponentOnNewGameObject().AsSingle();
@@ -41,9 +47,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITrackFollower>().To<SplineFollower>().FromNewComponentOnNewGameObject().AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
             
-        Container.Bind<IUserContextRetriver>().To<UserContextManager>().AsSingle();   
-        Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();
-        Container.Bind<IRuntimeFactory>().FromInstance(_RuntimeFactory).AsSingle();  
+            
         
         Container.Bind<IRunSceneManager>().To<RunSceneManager>().AsSingle();
         
@@ -63,5 +67,23 @@ public class GameInstaller : MonoInstaller
         
         Container.Bind<ISettingsService>().To<SettingsService>().AsSingle();
         Container.Bind<SettingsMenu>().FromInstance(_settingMenuScript);
+        
+        
+        ComposeUserContextManagement();        
+                
+        Container.Bind<IRuntimeFactory>().FromInstance(_runtimeFactory).AsSingle();  
+    }
+    
+    void ComposeUserContextManagement()
+    {
+        var gameFolders = new GameFolders();
+        var RegistryFactory = new RegistryFactory(gameFolders);
+        var nonVolatileStorage = new JsonStorage(new DiskAcessor());
+        var _userRegistry = RegistryFactory.CreateRegistry("UserContext", nonVolatileStorage);
+        
+        var userContextManager = new UserContextManager(_userRegistry.Ingester, _userRegistry.Manager);
+        var userContextConverter = new UserContextConverter(_userRegistry.Reader);
+        Container.Bind<IContextProvider>().FromInstance(userContextConverter).AsSingle(); 
+        Container.Bind<IRegistryAccessor>().WithId("userRegistryAcceros").FromInstance(_userRegistry.Accessor).AsSingle(); 
     }
 }

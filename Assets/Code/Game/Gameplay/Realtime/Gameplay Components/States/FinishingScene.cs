@@ -144,6 +144,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.States
                 catch(System.Exception e)
                 {
                     Debug.Log("_randomTargetTransform or _randomTargetTransform failed, ignoring SpawnFlyingProjectiles()");
+                    Debug.Log("exception is: " + e);
                 }
                 finally
                 {

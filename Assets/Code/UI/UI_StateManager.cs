@@ -24,6 +24,8 @@ namespace UI
         GameObject _debugMenu;
         [SerializeField]
         GameObject _preAdTease;
+        [SerializeField]
+        GameObject _upgradeShop;
         
         GameObject _activeCanvas = null;
         HashSet<SubState> _subStates;
@@ -63,6 +65,9 @@ namespace UI
                         break;    
                     case AppState.DebugMenu:                    
                         SwitchToScreen(_debugMenu);
+                        break;    
+                    case AppState.UpgradeShop:                    
+                        SwitchToScreen(_upgradeShop);
                         break;    
                     case AppState.Blank:
                         
