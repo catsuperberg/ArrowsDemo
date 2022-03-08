@@ -15,7 +15,7 @@ namespace UI
         ChangersManager _changersManager;
         
         [Inject]
-        public void Construct([Inject(Id = "userRegistryAcceros")] IRegistryAccessor registryAccessor)
+        public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor)
         {
             if(registryAccessor == null)
                 throw new System.Exception("ChangerManager isn't provided to " + this.GetType().Name);

@@ -84,6 +84,7 @@ public class GameInstaller : MonoInstaller
         var userContextManager = new UserContextManager(_userRegistry.Ingester, _userRegistry.Manager);
         var userContextConverter = new UserContextConverter(_userRegistry.Reader);
         Container.Bind<IContextProvider>().FromInstance(userContextConverter).AsSingle(); 
-        Container.Bind<IRegistryAccessor>().WithId("userRegistryAcceros").FromInstance(_userRegistry.Accessor).AsSingle(); 
+        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").FromInstance(userContextManager).AsSingle(); 
+        Container.Bind<IRegistryAccessor>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsSingle(); 
     }
 }

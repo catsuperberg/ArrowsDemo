@@ -15,6 +15,7 @@ namespace Game.GameState
     public class GameState : MonoBehaviour, IStateChangeNotifier, IStateSignal
     {      
         IRuntimeFactory _runtimeFactory;  
+        IUpdatedNotification _userContextNotifier;  
         
         public event EventHandler<StateEventArgs> OnStateChanged;
          
@@ -34,15 +35,17 @@ namespace Game.GameState
         Runthrough _runthrough;
         
         [Inject]
-        public void Construct(IRuntimeFactory runtimeFactory, ISequenceManager sequenceManager)
+        public void Construct(IRuntimeFactory runtimeFactory,[Inject(Id = "userContextNotifier")] IUpdatedNotification userContextNotifier, ISequenceManager sequenceManager)
         {
              if(runtimeFactory == null)
-                throw new System.Exception("IRuntimeFactory isn't provided to GameState");
+                throw new ArgumentNullException("IRuntimeFactory isn't provided to GameState");
+             if(userContextNotifier == null)
+                throw new ArgumentNullException("IUpdatedNotification isn't provided to GameState");
              if(sequenceManager == null)
-                throw new System.Exception("ISequenceManager isn't provided to GameState");
+                throw new ArgumentNullException("ISequenceManager isn't provided to GameState");
                 
             _runtimeFactory = runtimeFactory;
-            
+            _userContextNotifier = userContextNotifier;
             
             _processes.Add((IStateReportableProcess)sequenceManager);
             
@@ -52,6 +55,8 @@ namespace Game.GameState
             }
             CollectSubProcessUpdate(sequenceManager, new ProcessStateEventArgs(((IStateReportableProcess)sequenceManager).State));
             _CurrentStateTask = StateTick(_currentState);
+            
+            _userContextNotifier.OnUpdated += UserContextUpdated;
         }
         
         void Awake()
@@ -207,11 +212,23 @@ namespace Game.GameState
             _currentState = AppState.PreAdTease;
             
             GameObject.Destroy(_finishingScene);
-            _runthrough = null;
-            GameObject.Destroy(_level.GameObject);
-            _level = null;
+            ClearLevel();
             Debug.Log("Finishing scene ended");
         }     
+        
+        void ClearLevel()
+        {
+            _runthrough.Destroy();
+            _runthrough = null;            
+            GameObject.Destroy(_level.GameObject);
+            _level = null;
+        }
+        
+        void UserContextUpdated(object caller, EventArgs e)
+        {
+            ClearLevel();
+            CreateLevel();
+        }
         
         
         public void SendStartGame()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
 namespace DataManagement
 {
@@ -24,6 +25,7 @@ namespace DataManagement
         
         public void Register(IConfigurable configurableObject, bool updateThisInstanceOnChanges, bool loadStoredFieldsOnRegistration)
         {
+            Debug.Log("Registering instance of class: " + configurableObject.GetType() + " in class data registry");
             var classType = configurableObject.GetType();   
             ActualizeClassFields(configurableObject, classType);         
             if(!_registry.CurrentConfigurablesData.Contains(classType.Name))
@@ -41,7 +43,7 @@ namespace DataManagement
         
         void RegisterConfigurablesForClass(IConfigurable configurableObject, Type classType)
         {
-            var defaultConfigurables = GetInstanceConfigurablesWithCurentValues(configurableObject, classType);
+            var defaultConfigurables = GetInstanceConfigurablesWithCurrentValues(configurableObject, classType);
             List<ConfigurableField> configurables;
             if(_registry.CurrentConfigurablesData.Contains(classType.Name))
                 configurables = InjectValues(defaultConfigurables, _registry.CurrentConfigurablesData[classType.Name].First());
@@ -52,10 +54,14 @@ namespace DataManagement
         
         void ActualizeClassFields(IConfigurable configurableObject, Type classType)
         {
-            var defaultConfigurables = GetInstanceConfigurablesWithCurentValues(configurableObject, classType);
+            var defaultConfigurables = GetInstanceConfigurablesWithCurrentValues(configurableObject, classType);
             var storedChangebles = _registry.CurrentConfigurablesData[classType.Name].FirstOrDefault();
             if(storedChangebles == null)
-                return;
+            {
+                Debug.Log("No changebles found in storage for: " + classType);
+                Debug.Log("Skiping actualizing");
+                return;                
+            }
                 
             var configurablesWithUpdatetValues = new List<ConfigurableField>();
             foreach(var field in defaultConfigurables)
@@ -71,25 +77,36 @@ namespace DataManagement
             _registry.OverrideClassData(classType.Name, configurablesWithUpdatetValues);
         }
         
-        List<ConfigurableField> GetInstanceConfigurablesWithCurentValues(IConfigurable objectReference, Type classType)
+        bool temp(FieldInfo info)
+        {
+            if(Attribute.IsDefined(info, typeof(StoredField), true))
+                  Debug.Log("hello");
+            return false;
+        }
+        
+        List<ConfigurableField> GetInstanceConfigurablesWithCurrentValues(IConfigurable objectReference, Type classType)
         {   
             var configurables = new List<ConfigurableField>();
             var fields = classType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-            	.Where(field => Attribute.IsDefined(field, typeof(StoredField)));   
-                // .Where(field => field.GetCustomAttributes(typeof(StoredField), false) != null);                
+                .Where(field => Attribute.IsDefined(field, typeof(StoredField))); 
+            var properties = classType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                .Where(field => Attribute.IsDefined(field, typeof(StoredField))); 
+                                    
+            if(!fields.Any() && !properties.Any())
+                throw new NoFieldException("No fields with [StoredField] attribute was found in " + classType);
+                
+            Debug.Log("Adding fields and properties of a class: " + classType + " to registry");                
             foreach(var field in fields)
-                UnityEngine.Debug.LogWarning(field);          
+                Debug.Log("Field added to registy: " + field.Name + " " + field.GetValue(objectReference).ToString() + " " + field.FieldType.ToString());
+            foreach(var property in properties)
+                Debug.Log("property added to registy: " + property.Name + " " + property.GetValue(objectReference).ToString() + " " + property.PropertyType.ToString());    
+                   
             foreach(var field in fields)
-                configurables.Add(new ConfigurableField(StripNameIfBackingField(field.Name), field.GetValue(objectReference).ToString(), field.FieldType.ToString()));
+                configurables.Add(new ConfigurableField(field.Name, field.GetValue(objectReference).ToString(), field.FieldType.ToString()));
+            foreach(var property in properties)
+                configurables.Add(new ConfigurableField(property.Name, property.GetValue(objectReference).ToString(), property.PropertyType.ToString()));
             return configurables;
         }
-        
-        string StripNameIfBackingField(string fullName)
-        {
-            Regex rx = new Regex(@"(?<=\<).*(?=\>k__BackingField)");
-            var match = rx.Match(fullName);
-            return (match.Success) ? match.Value : fullName;
-        }   
         
         List<ConfigurableField> InjectValues(List<ConfigurableField> recievingChangebles, List<ConfigurableField> sourceChangebles)
         {

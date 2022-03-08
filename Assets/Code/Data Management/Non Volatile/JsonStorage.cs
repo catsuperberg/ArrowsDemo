@@ -15,6 +15,11 @@ namespace DataManagement
             _entryAccessor = entryAccessor;
         }
         
+        public bool EntryExists(string entryName)
+        {
+            return _entryAccessor.EntyExists(entryName + fileExtension);
+        }
+        
         public T ReadEntry<T>(string entryName)
         {
             var jsonString = _entryAccessor.ReadString(entryName + fileExtension);    

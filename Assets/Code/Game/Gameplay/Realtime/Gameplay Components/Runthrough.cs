@@ -30,6 +30,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _follower = follower;
             _projectileGenerator = projectileGenerator;
             
+            foreach (Transform child in _follower.Transform) {
+                GameObject.Destroy(child.gameObject);
+            }
             _follower.SetSplineToFollow(level.TrackSpline, 0);
             var smoothCamera = Camera.main.GetComponent<SmoothFollow>();
             smoothCamera.target = _follower.Transform;
@@ -45,17 +48,25 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _follower.OnFinished += GamePlayFinished;
         }
         
-        void GamePlayFinished(object sender, EventArgs e)
-        {
+        public void Destroy()
+        {       
             _follower.OnFinished -= GamePlayFinished;
             _follower = null;
+            _projectileGenerator = null;
+            if(OnFinished != null)
+            foreach (var d in OnFinished.GetInvocationList())
+                OnFinished -= (EventHandler)d;
+            OnFinished = null;            
             _projectileGenerator = null;
             GameObject.Destroy(_movementController);  
             GameObject.Destroy(_movementController2);
             _movementController = null;
             _movementController2 = null;
-                
-            
+            ActiveProjectile = null;
+        }
+        
+        void GamePlayFinished(object sender, EventArgs e)
+        {            
             var newCameraTarget = new GameObject("CameraTarget");
             var arrowsTransform = ActiveProjectile.GetComponentInChildren<TMPro.TMP_Text>().gameObject.transform;
             newCameraTarget.transform.position = arrowsTransform.position + new UnityEngine.Vector3(0, 14, 6);

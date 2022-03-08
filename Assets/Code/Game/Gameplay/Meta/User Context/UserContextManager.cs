@@ -1,4 +1,5 @@
 using DataManagement;
+using Game.Gameplay.Meta.Curencies;
 using Game.Gameplay.Meta.PassiveIncome;
 using Game.Gameplay.Meta.UpgradeSystem;
 using System;
@@ -6,10 +7,12 @@ using UnityEngine;
 
 namespace Game.Gameplay.Meta
 {
-    public class UserContextManager
+    public class UserContextManager : IUpdatedNotification
     {
         UserContext _context;        
-        IRegistryManager _registryManager;
+        IRegistryManager _registryManager;        
+        
+        public event EventHandler OnUpdated;
         
         public UserContextManager(IRegistryIngester registryIngester, IRegistryManager registryManager)
         {            
@@ -19,15 +22,17 @@ namespace Game.Gameplay.Meta
                 throw new ArgumentNullException("No IRegistryManager provided to class" + this.GetType().Name);
                                         
             _registryManager = registryManager;
-            _context = new UserContext(new UpgradeContext(registryIngester), new PassiveInvomceContext());
+            _context = new UserContext(new CurenciesContext(registryIngester), new UpgradeContext(registryIngester), new PassiveInvomceContext());
             _context.Upgrades.OnUpdated += DataUpdated;
-            _registryManager.UpdateCurrentDataWithNonVolatile();
+            _registryManager.SyncRegistryAndNonVolatile();   
+            _registryManager.UpdateRegistered();       
         }      
         
         void DataUpdated(object sender, EventArgs e)
         {
             Debug.Log("User data changed");
-            _registryManager.SaveToNonVolatile();
+            _registryManager.SaveRegisteredToNonVolatile();
+            OnUpdated?.Invoke(this, EventArgs.Empty);
         }
     }
 }

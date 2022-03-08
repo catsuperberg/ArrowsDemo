@@ -12,6 +12,7 @@ namespace DataManagement
         
         public void UpdateRegisteredField(string className, string fieldName, string fieldValue);
         public void UpdateInstanceWithStoredValues(IConfigurable instance);
+        public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurables, bool overrideRegistered);
         public void OverrideConfigurables(Dictionary<string, List<ConfigurableField>> newConfigurables);
         public void OverrideClassData(string className, List<ConfigurableField> newData);
         public void RegisterNewConfigurablesForClass(Type objectType, List<ConfigurableField> fields);

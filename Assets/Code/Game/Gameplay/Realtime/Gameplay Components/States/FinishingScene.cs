@@ -67,7 +67,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.States
             SetValuesToDecay(); 
             _finishingSpeed = (double)_stopHalfLifeAt/_constantSpeedTime;
             _overkillSpeed = (_result == ResultType.Overkill) ? (double)(_projectile.DamagePoints - _target.DamagePoints)/_constantSpeedTime : 0; 
-            Task.Run(() => CreateCalculatorAndSetState());  // HACK waiting to create HalfLifeCalculator, only than changing state           
+            Task.Run(() => CreateCalculatorAndSetState());  // HACK waiting to create HalfLifeCalculator, only than changing state    
         }
         
         void CreateCalculatorAndSetState()
@@ -103,6 +103,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents.States
                 if(_projectile.ChildrenTransforms.Any())
                 {                    
                     var projectileIndex = Random.Range(0, _projectile.ChildrenTransforms.Count);
+                    
+                    Debug.Log("Projectile main position: " + _projectile.MainTransform.position);  
+                    Debug.Log("Projectile position: " + _projectile.ChildrenTransforms[projectileIndex].position);      
                     return _projectile.ChildrenTransforms[projectileIndex];
                 }
                 else
@@ -139,7 +142,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.States
                 try
                 {
                     targetTransform = _randomTargetTransform;
-                    projectileTransform = _randomTargetTransform;
+                    projectileTransform = _randomProjectileTransform;
                 }
                 catch(System.Exception e)
                 {
