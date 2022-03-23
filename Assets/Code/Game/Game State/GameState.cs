@@ -1,268 +1,102 @@
-using Game.Gameplay.Realtime;
-using Game.Gameplay.Realtime.GameplayComponents;
-using Game.Gameplay.Realtime.GameplayComponents.States;
-using Game.Gameplay.Realtime.GeneralUseInterfaces;
-using Game.Gameplay.Realtime.OperationSequence;
-using Game.Gameplay.Realtime.PlayfildComponents;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
 namespace Game.GameState
 {    
-    public class GameState : MonoBehaviour, IStateChangeNotifier, IStateSignal
-    {      
-        IRuntimeFactory _runtimeFactory;  
-        IUpdatedNotification _userContextNotifier;  
+    public class GameState : MonoBehaviour
+    {           
+        IAppStateFactory _stateFactory;
+        AppState _state;
+        List<AppState> _statesToGoThrough = new List<AppState>()
+            {AppState.PreRun,
+            AppState.Runthrough,
+            AppState.PostRun};
+        List<AppState>.Enumerator _stateEnumerator;
         
-        public event EventHandler<StateEventArgs> OnStateChanged;
-         
-        FinishingScene _finishingScene;    
-                
-        AppState _previousState = AppState.Blank;
-        AppState _lastFrameState = AppState.Blank;
-        AppState _currentState = AppState.Blank;
-        List<IStateReportableProcess> _processes = new List<IStateReportableProcess>();
-        HashSet<SubState> _currentSubStates = new HashSet<SubState>(); 
-        bool _stateDirty = false; 
-        
-        bool _stateChanged {get {return _currentState != _lastFrameState;}}         
-        Task _CurrentStateTask;
-        
-        Playfield _level;
+        PreRun _preRun;
         Runthrough _runthrough;
+        PostRun _postRun;
+        Ad _ad;
+        
+        
         
         [Inject]
-        public void Construct(IRuntimeFactory runtimeFactory,[Inject(Id = "userContextNotifier")] IUpdatedNotification userContextNotifier, ISequenceManager sequenceManager)
+        public void Construct(IAppStateFactory stateFactory)
+        {                        
+            if(stateFactory == null)
+                throw new ArgumentNullException("IAppStateFactory not provided to " + this.GetType().Name);
+            
+            _stateFactory = stateFactory;
+            _stateEnumerator = _statesToGoThrough.GetEnumerator();            
+        }
+        
+        void Start()
         {
-             if(runtimeFactory == null)
-                throw new ArgumentNullException("IRuntimeFactory isn't provided to GameState");
-             if(userContextNotifier == null)
-                throw new ArgumentNullException("IUpdatedNotification isn't provided to GameState");
-             if(sequenceManager == null)
-                throw new ArgumentNullException("ISequenceManager isn't provided to GameState");
-                
-            _runtimeFactory = runtimeFactory;
-            _userContextNotifier = userContextNotifier;
-            
-            _processes.Add((IStateReportableProcess)sequenceManager);
-            
-            foreach(var process in _processes)
-            {
-                process.OnStateChanged += CollectSubProcessUpdate;                
-            }
-            CollectSubProcessUpdate(sequenceManager, new ProcessStateEventArgs(((IStateReportableProcess)sequenceManager).State));
-            _CurrentStateTask = StateTick(_currentState);
-            
-            _userContextNotifier.OnUpdated += UserContextUpdated;
+            AdvanceState();
+            ProcessCurrentState();
         }
         
-        void Awake()
-        {            
-            _currentState = AppState.GameLaunch;
-        }
-                
-        void Update()
+        void ProcessCurrentState()
         {
-            if(!_CurrentStateTask.Status.Equals(TaskStatus.Running))
-                _CurrentStateTask = StateTick(_currentState);
-            if(_stateChanged)
+            switch(_state)
             {
-                _previousState = _lastFrameState;
-                _lastFrameState = _currentState;
-                _stateDirty = true;
+                case AppState.PreRun:
+                    StartPreRun();
+                    break;
+                case AppState.Runthrough:
+                    StartRunthrough();
+                    break;
+                case AppState.PostRun:
+                    
+                    break;
+                case AppState.Ad:
+                    
+                    break;
+            } 
+        }
+        
+        void StartPreRun()
+        {
+            _preRun = _stateFactory.GetPreRun();
+            _preRun.gameObject.transform.SetParent(this.transform);
+            _preRun.OnProceedToNextState += PreRunCalledStartRunthrough;
+        }
+        
+        void PreRunCalledStartRunthrough(object caller, EventArgs args)
+        {
+            _preRun.OnProceedToNextState -= PreRunCalledStartRunthrough;
+            AdvanceState();
+            ProcessCurrentState();
+        }
+        
+        void StartRunthrough()
+        {
+            _runthrough = _stateFactory.GetRunthrough(_preRun.NextRunthroughContext);
+            GameObject.Destroy(_preRun.gameObject);
+            _preRun = null;
+            _runthrough.StartRun();
+        }
+        
+        void AdvanceState()
+        {     
+            if(DecideOnShowingAd(_stateEnumerator.Current))
+            {
+                _state = AppState.Ad;
+                return;
             }
             
-            if(_stateDirty)
-            {
-                UnityMainThreadDispatcher.Instance().Enqueue(() => OnStateChanged?.Invoke(this, new StateEventArgs(_currentState, _currentSubStates)));
-                _stateDirty = false;
-            }
+            _stateEnumerator.MoveNext();
+            _state = _stateEnumerator.Current; 
         }
         
-        async Task StateTick(AppState newState)
-        {           
-            if(newState == AppState.DebugMenu || newState == AppState.Menu)
-                Time.timeScale = 0;
-            else if(Time.timeScale == 0)
-                Time.timeScale = 1;
-                
-            switch (newState)
-            {
-                case AppState.GameLaunch:
-                    await ProcessLaunch();
-                    break;
-                case AppState.StartScreen:
-                    await ProcessStartScreen();
-                    break;
-                case AppState.GamePlay:
-                    await ProcessGamePlay();
-                    break;
-                case AppState.FinishingCutscene:
-                    await ProcessFinishingCutscene();
-                    break;
-                case AppState.PreAdTease:
-                    await ProcessPreAdTease();
-                    break;
-            }
-        }
-        
-        void CollectSubProcessUpdate(object sender, ProcessStateEventArgs e)
-        {                
-            var flagCollection = ProcessState.Blank;
-            var newSubStates = new HashSet<SubState>(_currentSubStates);
-            foreach(var process in _processes)
-                flagCollection = flagCollection.SetFlag(process.State);
-            if(flagCollection.HasFlag(ProcessState.Processing))
-                newSubStates.Add(SubState.Generation);
+        bool DecideOnShowingAd(AppState previousState)
+        {
+            if(previousState == AppState.Runthrough)
+                return true;
             else
-                newSubStates.Remove(SubState.Generation);
-                
-                
-            if(!newSubStates.SetEquals(_currentSubStates))
-            { 
-                _currentSubStates = new HashSet<SubState>(newSubStates);
-                _stateDirty = true;
-            }     
-        } 
-        
-        async Task ProcessLaunch()
-        {
-            if(_lastFrameState == AppState.Blank)
-            {     
-                await Task.Run(() => 
-                    {
-                        CreateLevel();
-                        _currentState = AppState.StartScreen; 
-                        _stateDirty = true;
-                    });                          
-            }
-        }
-        
-        void CreateLevel()
-        { 
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                _level = _runtimeFactory.GetLevel();
-                _runthrough = _runtimeFactory.GetRunthrough(_level);
-                }); 
-        }
-        
-        
-        async Task ProcessStartScreen()
-        {
-            if(_lastFrameState == AppState.PreAdTease)
-            {     
-                await Task.Run(() => 
-                    {
-                        CreateLevel();
-                    });                          
-            }
-        }
-        
-        async Task ProcessGamePlay()
-        {
-            if(_lastFrameState == AppState.StartScreen)
-            {
-                await Task.Run(() => 
-                {
-                    _runthrough.OnFinished += OnGamePlayFinished;                    
-                    UnityMainThreadDispatcher.Instance().Enqueue(
-                        () => _runthrough.StartRun());
-                });
-            }
-        }
-        
-        async Task ProcessFinishingCutscene()
-        {
-            if(_lastFrameState == AppState.GamePlay)
-            {
-                await Task.Run(() => 
-                {
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        _finishingScene = gameObject.AddComponent<FinishingScene>();
-                        _finishingScene.OnFinished += OnFinishingSceneFinished;
-                        _finishingScene.StartScene(_runthrough.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 
-                            _level.Targets.GetComponent<IDamageableWithTransforms>());
-                    });    
-                });
-            }
-        }
-        
-        async Task ProcessPreAdTease()
-        {
-            if(_lastFrameState != AppState.PreAdTease)
-            {                
-                await Task.Delay(1500).ContinueWith(t => {_currentState = AppState.StartScreen;});
-            }
-        }
-        
-        void OnGamePlayFinished(object sender, EventArgs e)
-        {
-            _runthrough.OnFinished -= OnGamePlayFinished;
-            _currentState = AppState.FinishingCutscene;
-            Debug.Log("Gameplay Fnished");
-        }     
-        
-        void OnFinishingSceneFinished(object sender, EventArgs e)
-        {
-            _finishingScene.OnFinished -= OnFinishingSceneFinished;
-            _currentState = AppState.PreAdTease;
-            
-            GameObject.Destroy(_finishingScene);
-            ClearLevel();
-            Debug.Log("Finishing scene ended");
-        }     
-        
-        void ClearLevel()
-        {
-            _runthrough.Destroy();
-            _runthrough = null;            
-            GameObject.Destroy(_level.GameObject);
-            _level = null;
-        }
-        
-        void UserContextUpdated(object caller, EventArgs e)
-        {
-            ClearLevel();
-            CreateLevel();
-        }
-        
-        
-        public void SendStartGame()
-        {
-            if(_currentState == AppState.StartScreen)
-                _currentState = AppState.GamePlay;    
-        }
-        
-        public void SendUpgradeShop()
-        {
-            if(_currentState != AppState.UpgradeShop ||  _previousState == AppState.DebugMenu ||  _previousState == AppState.GameLaunch ||  _previousState == AppState.PreAdTease || _previousState == AppState.Ad)
-                _currentState = AppState.UpgradeShop;
-            else
-                _currentState = _previousState;
-        }
-        
-        public void SendPauseMenu()
-        {
-            if(_currentState != AppState.Menu ||  _previousState == AppState.DebugMenu ||  _previousState == AppState.GameLaunch ||  _previousState == AppState.PreAdTease || _previousState == AppState.Ad)
-                _currentState = AppState.Menu;
-            else
-                _currentState = _previousState;
-        }
-        
-        public void SendDebugMenu()
-        {
-            if(_currentState != AppState.DebugMenu ||  _previousState == AppState.GameLaunch ||  _previousState == AppState.PreAdTease || _previousState == AppState.Ad)
-                _currentState = AppState.DebugMenu;  
-        }
-        
-        public void SendPreviousState()
-        {
-            if(_previousState == AppState.GamePlay || _previousState == AppState.FinishingCutscene ||  _previousState == AppState.StartScreen)
-                    _currentState = _previousState;
+                return false;
         }
     }
 }

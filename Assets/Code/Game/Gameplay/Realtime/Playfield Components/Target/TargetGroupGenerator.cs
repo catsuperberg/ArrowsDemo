@@ -7,7 +7,7 @@ using System.Numerics;
 using UnityEngine;
 using Utils;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Target
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
     public class TargetGroupGenerator : MonoBehaviour, ITargetProvider 
     {
@@ -44,7 +44,7 @@ namespace Game.Gameplay.Realtime.PlayfildComponents.Target
             var targetLogic = target.GetComponent<Target>();
             
             var randomGrade = (TargetGrades)Random.Range(0, (int)TargetGrades.ENUM_END);
-            var instanceBaseScore = targetLogic.BasePoints*randomGrade.Multiplier();
+            var instanceBaseScore = targetLogic.BasePoints*randomGrade.TargetScoreMultiplier();
             var scaleCoeff = System.Math.Exp(BigInteger.Log(score) - BigInteger.Log(new BigInteger(instanceBaseScore)));
             var scale = Mathf.Clamp((float)scaleCoeff, 0.5f, 3f);
             

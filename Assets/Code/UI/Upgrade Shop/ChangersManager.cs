@@ -1,6 +1,5 @@
 using DataManagement;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UI
@@ -11,7 +10,7 @@ namespace UI
         GameObject ValueChangerPrefab;
         
         public void CreateChangerForValue(IRegistryAccessor registryAccessor, Type objectClass, string fieldName)
-        {            
+        {                        
             var changer = Instantiate(ValueChangerPrefab, Vector3.zero, Quaternion.identity);
             changer.transform.SetParent(transform);
             changer.GetComponent<ValueChanger>().AttachToValue(registryAccessor, objectClass, fieldName);

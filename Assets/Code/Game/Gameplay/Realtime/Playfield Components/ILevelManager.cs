@@ -2,7 +2,7 @@ using Game.Gameplay.Realtime.OperationSequence.Operation;
 using System.Numerics;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents
+namespace Game.Gameplay.Realtime.PlayfieldComponents
 {
     public interface ILevelManager
     {

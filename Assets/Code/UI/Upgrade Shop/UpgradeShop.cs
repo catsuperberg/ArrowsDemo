@@ -1,7 +1,6 @@
 using DataManagement;
 using Game.Gameplay.Meta.UpgradeSystem;
 using UnityEngine;
-using Zenject;
 
 namespace UI
 {    
@@ -14,11 +13,10 @@ namespace UI
         
         ChangersManager _changersManager;
         
-        [Inject]
-        public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor)
+        public void Initialize(IRegistryAccessor registryAccessor)
         {
             if(registryAccessor == null)
-                throw new System.Exception("ChangerManager isn't provided to " + this.GetType().Name);
+                throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
                                 
             _userContextAccessor = registryAccessor;
             CreateUpgradeChangers();            

@@ -2,7 +2,7 @@ using SplineMesh;
 using System.Linq;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public class RandomizedSmoothTrackGenerator : MonoBehaviour, ISplineTrackProvider 
     {

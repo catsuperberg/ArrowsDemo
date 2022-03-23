@@ -43,36 +43,33 @@ namespace UI
             Debug.Log(e.State);
             if(Enum.IsDefined(typeof(AppState), e.State))
             {                
-                switch (e.State)
-                {
-                    case AppState.GameLaunch:
-                        SwitchToScreen(_LoadingScreen);
-                        break;
-                    case AppState.StartScreen:
-                        SwitchToScreen(_startScreenMessage);
-                        break;
-                    case AppState.GamePlay:
-                        SwitchToScreen(_gameplayHUD);
-                        break;
-                    case AppState.FinishingCutscene:
+                // switch (e.State)
+                // {
+                //     case AppState.GameLaunch:
+                //         SwitchToScreen(_LoadingScreen);
+                //         break;
+                //     case AppState.StartScreen:
+                //         SwitchToScreen(_startScreenMessage);
+                //         break;
+                //     case AppState.Playthrough:
+                //         SwitchToScreen(_gameplayHUD);
+                //         break;
+                //     case AppState.PreAdTease:
+                //         SwitchToScreen(_preAdTease);
+                //         break;  
+                //     case AppState.Menu:                    
+                //         SwitchToScreen(_pauseMenu);
+                //         break;    
+                //     case AppState.DebugMenu:                    
+                //         SwitchToScreen(_debugMenu);
+                //         break;    
+                //     case AppState.UpgradeShop:                    
+                //         SwitchToScreen(_upgradeShop);
+                //         break;    
+                //     case AppState.Blank:
                         
-                        break;
-                    case AppState.PreAdTease:
-                        SwitchToScreen(_preAdTease);
-                        break;  
-                    case AppState.Menu:                    
-                        SwitchToScreen(_pauseMenu);
-                        break;    
-                    case AppState.DebugMenu:                    
-                        SwitchToScreen(_debugMenu);
-                        break;    
-                    case AppState.UpgradeShop:                    
-                        SwitchToScreen(_upgradeShop);
-                        break;    
-                    case AppState.Blank:
-                        
-                        break;               
-                }
+                //         break;               
+                // }
             }      
             
             List<GameObject> subCanvasesToShow = new List<GameObject>();

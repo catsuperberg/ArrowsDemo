@@ -1,11 +1,11 @@
-using Game.Gameplay.Realtime.PlayfildComponents.Track.TrackItems;
+using Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using SplineMesh;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public class TrackFiller : MonoBehaviour, ITrackPopulator
     {           

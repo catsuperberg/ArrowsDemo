@@ -2,9 +2,9 @@ using Game.Gameplay.Realtime.GameplayComponents;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.OperationSequence;
-using Game.Gameplay.Realtime.PlayfildComponents;
-using Game.Gameplay.Realtime.PlayfildComponents.Target;
-using Game.Gameplay.Realtime.PlayfildComponents.Track;
+using Game.Gameplay.Realtime.PlayfieldComponents;
+using Game.Gameplay.Realtime.PlayfieldComponents.Target;
+using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using SplineMesh;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Game.Gameplay.Realtime
         ITrackPopulator _trackPopulator;        
         ITargetProvider _targetGenerator;
                 
-        ITrackFollower _follower;    
+        // ITrackFollower _follower;    
         IProjectileProvider _projectileGenerator;  
         
         IContextProvider _runContextProvider;
@@ -35,7 +35,7 @@ namespace Game.Gameplay.Realtime
                 
         [Inject]
         public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
-            ITargetProvider targetGenerator, ITrackFollower follower, IProjectileProvider projectileGenerator,
+            ITargetProvider targetGenerator, IProjectileProvider projectileGenerator,
             IContextProvider runContextProvider, ISequenceManager sequenceManager)
         {
             if(splineMeshGenerator == null)
@@ -49,12 +49,12 @@ namespace Game.Gameplay.Realtime
             _trackPopulator = trackPopulator;
             _targetGenerator = targetGenerator; 
                 
-            if(follower == null)
-                throw new System.Exception("ITrackFollower not provided to GameManager");
+            // if(follower == null)
+            //     throw new System.Exception("ITrackFollower not provided to GameManager");
             if(projectileGenerator == null)
-                throw new System.Exception("ITrackFollower not provided to GameManager");
+                throw new System.Exception("IProjectileProvider not provided to RuntimeFactory");
                 
-            _follower = follower;
+            // _follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
             _projectileGenerator = projectileGenerator;            
             
             if(runContextProvider == null)
@@ -66,7 +66,18 @@ namespace Game.Gameplay.Realtime
             _sequenceManager = sequenceManager;                        
         }
         
-        public Playfield GetLevel()
+        public RunthroughContext GetRunthroughContext()
+        {
+            var generationContext = _runContextProvider.getContext();
+            var runPlayfield = GetPlayfield();
+            var runFollower = GetTrackFollower(runPlayfield.TrackSpline);
+            var runProjectile = _projectileGenerator.CreateArrows(generationContext.InitialValue, runPlayfield.trackWidth);            
+            runProjectile.transform.SetParent(runFollower.Transform);   
+            var runContext = new RunthroughContext(runPlayfield, runFollower, runProjectile, generationContext);
+            return runContext;
+        }
+        
+        Playfield GetPlayfield()
         {                    
             var context = _runContextProvider.getContext();
             
@@ -89,22 +100,33 @@ namespace Game.Gameplay.Realtime
             
             PlaceAtTrackEnd(targets, splineTrack.GetComponent<Spline>(), new UnityEngine.Vector3(0, -105, 105));
                         
-            var levelObject = new GameObject("Level");   
-            var level = new Playfield(splineTrack, gates, targets, levelObject);
-            return level;
-        }
-        
-        public Runthrough GetRunthrough(Playfield level)
-        {     
-            var context = _runContextProvider.getContext();
-            var run = new Runthrough(_follower, _projectileGenerator, level, context);      
-            return run;
+            var playfieldObject = new GameObject("playfield");   
+            var playfield = new Playfield(splineTrack, gates, targets, playfieldObject);
+            return playfield;
         }
         
         void PlaceAtTrackEnd(GameObject entity, Spline spline, UnityEngine.Vector3 offset)
         {
             var endPoint = spline.nodes.Last().Position;
             entity.transform.position = endPoint + offset;
+        }
+        
+        // public Runthrough GetRunthrough(Playfield playfield)
+        // {     
+        //     var follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
+        //     var context = _runContextProvider.getContext();
+        //     var run = new Runthrough(follower, _projectileGenerator, playfield, context);      
+        //     return run;
+        // }
+        
+        ITrackFollower GetTrackFollower(SplineMesh.Spline splineToAttachFollowerTo = null)
+        {
+            var follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
+            
+            if(splineToAttachFollowerTo == null)
+                follower.SetSplineToFollow(splineToAttachFollowerTo, 0);
+            
+            return follower;          
         }
     }
 }

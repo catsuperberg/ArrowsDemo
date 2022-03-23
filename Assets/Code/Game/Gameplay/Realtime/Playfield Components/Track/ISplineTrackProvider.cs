@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public interface ISplineTrackProvider
     {

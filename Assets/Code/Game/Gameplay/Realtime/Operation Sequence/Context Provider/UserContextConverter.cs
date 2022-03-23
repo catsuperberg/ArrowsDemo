@@ -26,7 +26,9 @@ namespace Game.Gameplay.Realtime.OperationSequence
             
             var length = GetTrackLength(numberOfOperations);
             
-            var context = new SequenceContext(length, initialValue, numberOfOperations);
+            var speed = 35;
+            
+            var context = new SequenceContext(length, initialValue, numberOfOperations, speed);
             return context;
         }
         

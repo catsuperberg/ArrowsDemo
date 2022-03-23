@@ -6,8 +6,6 @@ namespace DataManagement
     {
         public bool EntyExists(string entryName)
         {
-            UnityEngine.Debug.LogWarning("Looking for: " + entryName);
-            UnityEngine.Debug.LogWarning("It exists: " + File.Exists(entryName));
             return File.Exists(entryName);
         }
         
@@ -21,9 +19,6 @@ namespace DataManagement
         
         public void WriteString(string entryName, string data)
         {
-            UnityEngine.Debug.Log("Writing entry at: " + entryName);
-            UnityEngine.Debug.Log("Data to write:");            
-            UnityEngine.Debug.Log(data);
             File.WriteAllText(entryName, data);
         }
     }

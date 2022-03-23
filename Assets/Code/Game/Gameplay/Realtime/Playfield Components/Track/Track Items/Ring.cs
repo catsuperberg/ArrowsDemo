@@ -5,7 +5,7 @@ using System.Numerics;
 using TMPro;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track.TrackItems
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
 {
     public class Ring : MonoBehaviour, IMathContainer
     {

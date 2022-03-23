@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Target
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
     public enum TargetGrades
     {
@@ -13,7 +13,7 @@ namespace Game.Gameplay.Realtime.PlayfildComponents.Target
     
     static class GradeOperations
     {
-        public static float Multiplier(this TargetGrades grade)
+        public static float TargetScoreMultiplier(this TargetGrades grade)
         {
             switch (grade)
             {
@@ -27,6 +27,23 @@ namespace Game.Gameplay.Realtime.PlayfildComponents.Target
                     return 12;
                 default:
                     return 1;
+            }
+        }
+        
+        public static float RevardMultiplier(this TargetGrades grade)
+        {
+            switch (grade)
+            {
+                case TargetGrades.Common:
+                    return 1f;
+                case TargetGrades.Rare:
+                    return 1.5f;
+                case TargetGrades.Legendary:
+                    return 2f;
+                case TargetGrades.Epic:
+                    return 5f;
+                default:
+                    return 1f;
             }
         }
         

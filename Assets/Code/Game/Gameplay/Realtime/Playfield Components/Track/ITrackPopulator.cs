@@ -3,7 +3,7 @@ using SplineMesh;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public interface ITrackPopulator
     {

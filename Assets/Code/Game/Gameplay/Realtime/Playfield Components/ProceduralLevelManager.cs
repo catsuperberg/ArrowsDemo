@@ -1,5 +1,5 @@
-using Game.Gameplay.Realtime.PlayfildComponents.Target;
-using Game.Gameplay.Realtime.PlayfildComponents.Track;
+using Game.Gameplay.Realtime.PlayfieldComponents.Target;
+using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using SplineMesh;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Zenject;
 
 using Vector3 = UnityEngine.Vector3;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents
+namespace Game.Gameplay.Realtime.PlayfieldComponents
 {
     public class ProceduralLevelManager : MonoBehaviour, ILevelManager
     {        

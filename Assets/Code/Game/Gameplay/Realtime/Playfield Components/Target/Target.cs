@@ -2,7 +2,7 @@ using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using System.Numerics;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Target
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
     public class Target : MonoBehaviour, IDamageable
     {    

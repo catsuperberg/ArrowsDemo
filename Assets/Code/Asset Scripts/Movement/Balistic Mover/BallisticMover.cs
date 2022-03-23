@@ -11,22 +11,26 @@ namespace AssetScripts.Movement
         public void initialize(Transform startTransform, Transform endTransform, float entryCurvePrioritization)
         {
             var splineTrajectory = new GameObject("Ballistic spline");
-            splineTrajectory.transform.SetParent(null);
+            splineTrajectory.transform.SetParent(gameObject.transform.parent);
+            
+            Transform localEndTransform;
             
             var tempObj = new GameObject("temp object, for transform only");
+            tempObj.transform.SetParent(splineTrajectory.transform);
+            
             var spread = Random.insideUnitSphere*5;
             tempObj.transform.position = endTransform.position + spread;
             tempObj.transform.rotation = endTransform.rotation;
-            var endTransformWithSpread = tempObj.transform;
+            localEndTransform = tempObj.transform;
             
-            var preCurveLength = Vector3.Distance(startTransform.position, endTransformWithSpread.position);
+            var preCurveLength = Vector3.Distance(startTransform.position, localEndTransform.position);
             var enterMagnitude = (preCurveLength*entryCurvePrioritization)*0.65f;
             var exitMagnitude = (preCurveLength*(1-entryCurvePrioritization))*0.65f;
                                     
             _spline = splineTrajectory.AddComponent<SimpleSpline>();
-            _spline.initialize(startTransform, endTransformWithSpread, enterMagnitude, exitMagnitude);
+            _spline.initialize(startTransform, localEndTransform, enterMagnitude, exitMagnitude);
             
-            Destroy(endTransformWithSpread.gameObject);
+            Destroy(tempObj.gameObject);
         }
         
         public void StartMover(float speed)

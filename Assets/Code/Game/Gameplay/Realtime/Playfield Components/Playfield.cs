@@ -1,7 +1,7 @@
 using SplineMesh;
 using UnityEngine;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents
+namespace Game.Gameplay.Realtime.PlayfieldComponents
 {
     public class Playfield
     {
@@ -10,6 +10,7 @@ namespace Game.Gameplay.Realtime.PlayfildComponents
         public GameObject Gates {get; private set;}
         public GameObject Targets {get; private set;}
         public GameObject GameObject {get; private set;}
+        public float trackWidth {get; private set;} = 12;
         
         public Playfield(GameObject track, GameObject gates, GameObject targets, GameObject trackObject)
         {

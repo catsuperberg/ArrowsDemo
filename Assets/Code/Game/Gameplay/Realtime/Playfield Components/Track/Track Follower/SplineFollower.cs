@@ -2,7 +2,7 @@ using UnityEngine;
 using SplineMesh;
 using System;
 
-namespace Game.Gameplay.Realtime.PlayfildComponents.Track
+namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public class SplineFollower : MonoBehaviour, ITrackFollower
     {       

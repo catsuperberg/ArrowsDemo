@@ -37,7 +37,6 @@ namespace DataManagement
         
         bool NonVolatileContains(string entry)
         {
-            Debug.LogWarning("Entry to " + entry + " exists: " + _nonVolatileStorage.EntryExists(entry));
             return _nonVolatileStorage.EntryExists(entry);
         }
         

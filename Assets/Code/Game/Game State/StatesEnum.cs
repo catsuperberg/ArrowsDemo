@@ -1,19 +1,11 @@
-using UnityEngine;
-
 namespace Game.GameState
 {
     public enum AppState
     {   
-        GameLaunch,
-        StartScreen,
-        UpgradeShop,
-        GamePlay,
-        Menu,
-        DebugMenu,
-        FinishingCutscene,
-        PreAdTease,
-        Ad,
-        Blank
+        PreRun,
+        Runthrough,
+        PostRun,
+        Ad
     }
         
     public enum SubState
