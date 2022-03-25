@@ -10,20 +10,26 @@ using UnityEngine;
 namespace Game.GameState
 {    
     public class Runthrough : MonoBehaviour
-    {
+    {        
+        [SerializeField]
+        RunthroughUI _UI;
+        
         Playfield _playfield;
         
-        public event EventHandler OnFinished;
-        Gameplay.Realtime.GameplayComponents.RunthroughState _state = Gameplay.Realtime.GameplayComponents.RunthroughState.Blank;
-        List<Gameplay.Realtime.GameplayComponents.RunthroughState> _statesToGoThrough = new List<Gameplay.Realtime.GameplayComponents.RunthroughState>()
-            { Gameplay.Realtime.GameplayComponents.RunthroughState.FlyingThroughTrack,
-            Gameplay.Realtime.GameplayComponents.RunthroughState.FinishingScene,
-            Gameplay.Realtime.GameplayComponents.RunthroughState.RunthroughOver};
-        List<Gameplay.Realtime.GameplayComponents.RunthroughState>.Enumerator _stateEnumerator;  
+        RunthroughState _state = RunthroughState.Blank;
+        List<RunthroughState> _statesToGoThrough = new List<RunthroughState>()
+            { RunthroughState.FlyingThroughTrack,
+            RunthroughState.FinishingScene,
+            RunthroughState.RunthroughOver};
+        List<RunthroughState>.Enumerator _stateEnumerator;  
+        List<RunthroughState> PausableStates = new List<RunthroughState>{RunthroughState.FlyingThroughTrack};
+        bool _paused = false;        
             
         FlightThroughTrack _flyingState;
         FinishingScene _finishingSceneState;
-        RewardCalculator _rewardCalculator;        
+        RewardCalculator _rewardCalculator;     
+        
+        public event EventHandler OnProceedToNextState;   
         
         public void Initialize(RunthroughContext runContext, RewardCalculator rewardCalculator)
         {
@@ -32,24 +38,69 @@ namespace Game.GameState
             if(rewardCalculator == null)
                 throw new ArgumentNullException("RewardCalculator not provided to " + this.GetType().Name);
                 
-            _playfield = runContext.PlayfieldForRun;                 
+            _playfield = runContext.PlayfieldForRun;   
             _rewardCalculator = rewardCalculator;      
-            _stateEnumerator = _statesToGoThrough.GetEnumerator();     
+            _stateEnumerator = _statesToGoThrough.GetEnumerator();   
+            
+            AttachUIRequests();
             
             _flyingState = new FlightThroughTrack(runContext.Follower, runContext.Projectile);
+        }
+        
+        void AttachUIRequests()
+        {
+            _UI.OnPauseUnpauseRequest += DecideOnPause;
+            _UI.OnPauseRequest += EnablePause;
+            _UI.OnContinueGameplayRequest += DisablePause;
+        }
+                
+        void DecideOnPause(object sender, EventArgs e)
+        {
+            if(!PausableStates.Contains(_state))
+                return;
+                
+            if(_paused)
+                DisablePause(sender, EventArgs.Empty);
+            else
+                EnablePause(sender, EventArgs.Empty);
+        }
+        
+        void EnablePause(object sender, EventArgs e)
+        {
+            if(!PausableStates.Contains(_state))
+                return;
+                
+            _paused = true;
+            _UI.SwithchToPause();
+            ProcessPause();
+        }
+        
+        void DisablePause(object sender, EventArgs e)
+        {
+            if(!PausableStates.Contains(_state))
+                return;
+                
+            _paused = false;
+            _UI.SwithchToGameplay();
+            ProcessPause();
+        }        
+        
+        void ProcessPause()
+        {
+            _flyingState.SetPaused(_paused);
         }
         
         void ProcessCurrentState()
         {
             switch(_state)
             {
-                case Gameplay.Realtime.GameplayComponents.RunthroughState.FlyingThroughTrack:
+                case RunthroughState.FlyingThroughTrack:
                     StartFlight();
                     break;
-                case Gameplay.Realtime.GameplayComponents.RunthroughState.FinishingScene:
+                case RunthroughState.FinishingScene:
                     StartFinishingScene();
                     break;
-                case Gameplay.Realtime.GameplayComponents.RunthroughState.RunthroughOver:
+                case RunthroughState.RunthroughOver:
                     RunFinished();
                     break;
             } 
@@ -59,10 +110,12 @@ namespace Game.GameState
         {
             _flyingState.OnFinished += CurrentStateFinished;
             _flyingState.StartRun();
+            _UI.SwithchToGameplay();
         }
         
         void StartFinishingScene()
         {            
+            _UI.SwithchToFinishingScene();
             _finishingSceneState = gameObject.AddComponent<FinishingScene>();
             _finishingSceneState.OnFinished += CurrentStateFinished;
             _finishingSceneState.StartScene(_flyingState.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 
@@ -82,8 +135,8 @@ namespace Game.GameState
         }
         
         void RunFinished()
-        {                        
-            OnFinished?.Invoke(this, EventArgs.Empty);
+        {                      
+            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }     
         
         public void StartRun()
@@ -91,16 +144,17 @@ namespace Game.GameState
             AdvanceState();
         }
         
-        public void Destroy()
+        public void DestroyRun()
         {       
-            _flyingState.Destroy();
+            Destroy(_playfield.GameObject);
+            _flyingState.DestroyFlight();
             _flyingState = null;
             _playfield = null;
-            GameObject.Destroy(_finishingSceneState);
+            Destroy(_finishingSceneState);
             foreach (Transform child in gameObject.transform) {
-                GameObject.Destroy(child.gameObject);
+                Destroy(child.gameObject);
             }
-            GameObject.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

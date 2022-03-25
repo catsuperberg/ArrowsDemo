@@ -2,7 +2,7 @@
   "UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "10",
+      "Value": "12",
       "Type": "System.Int32"
     },
     {
@@ -12,7 +12,7 @@
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "5",
+      "Value": "16",
       "Type": "System.Int32"
     },
     {

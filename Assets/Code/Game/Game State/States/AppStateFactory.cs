@@ -1,10 +1,5 @@
 using Game.Gameplay.Realtime;
-using Game.Gameplay.Realtime.GameplayComponents;
-using Game.Gameplay.Realtime.OperationSequence;
-using Game.Gameplay.Realtime.PlayfieldComponents;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -37,21 +32,11 @@ namespace Game.GameState
                 
             _preRunFactory = preRunFactory;
             _runthroughFactory = runthroughFactory;
-            // if(runtimeFactory == null)
-            //     throw new ArgumentNullException("IRuntimeFactory isn't provided to " + this.GetType().Name);
-            //  if(userContextNotifier == null)
-            //     throw new ArgumentNullException("IUpdatedNotification isn't provided to " + this.GetType().Name);
-                
-            // _runtimeFactory = runtimeFactory;
-            // _userContextNotifier = userContextNotifier;
             
         }
         
         public PreRun GetPreRun()
         {
-            // var preRunGO = Instantiate(PreRunPrefab);
-            // var preRun = preRunGO.GetComponent<PreRun>();
-            // preRun.Initialize(_runtimeFactory, _userContextNotifier);
             var preRun = _preRunFactory.GetPreRun(PreRunPrefab);
             return preRun;
         }

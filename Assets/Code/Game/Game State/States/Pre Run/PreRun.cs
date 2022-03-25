@@ -1,6 +1,4 @@
 using Game.Gameplay.Realtime;
-using Game.Gameplay.Realtime.GameplayComponents;
-using Game.Gameplay.Realtime.PlayfieldComponents;
 using System;
 using UnityEngine;
 
@@ -31,7 +29,7 @@ namespace Game.GameState
             _userContextNotifier = userContextNotifier;
             
             _UI.OnStartRunthrough += UIStartButtonPressed;
-            userContextNotifier.OnUpdated += UserContextUpdated;
+            _userContextNotifier.OnUpdated += UserContextUpdated;
             
             StartLoading();
         }
@@ -46,8 +44,7 @@ namespace Game.GameState
                 
         void UserContextUpdated(object caller, EventArgs e)
         {
-            ClearLevel();
-            CreateLevel();
+             UpdateLevel();
         }
         void StartLoading()
         {
@@ -61,12 +58,22 @@ namespace Game.GameState
                 ProcessState();
         }
         
+        void OnDestroy()
+        {
+            _userContextNotifier.OnUpdated -= UserContextUpdated;
+            _userContextNotifier = null;
+            Destroy(_UI);
+            _UI = null;
+            _runtimeFactory = null;
+            _userContextNotifier = null;            
+        }
+        
         void ProcessState()
         {
             switch (_state)
             {
                 case PreRunStates.Launching:
-                    CreateLevel();
+                    UpdateLevel();
                     break;        
                 case PreRunStates.WaitingForNewPlayfield:
                     
@@ -81,24 +88,33 @@ namespace Game.GameState
             _previousState = _state;
         }
         
+        void UpdateLevel()
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    ClearLevel();
+                    CreateLevel();            
+                });
+        }
+        
         void CreateLevel()
         {            
             if(_state != PreRunStates.Launching) 
                 _state = PreRunStates.WaitingForNewPlayfield;
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                NextRunthroughContext = _runtimeFactory.GetRunthroughContext();
-                _state = PreRunStates.Ready;
-                }); 
+            
+            NextRunthroughContext = _runtimeFactory.GetRunthroughContext();
+            _state = PreRunStates.Ready;
+                
         }
         
         void ClearLevel()
         {      
             if(NextRunthroughContext == null)
-                return;
-            
-            GameObject.Destroy(NextRunthroughContext.PlayfieldForRun.GameObject);
-            GameObject.Destroy(NextRunthroughContext.Follower.Transform.gameObject);
+                return;                
+                                
             GameObject.Destroy(NextRunthroughContext.Projectile);
+            GameObject.Destroy(NextRunthroughContext.Follower.Transform.gameObject);
+            GameObject.Destroy(NextRunthroughContext.PlayfieldForRun.GameObject);
+            
             
             NextRunthroughContext = null;
         }

@@ -34,7 +34,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         public Vector3 Position {get {return transform.position;}}
         public BigInteger Count {get; private set;} = new BigInteger(1);
         
-        
+        public bool Paused {get; private set;} = false;
         
         public void Initialize(BigInteger initialCount, float movementWidth)
         {
@@ -111,20 +111,29 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
                 _arrows.Add(arrow);
             }
         }
+                
+        public void SetPaused(bool stateToSet)
+        {
+            Paused = stateToSet;
+        }
         
         public void moveRight(float distance)
         {
+            if(Paused)
+                return;
             var position = transform.localPosition;
             position.x += distance;
             transform.localPosition = position;
             ClampPosition();
         }
         
-        public void moveUp(float distance) {}
-        public void moveForward(float distance) {}
+        public void moveUp(float distance) {if(Paused) return;}
+        public void moveForward(float distance) {if(Paused) return;}
         
         public void moveTo(Vector3 position)
-        {            
+        {         
+            if(Paused)
+                return;   
             var tempPosition = transform.localPosition;
             tempPosition.x += position.x;
             transform.localPosition = tempPosition;

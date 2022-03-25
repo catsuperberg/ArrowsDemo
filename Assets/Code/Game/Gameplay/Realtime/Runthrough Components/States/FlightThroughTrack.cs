@@ -1,17 +1,19 @@
-using Game.Gameplay.Realtime.PlayfieldComponents.Track;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.GameplayComponents.GameCamera;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
+using Game.Gameplay.Realtime.GeneralUseInterfaces;
+using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents;
+using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Input.ControllerComponents;
 using System;
 using UnityEngine;
 
 namespace Game.Gameplay.Realtime.GameplayComponents
 {
-    public class FlightThroughTrack
+    public class FlightThroughTrack : IPausable
     {
         ITrackFollower _follower;    
+        public bool Paused {get; private set;} = false;       
         
         public event EventHandler OnFinished;
         public GameObject ActiveProjectile {get; private set;} = null;
@@ -34,9 +36,26 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _follower.OnFinished += FlightFinished;
         }
         
-        public void Destroy()
+        
+        public void SetPaused(bool stateToSet)
+        {
+            Paused = stateToSet;
+            if(Paused)
+                _follower.PauseMovement();
+            else
+                _follower.StartMovement();
+                
+            var projectile = ActiveProjectile.GetComponent<IProjectile>();
+            projectile.SetPaused(Paused);
+        }
+        
+        public void DestroyFlight()
         {       
             _follower.OnFinished -= FlightFinished;
+            foreach (Transform child in _follower.Transform) {
+                GameObject.Destroy(child.gameObject);
+            }
+            GameObject.Destroy(_follower.Transform.gameObject); 
             _follower = null;
             if(OnFinished != null)
             foreach (var d in OnFinished.GetInvocationList())

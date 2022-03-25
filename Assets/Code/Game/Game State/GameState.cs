@@ -9,6 +9,7 @@ namespace Game.GameState
     {           
         IAppStateFactory _stateFactory;
         AppState _state;
+        AppState _previousState;
         List<AppState> _statesToGoThrough = new List<AppState>()
             {AppState.PreRun,
             AppState.Runthrough,
@@ -18,10 +19,8 @@ namespace Game.GameState
         PreRun _preRun;
         Runthrough _runthrough;
         PostRun _postRun;
-        Ad _ad;
-        
-        
-        
+        Ad _ad;       
+                
         [Inject]
         public void Construct(IAppStateFactory stateFactory)
         {                        
@@ -38,6 +37,12 @@ namespace Game.GameState
             ProcessCurrentState();
         }
         
+        // void Update()
+        // {
+        //     if(_state != _previousState)
+        //         ProcessCurrentState();
+        // }
+        
         void ProcessCurrentState()
         {
             switch(_state)
@@ -49,12 +54,13 @@ namespace Game.GameState
                     StartRunthrough();
                     break;
                 case AppState.PostRun:
-                    
+                    StartPostRun();
                     break;
                 case AppState.Ad:
-                    
+                    StartAd();
                     break;
             } 
+            _previousState = _state;
         }
         
         void StartPreRun()
@@ -74,20 +80,50 @@ namespace Game.GameState
         void StartRunthrough()
         {
             _runthrough = _stateFactory.GetRunthrough(_preRun.NextRunthroughContext);
-            GameObject.Destroy(_preRun.gameObject);
+            _runthrough.gameObject.transform.SetParent(this.transform);
+            Destroy(_preRun.gameObject);
             _preRun = null;
+            _runthrough.OnProceedToNextState += RunthroughFinished;
             _runthrough.StartRun();
+        }
+        
+        void RunthroughFinished(object caller, EventArgs args)
+        {
+            _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;       
+            _runthrough.DestroyRun();     
+            Destroy(_runthrough.gameObject);
+            AdvanceState();
+            ProcessCurrentState();
+        }
+        
+        void StartPostRun()
+        {            
+            Debug.Log("Starting Post Run");  
+            AdvanceState();
+            ProcessCurrentState();
+        }
+        
+        void StartAd()
+        {            
+            Debug.Log("Starting Ad");  
+            AdvanceState();
+            ProcessCurrentState();
         }
         
         void AdvanceState()
         {     
-            if(DecideOnShowingAd(_stateEnumerator.Current))
+            if(DecideOnShowingAd(_state))
             {
                 _state = AppState.Ad;
                 return;
             }
             
-            _stateEnumerator.MoveNext();
+            var hasNext =_stateEnumerator.MoveNext();
+            if(!hasNext)
+            {
+                _stateEnumerator = _statesToGoThrough.GetEnumerator();  
+                _stateEnumerator.MoveNext();
+            }            
             _state = _stateEnumerator.Current; 
         }
         

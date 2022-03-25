@@ -19,7 +19,7 @@ namespace UI
         public void AttachToValue(IRegistryAccessor registryAccessor, Type objectClass, string fieldName)
         {
             if(registryAccessor == null)
-                throw new NullReferenceException("No IRegistryAccessor implimentation profided to: " + this.GetType().Name);
+                throw new NullReferenceException("No IRegistryAccessor implimentation provided to: " + this.GetType().Name);
             
             _registryAccessor = registryAccessor;
             _objectClass = objectClass;

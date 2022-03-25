@@ -24,40 +24,19 @@ public class GameInstaller : MonoInstaller
     private ProjectileGenerator _projectileGenerator; 
     [SerializeField]
     private TargetGroupGenerator _targetGenerator; 
-    // [SerializeField]
-    // private UI_StateManager _UI_Manager; 
-    // [SerializeField]
-    // private UIStateInputs _UIStateInputs; 
-    // [SerializeField]
-    // SettingsMenu _settingMenuScript;
-    // [SerializeField]
-    // private UpgradeShop _upgradeShop;
     [SerializeField]
     private AppStateFactory _appStateFactory;
-    // [SerializeField]
-    // private GameState _appState;
-    
-    Registry _userRegistry;    
     
     public override void InstallBindings()
     {                
         Container.Bind<OperationExecutor>().AsTransient().NonLazy();
-        // Container.Bind<UpgradeShop>().FromInstance(_upgradeShop).AsTransient();    
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();
         Container.Bind<ISplineTrackProvider>().To<RandomizedSmoothTrackGenerator>().FromNewComponentOnNewGameObject().AsSingle();
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
-        
-        Container.Bind<IRunSceneManager>().To<RunSceneManager>().AsSingle();
-        
-        // Container.Bind(typeof(IStateChangeNotifier), typeof(IStateSignal)).To<GameState>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-        // Container.Bind<ControlStateInputs>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-        // Container.Bind<UIStateInputs>().FromInstance(_UIStateInputs).AsSingle();  
-        
-        // Container.Bind<UI_StateManager>().FromInstance(_UI_Manager).AsSingle();  
-        
+                
         Container.Bind<IDiskSerialization>().To<JsonDataStorage>().AsSingle();
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
             Container.Bind<IStreamingAssetsReader>().To<WinStreamingAssets>().AsSingle();
@@ -67,7 +46,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ISettingsExecutorService>().To<ChangedSettingsExecutorService>().AsSingle();
         
         Container.Bind<ISettingsService>().To<SettingsService>().AsSingle();
-        // Container.Bind<SettingsMenu>().FromInstance(_settingMenuScript);
         
         
         ComposeUserContextManagement();        
@@ -76,7 +54,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    
         Container.Bind<IAppStateFactory>().FromInstance(_appStateFactory).AsSingle();  
-        // Container.Bind<GameState>().AsSingle().NonLazy();    
     }
     
     void ComposeUserContextManagement()

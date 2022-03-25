@@ -82,9 +82,20 @@ namespace DataManagement
         
         void UpdateSingleFieldOfAllRegistered(string className, string fieldName, string fieldValue)
         {
+            clearDeletedRegistrations();
+            
             var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.Value == className).Select(x => x.Key);
             foreach(var instance in objectsToUpdate)
                 TryWritingField(instance, fieldName, fieldValue);
+        }
+        
+        void clearDeletedRegistrations()
+        {
+            var dictionarryWithoutEmptyInstances = _objectsToUpdateOnChange
+                .Where(f => f.Key != null)
+                .ToDictionary(x => x.Key, x => x.Value);
+                
+            _objectsToUpdateOnChange = dictionarryWithoutEmptyInstances;  
         }
         
         void UpdateAllRegisteredOfClass(string className)
@@ -109,7 +120,7 @@ namespace DataManagement
             {
                 objectToUpdate.UpdateField(fieldName, fieldValue);
             }
-            catch (Exception)
+            catch (MissingFieldException)
             {
                 Debug.Log("there's no such field as: " + fieldName + " in " + objectToUpdate.GetType().Name);
             }

@@ -6,7 +6,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public class SplineFollower : MonoBehaviour, ITrackFollower
     {       
-        public Transform Transform {get {return gameObject.transform;} private set{;}}
+        public Transform Transform {get {return gameObject.transform;}}
         public event EventHandler OnFinished;
          
         public float Speed {get; private set;} = 0;
@@ -64,9 +64,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         {
             Moving = false;
         }
-        
-        
-        
+                
         void goToNextPointOnSpline()
         {
             Position = getNextFramePosition();

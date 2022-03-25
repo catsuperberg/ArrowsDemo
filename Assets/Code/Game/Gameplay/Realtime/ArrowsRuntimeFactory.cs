@@ -1,6 +1,5 @@
-using Game.Gameplay.Realtime.GameplayComponents;
+using Game.Gameplay.Realtime.GameplayComponents.GameCamera;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.PlayfieldComponents;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
@@ -8,7 +7,6 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using SplineMesh;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using UnityEngine;
 using Zenject;
 
@@ -27,7 +25,6 @@ namespace Game.Gameplay.Realtime
         ITrackPopulator _trackPopulator;        
         ITargetProvider _targetGenerator;
                 
-        // ITrackFollower _follower;    
         IProjectileProvider _projectileGenerator;  
         
         IContextProvider _runContextProvider;
@@ -73,8 +70,15 @@ namespace Game.Gameplay.Realtime
             var runFollower = GetTrackFollower(runPlayfield.TrackSpline);
             var runProjectile = _projectileGenerator.CreateArrows(generationContext.InitialValue, runPlayfield.trackWidth);            
             runProjectile.transform.SetParent(runFollower.Transform);   
+            AttachCameraToFollower(runFollower);
             var runContext = new RunthroughContext(runPlayfield, runFollower, runProjectile, generationContext);
             return runContext;
+        }
+        
+        void AttachCameraToFollower(ITrackFollower follower)
+        {
+            var smoothCamera = Camera.main.GetComponent<SmoothFollow>();
+            smoothCamera.target = follower.Transform;
         }
         
         Playfield GetPlayfield()
