@@ -3,14 +3,12 @@ using DataAccess.DiskAccess.Serialization;
 using DataManagement;
 using Game.Gameplay.Meta;
 using Game.Gameplay.Realtime;
-using Game.Gameplay.Realtime.GameplayComponents;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
-// using Game.GameState.StateSignalSenders;
 using Settings;
 using UI;
 using UnityEngine;
@@ -49,7 +47,7 @@ public class GameInstaller : MonoInstaller
         
         
         ComposeUserContextManagement();        
-                     
+                             
         Container.Bind<IRuntimeFactory>().FromInstance(_runtimeFactory).AsSingle();     
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    

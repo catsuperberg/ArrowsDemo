@@ -1,14 +1,14 @@
 using DataManagement;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Numerics;
 
 namespace Game.Gameplay.Meta.Curencies
 {
     public class CurenciesContext : IConfigurable
     {
         [StoredField]
-        public int CommonCoins {get; private set;} = 0;
+        public BigInteger CommonCoins {get; private set;} = 0;
                 
         public event EventHandler OnUpdated;
         
@@ -40,7 +40,7 @@ namespace Game.Gameplay.Meta.Curencies
             switch(fieldName)
             {
                 case nameof(CommonCoins):
-                    CommonCoins = Convert.ToInt32(fieldValue);
+                    CommonCoins = BigInteger.Parse(fieldValue);
                     break;
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);

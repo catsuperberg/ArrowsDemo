@@ -22,7 +22,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         [SerializeField]
         private GameObject ArrowAsset;
         [SerializeField]
-        private TMP_Text _CountIndicator;
+        private TMP_Text CountIndicator;
         private List<GameObject> _arrows = new List<GameObject>();
         private int maxArrows = 70;
         
@@ -56,8 +56,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         
         void UpdateAppearance()
         {
-            // _CountIndicator.text = Count.ToString();
-            _CountIndicator.text = Count.ParseToReadable();
+            CountIndicator.text = Count.ParseToReadable();
             fillArrows();
         }
         

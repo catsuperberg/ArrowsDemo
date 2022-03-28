@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace DataManagement
 {
@@ -8,6 +9,8 @@ namespace DataManagement
         {
             if(valueType == typeof(int).FullName)
                 return new IntApplier();
+            if(valueType == typeof(BigInteger).FullName)
+                return new BigIntApplier();
             else if(valueType == typeof(float).FullName)
                 return new FloatApplier();
             else if(valueType == typeof(string).FullName)

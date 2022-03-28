@@ -37,12 +37,6 @@ namespace Game.GameState
             ProcessCurrentState();
         }
         
-        // void Update()
-        // {
-        //     if(_state != _previousState)
-        //         ProcessCurrentState();
-        // }
-        
         void ProcessCurrentState()
         {
             switch(_state)
@@ -98,14 +92,12 @@ namespace Game.GameState
         
         void StartPostRun()
         {            
-            Debug.Log("Starting Post Run");  
             AdvanceState();
             ProcessCurrentState();
         }
         
         void StartAd()
         {            
-            Debug.Log("Starting Ad");  
             AdvanceState();
             ProcessCurrentState();
         }

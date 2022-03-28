@@ -53,11 +53,11 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         public void StartScene(IDamageableWithTransforms projectile, IDamageableWithTransforms target, RewardCalculator reward)
         {     
              if(projectile == null)
-                throw new System.Exception("IDamageableWithTransforms 'projectile' isn't provided to FinishingScene");
+                throw new ArgumentNullException("IDamageableWithTransforms 'projectile' isn't provided to" + this.GetType().Name);
              if(target == null)
-                throw new System.Exception("IDamageableWithTransforms 'target' isn't provided to FinishingScene");   
+                throw new ArgumentNullException("IDamageableWithTransforms 'target' isn't provided to" + this.GetType().Name);   
              if(reward == null)
-                throw new System.Exception("RewardCalculator 'target' isn't provided to FinishingScene");    
+                throw new ArgumentNullException("RewardCalculator isn't provided to" + this.GetType().Name);    
                         
             _projectile = projectile;
             _target = target;          

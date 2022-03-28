@@ -6,6 +6,7 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UI;
 
 namespace Game.GameState
 {    
@@ -116,6 +117,8 @@ namespace Game.GameState
         void StartFinishingScene()
         {            
             _UI.SwithchToFinishingScene();
+            var rewardDisplay = _UI.GetComponentInChildren<RewardDisplay>();
+            rewardDisplay.Initialize(_rewardCalculator);
             _finishingSceneState = gameObject.AddComponent<FinishingScene>();
             _finishingSceneState.OnFinished += CurrentStateFinished;
             _finishingSceneState.StartScene(_flyingState.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 

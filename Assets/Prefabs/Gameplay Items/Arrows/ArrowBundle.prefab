@@ -219,7 +219,7 @@ MonoBehaviour:
   MovementWidth: 0
   UpwardOffset: 4
   ArrowAsset: {fileID: 7062471808803083578, guid: 21f222ca3833ab6498ae8bd0026d57f3, type: 3}
-  _CountIndicator: {fileID: 8151296241199050582}
+  CountIndicator: {fileID: 8151296241199050582}
 --- !u!65 &700131480691755583
 BoxCollider:
   m_ObjectHideFlags: 0
