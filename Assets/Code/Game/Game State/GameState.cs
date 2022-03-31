@@ -92,8 +92,10 @@ namespace Game.GameState
         
         void StartPostRun()
         {            
-            AdvanceState();
-            ProcessCurrentState();
+            _postRun = _stateFactory.GetPostRun();
+            _postRun.gameObject.transform.SetParent(this.transform);
+            // AdvanceState();
+            // ProcessCurrentState();
         }
         
         void StartAd()

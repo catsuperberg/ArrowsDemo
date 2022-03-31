@@ -1,19 +1,21 @@
+using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
-using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.PlayfieldComponents;
-using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Numerics;
 using UI;
+using UnityEngine;
 
 namespace Game.GameState
 {    
     public class Runthrough : MonoBehaviour
     {        
         [SerializeField]
-        RunthroughUI _UI;
+        private RunthroughUI _UI;
+        
+        public BigInteger FinalReward {get; private set;} = new BigInteger(0);
         
         Playfield _playfield;
         
@@ -138,7 +140,8 @@ namespace Game.GameState
         }
         
         void RunFinished()
-        {                      
+        {               
+            FinalReward = _rewardCalculator.Reward;       
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }     
         

@@ -1,9 +1,88 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 
 namespace GameMath
 {
+    public class IntAutoCounter : IUpdatedNotification, IFinishNotification
+    {
+        public int InitialValue { get; }
+        public int ValueToStopAt { get; }
+        public int Increment { get; }
+        public int PeriodMs { get; }
+        
+        public int CurrentValue {get; private set;}
+        private Timer _timer;
+        private bool _counterIncreasing;
+        
+        public event EventHandler OnUpdated;
+        public event EventHandler OnFinished;
+        
+        public IntAutoCounter(int initialValue, int valueToStopAt, int increment, int periodMs)
+        {
+            InitialValue = initialValue;
+            ValueToStopAt = valueToStopAt;
+            Increment = increment;
+            PeriodMs = periodMs;
+            
+            ExceptionOnNoincrement();
+            ExceptionOnSameValue();
+            ExceptionOnOverflow();            
+        }
+        
+        public void ExceptionOnNoincrement()
+        {
+            if(Increment == 0)
+                throw new Exception("IntAutoCounter initialized with no increment");
+        }
+        
+        public void ExceptionOnSameValue()
+        {
+            if(InitialValue == ValueToStopAt)
+                throw new Exception("IntAutoCounter initialized with same values for start and stop");
+        }
+
+        public void ExceptionOnOverflow()
+        {
+            _counterIncreasing = Increment > 0;
+            bool overflowDetected;                
+            overflowDetected = (_counterIncreasing) ? InitialValue > ValueToStopAt : InitialValue < ValueToStopAt;
+            if(overflowDetected)  
+                throw new OverflowException("IntAutoCounter detected that with provided values int overflow is needed to finish");
+        }
+        
+        public void StartCountFromBeginning()
+        {
+            if(_timer != null)
+                _timer.Elapsed -= PerformIncrement;
+                
+            CurrentValue = InitialValue;
+            _timer = new Timer();
+            _timer.Interval = PeriodMs;
+            _timer.Elapsed += PerformIncrement;
+            _timer.Start();
+        }
+        
+        void PerformIncrement(object sender, ElapsedEventArgs e)
+        {
+            CurrentValue += Increment;
+            var targetReached = (_counterIncreasing) ? CurrentValue >= ValueToStopAt : CurrentValue <= ValueToStopAt; 
+            if(targetReached)
+                Finished();
+            else
+                OnUpdated?.Invoke(this, EventArgs.Empty);
+        }
+        
+        void Finished()
+        {                        
+            _timer.Stop();
+            _timer.Elapsed -= PerformIncrement;
+            OnUpdated?.Invoke(this, EventArgs.Empty);
+            OnFinished?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    
     public static class GlobalRandom
     {
         private static readonly Random Random = new Random();

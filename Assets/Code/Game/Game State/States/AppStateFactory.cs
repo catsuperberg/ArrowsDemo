@@ -48,8 +48,10 @@ namespace Game.GameState
         }
         
         public PostRun GetPostRun()
-        {
-            return null;            
+        {                   
+            var postRunGO = Instantiate(PostRunPrefab);
+            var postRun = postRunGO.GetComponent<PostRun>();       
+            return postRun;   
         }
         
         public Ad GetAd()

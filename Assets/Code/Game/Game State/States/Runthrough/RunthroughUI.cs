@@ -12,8 +12,8 @@ namespace Game.GameState
         GameObject GameplayHUD;
         [SerializeField]
         GameObject FinishingScreen;
-        [SerializeField]
-        GameObject PreAdTease;   
+        // [SerializeField]
+        // GameObject PreAdTease;   
         [SerializeField]
         GameObject PauseScreen;            
         
@@ -40,7 +40,7 @@ namespace Game.GameState
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 FinishingScreen.SetActive(false);
-                PreAdTease.SetActive(false);
+                // PreAdTease.SetActive(false);
                 PauseScreen.SetActive(false);
                 });             
         }
@@ -75,10 +75,10 @@ namespace Game.GameState
             SwitchToScreen(FinishingScreen);  
         }
         
-        public void SwithchToPreAdTease()
-        {      
-            SwitchToScreen(PreAdTease);  
-        }
+        // public void SwithchToPreAdTease()
+        // {      
+        //     SwitchToScreen(PreAdTease);  
+        // }
         
         void SwitchToScreen(GameObject screen, bool forceUpdateIfNotChanged = false)
         {            
