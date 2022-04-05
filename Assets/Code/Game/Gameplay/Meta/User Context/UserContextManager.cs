@@ -24,6 +24,7 @@ namespace Game.Gameplay.Meta
             _registryManager = registryManager;
             _context = new UserContext(new CurenciesContext(registryIngester), new UpgradeContext(registryIngester), new PassiveInvomceContext());
             _context.Upgrades.OnUpdated += DataUpdated;
+            _context.Curencies.OnUpdated += DataUpdated;
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();       
         }      

@@ -5,9 +5,10 @@ using System.Timers;
 
 namespace Game.GameState
 {    
-    public class AdState : MonoBehaviour
+    public class AdState : MonoBehaviour, IFinishNotification
     {        
-        public event EventHandler OnProceedToNextState;  
+        public event EventHandler OnProceedToNextState; 
+        public event EventHandler OnFinished;   
         private float AdDuration = 3000; 
         private Timer _timer;
         
@@ -27,6 +28,7 @@ namespace Game.GameState
             _timer = null;
             
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    OnFinished?.Invoke(this, EventArgs.Empty); // HACK Hangs on pre run loading if OnFinished (reward applier) is invoked after OnProceedToNextState
                     OnProceedToNextState?.Invoke(this, EventArgs.Empty);
                 });
         }       

@@ -66,5 +66,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IContextProvider>().FromInstance(userContextConverter).AsSingle(); 
         Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").FromInstance(userContextManager).AsSingle(); 
         Container.Bind<IRegistryAccessor>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsSingle(); 
+        Container.Bind<IRegistryValueReader>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsSingle(); 
     }
 }

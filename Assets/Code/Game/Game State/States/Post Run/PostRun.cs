@@ -10,8 +10,9 @@ namespace Game.GameState
     {
         [SerializeField]
         PreAdTease _preAdTease;
+        [SerializeField]
+        RewardApplier _rewardApplier;
                 
-        public BigInteger RewardThatPlayerGets {get; private set;}
         public PostRunContext Context {get; private set;}
         public event EventHandler OnProceedToNextState;   
         
@@ -25,6 +26,16 @@ namespace Game.GameState
         {
             Context = new PostRunContext(_preAdTease.RewardThatPlayerGets, _preAdTease.AdRequested);
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
+        }
+        
+        public void SubscribeActualReward(IFinishNotification objectToWaitFor)
+        {
+            _rewardApplier.SubscribeActualReward(objectToWaitFor, Context.SelectedReward);
+        }
+        
+        public void AddReward()
+        {
+            _rewardApplier.ApplyReward(Context.SelectedReward);
         }
     }
 }

@@ -105,17 +105,26 @@ namespace Game.GameState
         {            
             _postRun.OnProceedToNextState -= PostRunFinished;
             _postRunContext = _postRun.Context;
-            Destroy(_postRun.gameObject);            
-            _postRun = null;
+            if(!_postRun.Context.ShowAdBeforeApplyingReward)            
+            {
+                _postRun.AddReward();
+                Destroy(_postRun.gameObject);         
+                _postRun = null;
+            }
             AdvanceState();
             ProcessCurrentState();
         }
         
         void StartAd()
         {         
-             _ad = _stateFactory.GetAd();
-             _ad.gameObject.transform.SetParent(this.transform);
-             _ad.OnProceedToNextState += AdFinished;
+            _ad = _stateFactory.GetAd();
+            
+            _postRun.SubscribeActualReward(_ad);
+            Destroy(_postRun.gameObject);            
+            _postRun = null;
+             
+            _ad.gameObject.transform.SetParent(this.transform);
+            _ad.OnProceedToNextState += AdFinished;
         }
         
         void AdFinished(object caller, EventArgs args)
