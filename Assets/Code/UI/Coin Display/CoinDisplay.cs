@@ -16,6 +16,8 @@ namespace UI
         
         IRegistryAccessor _coinDataAccessor;
         
+        BigInteger _localValue;
+        
         [Inject]
         public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor)
         {            
@@ -23,14 +25,25 @@ namespace UI
                 throw new ArgumentNullException("IRegistryAccessor not provided to " + this.GetType().Name);
             
             _coinDataAccessor = registryAccessor;
-            UpdateAppearance();
+            UpdateAppearanceFromRegistry();
         }
         
-        void UpdateAppearance()
+        public void ForceSetDisplayedAmmount(BigInteger ammountToDisplay)
+        {
+            _localValue = ammountToDisplay;
+            UpdateAppearanceFromLocal();
+        }
+        
+        void UpdateAppearanceFromRegistry()
         {
             var coinsString = _coinDataAccessor.GetStoredValue(typeof(CurenciesContext), nameof(CurenciesContext.CommonCoins));
             var ammountOfCoins = BigInteger.Parse(coinsString);
             CoinIndicator.text = ammountOfCoins.ParseToReadable();
-        }
+        }      
+        
+        void UpdateAppearanceFromLocal()
+        {
+            CoinIndicator.text = _localValue.ParseToReadable();
+        }     
     }
 }

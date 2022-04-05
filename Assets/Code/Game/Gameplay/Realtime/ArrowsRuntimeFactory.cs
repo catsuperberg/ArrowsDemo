@@ -41,24 +41,17 @@ namespace Game.Gameplay.Realtime
                 throw new System.Exception("ITrackPopulator isn't provided to RuntimeFactory");
             if(targetGenerator == null)
                 throw new System.Exception("ITargerProvider isn't provided to RuntimeFactory");
-               
-            _splineMeshGenerator = splineMeshGenerator;
-            _trackPopulator = trackPopulator;
-            _targetGenerator = targetGenerator; 
-                
-            // if(follower == null)
-            //     throw new System.Exception("ITrackFollower not provided to GameManager");
             if(projectileGenerator == null)
                 throw new System.Exception("IProjectileProvider not provided to RuntimeFactory");
-                
-            // _follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
-            _projectileGenerator = projectileGenerator;            
-            
             if(runContextProvider == null)
                 throw new System.Exception("IContextProvider isn't provided to RuntimeFactory");
              if(sequenceManager == null)
                 throw new System.Exception("ISequenceManager isn't provided to RuntimeFactory");
-                
+               
+            _splineMeshGenerator = splineMeshGenerator;
+            _trackPopulator = trackPopulator;
+            _targetGenerator = targetGenerator; 
+            _projectileGenerator = projectileGenerator;         
             _runContextProvider = runContextProvider;
             _sequenceManager = sequenceManager;                        
         }
@@ -114,14 +107,6 @@ namespace Game.Gameplay.Realtime
             var endPoint = spline.nodes.Last().Position;
             entity.transform.position = endPoint + offset;
         }
-        
-        // public Runthrough GetRunthrough(Playfield playfield)
-        // {     
-        //     var follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
-        //     var context = _runContextProvider.getContext();
-        //     var run = new Runthrough(follower, _projectileGenerator, playfield, context);      
-        //     return run;
-        // }
         
         ITrackFollower GetTrackFollower(SplineMesh.Spline splineToAttachFollowerTo = null)
         {

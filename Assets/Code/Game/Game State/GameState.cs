@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.GameState.Context;
 using UnityEngine;
 using Zenject;
 
@@ -19,8 +20,10 @@ namespace Game.GameState
         PreRun _preRun;
         Runthrough _runthrough;
         PostRun _postRun;
-        Ad _ad;       
-                
+        AdState _ad;       
+        
+        PostRunContext _postRunContext = null;
+                        
         [Inject]
         public void Construct(IAppStateFactory stateFactory)
         {                        
@@ -58,7 +61,7 @@ namespace Game.GameState
         }
         
         void StartPreRun()
-        {
+        {            
             _preRun = _stateFactory.GetPreRun();
             _preRun.gameObject.transform.SetParent(this.transform);
             _preRun.OnProceedToNextState += PreRunCalledStartRunthrough;
@@ -83,23 +86,43 @@ namespace Game.GameState
         
         void RunthroughFinished(object caller, EventArgs args)
         {
-            _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;       
-            _runthrough.DestroyRun();     
-            Destroy(_runthrough.gameObject);
+            _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;  
             AdvanceState();
             ProcessCurrentState();
         }
         
         void StartPostRun()
         {            
-            _postRun = _stateFactory.GetPostRun();
+            _postRun = _stateFactory.GetPostRun(_runthrough.FinishingContext);
+            _runthrough.DestroyRun();     
+            Destroy(_runthrough.gameObject);
+            _runthrough = null;
             _postRun.gameObject.transform.SetParent(this.transform);
-            // AdvanceState();
-            // ProcessCurrentState();
+            _postRun.OnProceedToNextState += PostRunFinished;
+        }
+        
+        void PostRunFinished(object caller, EventArgs args)
+        {            
+            _postRun.OnProceedToNextState -= PostRunFinished;
+            _postRunContext = _postRun.Context;
+            Destroy(_postRun.gameObject);            
+            _postRun = null;
+            AdvanceState();
+            ProcessCurrentState();
         }
         
         void StartAd()
-        {            
+        {         
+             _ad = _stateFactory.GetAd();
+             _ad.gameObject.transform.SetParent(this.transform);
+             _ad.OnProceedToNextState += AdFinished;
+        }
+        
+        void AdFinished(object caller, EventArgs args)
+        {                                    
+            _ad.OnProceedToNextState -= AdFinished;
+            Destroy(_ad.gameObject);    
+            _ad = null;
             AdvanceState();
             ProcessCurrentState();
         }
@@ -123,8 +146,8 @@ namespace Game.GameState
         
         bool DecideOnShowingAd(AppState previousState)
         {
-            if(previousState == AppState.Runthrough)
-                return true;
+            if(previousState == AppState.PostRun)
+                return _postRunContext.ShowAdBeforeApplyingReward;
             else
                 return false;
         }

@@ -15,7 +15,7 @@ namespace Game.GameState
         [SerializeField]
         private RunthroughUI _UI;
         
-        public BigInteger FinalReward {get; private set;} = new BigInteger(0);
+        public RunFinishContext FinishingContext {get; private set;}
         
         Playfield _playfield;
         
@@ -141,7 +141,7 @@ namespace Game.GameState
         
         void RunFinished()
         {               
-            FinalReward = _rewardCalculator.Reward;       
+            FinishingContext = new RunFinishContext(_rewardCalculator.Reward);
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }     
         

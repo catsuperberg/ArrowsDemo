@@ -85,7 +85,7 @@ namespace GameMath
     
     public static class GlobalRandom
     {
-        private static readonly Random Random = new Random();
+        private static readonly Random Random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
         private static readonly object SyncLock = new object();
         
         public static int RandomInt(int min, int max)

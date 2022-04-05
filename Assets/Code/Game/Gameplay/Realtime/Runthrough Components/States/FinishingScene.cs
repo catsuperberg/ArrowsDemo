@@ -30,8 +30,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
         enum State
         {   
-            HalfLifeCalculation,
-            ConstantCalculation,
+            SprayUntilAnyIsZero,
             Overkill,
             Finished,
             Blank
@@ -39,16 +38,14 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
         public event EventHandler OnFinished;
         
-        double _halfLifeTime = 4;
-        double _constantSpeedTime = 1;
-        double _finishingSpeed;
+        double _sprayingArrowsTime = 3;
+        double _overkillTime = 1;
         double _overkillSpeed;
-        BigInteger _stopHalfLifeAt = new BigInteger(500);
         ResultType _result = ResultType.Blank;
         State _state = State.Blank;
         List<State> _statesToGoThrough = new List<State>();
         List<State>.Enumerator _stateEnumerator;
-        HalfLifeCalculator _damageCalculator;
+        ExponentialCountCalculator _damageCalculator;
                         
         public void StartScene(IDamageableWithTransforms projectile, IDamageableWithTransforms target, RewardCalculator reward)
         {     
@@ -67,14 +64,10 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             
             PointCameraAtTarget();
                          
-            var halfLifeRequired = _projectile.DamagePoints > _stopHalfLifeAt;
-            AssembleStateOrder(halfLifeRequired, _result == ResultType.Overkill);    
+            AssembleStateOrder(_result == ResultType.Overkill);    
             SetValuesToDecay();     
-            SetDecaySpeeds(halfLifeRequired); 
-            if(halfLifeRequired)
-                Task.Run(() => {CreateCalculator(); RunScene();});  // HACK waiting to create HalfLifeCalculator, only than changing state    
-            else
-                RunScene();
+            SetDecaySpeeds(); 
+            Task.Run(() => {CreateCalculator(); RunScene();});  // HACK waiting to create HalfLifeCountCalculator, only than changing state    
         }
         
         void PointCameraAtTarget()
@@ -102,11 +95,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             return ResultType.Blank;
         }
         
-        void AssembleStateOrder(bool halfLifeRequired, bool projectilesAreOverkillForTargets)
+        void AssembleStateOrder(bool projectilesAreOverkillForTargets)
         {
-            if(halfLifeRequired)
-                _statesToGoThrough.Add(State.HalfLifeCalculation);
-            _statesToGoThrough.Add(State.ConstantCalculation);
+            _statesToGoThrough.Add(State.SprayUntilAnyIsZero);
             if(_result == ResultType.Overkill)
                 _statesToGoThrough.Add(State.Overkill);
             _statesToGoThrough.Add(State.Finished);
@@ -129,15 +120,14 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             }             
         }
         
-        void SetDecaySpeeds(bool halfLifeRequired)
+        void SetDecaySpeeds()
         {
-            _finishingSpeed =  (halfLifeRequired) ? (double)_stopHalfLifeAt/_constantSpeedTime : (double)_projectile.DamagePoints/(_constantSpeedTime+_halfLifeTime);
-            _overkillSpeed = (double)(_projectile.DamagePoints - _target.DamagePoints)/_constantSpeedTime; 
+            _overkillSpeed = (double)(_projectile.DamagePoints - _target.DamagePoints)/_overkillTime; 
         }
         
         void CreateCalculator()
         {
-            _damageCalculator =  new HalfLifeCalculator(_smallerDamageable.DamagePoints, _stopHalfLifeAt, _halfLifeTime);
+            _damageCalculator =  new ExponentialCountCalculator(_smallerDamageable.DamagePoints, 0, _sprayingArrowsTime);
         }
         
         void RunScene()
@@ -149,12 +139,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         {
             switch (_state)
             {
-                case State.HalfLifeCalculation:
-                    DecreaseCountWithHalfLife(_smallerDamageable);
+                case State.SprayUntilAnyIsZero:
+                    DecreaseCountExponentially(_smallerDamageable);
                     break;                    
-                case State.ConstantCalculation:                    
-                    DecreaseCountConstantly(_smallerDamageable, _finishingSpeed);
-                    break;  
                 case State.Overkill:
                     DecreaseCountConstantly(_largerDamageable, _overkillSpeed);                                 
                     break;
@@ -166,13 +153,13 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _projectileSpawner.SpawnFlyingProjectiles();          
         } 
         
-        void DecreaseCountWithHalfLife(IDamageable decayTarget)
+        void DecreaseCountExponentially(IDamageable decayTarget)
         {
-            var damage = _damageCalculator.CalculateDecayed(decayTarget.DamagePoints, Time.deltaTime);
+            var damage = _damageCalculator.GetDeltaForGivenTime(decayTarget.DamagePoints, Time.deltaTime);
             if(_target.DamagePoints > 0)
                 _target.Damage(damage);
             _projectile.Damage(damage);
-            if(decayTarget.DamagePoints < _stopHalfLifeAt)
+            if(decayTarget.DamagePoints <= 0)
                 AdvanceSceneState();            
             _reward.IncreaseReward(damage);     
         }
