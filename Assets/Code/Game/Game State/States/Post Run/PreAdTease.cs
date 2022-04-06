@@ -31,7 +31,7 @@ namespace Game.GameState
         private ExponentialCountCalculator _coinCalculator;
         
         [SerializeField]
-        private int _adMultiplier = 5;
+        private int _adMultiplier = 4;
         [SerializeField]
         private double _coinTransferTime = 0.8;   
              

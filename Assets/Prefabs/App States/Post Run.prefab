@@ -746,7 +746,7 @@ MonoBehaviour:
   DefaultReward: {fileID: 7014221356582886052}
   MultipliedReward: {fileID: 2854514353463370957}
   PlayerCoinDisplay: {fileID: 5665256724714144910}
-  _adMultiplier: 5
+  _adMultiplier: 4
   _coinTransferTime: 0.8
 --- !u!1 &2376246221814093942
 GameObject:

@@ -10,10 +10,10 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public readonly Operation Type;
         public readonly int Value;
         private static Dictionary<Operation, int> OperationFrequency = new Dictionary<Operation, int>(){
-            {Operation.Multiply, 38},
-            {Operation.Divide, 36},
-            {Operation.Add, 28},
-            {Operation.Subtract, 22},
+            {Operation.Multiply, 25},
+            {Operation.Divide, 40},
+            {Operation.Add, 22},
+            {Operation.Subtract, 35},
             {Operation.Blank, 35},};
         private static Dictionary<Operation, float> OperationWeights = new Dictionary<Operation, float>();
         
@@ -48,16 +48,16 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             switch (operation)
             {
                 case Operation.Add:
-                    Value = GetValueWithWeight(1, 10, 0.2f, rand);
+                    Value = GetValueWithWeight(1, 10, 0.1f, rand);
                     break;
                 case Operation.Subtract:
                     Value = GetValueWithWeight(1, 10, 0.5f, rand);
                     break;
                 case Operation.Multiply:
-                    Value = GetValueWithWeight(2, 5, 0.2f, rand);
+                    Value = GetValueWithWeight(2, 4, 0.03f, rand);
                     break;
                 case Operation.Divide:
-                    Value = GetValueWithWeight(2, 5, 0.5f, rand);
+                    Value = GetValueWithWeight(2, 5, 0.8f, rand);
                     break;
                 case Operation.Blank:
                     break;
@@ -75,27 +75,27 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             throw new System.Exception("GetOperationWithProbabilityOptimized() couldn't find operation suitable for generated randomWeight");
         }
         
-        Operation GetOperationWithProbability(float coeff, Random rand)
-        {     
-            List<Tuple<double, Operation>> probabilityToOperation = new List<Tuple<double, Operation>>();
-            probabilityToOperation.Add(new Tuple<double, Operation>(0.36, Operation.Multiply));
-            probabilityToOperation.Add(new Tuple<double, Operation>(0.36, Operation.Divide));
-            probabilityToOperation.Add(new Tuple<double, Operation>(0.28, Operation.Add));
-            probabilityToOperation.Add(new Tuple<double, Operation>(0.22, Operation.Subtract));
-            probabilityToOperation.Add(new Tuple<double, Operation>(0.35, Operation.Blank));
+        // Operation GetOperationWithProbability(float coeff, Random rand)
+        // {     
+        //     List<Tuple<double, Operation>> probabilityToOperation = new List<Tuple<double, Operation>>();
+        //     probabilityToOperation.Add(new Tuple<double, Operation>(0.20, Operation.Multiply));
+        //     probabilityToOperation.Add(new Tuple<double, Operation>(0.40, Operation.Divide));
+        //     probabilityToOperation.Add(new Tuple<double, Operation>(0.22, Operation.Add));
+        //     probabilityToOperation.Add(new Tuple<double, Operation>(0.35, Operation.Subtract));
+        //     probabilityToOperation.Add(new Tuple<double, Operation>(0.35, Operation.Blank));
             
-            var result = -1;
-            while(!Enum.IsDefined(typeof(Operation), result))
-            {    
-                foreach (var option in probabilityToOperation)
-                {
-                    double realRoll = rand.NextDouble();
-                    if (option.Item1 > realRoll)
-                        result = (int)option.Item2;
-                }
-            }
-            return (Operation)result;
-        }
+        //     var result = -1;
+        //     while(!Enum.IsDefined(typeof(Operation), result))
+        //     {    
+        //         foreach (var option in probabilityToOperation)
+        //         {
+        //             double realRoll = rand.NextDouble();
+        //             if (option.Item1 > realRoll)
+        //                 result = (int)option.Item2;
+        //         }
+        //     }
+        //     return (Operation)result;
+        // }
         
         int GetValueWithWeight(float min, float max, float coeff, Random rand)
         {            

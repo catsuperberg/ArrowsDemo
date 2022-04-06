@@ -90,8 +90,8 @@ namespace Game.Gameplay.Realtime
             
             var gates = _trackPopulator.PlaceGates(_gatePrefab, splineTrack.GetComponent<Spline>(), sequence);
             
-            
-            (int Min, int Max) numberOfTargetsRange = (1, 20);  
+            var maxNumberOfTargets = (targetScore > 20) ? 20 : (int)targetScore - 1;
+            (int Min, int Max) numberOfTargetsRange = (1, maxNumberOfTargets);  
             var targets = _targetGenerator.GetSuitableTarget(_targetPrefabs, targetScore, numberOfTargetsRange);   
             
             

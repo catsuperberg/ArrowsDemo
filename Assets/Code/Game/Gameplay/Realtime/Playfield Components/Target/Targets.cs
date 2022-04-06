@@ -48,7 +48,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
                     damageCount -= target.Points;
                     TargetObjects.Remove(target.gameObject);
                     Destroy(target.gameObject);
-                    OnMultiplierEvent?.Invoke(this, new MultiplierEventArgs(){Multiplier = target.Grade.RevardMultiplier()});
+                    OnMultiplierEvent?.Invoke(this, new MultiplierEventArgs(){Multiplier = target.Grade.RewardMultiplier()});
                 }
                 else
                 {
