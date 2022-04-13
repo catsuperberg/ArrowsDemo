@@ -12,6 +12,11 @@ namespace Game.Gameplay.Meta.Curencies
                 
         public event EventHandler OnUpdated;
         
+        public CurenciesContext()
+        {
+            
+        }
+        
         public CurenciesContext(IRegistryIngester registry)
         {
             registry.Register(this, true, true);            

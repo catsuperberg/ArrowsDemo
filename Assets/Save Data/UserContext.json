@@ -24,7 +24,7 @@
   "CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "714",
+      "Value": "168",
       "Type": "System.Numerics.BigInteger"
     }
   ]

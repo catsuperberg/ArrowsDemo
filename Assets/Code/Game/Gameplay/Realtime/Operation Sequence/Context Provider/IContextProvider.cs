@@ -4,6 +4,6 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public interface IContextProvider
     {
-        public SequenceContext getContext();
+        public SequenceContext GetContext();
     }
 }

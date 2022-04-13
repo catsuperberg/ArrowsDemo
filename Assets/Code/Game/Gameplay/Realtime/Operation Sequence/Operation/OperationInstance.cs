@@ -14,7 +14,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             {Operation.Divide, 40},
             {Operation.Add, 22},
             {Operation.Subtract, 35},
-            {Operation.Blank, 35},};
+            {Operation.Blank, 35}};
         private static Dictionary<Operation, float> OperationWeights = new Dictionary<Operation, float>();
         
         static OperationInstance() // OPTIMIZATION_POINT precalculate OperationWeights according to OperationFrequency

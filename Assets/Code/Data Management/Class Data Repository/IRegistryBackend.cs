@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DataManagement
 {
-    public interface IRegistryBackend
+    public interface IRegistryBackend : IUpdatedNotification
     {
         public string Name {get;} 
         public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get;}
@@ -18,5 +18,6 @@ namespace DataManagement
         public void RegisterNewConfigurablesForClass(Type objectType, List<ConfigurableField> fields);
         public void RegisterInstanceForUpdates(IConfigurable instance, string className);
         public void UnregisterInstance(IConfigurable instance);
+        public void UpdateAllRegisteredOfClass(string className);
     }
 }

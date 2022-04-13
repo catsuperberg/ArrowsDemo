@@ -12,6 +12,13 @@ namespace DataManagement
         public Lookup<IConfigurable, string> ObjectsToUpdateOnChange {get {return (Lookup<IConfigurable, string>)_objectsToUpdateOnChange.ToLookup(p => p.Key, p => p.Value);}}
         public Dictionary<string, List<ConfigurableField>> _currentConfigurablesData {get; private set;} = new Dictionary<string, List<ConfigurableField>>();
         public Dictionary<IConfigurable, string> _objectsToUpdateOnChange {get; private set;} = new Dictionary<IConfigurable, string>();
+                
+        public event EventHandler OnUpdated;
+        
+        void NotifyAboutDataUpdate()
+        {
+            OnUpdated?.Invoke(this, EventArgs.Empty);
+        }
         
         public ClassDataRegistryBackend(string nameForTheRegistry)
         {
@@ -20,17 +27,22 @@ namespace DataManagement
         
         public void UpdateRegisteredField(string className, string fieldName, string fieldValue)
         {
+            var dataUpdated = false;
             var indexOfTargetField = _currentConfigurablesData[className].FindIndex(x => x.Name == fieldName);
             if(indexOfTargetField != -1)
             {
                 var fieldType = _currentConfigurablesData[className][indexOfTargetField].Type;
                 _currentConfigurablesData[className][indexOfTargetField] = new ConfigurableField(fieldName, fieldValue, fieldType);
+                dataUpdated = true;
             }
             else
                 throw new NoFieldException("No field found to update, trying to update: " + fieldName + " in " + className);
             
             if(_objectsToUpdateOnChange.ContainsValue(className))
                 UpdateSingleFieldOfAllRegistered(className, fieldName, fieldValue);
+            
+            if(dataUpdated)
+                NotifyAboutDataUpdate();
         }
         
         public void UpdateInstanceWithStoredValues(IConfigurable instance)
@@ -40,6 +52,8 @@ namespace DataManagement
         
         public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurables, bool overrideOnPresent)
         {
+            if(!sourceConfigurables.Any())
+                return;
             foreach(var configurable in sourceConfigurables)
             {
                 if(!_currentConfigurablesData.ContainsKey(configurable.Key))
@@ -47,11 +61,13 @@ namespace DataManagement
                 else if (overrideOnPresent)
                     _currentConfigurablesData[configurable.Key] = configurable.Value;                    
             }
+            NotifyAboutDataUpdate();
         }
         
         public void OverrideConfigurables(Dictionary<string, List<ConfigurableField>> newConfigurables)
         {
             _currentConfigurablesData = newConfigurables;
+            NotifyAboutDataUpdate();
         }
         
         public void OverrideClassData(string className, List<ConfigurableField> newData)
@@ -60,6 +76,7 @@ namespace DataManagement
                 throw new NoConfigurablesException("No registered configurables for class: " + className);
             
             _currentConfigurablesData[className] = newData;
+            NotifyAboutDataUpdate();
         }
         
         public void RegisterNewConfigurablesForClass(Type objectType, List<ConfigurableField> fields)
@@ -68,6 +85,7 @@ namespace DataManagement
                 return;
         
             _currentConfigurablesData.Add(objectType.Name, fields);
+            NotifyAboutDataUpdate();
         }
         
         public void RegisterInstanceForUpdates(IConfigurable instance, string className)
@@ -98,7 +116,7 @@ namespace DataManagement
             _objectsToUpdateOnChange = dictionarryWithoutEmptyInstances;  
         }
         
-        void UpdateAllRegisteredOfClass(string className)
+        public void UpdateAllRegisteredOfClass(string className)
         {
             var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.Value == className).Select(x => x.Key);
             foreach(var instance in objectsToUpdate)

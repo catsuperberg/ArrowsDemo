@@ -1,5 +1,8 @@
 using DataManagement;
 using Game.Gameplay.Meta.UpgradeSystem;
+using Game.Gameplay.Meta.Curencies;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace UI
@@ -8,6 +11,11 @@ namespace UI
     {
         [SerializeField]
         ChangersManager ChangerManager;
+        
+        private static List<string> FieldsToShow = new List<string>(){
+            nameof(UpgradeContext.ArrowLevel),
+            nameof(UpgradeContext.CrossbowLevel),
+            nameof(UpgradeContext.InitialArrowCount)};
         
         IRegistryAccessor _userContextAccessor;
         
@@ -22,9 +30,17 @@ namespace UI
             CreateUpgradeChangers();            
         }
         
+        public void ResetPlayerProgress()
+        {
+            _userContextAccessor.ResetRegisteredFieldsToDefault(typeof(UpgradeContext));
+            _userContextAccessor.ResetRegisteredFieldsToDefault(typeof(CurenciesContext));
+            ChangerManager.refreshAllValues();
+        }
+        
         void CreateUpgradeChangers()
         {          
             var fieldsToControl = _userContextAccessor.GetRegisteredFields(typeof(UpgradeContext));
+            fieldsToControl = fieldsToControl.Intersect(FieldsToShow).ToList();
                         
             foreach(var field in fieldsToControl)
                 ChangerManager.CreateChangerForValue(_userContextAccessor, typeof(UpgradeContext), field);

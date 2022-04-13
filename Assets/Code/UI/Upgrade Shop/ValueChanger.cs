@@ -41,7 +41,7 @@ namespace UI
             updateValueText();        
         }    
         
-        void updateValueText()
+        public void updateValueText()
         {
             ValueText.text = _registryAccessor.GetStoredValue(_objectClass, _fieldName);
         }

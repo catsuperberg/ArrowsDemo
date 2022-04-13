@@ -37,7 +37,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         public SequenceContext GetContext()
         {
-            return _runContextProvider.getContext();
+            return _runContextProvider.GetContext();
         }
         
         public BigInteger GetNextTargetScore()
@@ -61,7 +61,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             State = State.SetFlag(ProcessState.Processing); 
             OnStateChanged?.Invoke(this, new ProcessStateEventArgs(State)); 
             
-            var sequence = _meta.GenerateSequence(targetScore, spread, _runContextProvider.getContext());
+            var sequence = _meta.GenerateSequence(targetScore, spread, _runContextProvider.GetContext());
             
             if(!_fillingTargets.Status.Equals(TaskStatus.Running))
             {
@@ -87,7 +87,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         BigInteger GenerateAverageTarget()
         {
-            return _meta.GetAverageSequenceResult(_runContextProvider.getContext(), _numIterationsForAverage);
+            return _meta.GetAverageSequenceResult(_runContextProvider.GetContext(), _numIterationsForAverage);
         }
         
         void PushTarget(BigInteger target)

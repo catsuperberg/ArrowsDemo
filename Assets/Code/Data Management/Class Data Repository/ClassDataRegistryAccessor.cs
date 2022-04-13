@@ -8,13 +8,21 @@ namespace DataManagement
     {
         IRegistryBackend _registry;
         
+        public event EventHandler OnUpdated;
+        
         public ClassDataRegistryAccessor(IRegistryBackend registry)
         {
             if(registry == null)
                 throw new ArgumentNullException("No registry implimentation provided to " + this.GetType().Name);
             
             _registry = registry;
-        }        
+            _registry.OnUpdated += DataInRegistryUpdated;
+        }     
+        
+        void DataInRegistryUpdated(object caller, EventArgs args)
+        {
+            OnUpdated?.Invoke(this, EventArgs.Empty);
+        }   
         
         public List<string> GetRegisteredFields(Type classType)
         {
@@ -25,6 +33,26 @@ namespace DataManagement
             var fieldNames = fields.Select(x => x.Name).ToList();
             return fieldNames;
         }  
+                                
+        public void ResetRegisteredFieldsToDefault(Type classType)
+        {
+            object tempInstance = null;
+            try
+            {
+                tempInstance = Activator.CreateInstance(classType);                
+            }
+            catch (MissingMethodException e)
+            {
+                throw new NotImplementedException(classType + " doesn't have default constructor and thus can't be reset to default values\n" + e);
+            }
+            finally
+            {
+                var defaultConfigurables = ConfigurableFieldUtils.GetInstanceConfigurablesWithCurrentValues((IConfigurable)tempInstance, classType);
+                _registry.OverrideClassData(classType.Name, defaultConfigurables);
+                _registry.UpdateAllRegisteredOfClass(classType.Name);
+                tempInstance = null;                
+            }
+        }
         
         public void ApplyOperationOnRegisteredField(Type classType, string fieldName, OperationType operation, string fieldIncrement)
         {

@@ -7,12 +7,20 @@ namespace DataManagement
     {
         IRegistryBackend _registry;
         
+        public event EventHandler OnUpdated;
+        
         public ClassDataRegistryReader(IRegistryBackend registry)
         {
             if(registry == null)
-                throw new ArgumentNullException("No registry implimentation provided to " + this.GetType().Name);
+                throw new ArgumentNullException("No registry implimentation provided to " + this.GetType().Name);                
             
             _registry = registry;
+            _registry.OnUpdated += DataInRegistryUpdated;
+        }
+        
+        void DataInRegistryUpdated(object caller, EventArgs args)
+        {
+            OnUpdated?.Invoke(this, EventArgs.Empty);
         }
                 
         public string GetStoredValue(Type classType, string fieldName)

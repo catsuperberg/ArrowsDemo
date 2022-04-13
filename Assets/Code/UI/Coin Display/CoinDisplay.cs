@@ -25,6 +25,12 @@ namespace UI
                 throw new ArgumentNullException("IRegistryValueReader not provided to " + this.GetType().Name);
             
             _coinDataReader = registryAccessor;
+            _coinDataReader.OnUpdated += DataInRegistryUpdated;
+            UpdateAppearanceFromRegistry();
+        }
+        
+        void DataInRegistryUpdated(object caller, EventArgs args)
+        {
             UpdateAppearanceFromRegistry();
         }
         

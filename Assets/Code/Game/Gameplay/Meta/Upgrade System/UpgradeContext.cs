@@ -8,15 +8,20 @@ namespace Game.Gameplay.Meta.UpgradeSystem
     public class UpgradeContext : IConfigurable
     {
         [StoredField]
-        public int CrossbowLevel {get; private set;} = 15;
+        public int CrossbowLevel {get; private set;} = 1;
         [StoredField]
         public int ArrowLevel {get; private set;} = 1;
         [StoredField]
-        public int InitialArrowCount {get; private set;} = 35;
+        public int InitialArrowCount {get; private set;} = 1;
         [StoredField]
         public int LuckLevel {get; private set;} = 1;  
                 
         public event EventHandler OnUpdated;
+        
+        public UpgradeContext()
+        {
+                      
+        }    
         
         public UpgradeContext(IRegistryIngester registry)
         {

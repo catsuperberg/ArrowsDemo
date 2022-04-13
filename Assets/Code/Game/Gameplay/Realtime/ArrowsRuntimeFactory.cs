@@ -58,7 +58,7 @@ namespace Game.Gameplay.Realtime
         
         public RunthroughContext GetRunthroughContext()
         {
-            var generationContext = _runContextProvider.getContext();
+            var generationContext = _runContextProvider.GetContext();
             var runPlayfield = GetPlayfield();
             var runFollower = GetTrackFollower(runPlayfield.TrackSpline);
             var runProjectile = _projectileGenerator.CreateArrows(generationContext.InitialValue, runPlayfield.trackWidth);            
@@ -76,7 +76,7 @@ namespace Game.Gameplay.Realtime
         
         Playfield GetPlayfield()
         {                    
-            var context = _runContextProvider.getContext();
+            var context = _runContextProvider.GetContext();
             
             var targetScore = _sequenceManager.GetNextTargetScore();
             var spread = 15;

@@ -1,3 +1,4 @@
+using PeterO.Numbers;
 using System;
 using System.Numerics;
 
@@ -47,5 +48,18 @@ namespace ExtensionMethods
             
             return beforeDecimal + "." + afterDecimal + " " + multiplierString;
         }
-    }       
+    }   
+    
+    public static class BigIntegerFractionalPower
+    {            
+        public static BigInteger PowFractional(this BigInteger number, double fractionalExponent)
+        {
+            var initialNumber = EDecimal.FromString(number.ToString());
+            var initialPower = EDecimal.FromDouble(fractionalExponent);
+            var power = initialPower * initialNumber.Log(EContext.Binary64);            
+            var result = power.Exp(EContext.Binary64);
+            var resultInt = result.ToEInteger();
+            return BigInteger.Parse(resultInt.ToString());
+        } 
+    }      
 }

@@ -9,7 +9,7 @@ namespace Game.GameState
     {        
         public event EventHandler OnProceedToNextState; 
         public event EventHandler OnFinished;   
-        private float AdDuration = 3000; 
+        private float AdDuration = 5000; 
         private Timer _timer;
         
         void Awake()
