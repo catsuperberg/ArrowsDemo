@@ -1,12 +1,13 @@
+using ExtensionMethods;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using GameMath;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using TMPro;
 using UnityEngine;
-using ExtensionMethods;
 
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
@@ -34,6 +35,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         public Vector3 Position {get {return transform.position;}}
         public BigInteger Count {get; private set;} = new BigInteger(1);
         
+        public event EventHandler OnUpdated;
         public bool Paused {get; private set;} = false;
         
         public void Initialize(BigInteger initialCount, float movementWidth)
@@ -55,7 +57,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         }
         
         void UpdateAppearance()
-        {
+        {            
+            OnUpdated?.Invoke(this, EventArgs.Empty);
             CountIndicator.text = Count.ParseToReadable();
             fillArrows();
         }

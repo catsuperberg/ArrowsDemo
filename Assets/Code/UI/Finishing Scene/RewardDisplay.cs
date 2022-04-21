@@ -24,10 +24,10 @@ namespace UI
             _reward.OnRewardChanged += RewardUpdated;
         }      
         
-        void OnDestroy()
-        {            
-            _reward.OnRewardChanged -= RewardUpdated;
-        }  
+        // void OnDestroy()
+        // {            
+        //     _reward.OnRewardChanged -= RewardUpdated;
+        // }  
         
         void RewardUpdated(object caller, EventArgs args)
         {

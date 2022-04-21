@@ -103,6 +103,14 @@ namespace GameMath
                 return Random.NextDouble();
             }
         }
+                
+        public static double RandomDouble(double min, double max)
+        {
+            lock(SyncLock) // synchronize
+            {                
+                return Random.NextDouble() * (max - min) + min;
+            }
+        }
     }
     
     public static class MathUtils
@@ -121,7 +129,7 @@ namespace GameMath
             
         public static int RandomSign()
         {
-            return (int)((UnityEngine.Random.Range(0,2) - 0.5) * 2);
+            return (int)((GlobalRandom.RandomInt(0,2) - 0.5) * 2);
         } 
         
         public static (int, int) GetPositionOnSpiralGrid(int index)

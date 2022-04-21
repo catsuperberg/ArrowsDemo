@@ -20,13 +20,12 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
     public class FinishingScene : MonoBehaviour, IFinishNotification
     {        
+        FallingProjectileSpawner _projectileSpawner;
+        IDamageable _largerDamageable;
+        IDamageable _smallerDamageable;
         IDamageableWithTransforms _projectile;
         IDamageableWithTransforms _target;
-        RewardCalculator _reward;  
-        
-        FallingProjectileSpawner _projectileSpawner;
-        IDamageable _smallerDamageable;
-        IDamageable _largerDamageable;
+        RewardCalculator _reward;          
         
         enum State
         {   

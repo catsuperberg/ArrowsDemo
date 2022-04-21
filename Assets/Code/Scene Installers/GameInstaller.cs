@@ -10,7 +10,6 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
 using Settings;
-using UI;
 using UnityEngine;
 using Zenject;
 

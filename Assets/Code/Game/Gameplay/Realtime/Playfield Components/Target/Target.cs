@@ -19,7 +19,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             Grade = grade;
             
             GetComponent<Renderer>().material = grade.Material();
-            
             var scale = gameObject.transform.localScale*scaleCoeff;
             gameObject.transform.localScale = scale;
         }                

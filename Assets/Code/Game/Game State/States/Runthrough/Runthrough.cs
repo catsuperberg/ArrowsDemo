@@ -1,10 +1,10 @@
 using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents;
+using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using Game.Gameplay.Realtime.PlayfieldComponents;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using UI;
 using UnityEngine;
 
@@ -30,9 +30,15 @@ namespace Game.GameState
             
         FlightThroughTrack _flyingState;
         FinishingScene _finishingSceneState;
-        RewardCalculator _rewardCalculator;     
+        RewardCalculator _rewardCalculator;    
+        IProjectile _projectile;    
         
         public event EventHandler OnProceedToNextState;   
+        
+        void OnDestroy()
+        {            
+            DestroyRun();
+        }
         
         public void Initialize(RunthroughContext runContext, RewardCalculator rewardCalculator)
         {
@@ -45,9 +51,26 @@ namespace Game.GameState
             _rewardCalculator = rewardCalculator;      
             _stateEnumerator = _statesToGoThrough.GetEnumerator();   
             
+            _projectile = runContext.Projectile.GetComponent<IProjectile>();
+            _projectile.OnUpdated += CheckForPlayerFail;
             AttachUIRequests();
             
             _flyingState = new FlightThroughTrack(runContext.Follower, runContext.Projectile);
+        }
+        
+        void CheckForPlayerFail(object caller, EventArgs args)
+        {
+            if(_projectile.Count <= 0 && _state == RunthroughState.FlyingThroughTrack)
+                ProceedToFail();
+        }
+        
+        void ProceedToFail()
+        {            
+            _stateEnumerator.Dispose();
+            _state = RunthroughState.Blank; 
+            FinishingContext = new RunFinishContext(0, runFailed: true);
+            DestroyRun();
+            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
         
         void AttachUIRequests()
@@ -141,7 +164,7 @@ namespace Game.GameState
         
         void RunFinished()
         {               
-            FinishingContext = new RunFinishContext(_rewardCalculator.Reward);
+            FinishingContext = new RunFinishContext(_rewardCalculator.Reward, runFailed: false);
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }     
         
@@ -152,15 +175,22 @@ namespace Game.GameState
         
         public void DestroyRun()
         {       
-            Destroy(_playfield.GameObject);
-            _flyingState.DestroyFlight();
-            _flyingState = null;
-            _playfield = null;
-            Destroy(_finishingSceneState);
+            if(_playfield != null)
+            {
+                Destroy(_playfield.GameObject);
+                _playfield = null;
+                
+            }
+            if(_flyingState != null)
+            {
+                _flyingState.DestroyFlight();
+                _flyingState = null;
+            }
+            if(_finishingSceneState != null)
+                Destroy(_finishingSceneState);
             foreach (Transform child in gameObject.transform) {
                 Destroy(child.gameObject);
             }
-            Destroy(gameObject);
         }
     }
 }

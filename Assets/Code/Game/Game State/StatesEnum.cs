@@ -5,7 +5,8 @@ namespace Game.GameState
         PreRun,
         Runthrough,
         PostRun,
-        Ad
+        Ad,
+        EmptyState
     }
         
     public enum SubState

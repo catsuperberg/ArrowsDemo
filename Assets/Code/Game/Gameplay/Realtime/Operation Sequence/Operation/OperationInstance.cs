@@ -10,10 +10,10 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public readonly Operation Type;
         public readonly int Value;
         private static Dictionary<Operation, int> OperationFrequency = new Dictionary<Operation, int>(){
-            {Operation.Multiply, 25},
-            {Operation.Divide, 40},
-            {Operation.Add, 22},
-            {Operation.Subtract, 35},
+            {Operation.Multiply, 40},
+            {Operation.Divide, 35},
+            {Operation.Add, 27},
+            {Operation.Subtract, 30},
             {Operation.Blank, 35}};
         private static Dictionary<Operation, float> OperationWeights = new Dictionary<Operation, float>();
         

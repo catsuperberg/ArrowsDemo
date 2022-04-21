@@ -7,7 +7,7 @@ namespace Game.GameState
     {
         public PreRun GetPreRun();
         public Runthrough GetRunthrough(RunthroughContext runContext);
-        public PostRun GetPostRun(RunFinishContext FinishContext);
+        public IPostRun GetPostRun(RunFinishContext FinishContext);
         public AdState GetAd();
     }
 }

@@ -2,13 +2,16 @@ using ExtensionMethods;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using GameMath;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using Utils;
 
-using Random = UnityEngine.Random;
+using Random = System.Random;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
@@ -17,11 +20,143 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         [SerializeField]
         private GameObject _targetGroupPrefab;
         
+        private GameObject _target;
+        private List<GameObject> _targetsChildren;
+        private List<GameObject> _targetPrefabs;
+        private BigInteger _targetResult;
+        private List<BigInteger> _targetScores;
+        private int _numberOfTargets;
         private const int fractionalCorrectionThreshold = 300;
+        private Random _rand = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
+                
+        public async Task<GameObject> GetSuitableTargetAsync(List<GameObject> targetPrefabs, 
+            BigInteger targetResult, (int Min, int Max) numberOfTargetsRange)
+        {
+            _target = null;
+            _targetPrefabs = targetPrefabs;
+            _targetResult = targetResult;
+            _numberOfTargets = _rand.Next(numberOfTargetsRange.Min, numberOfTargetsRange.Max);
+            _targetScores = generateTargetScores(_targetResult, _numberOfTargets);  
+            var targetGenerationSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(TargetGenerationCoroutine(targetGenerationSemaphore));});
+            await targetGenerationSemaphore.WaitAsync();    
+            var targetPlacementSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(TargetPlacementCoroutine(targetPlacementSemaphore));});
+            await targetPlacementSemaphore.WaitAsync();    
+            return _target;
+        }
+        
+        IEnumerator TargetGenerationCoroutine(SemaphoreSlim semaphore)
+        {                   
+            var targetGroup = Instantiate(_targetGroupPrefab, UnityEngine.Vector3.zero, UnityEngine.Quaternion.identity);
+            targetGroup.name = "Targets";
+            targetGroup.transform.SetParent(null);            
+            
+            var targets = targetGroup.GetComponent<IGameObjectFillable>();            
+            foreach(BigInteger score in _targetScores)
+            {
+                var randomPrefab = _targetPrefabs[_rand.Next(0,_targetPrefabs.Count)];
+                targets.AddObjectToList(CreateTargetFromPrefab(randomPrefab, score));           
+                if(Time.deltaTime >= 0.01)
+                   yield return null;
+            }            
+            
+            _target = targetGroup;     
+            _targetsChildren = targets.TargetObjects;     
+            semaphore.Release();  
+        }
+        
+        IEnumerator TargetPlacementCoroutine(SemaphoreSlim semaphore)
+        {   
+            var targetsArea = GameObjectUtils.GetAreaOfObjectsWithColliders(_targetsChildren)*1.5;
+            var radius = (float)System.Math.Sqrt(targetsArea/System.Math.PI);
+            
+            if(GameObjectUtils.GetAreaOfObjectsWithColliders(_targetsChildren) >= System.Math.PI*System.Math.Pow(radius,2))
+                throw new System.Exception("area of circle is smaller than area of occupied by objects in TargetGroupGenerator.PlaceInsideCircle");
+            
+            var tempRadius = radius;
+            var entriesPending = _targetsChildren.Count;
+            var hits = 0;
+            while(entriesPending > 0)
+            {
+                var locationOnCircle = UnityEngine.Random.insideUnitCircle * tempRadius;
+                var position = new UnityEngine.Vector3(locationOnCircle.x, 0, locationOnCircle.y);
+                _targetsChildren[entriesPending-1].transform.position = position;
+                _targetsChildren[entriesPending-1].transform.rotation = UnityEngine.Quaternion.Euler(0, _rand.Next(-150,-30), 0);
+                Physics.SyncTransforms();
+                
+                var thisCollider = _targetsChildren[entriesPending-1].GetComponent<CapsuleCollider>();
+                bool collisions = false;
+                foreach(GameObject entry in _targetsChildren)
+                {
+                    var entryCollision = entry.GetComponent<CapsuleCollider>();
+                    if(entryCollision != thisCollider && thisCollider.bounds.Intersects(entryCollision.bounds)) 
+                    {                           
+                        collisions = true; 
+                        hits++;                             
+                        if(hits >= 80) // OPTIMIZATION_POINT
+                        {
+                            hits = 0;
+                            tempRadius *= 1.4f;
+                        }                   
+                        break;
+                    }                
+                    if(Time.deltaTime >= 0.01)
+                        yield return null;             
+                }
+                if(!collisions)
+                    entriesPending--;         
+            }   
+            
+            
+            foreach(GameObject entry in _targetsChildren)
+                entry.transform.SetParent(_target.transform, false);
+            
+            semaphore.Release();
+        }
+        
+        
+        void PlaceInsideCircle(List<GameObject> objectsWithCollision, float circleRadius)
+        {
+            if(GameObjectUtils.GetAreaOfObjectsWithColliders(objectsWithCollision) >= System.Math.PI*System.Math.Pow(circleRadius,2))
+                throw new System.Exception("area of circle is smaller than area of occupied by objects in TargetGroupGenerator.PlaceInsideCircle");
+            
+            var tempRadius = circleRadius;
+            var entriesPending = objectsWithCollision.Count;
+            var hits = 0;
+            while(entriesPending > 0)
+            {
+                var locationOnCircle = UnityEngine.Random.insideUnitCircle * tempRadius;
+                var position = new UnityEngine.Vector3(locationOnCircle.x, 0, locationOnCircle.y);
+                objectsWithCollision[entriesPending-1].transform.position = position;
+                objectsWithCollision[entriesPending-1].transform.rotation = UnityEngine.Quaternion.Euler(0, _rand.Next(-150,-30), 0);
+                Physics.SyncTransforms();
+                
+                var thisCollider = objectsWithCollision[entriesPending-1].GetComponent<CapsuleCollider>();
+                bool collisions = false;
+                foreach(GameObject entry in objectsWithCollision)
+                {
+                    var entryCollision = entry.GetComponent<CapsuleCollider>();
+                    if(entryCollision != thisCollider && thisCollider.bounds.Intersects(entryCollision.bounds)) 
+                    {                           
+                        collisions = true; 
+                        hits++;                             
+                        if(hits >= 80) // OPTIMIZATION_POINT
+                        {
+                            hits = 0;
+                            tempRadius *= 1.4f;
+                        }                   
+                        break;
+                    }                        
+                }
+                if(!collisions)
+                    entriesPending--;         
+            }                
+        }
         
         public GameObject GetSuitableTarget(List<GameObject> targetPrefabs, BigInteger targetResult, (int Min, int Max) numberOfTargetsRange)
         {
-            var numberOfTargets = Random.Range(numberOfTargetsRange.Min, numberOfTargetsRange.Max);
+            var numberOfTargets = _rand.Next(numberOfTargetsRange.Min, numberOfTargetsRange.Max);
             var targetScores = generateTargetScores(targetResult, numberOfTargets);              
             var targetGroup = Instantiate(_targetGroupPrefab, UnityEngine.Vector3.zero, UnityEngine.Quaternion.identity);
             targetGroup.name = "Targets";
@@ -30,7 +165,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             var targets = targetGroup.GetComponent<IGameObjectFillable>();
             foreach(BigInteger score in targetScores)
             {
-                var randomPrefab = targetPrefabs[Random.Range(0,targetPrefabs.Count)];
+                var randomPrefab = targetPrefabs[_rand.Next(0,targetPrefabs.Count)];
                 targets.AddObjectToList(CreateTargetFromPrefab(randomPrefab, score));
             }
             var targetsArea = GameObjectUtils.GetAreaOfObjectsWithColliders(targets.TargetObjects)*1.5;
@@ -43,12 +178,13 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             return targetGroup;
         }
         
+        
         GameObject CreateTargetFromPrefab(GameObject prefab, BigInteger score)
         {
             var target = Instantiate(prefab, UnityEngine.Vector3.forward * 10000, UnityEngine.Quaternion.identity);
             var targetLogic = target.GetComponent<Target>();
             
-            var randomGrade = (TargetGrades)Random.Range(0, (int)TargetGrades.ENUM_END); // TODO probably should be weighted
+            var randomGrade = (TargetGrades)_rand.Next(0, (int)TargetGrades.ENUM_END); // TODO probably should be weighted
             
             var instanceBaseScore = targetLogic.BasePoints*randomGrade.TargetDamagePointsMultiplier();
             var scaleCoeff = System.Math.Exp(BigInteger.Log(score) - BigInteger.Log(new BigInteger(instanceBaseScore)));
@@ -72,12 +208,12 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             var scores = new List<BigInteger>();
             for(int i = 0; i < size; i++)
             {
-                var spread = averageTargetScore.multiplyByFraction(Random.Range(0.2f, 0.85f))  * new BigInteger(MathUtils.RandomSign());
+                var spread = averageTargetScore.multiplyByFraction(GlobalRandom.RandomDouble(0.2f, 0.85f)) * new BigInteger(MathUtils.RandomSign());
                 var score = averageTargetScore+spread;
                 scores.Add(score);
             }
             return scores;
-        }
+        }        
         
         List<BigInteger> CorrectTargetScores(List<BigInteger> targetScores, BigInteger result)
         {
@@ -143,44 +279,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         BigInteger SumOfTargets(List<BigInteger> targetScores)
         {
             return targetScores.Aggregate((currentSum, item) => currentSum + item);
-        }
-        
-        void PlaceInsideCircle(List<GameObject> objectsWithCollision, float circleRadius)
-        {
-            if(GameObjectUtils.GetAreaOfObjectsWithColliders(objectsWithCollision) >= System.Math.PI*System.Math.Pow(circleRadius,2))
-                throw new System.Exception("area of circle is smaller than area of occupied by objects in TargetGroupGenerator.PlaceInsideCircle");
-            
-            var tempRadius = circleRadius;
-            var entriesPending = objectsWithCollision.Count;
-            var hits = 0;
-            while(entriesPending > 0)
-            {
-                var locationOnCircle = Random.insideUnitCircle * tempRadius;
-                var position = new UnityEngine.Vector3(locationOnCircle.x, 0, locationOnCircle.y);
-                objectsWithCollision[entriesPending-1].transform.position = position;
-                objectsWithCollision[entriesPending-1].transform.rotation = UnityEngine.Quaternion.Euler(0, Random.Range(-150,-30), 0);
-                Physics.SyncTransforms();
-                
-                var thisCollider = objectsWithCollision[entriesPending-1].GetComponent<CapsuleCollider>();
-                bool collisions = false;
-                foreach(GameObject entry in objectsWithCollision)
-                {
-                    var entryCollision = entry.GetComponent<CapsuleCollider>();
-                    if(entryCollision != thisCollider && thisCollider.bounds.Intersects(entryCollision.bounds)) 
-                    {                           
-                        collisions = true; 
-                        hits++;                             
-                        if(hits >= 80) // OPTIMIZATION_POINT
-                        {
-                            hits = 0;
-                            tempRadius *= 1.4f;
-                        }                   
-                        break;
-                    }                         
-                }
-                if(!collisions)
-                    entriesPending--;         
-            }                
         }
     }
 }

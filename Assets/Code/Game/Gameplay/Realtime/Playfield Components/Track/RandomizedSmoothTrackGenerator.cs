@@ -1,5 +1,8 @@
 using SplineMesh;
+using System.Collections;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
@@ -13,6 +16,34 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         (float Min, float Max) _dirRgt = (-2f, 2f);
         (float Min, float Max) _dirUp  = (-2f, 4f);
         (float Min, float Max) _dirFwd = (8f, 20f);
+        
+        Spline _splineMesh;
+        GameObject _splineMeshPrefab;
+        float _trackLength;
+        
+        public async Task<Spline> GetRandomizedTrackAsync(float length, GameObject splineMeshPrefab)
+        {
+            _splineMesh = null;
+            _splineMeshPrefab = splineMeshPrefab;
+            _trackLength = length;
+            var trackGenerationSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(TrackGenerationCoroutine(trackGenerationSemaphore));});    
+            await trackGenerationSemaphore.WaitAsync();                        
+            return _splineMesh;
+        }
+        
+        IEnumerator TrackGenerationCoroutine(SemaphoreSlim semaphore)
+        {            
+            var spline = Instantiate(_splineMeshPrefab, Vector3.zero, Quaternion.identity);
+            var splineComponent = spline.GetComponent<Spline>();            
+            randomizeSplineToLength(splineComponent, _trackLength); 
+            splineComponent.RefreshCurves();
+            _splineMesh = splineComponent;
+            
+            semaphore.Release();
+            yield return null;
+        }
+        
         
         public GameObject GetRandomizedTrack(float length, GameObject splineMeshPrefab)
         {

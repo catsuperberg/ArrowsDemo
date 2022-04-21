@@ -17,6 +17,8 @@ namespace Game.GameState
         [SerializeField]
         GameObject PostRunPrefab;
         [SerializeField]
+        GameObject PostRunFailedPrefab;                
+        [SerializeField]
         GameObject AdPrefab;
         
         PreRunFactory _preRunFactory;   
@@ -54,14 +56,24 @@ namespace Game.GameState
             return runthrough;
         }
         
-        public PostRun GetPostRun(RunFinishContext FinishContext)
-        {                   
-            var coinsString = _userContextAccessor.GetStoredValue(typeof(CurenciesContext), nameof(CurenciesContext.CommonCoins));
-            var playerCoins = BigInteger.Parse(coinsString);
-            
-            var postRunGO = Instantiate(PostRunPrefab);
-            var postRun = postRunGO.GetComponent<PostRun>();   
-            postRun.Initialize(FinishContext, playerCoins);    
+        public IPostRun GetPostRun(RunFinishContext FinishContext)
+        {          
+            IPostRun postRun = null;     
+            if(!FinishContext.RunFailed)
+            {
+                var coinsString = _userContextAccessor.GetStoredValue(typeof(CurenciesContext), nameof(CurenciesContext.CommonCoins));
+                var playerCoins = BigInteger.Parse(coinsString);
+                
+                var postRunGO = Instantiate(PostRunPrefab);
+                var postRunComponent = postRunGO.GetComponent<PostRun>();   
+                postRunComponent.Initialize(FinishContext, playerCoins);  
+                postRun = postRunComponent;
+            }
+            else
+            {
+                var postRunGO = Instantiate(PostRunFailedPrefab);     
+                postRun = postRunGO.GetComponent<PostRunFailedRun>();            
+            }
             return postRun;   
         }
         

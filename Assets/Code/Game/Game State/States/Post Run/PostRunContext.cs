@@ -6,11 +6,13 @@ namespace Game.GameState.Context
     {
         public readonly BigInteger SelectedReward;
         public readonly bool ShowAdBeforeApplyingReward;
+        public readonly bool RestartInsteadOfMenu;
 
-        public PostRunContext(BigInteger playerSelectedReward, bool showAdBeforeApplyingReward)
+        public PostRunContext(BigInteger playerSelectedReward, bool showAdBeforeApplyingReward, bool restartInsteadOfMenu)
         {
             SelectedReward = playerSelectedReward;
             ShowAdBeforeApplyingReward = showAdBeforeApplyingReward;
+            RestartInsteadOfMenu = restartInsteadOfMenu;
         }
     }
 }

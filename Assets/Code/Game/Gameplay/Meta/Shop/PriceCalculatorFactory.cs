@@ -14,10 +14,10 @@ namespace Game.Gameplay.Meta.Shop
                     priceCalculator = new InitialArrowsPrice();
                     break;
                 case nameof(UpgradeContext.ArrowLevel):
-                    priceCalculator = new InitialArrowsPrice(); // TODO Specific price calculators not implemented
+                    priceCalculator = new ArrowLevelPrice(); 
                     break;
                 case nameof(UpgradeContext.CrossbowLevel):
-                    priceCalculator = new InitialArrowsPrice(); // TODO Specific price calculators not implemented
+                    priceCalculator = new CrossbowLevelPrice(); 
                     break;
                 default:
                     throw new Exception("Item price calculator factory doesn't know what to do with: " + variableName);

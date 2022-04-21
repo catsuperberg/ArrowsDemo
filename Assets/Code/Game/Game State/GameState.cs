@@ -14,14 +14,16 @@ namespace Game.GameState
         List<AppState> _statesToGoThrough = new List<AppState>()
             {AppState.PreRun,
             AppState.Runthrough,
-            AppState.PostRun};
+            AppState.PostRun,
+            AppState.EmptyState};
         List<AppState>.Enumerator _stateEnumerator;
         
         PreRun _preRun;
         Runthrough _runthrough;
-        PostRun _postRun;
+        IPostRun _postRun;
         AdState _ad;       
         
+        event EventHandler OnNextStateFinished;   
         PostRunContext _postRunContext = null;
                         
         [Inject]
@@ -36,6 +38,7 @@ namespace Game.GameState
         
         void Start()
         {
+            Application.targetFrameRate = 0;
             AdvanceState();
             ProcessCurrentState();
         }
@@ -56,6 +59,9 @@ namespace Game.GameState
                 case AppState.Ad:
                     StartAd();
                     break;
+                case AppState.EmptyState:
+                    StartEmpty();
+                    break;
             } 
             _previousState = _state;
         }
@@ -70,6 +76,7 @@ namespace Game.GameState
         void PreRunCalledStartRunthrough(object caller, EventArgs args)
         {
             _preRun.OnProceedToNextState -= PreRunCalledStartRunthrough;
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
             AdvanceState();
             ProcessCurrentState();
         }
@@ -87,6 +94,7 @@ namespace Game.GameState
         void RunthroughFinished(object caller, EventArgs args)
         {
             _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;  
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
             AdvanceState();
             ProcessCurrentState();
         }
@@ -94,10 +102,9 @@ namespace Game.GameState
         void StartPostRun()
         {            
             _postRun = _stateFactory.GetPostRun(_runthrough.FinishingContext);
-            _runthrough.DestroyRun();     
             Destroy(_runthrough.gameObject);
             _runthrough = null;
-            _postRun.gameObject.transform.SetParent(this.transform);
+            _postRun.GO.transform.SetParent(this.transform);
             _postRun.OnProceedToNextState += PostRunFinished;
         }
         
@@ -105,33 +112,44 @@ namespace Game.GameState
         {            
             _postRun.OnProceedToNextState -= PostRunFinished;
             _postRunContext = _postRun.Context;
-            if(!_postRun.Context.ShowAdBeforeApplyingReward)            
-            {
-                _postRun.AddReward();
-                Destroy(_postRun.gameObject);         
-                _postRun = null;
-            }
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
+            OnNextStateFinished += DestroyPostRun;
             AdvanceState();
             ProcessCurrentState();
+        }
+        
+        void DestroyPostRun(object caller, EventArgs args)
+        {            
+            OnNextStateFinished -= DestroyPostRun;
+            Destroy(_postRun.GO);         
+            _postRun = null;
         }
         
         void StartAd()
         {         
             _ad = _stateFactory.GetAd();
-            
-            _postRun.SubscribeActualReward(_ad);
-            Destroy(_postRun.gameObject);            
-            _postRun = null;
-             
             _ad.gameObject.transform.SetParent(this.transform);
             _ad.OnProceedToNextState += AdFinished;
         }
         
         void AdFinished(object caller, EventArgs args)
         {                                    
-            _ad.OnProceedToNextState -= AdFinished;
+            _ad.OnProceedToNextState -= AdFinished;            
             Destroy(_ad.gameObject);    
             _ad = null;
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
+            AdvanceState();
+            ProcessCurrentState();
+        }
+        
+        void StartEmpty()
+        {         
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {EmptyFinished();});
+        }
+        
+        void EmptyFinished()
+        {                                    
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
             AdvanceState();
             ProcessCurrentState();
         }

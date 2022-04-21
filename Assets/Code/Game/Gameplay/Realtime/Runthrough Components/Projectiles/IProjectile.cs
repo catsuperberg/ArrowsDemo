@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
-    public interface IProjectile : IPausable
+    public interface IProjectile : IPausable, IUpdatedNotification
     {
         public GameObject ProjectilePrefab {get;}
         public BigInteger Count {get;}
