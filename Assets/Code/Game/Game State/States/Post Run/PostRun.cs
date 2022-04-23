@@ -32,11 +32,12 @@ namespace Game.GameState
         {
             Context = new PostRunContext(_preAdTease.RewardThatPlayerGets, _preAdTease.AdRequested, 
                 restartInsteadOfMenu: false);
-            HideChildObjects();
-            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
+            HideChildGOs();
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {OnProceedToNextState?.Invoke(this, EventArgs.Empty);});
+            // OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
         
-        void HideChildObjects()
+        void HideChildGOs()
         {
             foreach (Transform child in transform)
                 child.gameObject.SetActive(false);

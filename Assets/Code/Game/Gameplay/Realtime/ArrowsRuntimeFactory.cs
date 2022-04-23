@@ -77,7 +77,7 @@ namespace Game.Gameplay.Realtime
         }
         
         async Task<Playfield> GetPlayfield(SequenceContext sequenceContext)
-        {                                
+        {                               
             var targetScore = _sequenceManager.GetNextTargetScore();
             var spread = 15;
             var sequence = _sequenceManager.GenerateSequence(targetScore, spread);

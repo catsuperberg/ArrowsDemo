@@ -57,7 +57,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             {
                 var randomPrefab = _targetPrefabs[_rand.Next(0,_targetPrefabs.Count)];
                 targets.AddObjectToList(CreateTargetFromPrefab(randomPrefab, score));           
-                if(Time.deltaTime >= 0.01)
+                if(Time.deltaTime >= 0.02)
                    yield return null;
             }            
             
@@ -101,7 +101,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
                         }                   
                         break;
                     }                
-                    if(Time.deltaTime >= 0.01)
+                    if(Time.deltaTime >= 0.02)
                         yield return null;             
                 }
                 if(!collisions)

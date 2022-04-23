@@ -14,7 +14,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         public bool Paused {get; private set;} = false;       
         
         public event EventHandler OnFinished;
-        public GameObject ActiveProjectile {get; private set;} = null;
+        public IProjectile ActiveProjectile {get; private set;} = null;
         
         TouchTranslationMovementController _movementController;
         
@@ -28,8 +28,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             var smoothCamera = Camera.main.GetComponent<SmoothFollow>();
             smoothCamera.target = _follower.Transform;
                             
-            ActiveProjectile = activeProjectile;
-            
+            ActiveProjectile = activeProjectile.GetComponent<IProjectile>();            
+            ActiveProjectile.EnableCollison();
             
             _follower.OnFinished += FlightFinished;
         }
@@ -43,8 +43,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             else
                 _follower.StartMovement();
                 
-            var projectile = ActiveProjectile.GetComponent<IProjectile>();
-            projectile.SetPaused(Paused);
+            ActiveProjectile.SetPaused(Paused);
         }
         
         public void DestroyFlight()
@@ -76,7 +75,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
         public void StartRun()
         {          
-            _movementController = ActiveProjectile.AddComponent<TouchTranslationMovementController>();
+            _movementController = ActiveProjectile.GameObject.AddComponent<TouchTranslationMovementController>();
             _movementController.Init();
             _follower.StartMovement();
         }

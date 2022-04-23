@@ -66,11 +66,8 @@ namespace Game.GameState
         
         void ProceedToFail()
         {            
-            _stateEnumerator.Dispose();
-            _state = RunthroughState.Blank; 
             FinishingContext = new RunFinishContext(0, runFailed: true);
-            DestroyRun();
-            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
+            DestroyAndProceedToNextState();
         }
         
         void AttachUIRequests()
@@ -137,18 +134,13 @@ namespace Game.GameState
             _flyingState.OnFinished += CurrentStateFinished;
             _flyingState.StartRun();
             _UI.SwithchToGameplay();
+        }        
+                
+        public void StartRun()
+        {          
+            AdvanceState();
         }
         
-        void StartFinishingScene()
-        {            
-            _UI.SwithchToFinishingScene();
-            var rewardDisplay = _UI.GetComponentInChildren<RewardDisplay>();
-            rewardDisplay.Initialize(_rewardCalculator);
-            _finishingSceneState = gameObject.AddComponent<FinishingScene>();
-            _finishingSceneState.OnFinished += CurrentStateFinished;
-            _finishingSceneState.StartScene(_flyingState.ActiveProjectile.GetComponent<IDamageableWithTransforms>(), 
-                _playfield.Targets.GetComponent<IDamageableWithTransforms>(), _rewardCalculator);
-        }
         
         void CurrentStateFinished(object sender, EventArgs e)
         {
@@ -162,19 +154,34 @@ namespace Game.GameState
             ProcessCurrentState();
         }
         
+        void StartFinishingScene()
+        {            
+            _UI.SwithchToFinishingScene();
+            var rewardDisplay = _UI.GetComponentInChildren<RewardDisplay>();
+            rewardDisplay.Initialize(_rewardCalculator);
+            _finishingSceneState = gameObject.AddComponent<FinishingScene>();
+            _finishingSceneState.OnFinished += CurrentStateFinished;
+            _finishingSceneState.StartScene(_flyingState.ActiveProjectile.GameObject.GetComponent<IDamageableWithTransforms>(), 
+                _playfield.Targets.GetComponent<IDamageableWithTransforms>(), _rewardCalculator);
+        }
+        
         void RunFinished()
         {               
             FinishingContext = new RunFinishContext(_rewardCalculator.Reward, runFailed: false);
-            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
+            DestroyAndProceedToNextState();
         }     
         
-        public void StartRun()
-        {          
-            AdvanceState();
+        void DestroyAndProceedToNextState()
+        {            
+            DestroyRun();
+            OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
         
         public void DestroyRun()
-        {       
+        {   
+            _stateEnumerator.Dispose();
+            _state = RunthroughState.Blank; 
+                
             if(_playfield != null)
             {
                 Destroy(_playfield.GameObject);

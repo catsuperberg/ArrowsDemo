@@ -61,9 +61,9 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             var pairObjectContainer = gameObject.transform.parent.gameObject;
             var rings = pairObjectContainer.GetComponentsInChildren<Ring>().ToList();
-            foreach(Ring ring in rings)
-                if(ring.gameObject.name != gameObject.name)
-                    rings.Remove(ring);
+            // foreach(Ring ring in rings)
+            //     if(ring.gameObject.name != gameObject.name)
+            //         rings.Remove(ring);
             return rings;
         }
     }

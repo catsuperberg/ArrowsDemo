@@ -18,7 +18,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
             var bundleScript = bundle.GetComponent<IProjectile>();
             if(bundleScript != null)
             {
-                bundleScript.Initialize(initialCount, movementWidth);
+                bundleScript.Initialize(initialCount, movementWidth, collisionEnabled: false);
                 return bundle;                
             }
             else

@@ -1,13 +1,15 @@
 using Game.Gameplay.Realtime;
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+// using System.Timers;
 using UnityEngine;
+
+using Timer = System.Timers.Timer;
 
 namespace Game.GameState
 {    
-    // TODO full rework of states needed, plus async playfield creation
-    // HACK full rework of states needed, plus async playfield creation
     public class PreRun : MonoBehaviour
     {
         [SerializeField]
@@ -16,9 +18,10 @@ namespace Game.GameState
         IRuntimeFactory _runtimeFactory;  
         IUpdatedNotification _userContextNotifier; 
         
-        PreRunStates _previousState = PreRunStates.Blank;
-        PreRunStates _state = PreRunStates.Blank;
-        public RunthroughContext NextRunthroughContext {get; private set;} = null;
+        public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
+        private RunthroughContext _nextRunthroughContext = null;
+        private Timer _contextUpdateTimer = new Timer();
+        private bool _currentlyGenerating = false;
         
         public event EventHandler OnProceedToNextState;
                 
@@ -35,52 +38,90 @@ namespace Game.GameState
             _UI.OnStartRunthrough += UIStartButtonPressed;
             _userContextNotifier.OnUpdated += UserContextUpdated;
             
-            Task.Run(() => {CreateLevel();});
-            
-            // UnityMainThreadDispatcher.Instance().Enqueue(() => { 
-            //     StartLoading();}); 
+            _ = StartLoading();
         }
         
         void UIStartButtonPressed(object caller, EventArgs args)
-        {
-            if(_state != PreRunStates.Ready)
-                throw new Exception("Pre run state isn't ready, but start button is pressed");
-                
+        {                
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
                 
         void UserContextUpdated(object caller, EventArgs e)
         {            
-            UpdateLevel();
+            if(CurrentRunthroughContext != null && !_currentlyGenerating) // HACK Reward aplier updates values in the end of a frame and aparently update event buffers until next, so on creation of new PreRun both StartLoading and update call updating level
+                UpdateLevelIfUpdatesStopForMs(200);
         }
         
-        void StartLoading()
+        void UpdateLevelIfUpdatesStopForMs(int timeMs)
         {
-            _state = PreRunStates.Launching;
-            _UI.SwithchToLoadingScreen();  
-            UpdateLevel();
-            
-            UnityMainThreadDispatcher.Instance().Enqueue(() => { 
-                _UI.SwithchToStartScreen();});  
-            _state = PreRunStates.Ready;
+            _contextUpdateTimer.Dispose();
+            _contextUpdateTimer = new Timer(timeMs);
+            _contextUpdateTimer.Elapsed += UpdateOnContextChange;
+            _contextUpdateTimer.Enabled = true;
         }
         
-        // void Update()
-        // {
-        //     checkIfLevelReady();
-        //     if(_previousState != _state)
-        //         if(_previousState == PreRunStates.Launching && _state == PreRunStates.Ready)
-        //             _UI.SwithchToStartScreen();
-        //         // ProcessState();
+        void UpdateOnContextChange(object caller, EventArgs args)
+        {
+            _contextUpdateTimer.Dispose();
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {_ = UpdateLevel();}); 
+            // Task.Run(UpdateLevel);
+            // _ = StartUpdatingLevel();
+        }
+        
+        async Task StartLoading()
+        { 
+            StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent());
+                
+            await UpdateLevel();
+        }
+        
+        // async Task StartUpdatingLevel()
+        // { 
+        //     await UpdateLevel();
         // }
         
-        // void checkIfLevelReady()
-        // {
-        //     if(NextRunthroughContext != null)
-        //         _state = PreRunStates.Ready;
-        //     else
-        //         Debug.LogWarning("NextRunthroughContext = null");
-        // }
+        IEnumerator ShowLoadingScreenUntilPlayfieldPresent()
+        {            
+            _UI.SwithchToLoadingScreen(); 
+            while(CurrentRunthroughContext == null)
+                yield return null;
+            _UI.SwithchToStartScreen(); 
+        }
+        
+        async Task UpdateLevel()
+        {  
+            _currentlyGenerating = true;
+            await CreateLevel(); 
+            await ClearLevel(); 
+            CurrentRunthroughContext = _nextRunthroughContext;
+            _nextRunthroughContext = null;
+            _currentlyGenerating = false;
+        }
+        
+        async Task CreateLevel()
+        {          
+            _nextRunthroughContext = await _runtimeFactory.GetRunthroughContext();          
+        }
+        
+        async Task ClearLevel()
+        {      
+            var clearingLevelSemaphore = new SemaphoreSlim(0, 1);
+            if(CurrentRunthroughContext == null)
+                return;
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(ClearingCurrentLevelCoroutine(clearingLevelSemaphore));});
+            await clearingLevelSemaphore.WaitAsync();    
+            
+        }
+        
+        IEnumerator ClearingCurrentLevelCoroutine(SemaphoreSlim semaphore)
+        {              
+            Destroy(CurrentRunthroughContext.Projectile);
+            Destroy(CurrentRunthroughContext.Follower.Transform.gameObject);
+            Destroy(CurrentRunthroughContext.PlayfieldForRun.GameObject);
+            CurrentRunthroughContext = null;
+            semaphore.Release();
+            yield return null;
+        }
         
         void OnDestroy()
         {
@@ -90,50 +131,6 @@ namespace Game.GameState
             _UI = null;
             _runtimeFactory = null;
             _userContextNotifier = null;            
-        }
-        
-        // void ProcessState()
-        // {
-        //     switch (_state)
-        //     {
-        //         // case PreRunStates.Launching:
-        //         //     UpdateLevel();
-        //         //     break;        
-        //         // case PreRunStates.WaitingForNewPlayfield:                     
-        //         //     break;                          
-        //         case PreRunStates.Ready:
-        //             if(_previousState == PreRunStates.Launching)
-        //                 _UI.SwithchToStartScreen();
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        //     _previousState = _state;
-        // }
-        
-        void UpdateLevel()
-        {  
-            UnityMainThreadDispatcher.Instance().Enqueue(() => { 
-                    ClearLevel();                    
-                    CreateLevel();});   
-        }
-        
-        async void CreateLevel()
-        {          
-            NextRunthroughContext = await _runtimeFactory.GetRunthroughContext();          
-        }
-        
-        void ClearLevel()
-        {      
-            if(NextRunthroughContext == null)
-                return;                    
-                                
-            GameObject.Destroy(NextRunthroughContext.Projectile);
-            GameObject.Destroy(NextRunthroughContext.Follower.Transform.gameObject);
-            GameObject.Destroy(NextRunthroughContext.PlayfieldForRun.GameObject);
-            
-            
-            NextRunthroughContext = null;
         }
     }
 }

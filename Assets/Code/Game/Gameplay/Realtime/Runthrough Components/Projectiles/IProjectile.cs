@@ -6,8 +6,13 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public interface IProjectile : IPausable, IUpdatedNotification
     {
+        
+        public GameObject GameObject {get;}
         public GameObject ProjectilePrefab {get;}
         public BigInteger Count {get;}
-        public void Initialize(BigInteger initialCount, float movementWidth);
+        public bool CollisionEnabled {get;}
+        public void Initialize(BigInteger initialCount, float movementWidth, bool collisionEnabled);
+        public void EnableCollison();
+        public void DisableCollison();
     }
 }

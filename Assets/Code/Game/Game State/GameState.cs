@@ -38,7 +38,10 @@ namespace Game.GameState
         
         void Start()
         {
-            Application.targetFrameRate = 0;
+            #if !UNITY_EDITOR_WIN
+                Application.targetFrameRate = 60;
+            #endif
+            
             AdvanceState();
             ProcessCurrentState();
         }
@@ -83,7 +86,7 @@ namespace Game.GameState
         
         void StartRunthrough()
         {
-            _runthrough = _stateFactory.GetRunthrough(_preRun.NextRunthroughContext);
+            _runthrough = _stateFactory.GetRunthrough(_preRun.CurrentRunthroughContext);
             _runthrough.gameObject.transform.SetParent(this.transform);
             Destroy(_preRun.gameObject);
             _preRun = null;

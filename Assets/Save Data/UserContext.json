@@ -2,17 +2,17 @@
   "UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "30",
+      "Value": "95",
       "Type": "System.Int32"
     },
     {
       "Name": "ArrowLevel",
-      "Value": "50",
+      "Value": "154",
       "Type": "System.Int32"
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "50",
+      "Value": "125",
       "Type": "System.Int32"
     },
     {
@@ -24,7 +24,7 @@
   "CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "1616",
+      "Value": "2039392419866298011788",
       "Type": "System.Numerics.BigInteger"
     }
   ]

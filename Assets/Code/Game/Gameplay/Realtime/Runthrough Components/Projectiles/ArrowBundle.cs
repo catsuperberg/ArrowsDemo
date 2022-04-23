@@ -24,6 +24,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         private GameObject ArrowAsset;
         [SerializeField]
         private TMP_Text CountIndicator;
+        [SerializeField]
+        private Rigidbody Rigidbody;
         private List<GameObject> _arrows = new List<GameObject>();
         private int maxArrows = 70;
         
@@ -34,20 +36,44 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         public BigInteger DamagePoints {get {return Count;}}
         public Vector3 Position {get {return transform.position;}}
         public BigInteger Count {get; private set;} = new BigInteger(1);
+        public bool CollisionEnabled {get; private set;} = false;
         
         public event EventHandler OnUpdated;
         public bool Paused {get; private set;} = false;
         
-        public void Initialize(BigInteger initialCount, float movementWidth)
+        public GameObject GameObject {get {return gameObject;}}
+                                        
+        public void Initialize(BigInteger initialCount, float movementWidth, bool collisionEnabled)
         {
             Count = initialCount;
             MovementWidth = movementWidth;
+            CollisionEnabled = collisionEnabled;
             UpdateAppearance();
             ClampPosition();
+            // PreventFromInitialMovement();
+        }
+        
+        // void PreventFromInitialMovement()
+        // {
+        //     Rigidbody.velocity = Vector3.zero;                    
+        //     Rigidbody.angularVelocity = Vector3.zero;   
+        //     Rigidbody. 
+        // }
+        
+        public void EnableCollison()
+        {
+            CollisionEnabled = true;
+        }
+        
+        public void DisableCollison()
+        {
+            CollisionEnabled = false;
         }
         
         void OnTriggerEnter(Collider collider)
         {
+            if(!CollisionEnabled)
+                return;
             IMathContainer MathContainer = collider.gameObject.GetComponent<IMathContainer>();
             if(MathContainer != null)
             {                
