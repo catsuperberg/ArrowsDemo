@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using System.Numerics;
 using UnityEngine;
 
@@ -11,10 +12,12 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         [SerializeField]
         private GameObject arrowBundle;
         
-        public GameObject CreateArrows(BigInteger initialCount, float movementWidth)
+        public GameObject CreateArrows(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
         {
-            var bundle = Instantiate(arrowBundle, Vector3.zero, Quaternion.identity);
-            bundle.name = "Projectile (Arrow bundle)";
+            if(assetInstatiator == null)
+                throw new System.ArgumentNullException("IInstatiator isn't provided for: " + this.GetType().Name);
+                
+            var bundle = assetInstatiator.Instantiate(arrowBundle, name: "Projectile (Arrow bundle)");
             var bundleScript = bundle.GetComponent<IProjectile>();
             if(bundleScript != null)
             {

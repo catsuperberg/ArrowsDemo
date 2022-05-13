@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using SplineMesh;
 using System.Collections.Generic;
@@ -8,8 +9,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
     public interface ITrackPopulator
     {
-        public GameObject PlaceGates(GameObject gatePrefab, Spline track, OperationPairsSequence sequence);
-        public Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence);
-        public GameObject SpreadObjects(List<GameObject> prefabsToSpread, int dencityCoefficient);
+        public Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence, IInstatiator assetInstatiator);
+        public Task<GameObject> SpreadObjectsAsync(List<GameObject> prefabsToSpread, int dencityCoefficient, IInstatiator assetInstatiator);
     }
 }

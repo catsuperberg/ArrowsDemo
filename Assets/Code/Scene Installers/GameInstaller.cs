@@ -16,7 +16,7 @@ using Zenject;
 public class GameInstaller : MonoInstaller
 {    
     [SerializeField]
-    private ArrowsRuntimeFactory _runtimeFactory;
+    private ArrowsRunthroughFactory _runthroughFactory;
     [SerializeField]
     private ProjectileGenerator _projectileGenerator; 
     [SerializeField]
@@ -47,7 +47,7 @@ public class GameInstaller : MonoInstaller
         
         ComposeUserContextManagement();        
                                  
-        Container.Bind<IRuntimeFactory>().FromInstance(_runtimeFactory).AsSingle();     
+        Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    
         Container.Bind<IAppStateFactory>().FromInstance(_appStateFactory).AsSingle();  

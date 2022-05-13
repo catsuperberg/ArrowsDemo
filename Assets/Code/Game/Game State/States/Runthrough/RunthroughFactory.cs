@@ -6,16 +6,7 @@ using UnityEngine;
 namespace Game.GameState
 {
     public class RunthroughFactory
-    {
-        IRuntimeFactory _runtimeFactory;  
-        IUpdatedNotification _userContextNotifier; 
-        IRegistryAccessor _userContextAccessor;
-        
-        public RunthroughFactory()
-        {
-                        
-        }
-        
+    {        
         public Runthrough GetRunthrough(GameObject RunthroughPrefab, RunthroughContext context)
         {
             var runthroughGO = GameObject.Instantiate(RunthroughPrefab);

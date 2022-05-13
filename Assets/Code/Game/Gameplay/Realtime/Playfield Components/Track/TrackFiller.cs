@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems;
 using SplineMesh;
@@ -26,6 +27,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         private float _offsetOnTrack = 0;
         private List<CurveSample> _pointsOnTrack;
         private List<GameObject> _gatePairs;
+        private IInstatiator _assetInstatiator;
         
         [Inject]
         public void Construct(OperationExecutor exec)
@@ -36,8 +38,13 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             _exec = exec;
         }
                     
-        public async Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence)
+        public async Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence, IInstatiator assetInstatiator)
         {
+            if(assetInstatiator == null)
+                throw new System.ArgumentNullException("IInstatiator isn't provided for: " + this.GetType().Name);
+            
+            _assetInstatiator = assetInstatiator;
+            
             _allGates = null;
             _gatePrefab = gatePrefab;
             _track = track;
@@ -89,47 +96,22 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             semaphore.Release();
         }
         
-        // List<GameObject> CreateGates()
-        // {
-        //     _allGates = Instantiate(gameObject, _track.gameObject.transform.position, Quaternion.identity);
-        //     _allGates.name = "Gates";
-        //     var gates = new List<(GameObject left, GameObject right)>();
-        //     var gatePairs = new List<GameObject>();
-        //     foreach(var operationPair in _sequence.Sequence)
-        //         gates.Add(InstatiateGatePair(operationPair));
-        //     foreach(var gatePair in gates)
-        //         gatePairs.Add(EncapsulateGatePair(gatePair, _allGates));
-            
-        //     return gatePairs;
-        // }
-        
-        // void MoveGates(List<GameObject> gates, List<CurveSample> points)
-        // {
-        //     var gatesAndPoints = gates.Zip(points, (g, p) => new { Gate = g, Point = p });
-        //     foreach(var pair in gatesAndPoints)
-        //     {
-        //         pair.Gate.transform.position = pair.Point.location;
-        //         pair.Gate.transform.rotation = pair.Point.Rotation;
-        //     }
-        // }
-        
         (GameObject left, GameObject right) InstatiateGatePair(OperationPair pair)
         {
-            var leftGate = CreateGate(_gatePrefab, pair.LeftOperation, true);
-            var rightGate = CreateGate(_gatePrefab, pair.RightOperation, false);
+            var leftGate = CreateGateHiden(_gatePrefab, pair.LeftOperation, true);
+            var rightGate = CreateGateHiden(_gatePrefab, pair.RightOperation, false);
             return (leftGate, rightGate);
         }        
         
-        GameObject CreateGate(GameObject gatePrefab, OperationInstance operation, bool isLeft)
+        GameObject CreateGateHiden(GameObject gatePrefab, OperationInstance operation, bool isLeft)
         {                
             if(operation.Type != Operation.Blank)
             {
-                var position = new Vector3(
+                var gatePosition = new Vector3(
                         (isLeft) ? _gateOffset.x*(-1) : _gateOffset.x,
                         _gateOffset.y,
                         _gateOffset.z);
-                var ring = Instantiate(gatePrefab, position, Quaternion.identity);                    
-                ring.name = (isLeft) ? "Left ring" : "Right ring";
+                var ring = _assetInstatiator.Instantiate(gatePrefab, name: (isLeft) ? "Left ring" : "Right ring", position: gatePosition);     
                 var ringLogic = ring.GetComponent<Ring>();
                 ringLogic.Initialize(operation, _exec);
                 return ring;
@@ -156,41 +138,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             gate.transform.SetParent(pair.transform, false);  
         }
         
-        
-        
-        
-        
-        
-        public GameObject PlaceGates(GameObject gatePrefab, Spline track, OperationPairsSequence sequence)
-        {
-            var positionIndent = (track.Length - _runUpLength) / (sequence.Sequence.Count+1);
-            var offsetOnTrack = positionIndent + _runUpLength;    
-            var pointsOnTrack = CalculatePositionsForGates(track, sequence.Sequence.Count, positionIndent, offsetOnTrack);            
-            var gatesArray = PlaceGatesAtPointsOnMainThread(gatePrefab, sequence, pointsOnTrack); 
-            var gates = Instantiate(gameObject, track.gameObject.transform.position, Quaternion.identity);
-            gates.name = "Gates";                                 
-            foreach(var gatePair in gatesArray)
-                gatePair.transform.SetParent(gates.transform);            
-            return gates;
-        }
-                        
-        public GameObject SpreadObjects(List<GameObject> prefabsToSpread, int dencityCoefficient)
-        {
-            return gameObject;                
-        }
-        
-        List<GameObject> PlaceGatesAtPointsOnMainThread(GameObject gatePrefab, OperationPairsSequence sequence, List<SplineMesh.CurveSample> points)
-        {
-            var gates = new List<GameObject>();
-            var index = 0;            
-            foreach(var operationPair in sequence.Sequence)
-            {               
-                gates.Add(CreateGatePairOnMainThread(gatePrefab, operationPair, points[index].location, points[index].Rotation));
-                index++;
-            }
-            return gates;
-        }
-        
         List<SplineMesh.CurveSample> CalculatePositionsForGates(Spline track, int pointCount, float positionIndent, float offsetOnTrack)
         {
             var points = new List<SplineMesh.CurveSample>();            
@@ -204,8 +151,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         
         GameObject CreateGatePairOnMainThread(GameObject gatePrefab, OperationPair pair, Vector3 position, Quaternion rotation)
         {
-            var leftGate = CreateGate(gatePrefab, pair.LeftOperation, true);
-            var rightGate = CreateGate(gatePrefab, pair.RightOperation, false);
+            var leftGate = CreateGateHiden(gatePrefab, pair.LeftOperation, true);
+            var rightGate = CreateGateHiden(gatePrefab, pair.RightOperation, false);
             
             var pairInstance = Instantiate(gameObject, position, rotation);
             pairInstance.name = "Gate Pair";
@@ -223,6 +170,11 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             
             gate.transform.SetParent(pairInstance.transform, false);  
             gate.name = "Gate - " + id.ToString();                 
+        }
+        
+        public Task<GameObject> SpreadObjectsAsync(List<GameObject> prefabsToSpread, int dencityCoefficient, IInstatiator assetInstatiator)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

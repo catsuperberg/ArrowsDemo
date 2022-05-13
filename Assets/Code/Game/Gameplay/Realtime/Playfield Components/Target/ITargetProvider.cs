@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
     public interface ITargetProvider
     {
-        public GameObject GetSuitableTarget(List<GameObject> targetPrefabs, BigInteger targetResult, (int Min, int Max) numberOfTargetsRange);
-        public Task<GameObject> GetSuitableTargetAsync(List<GameObject> targetPrefabs, BigInteger targetResult, (int Min, int Max) numberOfTargetsRange);
+        public Task<GameObject> GetTargetAsync(List<GameObject> targetPrefabs, 
+            BigInteger targetResult, (int Min, int Max) numberOfTargetsRange, IInstatiator assetInstatiator);
     }
 }

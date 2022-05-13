@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.GameplayComponents.GameCamera;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence;
@@ -15,10 +16,11 @@ using UnityEngine;
 using Zenject;
 
 using Vector3 = UnityEngine.Vector3;
+using IInstantiator = AssetScripts.Instantiation.IInstatiator;
 
 namespace Game.Gameplay.Realtime
 {
-    public class ArrowsRuntimeFactory : MonoBehaviour, IRuntimeFactory
+    public class ArrowsRunthroughFactory : MonoBehaviour, IRunthroughFactory
     {                
         [SerializeField]
         private GameObject _trackSplineMesh;
@@ -64,33 +66,39 @@ namespace Game.Gameplay.Realtime
             _sequenceManager = sequenceManager;                        
         }
         
-        public async Task<RunthroughContext> GetRunthroughContext()
+        public async Task<RunthroughContext> GetRunthroughContextHiden()
         {
+            var instantiator = new InvisibleInstantiator();
             var sequenceContext = _runContextProvider.GetContext();
-            var runPlayfield = await GetPlayfield(sequenceContext);
+            var runPlayfield = await GetPlayfield(sequenceContext, instantiator);
             var runFollower = GetTrackFollower(runPlayfield.TrackSpline);
-            var runProjectile = _projectileGenerator.CreateArrows(sequenceContext.InitialValue, runPlayfield.trackWidth);            
+            var runProjectile = _projectileGenerator.CreateArrows(sequenceContext.InitialValue, runPlayfield.trackWidth, instantiator);            
             runProjectile.transform.SetParent(runFollower.Transform);   
             AttachCameraToFollower(runFollower);
-            var runContext = new RunthroughContext(runPlayfield, runFollower, runProjectile, sequenceContext);
+            var runContext = new RunthroughContext(runPlayfield, runFollower, runProjectile, instantiator, sequenceContext);
             return runContext;
         }
         
-        async Task<Playfield> GetPlayfield(SequenceContext sequenceContext)
+        async Task<Playfield> GetPlayfield(SequenceContext sequenceContext, IInstantiator instantiator)
         {                               
             var targetScore = _sequenceManager.GetNextTargetScore();
-            var spread = 15;
-            var sequence = _sequenceManager.GenerateSequence(targetScore, spread);
+            var sequence = _sequenceManager.GenerateSequence(targetScore, spread: 15);   
+            (int Min, int Max) targetCountRange = (1, MaxTargerCount(targetScore)); 
                         
-            var splineTrack = await _splineMeshGenerator.GetRandomizedTrackAsync(sequenceContext.Length, _trackSplineMesh); 
-            var gates = await _trackPopulator.PlaceGatesAsync(_gatePrefab, splineTrack, sequence);            
-            var maxNumberOfTargets = (targetScore > 20) ? 20 : (int)targetScore - 1;
-            (int Min, int Max) numberOfTargetsRange = (1, maxNumberOfTargets);  
-            var targets = await _targetGenerator.GetSuitableTargetAsync(_targetPrefabs, targetScore, numberOfTargetsRange);   
+            var track = await _splineMeshGenerator.GetRandomizedTrackAsync(sequenceContext.Length, _trackSplineMesh, instantiator); 
+            var gates = await _trackPopulator.PlaceGatesAsync(_gatePrefab, track, sequence, instantiator);   
+            var targets = await _targetGenerator.GetTargetAsync(_targetPrefabs, targetScore, targetCountRange, instantiator);   
                         
-            await PlaceAtTrackEnd(targets, splineTrack, new Vector3(0, -105, 105));            
-            await AssemblePlayfield(splineTrack, gates, targets);
+            await PlaceAtTrackEnd(targets, track, new Vector3(0, -105, 105));            
+            await AssemblePlayfield(track, gates, targets);            
+            
             return _playfield;
+        }
+        
+        int MaxTargerCount(System.Numerics.BigInteger score)
+        {
+            var value = (score > 20) ? 20 : (int)score - 1;        
+            return value;
         }
         
         async Task PlaceAtTrackEnd(GameObject entity, Spline spline, Vector3 offset)

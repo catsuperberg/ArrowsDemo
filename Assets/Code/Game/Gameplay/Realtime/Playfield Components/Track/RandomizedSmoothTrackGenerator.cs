@@ -1,3 +1,4 @@
+using AssetScripts.Instantiation;
 using SplineMesh;
 using System.Collections;
 using System.Linq;
@@ -19,10 +20,16 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         
         Spline _splineMesh;
         GameObject _splineMeshPrefab;
+        IInstatiator _assetInstatiator;
         float _trackLength;
         
-        public async Task<Spline> GetRandomizedTrackAsync(float length, GameObject splineMeshPrefab)
+        public async Task<Spline> GetRandomizedTrackAsync(float length, GameObject splineMeshPrefab, IInstatiator assetInstatiator)
         {
+            if(assetInstatiator == null)
+                throw new System.ArgumentNullException("IInstatiator isn't provided for: " + this.GetType().Name);
+            
+            _assetInstatiator = assetInstatiator;
+                
             _splineMesh = null;
             _splineMeshPrefab = splineMeshPrefab;
             _trackLength = length;
@@ -34,7 +41,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         
         IEnumerator TrackGenerationCoroutine(SemaphoreSlim semaphore)
         {            
-            var spline = Instantiate(_splineMeshPrefab, Vector3.zero, Quaternion.identity);
+            var spline = _assetInstatiator.Instantiate(_splineMeshPrefab);
             var splineComponent = spline.GetComponent<Spline>();            
             randomizeSplineToLength(splineComponent, _trackLength); 
             splineComponent.RefreshCurves();
@@ -43,18 +50,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             semaphore.Release();
             yield return null;
         }
-        
-        
-        public GameObject GetRandomizedTrack(float length, GameObject splineMeshPrefab)
-        {
-            var splineMesh = Instantiate(splineMeshPrefab, Vector3.zero, Quaternion.identity);
-            var splineComponent = splineMesh.GetComponent<Spline>();
-            
-            randomizeSplineToLength(splineComponent, length); 
-            splineComponent.RefreshCurves();
-                            
-            return splineMesh;
-        }            
         
         public void randomizeSplineToLength(Spline spline, float length)
         {

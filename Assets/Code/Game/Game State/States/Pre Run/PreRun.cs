@@ -1,9 +1,9 @@
+using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime;
 using System;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
-// using System.Timers;
 using UnityEngine;
 
 using Timer = System.Timers.Timer;
@@ -15,7 +15,7 @@ namespace Game.GameState
         [SerializeField]
         PreRunUI _UI;
         
-        IRuntimeFactory _runtimeFactory;  
+        IRunthroughFactory _runtimeFactory;  
         IUpdatedNotification _userContextNotifier; 
         
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
@@ -25,7 +25,7 @@ namespace Game.GameState
         
         public event EventHandler OnProceedToNextState;
                 
-        public void Initialize(IRuntimeFactory runtimeFactory, IUpdatedNotification userContextNotifier)
+        public void Initialize(IRunthroughFactory runtimeFactory, IUpdatedNotification userContextNotifier)
         {
             if(runtimeFactory == null)
                 throw new ArgumentNullException("IRuntimeFactory isn't provided to " + this.GetType().Name);
@@ -64,8 +64,6 @@ namespace Game.GameState
         {
             _contextUpdateTimer.Dispose();
             UnityMainThreadDispatcher.Instance().Enqueue(() => {_ = UpdateLevel();}); 
-            // Task.Run(UpdateLevel);
-            // _ = StartUpdatingLevel();
         }
         
         async Task StartLoading()
@@ -74,11 +72,6 @@ namespace Game.GameState
                 
             await UpdateLevel();
         }
-        
-        // async Task StartUpdatingLevel()
-        // { 
-        //     await UpdateLevel();
-        // }
         
         IEnumerator ShowLoadingScreenUntilPlayfieldPresent()
         {            
@@ -92,6 +85,8 @@ namespace Game.GameState
         {  
             _currentlyGenerating = true;
             await CreateLevel(); 
+            HideCurrentLevel();
+            ShowNextLevel();
             await ClearLevel(); 
             CurrentRunthroughContext = _nextRunthroughContext;
             _nextRunthroughContext = null;
@@ -100,7 +95,22 @@ namespace Game.GameState
         
         async Task CreateLevel()
         {          
-            _nextRunthroughContext = await _runtimeFactory.GetRunthroughContext();          
+            _nextRunthroughContext = await _runtimeFactory.GetRunthroughContextHiden();          
+        }
+        
+        void HideCurrentLevel()
+        {
+            if(CurrentRunthroughContext == null)
+                return;
+                
+            if(CurrentRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
+                CurrentRunthroughContext.Instatiator.RedoImplementationSpecifics();
+        }
+        
+        void ShowNextLevel()
+        {
+            if(_nextRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
+                _nextRunthroughContext.Instatiator.UndoImplementationSpecifics();
         }
         
         async Task ClearLevel()
