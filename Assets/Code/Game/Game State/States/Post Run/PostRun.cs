@@ -22,8 +22,13 @@ namespace Game.GameState
             _rewardApplier.ApplyReward(Context.SelectedReward);
         }
         
-        public void Initialize(RunFinishContext finishContext, BigInteger PlayerCoins)
+        public void Initialize(RunFinishContext finishContext, BigInteger PlayerCoins, RunthroughContextManager contextManager)
         {
+             if(contextManager == null)
+                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
+                
+            contextManager.StartContextUpdate();
+            
             _preAdTease.Initialize(finishContext, PlayerCoins);
             _preAdTease.OnCoinsTransferred += RewardSelected;
         }

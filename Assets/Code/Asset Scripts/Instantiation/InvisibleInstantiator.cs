@@ -36,14 +36,32 @@ namespace AssetScripts.Instantiation
             
         public void UndoImplementationSpecifics()
         {
+            LeaveOnlyValidInstances();
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {Undo();});      
+        }
+        
+        void Undo()
+        {       
             foreach(var renderer in _hidenRenderers)
-                renderer.enabled = true;
+                renderer.enabled = true;        
         }
         
         public void RedoImplementationSpecifics()
         {
+            LeaveOnlyValidInstances();
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {Redo();});        
+        }
+        
+        void Redo()
+        {       
             foreach(var renderer in _hidenRenderers)
-                renderer.enabled = false;            
+                renderer.enabled = false;  
+        }
+        
+        void LeaveOnlyValidInstances()
+        {
+            _instantiated = _instantiated.Where(instance => instance != null).ToList();
+            _hidenRenderers = _hidenRenderers.Where(instance => instance != null).ToList();
         }
     }
 }

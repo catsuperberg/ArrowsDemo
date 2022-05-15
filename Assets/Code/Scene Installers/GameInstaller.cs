@@ -47,6 +47,7 @@ public class GameInstaller : MonoInstaller
         
         ComposeUserContextManagement();        
                                  
+        Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    

@@ -2,9 +2,6 @@ using AssetScripts.Instantiation;
 using System.Numerics;
 using UnityEngine;
 
-using Vector3 = UnityEngine.Vector3;
-using Quaternion = UnityEngine.Quaternion;
-
 namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public class ProjectileGenerator : MonoBehaviour, IProjectileProvider

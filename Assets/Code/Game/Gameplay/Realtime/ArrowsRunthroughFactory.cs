@@ -39,6 +39,8 @@ namespace Game.Gameplay.Realtime
         ISequenceManager _sequenceManager;
         
         Playfield _playfield;
+        ITrackFollower _follower;
+        GameObject _projectile;
                 
         [Inject]
         public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
@@ -70,12 +72,12 @@ namespace Game.Gameplay.Realtime
         {
             var instantiator = new InvisibleInstantiator();
             var sequenceContext = _runContextProvider.GetContext();
+            
             var runPlayfield = await GetPlayfield(sequenceContext, instantiator);
-            var runFollower = GetTrackFollower(runPlayfield.TrackSpline);
-            var runProjectile = _projectileGenerator.CreateArrows(sequenceContext.InitialValue, runPlayfield.trackWidth, instantiator);            
-            runProjectile.transform.SetParent(runFollower.Transform);   
-            AttachCameraToFollower(runFollower);
+            var runFollower = await GetTrackFollower(runPlayfield.TrackSpline);
+            var runProjectile = await GetProjectile(sequenceContext.InitialValue, runPlayfield.trackWidth, instantiator);         
             var runContext = new RunthroughContext(runPlayfield, runFollower, runProjectile, instantiator, sequenceContext);
+            
             return runContext;
         }
         
@@ -133,15 +135,45 @@ namespace Game.Gameplay.Realtime
             yield return null;
         }  
            
-        ITrackFollower GetTrackFollower(SplineMesh.Spline splineToAttachFollowerTo = null)
-        {
-            var follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
+        async Task<ITrackFollower> GetTrackFollower(SplineMesh.Spline splineToAttachFollowerTo = null)
+        {            
+            var followerCreationSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(FollowerCreationCoroutine(splineToAttachFollowerTo, followerCreationSemaphore));});
             
-            if(splineToAttachFollowerTo == null)
-                follower.SetSplineToFollow(splineToAttachFollowerTo, 0);
-            
-            return follower;          
+            await followerCreationSemaphore.WaitAsync();
+            return _follower;          
         }     
+        
+        IEnumerator FollowerCreationCoroutine(SplineMesh.Spline splineToAttachFollowerTo, SemaphoreSlim semaphore)
+        {   
+            _follower = new GameObject("Spline Follower").AddComponent<SplineFollower>();
+            
+            if(splineToAttachFollowerTo != null)
+                _follower.SetSplineToFollow(splineToAttachFollowerTo, 0);
+                
+            semaphore.Release();
+            yield return null;
+        }  
+        
+        async Task<GameObject> GetProjectile(int initialCount, float movementWidth, IInstatiator assetInstatiator)
+        {            
+            var projectileCreationSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(ProjectileCreationCoroutine(initialCount, movementWidth, assetInstatiator, projectileCreationSemaphore));});
+            await projectileCreationSemaphore.WaitAsync();
+            return _projectile;
+        }
+        
+        IEnumerator ProjectileCreationCoroutine(int initialCount, float movementWidth, IInstatiator assetInstatiator, SemaphoreSlim semaphore)
+        {   
+            _projectile = _projectileGenerator.CreateArrows(initialCount, movementWidth, assetInstatiator);     
+            
+            // HACK probably all creation could be brought under one await                
+            _projectile.transform.SetParent(_follower.Transform);   
+            AttachCameraToFollower(_follower);
+                         
+            semaphore.Release();
+            yield return null;
+        }  
         
         void AttachCameraToFollower(ITrackFollower follower)
         {

@@ -1,9 +1,7 @@
-using AssetScripts.Instantiation;
+
 using Game.Gameplay.Realtime;
 using System;
 using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 using Timer = System.Timers.Timer;
@@ -15,44 +13,68 @@ namespace Game.GameState
         [SerializeField]
         PreRunUI _UI;
         
-        IRunthroughFactory _runtimeFactory;  
         IUpdatedNotification _userContextNotifier; 
+        RunthroughContextManager _contextManager;
         
-        public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
-        private RunthroughContext _nextRunthroughContext = null;
         private Timer _contextUpdateTimer = new Timer();
         private bool _currentlyGenerating = false;
         
+        public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
         public event EventHandler OnProceedToNextState;
                 
-        public void Initialize(IRunthroughFactory runtimeFactory, IUpdatedNotification userContextNotifier)
+        public void Initialize(IUpdatedNotification userContextNotifier, RunthroughContextManager contextManager)
         {
-            if(runtimeFactory == null)
-                throw new ArgumentNullException("IRuntimeFactory isn't provided to " + this.GetType().Name);
              if(userContextNotifier == null)
                 throw new ArgumentNullException("IUpdatedNotification isn't provided to " + this.GetType().Name);
+             if(contextManager == null)
+                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
                 
-            _runtimeFactory = runtimeFactory;
             _userContextNotifier = userContextNotifier;
+            _contextManager = contextManager;
             
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent()); 
+                StartCoroutine(HookUpEventsOnNextFrame());});
+            if(!_contextManager.ContextReady)
+                StartLoading();
+        }
+        
+        IEnumerator ShowLoadingScreenUntilPlayfieldPresent()
+        {            
+            _UI.SwithchToLoadingScreen(); 
+            while(!_contextManager.ContextReady)
+                yield return null;
+            _UI.SwithchToStartScreen(); 
+        }
+        
+        IEnumerator HookUpEventsOnNextFrame()
+        {        
+            int i = 1;    
+            while(i-- > 0)
+                yield return null;
             _UI.OnStartRunthrough += UIStartButtonPressed;
             _userContextNotifier.OnUpdated += UserContextUpdated;
-            
-            _ = StartLoading();
+        }
+        
+        void StartLoading()
+        { 
+            if(!_contextManager.CurrentlyGenerating)
+                _contextManager.StartContextUpdate();
         }
         
         void UIStartButtonPressed(object caller, EventArgs args)
         {                
+            CurrentRunthroughContext = _contextManager.CurrentRunthroughContext;
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
                 
         void UserContextUpdated(object caller, EventArgs e)
         {            
-            if(CurrentRunthroughContext != null && !_currentlyGenerating) // HACK Reward aplier updates values in the end of a frame and aparently update event buffers until next, so on creation of new PreRun both StartLoading and update call updating level
-                UpdateLevelIfUpdatesStopForMs(200);
+            // if(!_contextManager.ContextReady) // HACK Reward aplier updates values in the end of a frame and aparently update event buffers until next, so on creation of new PreRun both StartLoading and update call updating level
+                UpdateLevelIfRequestsStopForMs(200);
         }
         
-        void UpdateLevelIfUpdatesStopForMs(int timeMs)
+        void UpdateLevelIfRequestsStopForMs(int timeMs)
         {
             _contextUpdateTimer.Dispose();
             _contextUpdateTimer = new Timer(timeMs);
@@ -62,75 +84,8 @@ namespace Game.GameState
         
         void UpdateOnContextChange(object caller, EventArgs args)
         {
-            _contextUpdateTimer.Dispose();
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {_ = UpdateLevel();}); 
-        }
-        
-        async Task StartLoading()
-        { 
-            StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent());
-                
-            await UpdateLevel();
-        }
-        
-        IEnumerator ShowLoadingScreenUntilPlayfieldPresent()
-        {            
-            _UI.SwithchToLoadingScreen(); 
-            while(CurrentRunthroughContext == null)
-                yield return null;
-            _UI.SwithchToStartScreen(); 
-        }
-        
-        async Task UpdateLevel()
-        {  
-            _currentlyGenerating = true;
-            await CreateLevel(); 
-            HideCurrentLevel();
-            ShowNextLevel();
-            await ClearLevel(); 
-            CurrentRunthroughContext = _nextRunthroughContext;
-            _nextRunthroughContext = null;
-            _currentlyGenerating = false;
-        }
-        
-        async Task CreateLevel()
-        {          
-            _nextRunthroughContext = await _runtimeFactory.GetRunthroughContextHiden();          
-        }
-        
-        void HideCurrentLevel()
-        {
-            if(CurrentRunthroughContext == null)
-                return;
-                
-            if(CurrentRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
-                CurrentRunthroughContext.Instatiator.RedoImplementationSpecifics();
-        }
-        
-        void ShowNextLevel()
-        {
-            if(_nextRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
-                _nextRunthroughContext.Instatiator.UndoImplementationSpecifics();
-        }
-        
-        async Task ClearLevel()
-        {      
-            var clearingLevelSemaphore = new SemaphoreSlim(0, 1);
-            if(CurrentRunthroughContext == null)
-                return;
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(ClearingCurrentLevelCoroutine(clearingLevelSemaphore));});
-            await clearingLevelSemaphore.WaitAsync();    
-            
-        }
-        
-        IEnumerator ClearingCurrentLevelCoroutine(SemaphoreSlim semaphore)
-        {              
-            Destroy(CurrentRunthroughContext.Projectile);
-            Destroy(CurrentRunthroughContext.Follower.Transform.gameObject);
-            Destroy(CurrentRunthroughContext.PlayfieldForRun.GameObject);
-            CurrentRunthroughContext = null;
-            semaphore.Release();
-            yield return null;
+            _contextUpdateTimer?.Dispose();
+            _contextManager.StartContextUpdate(); 
         }
         
         void OnDestroy()
@@ -139,7 +94,6 @@ namespace Game.GameState
             _userContextNotifier = null;
             Destroy(_UI);
             _UI = null;
-            _runtimeFactory = null;
             _userContextNotifier = null;            
         }
     }

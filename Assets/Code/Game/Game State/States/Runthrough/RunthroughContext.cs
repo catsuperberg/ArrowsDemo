@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Realtime
 {
-    public class RunthroughContext// : MonoBehaviour
+    public class RunthroughContext
     {
         public Playfield PlayfieldForRun;
         public ITrackFollower Follower; 
@@ -21,20 +21,7 @@ namespace Game.Gameplay.Realtime
             Follower = follower;
             Projectile = projectile;
             Instatiator = instatiator;
-            GenerationContext = generationContext;         
-            // SetAllAsChildren();               
+            GenerationContext = generationContext;               
         }
-        
-        // void SetAllAsChildren()
-        // {
-        //     SetAsChild(PlayfieldForRun.GameObject);
-        //     SetAsChild(Follower.Transform.gameObject);
-        //     SetAsChild(Projectile.gameObject);
-        // }
-        
-        // void SetAsChild(GameObject child)
-        // {
-        //     child.transform.SetParent(gameObject.transform);
-        // }
     }
 }

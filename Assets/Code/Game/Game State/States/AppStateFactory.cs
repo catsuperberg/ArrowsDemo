@@ -24,13 +24,14 @@ namespace Game.GameState
         PreRunFactory _preRunFactory;   
         RunthroughFactory _runthroughFactory;
         IRegistryAccessor _userContextAccessor;
+        RunthroughContextManager _contextManager;  
         // IRuntimeFactory _runtimeFactory;  
         // IUpdatedNotification _userContextNotifier; 
         
         [Inject]
         // public void Construct(IRuntimeFactory runtimeFactory, [Inject(Id = "userContextNotifier")] IUpdatedNotification userContextNotifier)
         public void Construct(PreRunFactory preRunFactory, RunthroughFactory runthroughFactory, 
-            [Inject(Id = "userRegistryAccessor")] IRegistryAccessor userContextAccessor)
+            [Inject(Id = "userRegistryAccessor")] IRegistryAccessor userContextAccessor, RunthroughContextManager contextManager)
         {
             if(preRunFactory == null)
                 throw new ArgumentNullException("PreRunFactory isn't provided to " + this.GetType().Name);
@@ -38,10 +39,13 @@ namespace Game.GameState
                 throw new ArgumentNullException("runthroughFactory isn't provided to " + this.GetType().Name);        
             if(userContextAccessor == null)
                 throw new ArgumentNullException("IRegistryAccessor not provided to " + this.GetType().Name);
+            if(contextManager == null)
+                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
                             
             _preRunFactory = preRunFactory;
             _runthroughFactory = runthroughFactory;
-            _userContextAccessor = userContextAccessor;            
+            _userContextAccessor = userContextAccessor;  
+            _contextManager = contextManager;          
         }
         
         public PreRun GetPreRun()
@@ -66,7 +70,7 @@ namespace Game.GameState
                 
                 var postRunGO = Instantiate(PostRunPrefab);
                 var postRunComponent = postRunGO.GetComponent<PostRun>();   
-                postRunComponent.Initialize(FinishContext, playerCoins);  
+                postRunComponent.Initialize(FinishContext, playerCoins, _contextManager);  
                 postRun = postRunComponent;
             }
             else

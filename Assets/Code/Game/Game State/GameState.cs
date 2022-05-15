@@ -9,6 +9,7 @@ namespace Game.GameState
     public class GameState : MonoBehaviour
     {           
         IAppStateFactory _stateFactory;
+        
         AppState _state;
         AppState _previousState;
         List<AppState> _statesToGoThrough = new List<AppState>()
@@ -16,7 +17,7 @@ namespace Game.GameState
             AppState.Runthrough,
             AppState.PostRun,
             AppState.EmptyState};
-        List<AppState>.Enumerator _stateEnumerator;
+        List<AppState>.Enumerator _stateEnumerator;        
         
         PreRun _preRun;
         Runthrough _runthrough;
