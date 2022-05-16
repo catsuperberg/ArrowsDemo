@@ -25,11 +25,8 @@ namespace Game.GameState
         RunthroughFactory _runthroughFactory;
         IRegistryAccessor _userContextAccessor;
         RunthroughContextManager _contextManager;  
-        // IRuntimeFactory _runtimeFactory;  
-        // IUpdatedNotification _userContextNotifier; 
         
         [Inject]
-        // public void Construct(IRuntimeFactory runtimeFactory, [Inject(Id = "userContextNotifier")] IUpdatedNotification userContextNotifier)
         public void Construct(PreRunFactory preRunFactory, RunthroughFactory runthroughFactory, 
             [Inject(Id = "userRegistryAccessor")] IRegistryAccessor userContextAccessor, RunthroughContextManager contextManager)
         {
@@ -48,9 +45,9 @@ namespace Game.GameState
             _contextManager = contextManager;          
         }
         
-        public PreRun GetPreRun()
+        public IPreRun GetPreRun(bool skipToRun)
         {
-            var preRun = _preRunFactory.GetPreRun(PreRunPrefab);
+            var preRun = _preRunFactory.GetPreRun(PreRunPrefab, skipToRun);
             return preRun;
         }
         
@@ -75,8 +72,10 @@ namespace Game.GameState
             }
             else
             {
-                var postRunGO = Instantiate(PostRunFailedPrefab);     
-                postRun = postRunGO.GetComponent<PostRunFailedRun>();            
+                var postRunGO = Instantiate(PostRunFailedPrefab); 
+                var postRunComponent = postRunGO.GetComponent<PostRunFailedRun>();   
+                postRunComponent.Initialize(_contextManager);  
+                postRun = postRunComponent;          
             }
             return postRun;   
         }

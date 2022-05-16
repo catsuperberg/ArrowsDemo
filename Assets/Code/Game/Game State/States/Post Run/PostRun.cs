@@ -39,7 +39,6 @@ namespace Game.GameState
                 restartInsteadOfMenu: false);
             HideChildGOs();
             UnityMainThreadDispatcher.Instance().Enqueue(() => {OnProceedToNextState?.Invoke(this, EventArgs.Empty);});
-            // OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
         
         void HideChildGOs()
@@ -47,16 +46,5 @@ namespace Game.GameState
             foreach (Transform child in transform)
                 child.gameObject.SetActive(false);
         }
-        
-        // public void SubscribeActualReward(IFinishNotification objectToWaitFor)
-        // {
-        //     _rewardApplier.SubscribeActualReward(objectToWaitFor, Context.SelectedReward);
-        // }
-        
-        // public void AddReward()
-        // {
-        //     _rewardApplier.ApplyReward(Context.SelectedReward);
-        // }
-        
     }
 }

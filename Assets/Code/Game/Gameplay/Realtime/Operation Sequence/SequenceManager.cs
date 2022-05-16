@@ -35,10 +35,10 @@ namespace Game.Gameplay.Realtime.OperationSequence
             // _fillingTargets = Task.Run(() => {FillTargets();});
         }
         
-        public SequenceContext GetContext()
-        {
-            return _runContextProvider.GetContext();
-        }
+        // public SequenceContext GetContext()
+        // {
+        //     return _runContextProvider.GetContext();
+        // }
         
         public BigInteger GetNextTargetScore()
         {       

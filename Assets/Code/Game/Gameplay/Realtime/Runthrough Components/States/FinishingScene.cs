@@ -3,6 +3,7 @@ using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.GameplayComponents.GameCamera;
 using GameMath;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -40,6 +41,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         double _sprayingArrowsTime = 3;
         double _overkillTime = 1;
         double _overkillSpeed;
+        bool _singleDamageMode;
+        bool _onePerIsRunning;
+        DateTime _timeStarted;
         ResultType _result = ResultType.Blank;
         State _state = State.Blank;
         List<State> _statesToGoThrough = new List<State>();
@@ -60,6 +64,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _reward = reward; 
             _result = CheckResult();  
             _projectileSpawner = new FallingProjectileSpawner(_projectile, _target);
+            _singleDamageMode = false;
+            _onePerIsRunning = false;
             
             PointCameraAtTarget();
                          
@@ -130,7 +136,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         }
         
         void RunScene()
-        {            
+        {        
+            _timeStarted = DateTime.Now;    
             AdvanceSceneState();           
         }
         
@@ -139,17 +146,23 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             switch (_state)
             {
                 case State.SprayUntilAnyIsZero:
-                    DecreaseCountExponentially(_smallerDamageable);
+                    if(!_singleDamageMode)
+                    {
+                        DecreaseCountExponentially(_smallerDamageable);                        
+                        _projectileSpawner.SpawnFlyingProjectiles();  
+                    }
+                    else
+                        StartOnePerCoroutineIfNotActive(_smallerDamageable);
                     break;                    
                 case State.Overkill:
-                    DecreaseCountConstantly(_largerDamageable, _overkillSpeed);                                 
+                    DecreaseCountConstantly(_largerDamageable, _overkillSpeed);                     
+                    _projectileSpawner.SpawnFlyingProjectiles();                                  
                     break;
                 case State.Finished:
                     _projectileSpawner.Destroy();
                     OnFinished?.Invoke(this, EventArgs.Empty);
                     break;
-            }  
-            _projectileSpawner.SpawnFlyingProjectiles();          
+            }          
         } 
         
         void DecreaseCountExponentially(IDamageable decayTarget)
@@ -158,9 +171,33 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             if(_target.DamagePoints > 0)
                 _target.Damage(damage);
             _projectile.Damage(damage);
-            if(decayTarget.DamagePoints <= 0)
-                AdvanceSceneState();            
-            _reward.IncreaseReward(damage);     
+            if(damage <= 1)
+                _singleDamageMode = true;
+            _reward.IncreaseReward(damage); 
+        }
+        
+        void StartOnePerCoroutineIfNotActive(IDamageable decayTarget)
+        {
+            if(_onePerIsRunning)
+                return;
+            _onePerIsRunning = true;
+            var timeLeft = _sprayingArrowsTime - (DateTime.Now - _timeStarted).TotalSeconds;  
+            var waitPer = Math.Clamp(timeLeft, 0, 1.8) / (double)decayTarget.DamagePoints;    
+            StartCoroutine(OnePerCoroutine(decayTarget, waitPer));
+        }
+        
+        IEnumerator OnePerCoroutine(IDamageable decayTarget, double waitSeconds)
+        {
+            while(decayTarget.DamagePoints > 0) 
+            { 
+                _target.Damage(1);
+                _projectile.Damage(1);
+                _reward.IncreaseReward(1); 
+                _projectileSpawner.SpawnFlyingProjectiles();  
+                yield return new WaitForSeconds((float)waitSeconds);
+            }
+            AdvanceSceneState();                    
+            _onePerIsRunning = false;
         }
         
         void DecreaseCountConstantly(IDamageable decayTarget, double speed)

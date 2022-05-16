@@ -8,7 +8,7 @@ using Timer = System.Timers.Timer;
 
 namespace Game.GameState
 {    
-    public class PreRun : MonoBehaviour
+    public class PreRun : MonoBehaviour, IPreRun
     {
         [SerializeField]
         PreRunUI _UI;
@@ -17,8 +17,8 @@ namespace Game.GameState
         RunthroughContextManager _contextManager;
         
         private Timer _contextUpdateTimer = new Timer();
-        private bool _currentlyGenerating = false;
         
+        public GameObject GameObject {get {return gameObject;}}
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
         public event EventHandler OnProceedToNextState;
                 

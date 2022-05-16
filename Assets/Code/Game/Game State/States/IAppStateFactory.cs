@@ -5,7 +5,7 @@ namespace Game.GameState
 {
     public interface IAppStateFactory
     {
-        public PreRun GetPreRun();
+        public IPreRun GetPreRun(bool skipToRun);
         public Runthrough GetRunthrough(RunthroughContext runContext);
         public IPostRun GetPostRun(RunFinishContext FinishContext);
         public AdState GetAd();

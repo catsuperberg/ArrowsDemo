@@ -19,7 +19,7 @@ namespace Game.GameState
             AppState.EmptyState};
         List<AppState>.Enumerator _stateEnumerator;        
         
-        PreRun _preRun;
+        IPreRun _preRun;
         Runthrough _runthrough;
         IPostRun _postRun;
         AdState _ad;       
@@ -72,8 +72,9 @@ namespace Game.GameState
         
         void StartPreRun()
         {            
-            _preRun = _stateFactory.GetPreRun();
-            _preRun.gameObject.transform.SetParent(this.transform);
+            var skipToRun = (_postRunContext != null) ? _postRunContext.RestartInsteadOfMenu : false;
+            _preRun = _stateFactory.GetPreRun(skipToRun);
+            _preRun.GameObject.transform.SetParent(this.transform);
             _preRun.OnProceedToNextState += PreRunCalledStartRunthrough;
         }
         
@@ -89,7 +90,7 @@ namespace Game.GameState
         {
             _runthrough = _stateFactory.GetRunthrough(_preRun.CurrentRunthroughContext);
             _runthrough.gameObject.transform.SetParent(this.transform);
-            Destroy(_preRun.gameObject);
+            Destroy(_preRun.GameObject);
             _preRun = null;
             _runthrough.OnProceedToNextState += RunthroughFinished;
             _runthrough.StartRun();

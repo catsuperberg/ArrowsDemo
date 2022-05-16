@@ -1,5 +1,4 @@
 using Game.Gameplay.Realtime;
-using Game.Gameplay.Realtime.GameplayComponents;
 using DataManagement;
 using System;
 using UI;
@@ -29,8 +28,15 @@ namespace Game.GameState
             _userContextAccessor = registryAccessor;               
         }
         
-        public PreRun GetPreRun(GameObject preRunPrefab)
+        public IPreRun GetPreRun(GameObject preRunPrefab, bool skipToRun)
         {
+            if(skipToRun)
+            {
+                var script = new GameObject("Pre Run").AddComponent<PreRunSkipToRun>();
+                script.Initialize(_contextManager);
+                return script;
+            }
+            
             var preRunGO = GameObject.Instantiate(preRunPrefab);
             var preRun = preRunGO.GetComponent<PreRun>();
             preRun.Initialize(_userContextNotifier, _contextManager);

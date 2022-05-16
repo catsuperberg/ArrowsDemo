@@ -1,8 +1,8 @@
 using DataManagement;
 using Game.Gameplay.Meta.UpgradeSystem;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
-using System;
 using GameMath;
+using System;
 
 namespace Game.Gameplay.Realtime.OperationSequence
 {
@@ -38,7 +38,15 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         int GetNumberOfOperationsFromUpgrades(int crossbowLever, int overflowingArrowLevels)
         {
-            return 5 + crossbowLever/2 + overflowingArrowLevels/3;
+            var numberWithPart = 5 + (float)crossbowLever/2 + (float)overflowingArrowLevels/3;
+            var intBase = (int)MathF.Floor(numberWithPart);
+            var chancePart = numberWithPart - intBase;
+            return (DecideOnAdditionalOperation(chancePart)) ? intBase + 1 : intBase;
+        }
+        
+        bool DecideOnAdditionalOperation(float chance)
+        {
+            return chance >= GlobalRandom.RandomDouble();
         }
         
         int GetTrackLength(int numberOfGates)

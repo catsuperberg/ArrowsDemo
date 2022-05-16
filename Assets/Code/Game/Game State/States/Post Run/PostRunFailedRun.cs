@@ -1,3 +1,4 @@
+using Game.Gameplay.Realtime;
 using Game.GameState.Context;
 using System;
 using UnityEngine;
@@ -9,6 +10,14 @@ namespace Game.GameState
         public GameObject GO {get {return this.gameObject;}}
         public PostRunContext Context {get; private set;}
         public event EventHandler OnProceedToNextState;   
+             
+        public void Initialize(RunthroughContextManager contextManager)
+        {
+             if(contextManager == null)
+                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
+                
+            contextManager.StartContextUpdate();
+        }    
                 
         public void RequestRestart()
         {

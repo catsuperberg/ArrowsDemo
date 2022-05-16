@@ -166,8 +166,7 @@ namespace Game.Gameplay.Realtime
         IEnumerator ProjectileCreationCoroutine(int initialCount, float movementWidth, IInstatiator assetInstatiator, SemaphoreSlim semaphore)
         {   
             _projectile = _projectileGenerator.CreateArrows(initialCount, movementWidth, assetInstatiator);     
-            
-            // HACK probably all creation could be brought under one await                
+                       
             _projectile.transform.SetParent(_follower.Transform);   
             AttachCameraToFollower(_follower);
                          
