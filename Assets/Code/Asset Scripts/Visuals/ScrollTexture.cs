@@ -27,7 +27,9 @@ namespace AssetScripts.Visual
             if(_rend != null)
             {
                 var offset = Time.time * _speed;
-                _rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+                // _rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+                
+                _rend.material.SetFloat("_Offset", offset);       
             }
         }
     }

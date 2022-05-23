@@ -23,7 +23,7 @@ namespace AssetScripts.Visual
         {
             yield return new WaitForSeconds(waitTime);
             _rend = GetComponentInChildren<Renderer>();
-            _baseGlowVisibility = _rend.material.GetFloat("_BlendAlpha");
+            _baseGlowVisibility = _rend.material.GetFloat("_SecondaryTextureAlpha");
         }
         
         void Update()
@@ -31,7 +31,7 @@ namespace AssetScripts.Visual
             if(_rend != null)
             {
                 var intensity = _baseGlowVisibility + _range + Mathf.Sin(Time.time*_speed)*_range;  
-                _rend.material.SetFloat("_BlendAlpha", intensity);       
+                _rend.material.SetFloat("_SecondaryTextureAlpha", intensity);       
             }
         }
     }

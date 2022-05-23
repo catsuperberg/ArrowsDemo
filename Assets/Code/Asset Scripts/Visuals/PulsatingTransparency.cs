@@ -23,7 +23,7 @@ namespace AssetScripts.Visual
         {
             yield return new WaitForSeconds(waitTime);
             _rend = GetComponentInChildren<Renderer>();
-            _baseTransparency = _rend.material.color.a;
+            _baseTransparency = _rend.material.GetFloat("_Alpha");
         }
         
         void Update()
@@ -31,9 +31,7 @@ namespace AssetScripts.Visual
             if(_rend != null)
             {
                 var transparency = _baseTransparency + _baseTransparency * Mathf.Sin(Time.time*_speed)*_range;
-                var color = _rend.material.color;
-                color.a = transparency;
-                _rend.material.color = color;            
+                _rend.material.SetFloat("_Alpha", transparency);           
             }
         }
     }

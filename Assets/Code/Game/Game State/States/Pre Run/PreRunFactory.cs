@@ -40,8 +40,10 @@ namespace Game.GameState
             var preRunGO = GameObject.Instantiate(preRunPrefab);
             var preRun = preRunGO.GetComponent<PreRun>();
             preRun.Initialize(_userContextNotifier, _contextManager);
-            var upgradeShop = preRunGO.GetComponentInChildren<UpgradeShop>();
-            upgradeShop.Initialize(_userContextAccessor); 
+            // var upgradeShop = preRunGO.GetComponentInChildren<UpgradeShop>();
+            // upgradeShop.Initialize(_userContextAccessor); 
+            var upgradeShop = preRunGO.GetComponentInChildren<ShopManager>();
+            upgradeShop.Initialize(_userContextAccessor);           
             return preRun;
         }
     }

@@ -40,7 +40,8 @@ namespace UI
             
             var calculatorFactory = new PriceCalculatorFactory();
             _priceCalculator = calculatorFactory.GetCalculatorFor(_fieldName);
-            NameText.text = _fieldName;
+            if(NameText != null)
+                NameText.text = _fieldName;
             updateValueText();            
         }
         

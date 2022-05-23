@@ -13,10 +13,15 @@ namespace Game.GameState
         [SerializeField]
         GameObject UpgradeShop;
         [SerializeField]
-        GameObject LoadingScreen;        
+        GameObject LoadingScreen;   
+         
+        [SerializeField]
+        private Animator PreRunAnimator; 
+           
         
         public GameObject ActiveScreen {get; private set;}
         public event EventHandler OnStartRunthrough;
+        bool firstStartScreenAnimation = true;
                
         void Awake()
         {
@@ -48,13 +53,22 @@ namespace Game.GameState
         
         public void SwithchToStartScreen()
         {
+            if(firstStartScreenAnimation)
+            {
+                PreRunAnimator.SetTrigger("LoadToStartScreen");
+                firstStartScreenAnimation = false;
+            }
+            else
+                PreRunAnimator.SetTrigger("ShopToStart");                
             SwitchToScreen(StartScreen);  
         }
         
         public void SwithchToUpgradeShop()
         {      
+            PreRunAnimator.SetTrigger("StartToShop");
             SwitchToScreen(UpgradeShop);  
         }
+        
         public void SwithchToLoadingScreen()
         {      
             SwitchToScreen(LoadingScreen);  
