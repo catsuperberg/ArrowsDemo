@@ -1,6 +1,10 @@
 using AssetScripts.Instantiation;
+using DataManagement;
+using Input.ControllerComponents;
+using System;
 using System.Numerics;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
@@ -9,6 +13,17 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         [SerializeField]
         private GameObject arrowBundle;
         
+        IRegistryIngester _settingsRegistry;
+        
+        [Inject]
+        public void Construct([Inject(Id = "settingsIngester")] IRegistryIngester registry)
+        {
+            if(registry == null)
+                throw new ArgumentNullException("IRegistryIngester not provided to " + this.GetType().Name);
+                
+            _settingsRegistry = registry; 
+        }
+        
         public GameObject CreateArrows(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
         {
             if(assetInstatiator == null)
@@ -16,18 +31,12 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
                 
             var bundle = assetInstatiator.Instantiate(arrowBundle, name: "Projectile (Arrow bundle)");
             var bundleScript = bundle.GetComponent<IProjectile>();
-            if(bundleScript != null)
-            {
-                bundleScript.Initialize(initialCount, movementWidth, collisionEnabled: false);
-                return bundle;                
-            }
-            else
-            {
+            if(bundleScript == null)
                 throw new System.Exception("No IProjectileObject in selected prefab");
-                // Debug.LogWarning("No IProjectileObject in selected prefab");
-                // return null;
-            }
-                
+            bundleScript.Initialize(initialCount, movementWidth, collisionEnabled: false);
+            var configurableComponent = bundle.AddComponent<TouchTranslationMovementController>(); // FIXME should search for generic IConfigurable with init\register method
+            configurableComponent.Initialize(_settingsRegistry);
+            return bundle;                                
         }
     }
 }

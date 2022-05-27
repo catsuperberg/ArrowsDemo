@@ -25,12 +25,12 @@ namespace DataManagement
                 
         public string GetStoredValue(Type classType, string fieldName)
         {
-            if(!_registry.CurrentConfigurablesData.Contains(classType.Name))
-                throw new NullReferenceException("No registered configurables found for class " + classType.Name);
-            var fields = _registry.CurrentConfigurablesData[classType.Name].First();
+            if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
+                throw new NullReferenceException("No registered configurables found for class " + classType.FullName);
+            var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
             var field = fields.FirstOrDefault(x => x.Name == fieldName);
             if(field == null)
-                throw new NullReferenceException("No field found for class in regisrty. Class name: " + classType.Name + "Field: "  + fieldName);
+                throw new NullReferenceException("No field found for class in regisrty. Class name: " + classType.FullName + "Field: "  + fieldName);
             return field.Value;
         }
         

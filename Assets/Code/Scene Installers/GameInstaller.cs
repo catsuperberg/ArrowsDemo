@@ -45,7 +45,8 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ISettingsService>().To<SettingsService>().AsSingle();
         
         
-        ComposeUserContextManagement();        
+        ComposeUserContextManagement();  
+        ComposeSettingsManagement();       
                                  
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
@@ -64,8 +65,22 @@ public class GameInstaller : MonoInstaller
         var userContextManager = new UserContextManager(_userRegistry.Ingester, _userRegistry.Manager);
         var userContextConverter = new UserContextConverter(_userRegistry.Reader);
         Container.Bind<IContextProvider>().FromInstance(userContextConverter).AsSingle(); 
-        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").FromInstance(userContextManager).AsSingle(); 
-        Container.Bind<IRegistryAccessor>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsSingle(); 
-        Container.Bind<IRegistryValueReader>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsSingle(); 
+        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").FromInstance(userContextManager).AsTransient(); 
+        Container.Bind<IRegistryAccessor>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsTransient(); 
+        Container.Bind<IRegistryValueReader>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsTransient(); 
+    }
+    
+    void ComposeSettingsManagement()
+    {
+        var gameFolders = new GameFolders();
+        var RegistryFactory = new RegistryFactory(gameFolders);
+        var nonVolatileStorage = new JsonStorage(new DiskAcessor());
+        var _settingsRegistry = RegistryFactory.CreateRegistry("GameSettings", nonVolatileStorage);
+        
+        var settingsRegistryManager = new SettingsRegistryManager(_settingsRegistry.Ingester, _settingsRegistry.Manager, _settingsRegistry.Reader);
+        Container.Bind<IUpdatedNotification>().WithId("settingsNotifier").FromInstance(settingsRegistryManager).AsTransient(); 
+        Container.Bind<IRegistryIngester>().WithId("settingsIngester").FromInstance(_settingsRegistry.Ingester).AsTransient(); 
+        Container.Bind<IRegistryAccessor>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
+        Container.Bind<IRegistryValueReader>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
     }
 }

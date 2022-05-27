@@ -1,0 +1,9 @@
+{
+  "Input.ControllerComponents.TouchTranslationMovementController": [
+    {
+      "Name": "Sensitivity",
+      "Value": "8",
+      "Type": "System.Single"
+    }
+  ]
+}

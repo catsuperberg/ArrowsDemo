@@ -47,7 +47,7 @@ namespace DataManagement
         
         public void UpdateInstanceWithStoredValues(IConfigurable instance)
         {
-            UpdateObjectsFields(instance, instance.GetType().Name);
+            UpdateObjectsFields(instance, instance.GetType().FullName);
         }
         
         public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurables, bool overrideOnPresent)
@@ -81,10 +81,10 @@ namespace DataManagement
         
         public void RegisterNewConfigurablesForClass(Type objectType, List<ConfigurableField> fields)
         {
-            if(_currentConfigurablesData.ContainsKey(objectType.Name))
+            if(_currentConfigurablesData.ContainsKey(objectType.FullName))
                 return;
         
-            _currentConfigurablesData.Add(objectType.Name, fields);
+            _currentConfigurablesData.Add(objectType.FullName, fields);
             NotifyAboutDataUpdate();
         }
         
@@ -140,7 +140,7 @@ namespace DataManagement
             }
             catch (MissingFieldException)
             {
-                Debug.Log("there's no such field as: " + fieldName + " in " + objectToUpdate.GetType().Name);
+                Debug.Log("there's no such field as: " + fieldName + " in " + objectToUpdate.GetType().FullName);
             }
         }
         

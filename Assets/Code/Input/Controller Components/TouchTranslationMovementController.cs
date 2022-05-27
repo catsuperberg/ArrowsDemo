@@ -1,31 +1,51 @@
+using DataManagement;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Input.ControllerComponents
 {    
-    public class TouchTranslationMovementController : MonoBehaviour, Controls.ITouchMovementActions, ISensitivitySetable
-    {              
+    public class TouchTranslationMovementController : MonoBehaviour, Controls.ITouchMovementActions, IConfigurable
+    {        
         IMovable _movableObject;
+        Controls _gameplayControls;
+           
+        [StoredField]
+        public float Sensitivity {get; private set;} = 8;        
+                 
+        public event EventHandler OnUpdated;
+        
         float _x_axisValue = 0;
         float _y_axisValue = 0;
         float _x_delta = 0;
         float _y_delta = 0;
-        
-        const float defaultCoefficient = 8f;
         float _dpi = 130;
-        public float _outputValuePerInput {get; private set;} = defaultCoefficient;  
-        private bool _initialized = false;
-        Controls _gameplayControlls;
+        private bool _controllsEnabled = false;
         
-        public void Init(float outputValuePerInput = defaultCoefficient)
+        public void Initialize(IRegistryIngester registry)
         {
-            if(!_initialized)
+            registry.Register(this, true, true);   
+        }
+        
+        public void SetControlsEnabled(bool state)
+        {               
+            if(_controllsEnabled == state)
             {
-                _outputValuePerInput = outputValuePerInput;            
-                EnableControlls();
-                _initialized = true;
+                Debug.LogWarning("Trying to change controls state to same state as active");
+                return;
             }
+            _controllsEnabled = state;
+            UpdateControllsActive();
+        }
+        
+        void UpdateControllsActive()
+        {
+            if(_controllsEnabled)
+                EnableControls();
+            else
+                DisableControls();
         }
         
         void Awake()
@@ -35,18 +55,27 @@ namespace Input.ControllerComponents
                 _dpi = dpi;
             
             _movableObject = gameObject.GetComponent<IMovable>();
-            if(!_initialized)
-                EnableControlls();
         }
         
-        void EnableControlls()
+        void EnableControls()
         {            
-            _gameplayControlls = new Controls();
-            _gameplayControlls.TouchMovement.Enable();
-            _gameplayControlls.TouchMovement.SetCallbacks(this);
+            _gameplayControls = new Controls();
+            _gameplayControls.TouchMovement.Enable();
+            _gameplayControls.TouchMovement.SetCallbacks(this);
         }
         
-        // FIXME Should probably unsubscribe on destroy
+        void DisableControls()
+        {
+            _gameplayControls.TouchMovement.Disable();
+            _gameplayControls.TouchMovement.SetCallbacks(null);
+            _gameplayControls = null;
+        }
+        
+        void OnDestroy()
+        {
+            if(_gameplayControls != null)
+                DisableControls();
+        }
         
         void Update()
         {      
@@ -80,8 +109,8 @@ namespace Input.ControllerComponents
                 var y_Delta = currentPositonInch.y - _y_axisValue;
                 if(x_Delta != 0 || y_Delta != 0)
                 {
-                    _x_delta = _outputValuePerInput * x_Delta;
-                    _y_delta = _outputValuePerInput * y_Delta;                
+                    _x_delta = Sensitivity * x_Delta;
+                    _y_delta = Sensitivity * y_Delta;                
                 }
                 
                 
@@ -90,10 +119,34 @@ namespace Input.ControllerComponents
             }
         }
         
-        public void UpdateSensitivity(float sensitivity)
+        public void UpdateField(string fieldName, string fieldValue)
+        {            
+            SetFieldValue(fieldName, fieldValue);        
+            
+            OnUpdated?.Invoke(this, EventArgs.Empty);   
+        }
+        
+        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
+        {            
+            if(updatedValues.Count == 0)
+                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
+            
+            foreach(var fieldData in updatedValues)
+                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);       
+                
+            OnUpdated?.Invoke(this, EventArgs.Empty);    
+        }
+        
+        void SetFieldValue(string fieldName, string fieldValue)
         {
-            Debug.Log("UpdateSensitivity() called");
-            _outputValuePerInput = sensitivity;
+            switch(fieldName)
+            {
+                case nameof(Sensitivity):
+                    Sensitivity = Convert.ToSingle(fieldValue);
+                    break;
+                default:
+                    throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);
+            }
         }
     }    
 }

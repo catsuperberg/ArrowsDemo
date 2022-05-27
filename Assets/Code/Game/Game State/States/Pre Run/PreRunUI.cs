@@ -11,7 +11,7 @@ namespace Game.GameState
         [SerializeField]
         GameObject StartScreen;
         [SerializeField]
-        GameObject UpgradeShop;
+        GameObject SettingsScreen;
         [SerializeField]
         GameObject LoadingScreen;   
          
@@ -41,7 +41,7 @@ namespace Game.GameState
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 StartScreen.SetActive(false);
-                UpgradeShop.SetActive(false);
+                SettingsScreen.SetActive(false);
                 // LoadingScreen.SetActive(false);
                 });             
         }
@@ -63,10 +63,10 @@ namespace Game.GameState
             SwitchToScreen(StartScreen);  
         }
         
-        public void SwithchToUpgradeShop()
+        public void SwithchToSettingsScreen()
         {      
             PreRunAnimator.SetTrigger("StartToShop");
-            SwitchToScreen(UpgradeShop);  
+            SwitchToScreen(SettingsScreen);  
         }
         
         public void SwithchToLoadingScreen()

@@ -77,7 +77,7 @@ namespace DataManagement
             catch(Exception e)
             {
                 Debug.Log("No entry found to deserialize at: " + _pathToEntry);
-                throw new NoEntryException("No entry found in: " + _nonVolatileStorage.GetType().Name , e);
+                throw new NoEntryException("No entry found in: " + _nonVolatileStorage.GetType().FullName , e);
             }
             finally
             {                
@@ -88,7 +88,11 @@ namespace DataManagement
         
         bool dataIsValid(Dictionary<string, List<ConfigurableField>> data)
         {
-            return data != null && data.Values.First().Any();
+            if(data == null)
+                return false;
+            if(!data.Values.Any())
+                return false;
+            return data.Values.First().Any();
         }
     }
 }

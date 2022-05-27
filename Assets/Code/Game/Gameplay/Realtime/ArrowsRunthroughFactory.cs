@@ -48,17 +48,17 @@ namespace Game.Gameplay.Realtime
             IContextProvider runContextProvider, ISequenceManager sequenceManager)
         {
             if(splineMeshGenerator == null)
-                throw new System.Exception("ISplineTrackProvider isn't provided to RuntimeFactory");
+                throw new System.Exception("ISplineTrackProvider isn't provided to " + this.GetType().Name);
             if(trackPopulator == null)
-                throw new System.Exception("ITrackPopulator isn't provided to RuntimeFactory");
+                throw new System.Exception("ITrackPopulator isn't provided to " + this.GetType().Name);
             if(targetGenerator == null)
-                throw new System.Exception("ITargerProvider isn't provided to RuntimeFactory");
+                throw new System.Exception("ITargerProvider isn't provided to " + this.GetType().Name);
             if(projectileGenerator == null)
-                throw new System.Exception("IProjectileProvider not provided to RuntimeFactory");
+                throw new System.Exception("IProjectileProvider not provided to " + this.GetType().Name);
             if(runContextProvider == null)
-                throw new System.Exception("IContextProvider isn't provided to RuntimeFactory");
+                throw new System.Exception("IContextProvider isn't provided to " + this.GetType().Name);
              if(sequenceManager == null)
-                throw new System.Exception("ISequenceManager isn't provided to RuntimeFactory");
+                throw new System.Exception("ISequenceManager isn't provided to " + this.GetType().Name);
                
             _splineMeshGenerator = splineMeshGenerator;
             _trackPopulator = trackPopulator;

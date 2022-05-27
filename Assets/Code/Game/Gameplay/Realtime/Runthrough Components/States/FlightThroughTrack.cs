@@ -75,8 +75,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
         public void StartRun()
         {          
-            _movementController = ActiveProjectile.GameObject.AddComponent<TouchTranslationMovementController>();
-            _movementController.Init();
+            _movementController = ActiveProjectile.GameObject.GetComponent<TouchTranslationMovementController>();
+            _movementController.SetControlsEnabled(true);
             _follower.StartMovement();
         }
     }    

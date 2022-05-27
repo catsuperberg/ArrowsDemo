@@ -15,6 +15,8 @@ namespace DataManagement
                 return new FloatApplier();
             else if(valueType == typeof(string).FullName)
                 return new StringApplier();
+            else if(valueType == typeof(bool).FullName)
+                return new BoolApplier();
             throw new ArgumentException("Factory was requested to create applier for illigal type: " + valueType);
         }        
     }    
