@@ -68,12 +68,25 @@ namespace DataManagement
                 ConfigurableField fieldToAdd;
                 var fieldFoundInRegestry = storedChangebles.FirstOrDefault(x => x.Name == field.Name);
                 if(fieldFoundInRegestry != null)
-                    fieldToAdd = (fieldFoundInRegestry.Type == field.Type) ? fieldFoundInRegestry : field;   
+                    fieldToAdd = GetStoredFieldIfValid(fieldFoundInRegestry, field);
                 else
-                    fieldToAdd =field;
+                    fieldToAdd = field;
                 configurablesWithUpdatetValues.Add(fieldToAdd);
             }
             _registry.OverrideClassData(classType.FullName, configurablesWithUpdatetValues);
+        }
+        
+        ConfigurableField GetStoredFieldIfValid(ConfigurableField storedField, ConfigurableField ingestedField)
+        {
+            var field = (storedField.Type == ingestedField.Type) ? 
+                        GetStoredFieldWithValidMetadata(storedField, ingestedField) : 
+                        ingestedField;   
+            return field;
+        }
+        
+        ConfigurableField GetStoredFieldWithValidMetadata(ConfigurableField storedField, ConfigurableField ingestedField)
+        {
+            return ConfigurableFieldUtils.ImplantWithMetadata(storedField, ingestedField.Metadata);
         }
     }
 }

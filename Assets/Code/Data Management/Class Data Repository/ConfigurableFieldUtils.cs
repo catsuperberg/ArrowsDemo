@@ -18,17 +18,18 @@ namespace DataManagement
                                     
             if(!fields.Any() && !properties.Any())
                 throw new NoFieldException("No fields with [StoredField] attribute was found in " + classType);
-                
-            Debug.Log("Adding fields and properties of a class: " + classType + " to registry");                
-            foreach(var field in fields)
-                Debug.Log("Field added to registy: " + field.Name + " " + field.GetValue(objectReference).ToString() + " " + field.FieldType.ToString());
-            foreach(var property in properties)
-                Debug.Log("property added to registy: " + property.Name + " " + property.GetValue(objectReference).ToString() + " " + property.PropertyType.ToString());    
+                  
                    
             foreach(var field in fields)
-                configurables.Add(new ConfigurableField(field.Name, field.GetValue(objectReference).ToString(), field.FieldType.ToString()));
+            {
+                var metadata = (StoredField)Attribute.GetCustomAttribute(field, typeof(StoredField));
+                configurables.Add(new ConfigurableField(field.Name, field.GetValue(objectReference).ToString(), field.FieldType.ToString(), metadata.Metadata));
+            }
             foreach(var property in properties)
-                configurables.Add(new ConfigurableField(property.Name, property.GetValue(objectReference).ToString(), property.PropertyType.ToString()));
+            {
+                var metadata = (StoredField)Attribute.GetCustomAttribute(property, typeof(StoredField));
+                configurables.Add(new ConfigurableField(property.Name, property.GetValue(objectReference).ToString(), property.PropertyType.ToString(), metadata.Metadata));
+            }
             return configurables;
         }
         
@@ -40,9 +41,14 @@ namespace DataManagement
                 string value;
                 var providerField = sourceChangebles.FirstOrDefault(x => x.Name == field.Name);
                 value = (providerField != null && field.Type == providerField.Type) ? providerField.Value : field.Value;
-                configurablesWithUpdatetValues.Add(new ConfigurableField(field.Name, value, field.Type));
+                configurablesWithUpdatetValues.Add(new ConfigurableField(field.Name, value, field.Type, field.Metadata));
             }
             return configurablesWithUpdatetValues;
+        }
+        
+        public static ConfigurableField ImplantWithMetadata(ConfigurableField sourceField, FieldMetadata newMetadata)
+        {
+            return new ConfigurableField(sourceField.Name, sourceField.Value, sourceField.Type, newMetadata);
         }
     }
 }

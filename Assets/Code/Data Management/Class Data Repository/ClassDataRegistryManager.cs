@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace DataManagement
@@ -82,7 +83,8 @@ namespace DataManagement
             finally
             {                
                 if(dataIsValid(dataFromStorage))
-                    _nonVolatileConfigurablesData = dataFromStorage;
+                    // _nonVolatileConfigurablesData = dataFromStorage;
+                    _nonVolatileConfigurablesData = UpdateToValidMetadata(dataFromStorage);
             }
         }
         
@@ -93,6 +95,40 @@ namespace DataManagement
             if(!data.Values.Any())
                 return false;
             return data.Values.First().Any();
+        }
+        
+        Dictionary<string, List<ConfigurableField>> UpdateToValidMetadata(Dictionary<string, List<ConfigurableField>> data)
+        {
+            var dataWithNewMetadata = new Dictionary<string, List<ConfigurableField>>();
+            foreach(var entry in data)
+                dataWithNewMetadata.Add(entry.Key, updateFields(Type.GetType(entry.Key), entry.Value));
+                // foreach(var field in entry.Value)
+                    // dataWithNewMetadata.Add(entry.Key, updateFields(Type.GetType(entry.Key), field.Name));
+                            
+            return dataWithNewMetadata;
+        }
+        
+        List<ConfigurableField> updateFields(Type classType, List<ConfigurableField> fields)
+        {
+            var newFields = new List<ConfigurableField>();
+            foreach(var field in fields)
+            {
+                var storedFieldInfo = classType.GetField(field.Name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                var storedPropertyInfo = classType.GetProperty(field.Name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if(storedFieldInfo != null)
+                {
+                    var metadata = (StoredField)Attribute.GetCustomAttribute(storedFieldInfo, typeof(StoredField));
+                    newFields.Add(new ConfigurableField(field.Name, field.Value, field.Type, metadata.Metadata));
+                }             
+                else if (storedPropertyInfo != null)
+                {
+                    var metadata = (StoredField)Attribute.GetCustomAttribute(storedPropertyInfo, typeof(StoredField));
+                    newFields.Add(new ConfigurableField(field.Name, field.Value, field.Type, metadata.Metadata));
+                }       
+                else
+                    newFields.Add(field);
+            }            
+            return newFields;
         }
     }
 }

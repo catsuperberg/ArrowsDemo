@@ -21,17 +21,35 @@ namespace DataManagement
         void DataInRegistryUpdated(object caller, EventArgs args)
         {
             OnUpdated?.Invoke(this, EventArgs.Empty);
+        }        
+        
+        public Type GetFieldType(Type classType, string fieldName)
+        {
+            var field = GetFirstField(classType, fieldName);
+            return Type.GetType(field.Type);            
         }
                 
         public string GetStoredValue(Type classType, string fieldName)
+        {            
+            var field = GetFirstField(classType, fieldName);
+            return field.Value;
+        }
+        
+        public FieldMetadata GetFieldMetadata(Type classType, string fieldName)
         {
-            if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
+            var field = GetFirstField(classType, fieldName);
+            return field.Metadata;
+        }
+        
+        ConfigurableField GetFirstField(Type classType, string fieldName)
+        {
+             if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
                 throw new NullReferenceException("No registered configurables found for class " + classType.FullName);
             var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
             var field = fields.FirstOrDefault(x => x.Name == fieldName);
             if(field == null)
                 throw new NullReferenceException("No field found for class in regisrty. Class name: " + classType.FullName + "Field: "  + fieldName);
-            return field.Value;
+            return field;
         }
         
         public void UpdateInstanceWithStoredValues(IConfigurable instance)

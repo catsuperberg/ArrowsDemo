@@ -31,8 +31,8 @@ namespace DataManagement
             var indexOfTargetField = _currentConfigurablesData[className].FindIndex(x => x.Name == fieldName);
             if(indexOfTargetField != -1)
             {
-                var fieldType = _currentConfigurablesData[className][indexOfTargetField].Type;
-                _currentConfigurablesData[className][indexOfTargetField] = new ConfigurableField(fieldName, fieldValue, fieldType);
+                var currentField = _currentConfigurablesData[className][indexOfTargetField]; 
+                _currentConfigurablesData[className][indexOfTargetField] = new ConfigurableField(fieldName, fieldValue, currentField.Type, currentField.Metadata);
                 dataUpdated = true;
             }
             else
