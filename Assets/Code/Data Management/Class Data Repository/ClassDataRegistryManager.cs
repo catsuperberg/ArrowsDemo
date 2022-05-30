@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace DataManagement
@@ -82,7 +83,7 @@ namespace DataManagement
             finally
             {                
                 if(dataIsValid(dataFromStorage))
-                    _nonVolatileConfigurablesData = dataFromStorage;
+                    _nonVolatileConfigurablesData = UpdateToValidMetadata(dataFromStorage);
             }
         }
         
@@ -93,6 +94,52 @@ namespace DataManagement
             if(!data.Values.Any())
                 return false;
             return data.Values.First().Any();
+        }
+        
+        Dictionary<string, List<ConfigurableField>> UpdateToValidMetadata(Dictionary<string, List<ConfigurableField>> data)
+        {
+            var dataWithNewMetadata = new Dictionary<string, List<ConfigurableField>>();
+            foreach(var entry in data)
+                dataWithNewMetadata.Add(entry.Key, updateFields(Type.GetType(entry.Key), entry.Value));
+                            
+            return dataWithNewMetadata;
+        }
+        
+        List<ConfigurableField> updateFields(Type classType, List<ConfigurableField> fields)
+        {
+            if(!IsValidClass(classType))
+                return fields;
+                
+            var newFields = new List<ConfigurableField>();
+            foreach(var field in fields)
+            {
+                StoredField newMetadata = GetFieldMetadataFromCode(classType, field.Name);      
+                if(newMetadata != null)                    
+                    newFields.Add(ConfigurableFieldUtils.ImplantWithMetadata(field, newMetadata.Metadata));
+                else
+                    newFields.Add(field);
+            }            
+            return newFields;
+        }
+        
+        bool IsValidClass(Type classType)
+        {
+            if(classType == null)
+                return false;
+            return Type.GetType(classType.Name) != null;
+        }
+        
+        StoredField GetFieldMetadataFromCode(Type classType , string fieldName)
+        {
+            StoredField metadataFromCode = null;
+            var storedFieldInfo = classType.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            var storedPropertyInfo = classType.GetProperty(fieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if(storedFieldInfo != null)
+                metadataFromCode = (StoredField)Attribute.GetCustomAttribute(storedFieldInfo, typeof(StoredField));
+            else if (storedPropertyInfo != null)
+                metadataFromCode = (StoredField)Attribute.GetCustomAttribute(storedPropertyInfo, typeof(StoredField));
+            
+            return metadataFromCode;
         }
     }
 }

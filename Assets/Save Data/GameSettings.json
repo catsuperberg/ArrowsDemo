@@ -2,8 +2,13 @@
   "Input.ControllerComponents.TouchTranslationMovementController": [
     {
       "Name": "Sensitivity",
-      "Value": "8",
-      "Type": "System.Single"
+      "Value": "12",
+      "Type": "System.Single",
+      "Metadata": {
+        "PrettyName": "Sensitivity",
+        "MinValue": 3.0,
+        "MaxValue": 15.0
+      }
     }
   ]
 }

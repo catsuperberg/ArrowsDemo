@@ -12,7 +12,7 @@ namespace Input.ControllerComponents
         IMovable _movableObject;
         Controls _gameplayControls;
            
-        [StoredField]
+        [StoredField("Sensitivity", 3, 15)]
         public float Sensitivity {get; private set;} = 8;        
                  
         public event EventHandler OnUpdated;

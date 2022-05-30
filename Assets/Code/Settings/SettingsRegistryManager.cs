@@ -31,7 +31,7 @@ namespace Game.Gameplay.Meta
         
         void DataUpdated(object sender, EventArgs e)
         {
-            Debug.LogWarning("Settings changed");
+            Debug.Log("Settings changed");
             _registryManager.SaveRegisteredToNonVolatile();
             OnUpdated?.Invoke(this, EventArgs.Empty);
         }

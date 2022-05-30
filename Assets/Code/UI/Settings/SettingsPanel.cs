@@ -43,9 +43,13 @@ namespace UI
         
         void CreateChangerForFieldOfType(Type classType, string fieldName)
         {
-            var changerGO = Instantiate(ToggleChangerPrefab, Vector3.zero, Quaternion.identity, FillablePanel.transform);
-            var changer = changerGO.GetComponentInChildren<SettingToggleChanger>();
-            changer.AttachToValue(_settingsAccessor, classType, fieldName);
+            var fieldType = _settingsAccessor.GetFieldType(classType, fieldName);
+            if(fieldType == typeof(float))
+            {
+                var changerGO = Instantiate(SliderChangerPrefab, Vector3.zero, Quaternion.identity, FillablePanel.transform);
+                var changer = changerGO.GetComponentInChildren<SettingSliderChanger>();
+                changer.AttachToValue(_settingsAccessor, classType, fieldName);
+            }
         }
     }
 }
