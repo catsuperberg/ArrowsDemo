@@ -12,27 +12,42 @@ namespace UI
         [SerializeField]
         private string AnimationBoolName;
         [SerializeField]
-        private string QuickSwitchOn;
-        [SerializeField]
-        private string QuickSwitchOff;
+        private string QuickSwitchBoolName;
         
         private bool _toggleState = false;
         
         public void Initialize(bool initialState)
         {
-            _toggleState = initialState;        
-            QuickSwitchToState();
-            UpdateAnimationState();
+            _toggleState = initialState;     
+            QuickSwitchToState(); 
+        }
+        
+        void OnEnable()
+        {
+            QuickSwitchToState(); 
         }
         
         void QuickSwitchToState()
         {
             if(_toggleState == ToggleAnimator.GetBool(AnimationBoolName))
                 return;
-            var triggerName = (_toggleState) ? QuickSwitchOn : QuickSwitchOff;
-            ToggleAnimator.SetTrigger(triggerName);
-            ToggleAnimator.ResetTrigger(triggerName);
+            
+            ToggleAnimator.SetBool(QuickSwitchBoolName, true);      
+            UpdateAnimationState();
+            DisableQuickSwitchAfterDelay();    
         }  
+        
+        void DisableQuickSwitchAfterDelay()
+        {
+            StartCoroutine(DisableQuickSwitchCoroutine(Time.deltaTime*2));
+        }
+        
+        IEnumerator DisableQuickSwitchCoroutine(float time)
+        {
+            yield return new WaitForSeconds(time);
+            
+            ToggleAnimator.SetBool(QuickSwitchBoolName, false); 
+        }
         
         public void Toggle()
         {

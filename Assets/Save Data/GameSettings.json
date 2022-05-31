@@ -2,12 +2,24 @@
   "Input.ControllerComponents.TouchTranslationMovementController": [
     {
       "Name": "Sensitivity",
-      "Value": "12",
+      "Value": "6.747475",
       "Type": "System.Single",
       "Metadata": {
         "PrettyName": "Sensitivity",
         "MinValue": 3.0,
         "MaxValue": 15.0
+      }
+    }
+  ],
+  "Game.Microinteracions.VibrationService": [
+    {
+      "Name": "VibrationEnabled",
+      "Value": "True",
+      "Type": "System.Boolean",
+      "Metadata": {
+        "PrettyName": "Vibration",
+        "MinValue": "NaN",
+        "MaxValue": "NaN"
       }
     }
   ]

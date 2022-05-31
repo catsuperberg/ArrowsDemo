@@ -2,7 +2,7 @@
   "Game.Gameplay.Meta.Curencies.CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "999999423991",
+      "Value": "999999592657",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",

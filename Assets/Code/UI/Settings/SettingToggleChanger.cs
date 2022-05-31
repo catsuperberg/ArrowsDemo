@@ -24,22 +24,23 @@ namespace UI
             
             _registryAccessor = registryAccessor;
             _objectClass = objectClass;
-            _fieldName = fieldName;
+            _fieldName = fieldName;            
             
-            
-            if(NameText != null)
-                NameText.text = _fieldName;    
+            NameText.text = _registryAccessor.GetFieldMetadata(objectClass, fieldName).PrettyName;
+            var state = Convert.ToBoolean(_registryAccessor.GetStoredValue(_objectClass, _fieldName)); 
+            Visualizer.Initialize(state);            
         }
         
         public void Toggle()
         {
             var currentValue = _registryAccessor.GetStoredValue(_objectClass, _fieldName);            
             _registryAccessor.ApplyOperationOnRegisteredField(_objectClass, _fieldName, OperationType.Replace, PerformNotOnStringBool(currentValue));
+            UpdateVisualiser();
         }        
         
         string PerformNotOnStringBool(string boolean)
         {
-            return (boolean == true.ToString()) ? true.ToString() : false.ToString();
+            return (boolean == true.ToString()) ? false.ToString() : true.ToString();
         }
         
         void UpdateVisualiser()

@@ -1,4 +1,6 @@
 using Game.Gameplay.Realtime.OperationSequence.Operation;
+using Game.Microinteracions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -7,7 +9,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
 {
-    public class Ring : MonoBehaviour, IMathContainer
+    public class Ring : MonoBehaviour, IMathContainer, IMicrointerationActivator
     {
         [SerializeField]
         private TMP_Text _operationText;
@@ -15,6 +17,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         private OperationInstance _operation;
         private OperationExecutor _exec;
         private bool _spent = false;
+        
+        public event EventHandler OnMicrointerationTriggered;
         
         public void Initialize(OperationInstance newOperation, OperationExecutor exec)
         {
@@ -44,7 +48,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
                 if(_exec == null)
                     throw new System.Exception("Ring wasn't initialized");
                 var newValue = _exec.Perform(_operation, initialValue);
-                SpendAllInList(FindRingsInPair());
+                SpendAllInList(FindRingsInPair());                
+                OnMicrointerationTriggered?.Invoke(this, EventArgs.Empty);
                 return newValue;
             }
             else

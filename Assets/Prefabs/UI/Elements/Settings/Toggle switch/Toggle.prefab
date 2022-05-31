@@ -381,6 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ToggleAnimator: {fileID: 492750962573900634}
   AnimationBoolName: IsOn
+  QuickSwitchBoolName: QuickSwitching
   QuickSwitchOn: QuickOn
   QuickSwitchOff: QuickOff
 --- !u!114 &8639148761862547174

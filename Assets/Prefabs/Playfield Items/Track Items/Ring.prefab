@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 4261874118034182444}
   - component: {fileID: 4261874118034182445}
   - component: {fileID: 4061409613307672162}
+  - component: {fileID: 4856497367392895990}
   - component: {fileID: -6953517984309177888}
+  - component: {fileID: 8616757467737300615}
   m_Layer: 0
   m_Name: Ring
   m_TagString: Untagged
@@ -100,6 +102,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _operationText: {fileID: 4261874119704683872}
+--- !u!114 &4856497367392895990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4261874118034182442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5449b11206eb024f96caf4267f7dba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!64 &-6953517984309177888
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -114,6 +128,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2299002261072476989, guid: fb2e907c4980c9a438e12b2717109ce6, type: 3}
+--- !u!114 &8616757467737300615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4261874118034182442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 0
 --- !u!1 &4261874118368494676
 GameObject:
   m_ObjectHideFlags: 0

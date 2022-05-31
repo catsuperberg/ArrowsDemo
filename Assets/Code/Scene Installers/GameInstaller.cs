@@ -9,6 +9,7 @@ using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
+using Game.Microinteracions;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -46,7 +47,8 @@ public class GameInstaller : MonoInstaller
         
         
         ComposeUserContextManagement();  
-        ComposeSettingsManagement();       
+        ComposeSettingsManagement();    
+        ComposeMicrointeractions();        
                                  
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
@@ -82,5 +84,10 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IRegistryIngester>().WithId("settingsIngester").FromInstance(_settingsRegistry.Ingester).AsTransient(); 
         Container.Bind<IRegistryAccessor>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
         Container.Bind<IRegistryValueReader>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
+    }
+    
+    void ComposeMicrointeractions()
+    {
+        Container.Bind<VibrationService>().AsSingle().NonLazy();
     }
 }

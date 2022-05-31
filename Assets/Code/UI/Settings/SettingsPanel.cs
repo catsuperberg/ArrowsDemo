@@ -50,6 +50,12 @@ namespace UI
                 var changer = changerGO.GetComponentInChildren<SettingSliderChanger>();
                 changer.AttachToValue(_settingsAccessor, classType, fieldName);
             }
+            else if (fieldType == typeof(bool))
+            {
+                var changerGO = Instantiate(ToggleChangerPrefab, Vector3.zero, Quaternion.identity, FillablePanel.transform);
+                var changer = changerGO.GetComponentInChildren<SettingToggleChanger>();
+                changer.AttachToValue(_settingsAccessor, classType, fieldName);
+            }
         }
     }
 }
