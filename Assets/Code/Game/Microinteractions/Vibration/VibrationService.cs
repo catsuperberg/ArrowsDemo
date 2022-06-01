@@ -1,8 +1,6 @@
 using DataManagement;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
 namespace Game.Microinteracions
@@ -19,6 +17,22 @@ namespace Game.Microinteracions
             registry.Register(this, true, true);  
             
             Vibration.Init();        
+        }
+        
+        public void ExecuteEffect(VibrationEffect effect)
+        {
+            switch (effect)
+            {
+                case VibrationEffect.Affirmative:
+                    AffirmativeVibration();
+                    break;
+                case VibrationEffect.Negative:
+                    NegativeVibration();
+                    break;
+                case VibrationEffect.SmallVibration:
+                    SmallVibration();
+                    break;
+            }
         }
         
         public void AffirmativeVibration()

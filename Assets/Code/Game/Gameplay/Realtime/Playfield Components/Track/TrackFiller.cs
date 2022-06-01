@@ -125,9 +125,18 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             var pairGO = Instantiate(gameObject, _track.gameObject.transform.position, Quaternion.identity);
             pairGO.name = "Gate pair";
             pairGO.transform.SetParent(allGates.transform);
+            AddPairContainer(pairGO, pair);
             AddGateToPair(pairGO, pair.left);
             AddGateToPair(pairGO, pair.right);
             return pairGO;
+        }
+        
+        void AddPairContainer(GameObject pair, (GameObject left, GameObject right) gates)
+        {
+            var left = (gates.left != null) ? gates.left.GetComponent<Ring>().Operation : new OperationInstance(Operation.Blank, 0);
+            var right = (gates.right != null) ? gates.right.GetComponent<Ring>().Operation : new OperationInstance(Operation.Blank, 0);
+            var pairContainer =  pair.AddComponent<OperationPairComponent>();
+            pairContainer.Initialize(new OperationPair(left, right));
         }
         
         void AddGateToPair(GameObject pair, GameObject gate)

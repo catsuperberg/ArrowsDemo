@@ -14,18 +14,18 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         [SerializeField]
         private TMP_Text _operationText;
         
-        private OperationInstance _operation;
+        public OperationInstance Operation {get; private set;}
         private OperationExecutor _exec;
         private bool _spent = false;
         
-        public event EventHandler OnMicrointerationTriggered;
+        public event EventHandler<MicrointeractionEventArgs> OnMicrointerationTriggered;
         
         public void Initialize(OperationInstance newOperation, OperationExecutor exec)
         {
             if(exec == null)
                 throw new System.Exception("OperationExecutor not provided to Ring");
             _exec = exec;                        
-            _operation = newOperation;
+            Operation = newOperation;
             UpdateApearance();
         }
         
@@ -38,22 +38,22 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             if(_exec == null)
                 throw new System.Exception("Ring wasn't initialized");
-            _operationText.text = _operation.Type.ToSymbol() + _operation.Value;
+            _operationText.text = Operation.Type.ToSymbol() + Operation.Value;
         }
         
         public BigInteger ApplyOperation(BigInteger initialValue)
         {
-            if(!_spent)
-            {
-                if(_exec == null)
-                    throw new System.Exception("Ring wasn't initialized");
-                var newValue = _exec.Perform(_operation, initialValue);
-                SpendAllInList(FindRingsInPair());                
-                OnMicrointerationTriggered?.Invoke(this, EventArgs.Empty);
-                return newValue;
-            }
-            else
+            if(_spent)
                 return initialValue;
+                
+            if(_exec == null)
+                throw new System.Exception("Ring wasn't initialized");
+            var newValue = _exec.Perform(Operation, initialValue);
+            SpendAllInList(FindRingsInPair());                
+            bool isBestChoice = IsBestInPair(initialValue);
+            ActivateVibration(isBestChoice);
+            return newValue;
+                
         }
         
         void SpendAllInList(List<Ring> rings)
@@ -66,10 +66,20 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             var pairObjectContainer = gameObject.transform.parent.gameObject;
             var rings = pairObjectContainer.GetComponentsInChildren<Ring>().ToList();
-            // foreach(Ring ring in rings)
-            //     if(ring.gameObject.name != gameObject.name)
-            //         rings.Remove(ring);
             return rings;
+        }
+        
+        bool IsBestInPair(BigInteger initialValue)
+        {
+            var pairObjectContainer = gameObject.transform.parent.gameObject;
+            var pair = pairObjectContainer.GetComponent<OperationPairComponent>().Pair;
+            return pair.BestOperation(initialValue, _exec) == Operation;
+        }
+        
+        void ActivateVibration(bool positive)
+        {
+            var vibrationType = (positive) ? VibrationEffect.SmallVibration : VibrationEffect.Negative;
+            OnMicrointerationTriggered?.Invoke(this, new MicrointeractionEventArgs(new VibrationPacket(vibrationType)));
         }
     }
 }

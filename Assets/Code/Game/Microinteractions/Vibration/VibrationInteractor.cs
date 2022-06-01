@@ -26,12 +26,13 @@ namespace Game.Microinteracions
             _vibrator = vibrator; 
         }
     
-        void PerformIfCorrectMicrointeration(object caller, EventArgs args)
+        void PerformIfCorrectMicrointeration(object caller, MicrointeractionEventArgs args)
         {
-            if(_vibrator == null || !_vibrator.VibrationEnabled)
+            if(_vibrator == null || !_vibrator.VibrationEnabled || !(args.Packet is VibrationPacket))
                 return;
                 
-            _vibrator.NegativeVibration();
+            var packet = args.Packet as VibrationPacket;
+            _vibrator.ExecuteEffect(packet.EffectToTrigger);
         }
     }
 }

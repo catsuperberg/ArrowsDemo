@@ -4,6 +4,6 @@ namespace Game.Microinteracions
 {
     public interface IMicrointerationActivator
     {    
-        public event EventHandler OnMicrointerationTriggered;
+        public event EventHandler<MicrointeractionEventArgs> OnMicrointerationTriggered;
     }
 }

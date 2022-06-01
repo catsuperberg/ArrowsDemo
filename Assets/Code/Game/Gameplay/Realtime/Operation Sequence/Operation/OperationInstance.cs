@@ -32,8 +32,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public OperationInstance(Operation type, int value)
         {
-            if(Enum.IsDefined(typeof(Operation), type))
-                throw new System.Exception("no valid type provided on OperationInstance creation");
+            if(!(Enum.IsDefined(typeof(Operation), type)))
+                throw new System.Exception("no valid type provided on OperationInstance creation, type was: " + type);
             Type = type;
             Value = value;
         }

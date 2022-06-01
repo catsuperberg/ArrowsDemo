@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class OperationPair
+    public class OperationPair 
     {
         public OperationInstance LeftOperation {get; private set;}
         public OperationInstance RightOperation {get; private set;}
