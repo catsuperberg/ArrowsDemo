@@ -2,11 +2,10 @@ using DataManagement;
 using System;
 using UnityEngine;
 
-namespace Game.Gameplay.Meta
+namespace Settings
 {
     public class SettingsRegistryManager : IUpdatedNotification
-    {
-        UserContext _context;        
+    {     
         IRegistryManager _registryManager;    
         IRegistryValueReader _registryReader;       
         

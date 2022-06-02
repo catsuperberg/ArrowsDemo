@@ -1,5 +1,6 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
+using Settings;
 using DataManagement;
 using Game.Gameplay.Meta;
 using Game.Gameplay.Realtime;
@@ -10,7 +11,6 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
 using Game.Microinteracions;
-using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -41,13 +41,11 @@ public class GameInstaller : MonoInstaller
         else if (Application.platform == RuntimePlatform.Android)
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
-        Container.Bind<ISettingsExecutorService>().To<ChangedSettingsExecutorService>().AsSingle();
-        
-        Container.Bind<ISettingsService>().To<SettingsService>().AsSingle();
         
         
         ComposeUserContextManagement();  
         ComposeSettingsManagement();    
+        ComposeSettings();  
         ComposeMicrointeractions();        
                                  
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
@@ -84,7 +82,12 @@ public class GameInstaller : MonoInstaller
         Container.Bind<IRegistryIngester>().WithId("settingsIngester").FromInstance(_settingsRegistry.Ingester).AsTransient(); 
         Container.Bind<IRegistryAccessor>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
         Container.Bind<IRegistryValueReader>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 
-    }
+    }    
+     
+    void ComposeSettings()
+    {
+        Container.Bind<ResolutionScaling>().AsSingle().NonLazy();  
+    }  
     
     void ComposeMicrointeractions()
     {

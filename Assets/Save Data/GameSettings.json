@@ -2,7 +2,7 @@
   "Input.ControllerComponents.TouchTranslationMovementController": [
     {
       "Name": "Sensitivity",
-      "Value": "6.747475",
+      "Value": "9.811633",
       "Type": "System.Single",
       "Metadata": {
         "PrettyName": "Sensitivity",
@@ -20,6 +20,18 @@
         "PrettyName": "Vibration",
         "MinValue": "NaN",
         "MaxValue": "NaN"
+      }
+    }
+  ],
+  "Settings.ResolutionScaling": [
+    {
+      "Name": "Scaling",
+      "Value": "0.2481735",
+      "Type": "System.Single",
+      "Metadata": {
+        "PrettyName": "Resolution scaling",
+        "MinValue": 0.2,
+        "MaxValue": 1.0
       }
     }
   ]
