@@ -87,6 +87,7 @@ public class GameInstaller : MonoInstaller
     void ComposeSettings()
     {
         Container.Bind<ResolutionScaling>().AsSingle().NonLazy();  
+        Container.Bind<GraphicsPresset>().AsSingle().NonLazy(); 
     }  
     
     void ComposeMicrointeractions()

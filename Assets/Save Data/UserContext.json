@@ -2,12 +2,13 @@
   "Game.Gameplay.Meta.Curencies.CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "1000000535075",
+      "Value": "1000001003828",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     }
   ],
@@ -19,7 +20,8 @@
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     },
     {
@@ -29,7 +31,8 @@
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     },
     {
@@ -39,7 +42,8 @@
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     },
     {
@@ -49,7 +53,8 @@
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     }
   ]

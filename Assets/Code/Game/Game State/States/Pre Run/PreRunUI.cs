@@ -59,13 +59,13 @@ namespace Game.GameState
                 firstStartScreenAnimation = false;
             }
             else
-                PreRunAnimator.SetTrigger("ShopToStart");                
+                PreRunAnimator.SetTrigger("SettingsToStart");                
             SwitchToScreen(StartScreen);  
         }
         
         public void SwithchToSettingsScreen()
         {      
-            PreRunAnimator.SetTrigger("StartToShop");
+            PreRunAnimator.SetTrigger("StartToSettings");
             SwitchToScreen(SettingsScreen);  
         }
         

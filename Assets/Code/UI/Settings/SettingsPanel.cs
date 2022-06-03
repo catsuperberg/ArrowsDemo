@@ -56,6 +56,12 @@ namespace UI
                 var changer = changerGO.GetComponentInChildren<SettingToggleChanger>();
                 changer.AttachToValue(_settingsAccessor, classType, fieldName);
             }
+            else if (fieldType == typeof(string) && _settingsAccessor.GetFieldMetadata(classType, fieldName).ValidOptions != null)
+            {
+                var changerGO = Instantiate(DropDownChangerPrefab, Vector3.zero, Quaternion.identity, FillablePanel.transform);
+                var changer = changerGO.GetComponentInChildren<SettingsDropDownChanger>();
+                changer.AttachToValue(_settingsAccessor, classType, fieldName);
+            }
         }
     }
 }

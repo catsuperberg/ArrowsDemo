@@ -7,7 +7,8 @@
       "Metadata": {
         "PrettyName": "Sensitivity",
         "MinValue": 3.0,
-        "MaxValue": 15.0
+        "MaxValue": 15.0,
+        "ValidOptions": null
       }
     }
   ],
@@ -19,19 +20,41 @@
       "Metadata": {
         "PrettyName": "Vibration",
         "MinValue": "NaN",
-        "MaxValue": "NaN"
+        "MaxValue": "NaN",
+        "ValidOptions": null
       }
     }
   ],
   "Settings.ResolutionScaling": [
     {
       "Name": "Scaling",
-      "Value": "0.2481735",
+      "Value": "1",
       "Type": "System.Single",
       "Metadata": {
         "PrettyName": "Resolution scaling",
         "MinValue": 0.2,
-        "MaxValue": 1.0
+        "MaxValue": 1.0,
+        "ValidOptions": null
+      }
+    }
+  ],
+  "Settings.GraphicsPresset": [
+    {
+      "Name": "CurrentQualityLevel",
+      "Value": "Medium",
+      "Type": "System.String",
+      "Metadata": {
+        "PrettyName": "Graphics quality",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": [
+          "Very Low",
+          "Low",
+          "Medium",
+          "High",
+          "Very High",
+          "Ultra"
+        ]
       }
     }
   ]

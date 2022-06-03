@@ -388,7 +388,6 @@ GameObject:
   m_Component:
   - component: {fileID: 722549811}
   - component: {fileID: 722549810}
-  - component: {fileID: 722549813}
   - component: {fileID: 722549812}
   - component: {fileID: 722549809}
   - component: {fileID: 722549814}
@@ -482,19 +481,6 @@ MonoBehaviour:
   angleSpeedCoefficient: 1.2
   Offset: {x: 0, y: 12, z: -13}
   Rotation: {x: 22.5, y: 0, z: 0}
---- !u!114 &722549813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 722549808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 311acacef1e1edf468dde1c9d09eebbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Scale: 1
 --- !u!114 &722549814
 MonoBehaviour:
   m_ObjectHideFlags: 0

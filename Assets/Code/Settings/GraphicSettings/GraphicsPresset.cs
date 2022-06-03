@@ -2,32 +2,31 @@ using DataManagement;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using Zenject;
 
 namespace Settings
 {
-    public class ResolutionScaling : IConfigurable
+    public  class GraphicOptionsGetter : IOptionsGetter
+    {        
+        public string[] Options {get {return QualitySettings.names;}}
+    }
+    
+    public class GraphicsPresset : IConfigurable
     {               
-        [StoredField("Resolution scaling", 0.2f, 1f)]
-        public float Scaling {get; private set;} = 1;        
+        [StoredField("Graphics quality", OptionGetter: typeof(GraphicOptionsGetter))]
+        public string CurrentQualityLevel {get; private set;} = QualitySettings.names[QualitySettings.GetQualityLevel()];       
                  
         public event EventHandler OnUpdated;
         
-        public ResolutionScaling([Inject(Id = "settingsIngester")] IRegistryIngester registry)
+        public GraphicsPresset([Inject(Id = "settingsIngester")] IRegistryIngester registry)
         {
             registry.Register(this, true, true);   
         }
         
-        void SetScaling()
+        void ApplyQuality()
         {
-            // var scaler = Camera.main.GetComponent<ResolutionScaler>();
-            // if(scaler != null)
-            //     scaler.SetScale(Convert.ToSingle(Scaling));
-            
-            var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
-                urp.renderScale = Convert.ToSingle(Scaling);
+            if(CurrentQualityLevel != QualitySettings.names[QualitySettings.GetQualityLevel()])
+                QualitySettings.SetQualityLevel(Array.IndexOf(QualitySettings.names, CurrentQualityLevel), true);
         }
         
         public void UpdateField(string fieldName, string fieldValue)
@@ -52,9 +51,9 @@ namespace Settings
         {
             switch(fieldName)
             {
-                case nameof(Scaling):
-                    Scaling = Convert.ToSingle(fieldValue);
-                    SetScaling();
+                case nameof(CurrentQualityLevel):
+                    CurrentQualityLevel = Convert.ToString(fieldValue);
+                    ApplyQuality();
                     break;
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);
