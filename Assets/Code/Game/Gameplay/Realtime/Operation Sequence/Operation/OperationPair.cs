@@ -30,6 +30,19 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             var leftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
             return (leftIsBest) ? LeftOperation : RightOperation;
         }
+        
+        public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue, OperationExecutor exec)
+        {
+            OperationInstance otherOperation;
+            if(operationToCheck == LeftOperation)
+                otherOperation = RightOperation;
+            else if(operationToCheck == RightOperation)
+                otherOperation = LeftOperation;
+            else
+                throw new System.Exception("No OperationInstance, equal to one to check, found in this pair");
+            return exec.Perform(operationToCheck, initialValue) >= exec.Perform(otherOperation, initialValue);
+        }
+        
         public BigInteger BestOperationResult(BigInteger initialValue, OperationExecutor exec)
         {
             var leftValue = exec.Perform(LeftOperation, initialValue);

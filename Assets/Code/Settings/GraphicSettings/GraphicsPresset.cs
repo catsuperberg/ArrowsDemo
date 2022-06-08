@@ -2,6 +2,8 @@ using DataManagement;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using Zenject;
 
 namespace Settings
@@ -24,9 +26,26 @@ namespace Settings
         }
         
         void ApplyQuality()
-        {
+        {           
             if(CurrentQualityLevel != QualitySettings.names[QualitySettings.GetQualityLevel()])
-                QualitySettings.SetQualityLevel(Array.IndexOf(QualitySettings.names, CurrentQualityLevel), true);
+                UpdateQuality(); 
+        }
+        
+        void UpdateQuality()
+        {
+            KeepRenderScale();
+            QualitySettings.SetQualityLevel(Array.IndexOf(QualitySettings.names, CurrentQualityLevel), true);            
+        }
+        
+        void KeepRenderScale()
+        {            
+            var currentResolutionScaling = CureentURP().renderScale; 
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {CureentURP().renderScale = currentResolutionScaling;}); // executes at the end of a frame when UpdateQuality() done changing URP asset
+        }
+        
+        UniversalRenderPipelineAsset CureentURP()
+        {
+            return (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
         }
         
         public void UpdateField(string fieldName, string fieldValue)

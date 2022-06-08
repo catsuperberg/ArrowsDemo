@@ -21,11 +21,7 @@ namespace Settings
         }
         
         void SetScaling()
-        {
-            // var scaler = Camera.main.GetComponent<ResolutionScaler>();
-            // if(scaler != null)
-            //     scaler.SetScale(Convert.ToSingle(Scaling));
-            
+        {            
             var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
                 urp.renderScale = Convert.ToSingle(Scaling);
         }

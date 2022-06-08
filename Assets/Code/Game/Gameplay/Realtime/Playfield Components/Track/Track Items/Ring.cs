@@ -52,6 +52,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
             SpendAllInList(FindRingsInPair());                
             bool isBestChoice = IsBestInPair(initialValue);
             ActivateVibration(isBestChoice);
+            ActivateAnimation(isBestChoice);
             return newValue;
                 
         }
@@ -73,13 +74,18 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             var pairObjectContainer = gameObject.transform.parent.gameObject;
             var pair = pairObjectContainer.GetComponent<OperationPairComponent>().Pair;
-            return pair.BestOperation(initialValue, _exec) == Operation;
+            return pair.IsBestOperation(Operation, initialValue, _exec);
         }
         
-        void ActivateVibration(bool positive)
+        void ActivateVibration(bool isPositive)
         {
-            var vibrationType = (positive) ? VibrationEffect.SmallVibration : VibrationEffect.Negative;
+            var vibrationType = (isPositive) ? VibrationEffect.SmallVibration : VibrationEffect.Negative;
             OnMicrointerationTriggered?.Invoke(this, new MicrointeractionEventArgs(new VibrationPacket(vibrationType)));
+        }
+        
+        void ActivateAnimation(bool isPositive)
+        {
+            OnMicrointerationTriggered?.Invoke(this, new MicrointeractionEventArgs(new RingAnimationPacket(isPositive)));
         }
     }
 }
