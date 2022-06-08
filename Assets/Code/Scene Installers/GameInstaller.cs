@@ -1,6 +1,6 @@
+using AssetScripts.AssetCreation;
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
-using Settings;
 using DataManagement;
 using Game.Gameplay.Meta;
 using Game.Gameplay.Realtime;
@@ -11,6 +11,7 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
 using Game.Microinteracions;
+using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -42,7 +43,7 @@ public class GameInstaller : MonoInstaller
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
         
-        
+        ComposeSkinsImport();
         ComposeUserContextManagement();  
         ComposeSettingsManagement();    
         ComposeSettings();  
@@ -53,6 +54,11 @@ public class GameInstaller : MonoInstaller
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    
         Container.Bind<IAppStateFactory>().FromInstance(_appStateFactory).AsSingle();  
+    }
+    
+    void ComposeSkinsImport()
+    {
+        Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }
     
     void ComposeUserContextManagement()

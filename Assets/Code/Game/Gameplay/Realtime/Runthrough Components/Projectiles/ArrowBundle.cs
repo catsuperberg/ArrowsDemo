@@ -135,6 +135,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
             for(int i = 0; i < countToAdd; i++)
             {
                 var arrow = Instantiate(ArrowAsset, GetPositionOnSpiral(_arrows.Count), UnityEngine.Quaternion.identity);
+                arrow.SetActive(true);
                 arrow.transform.SetParent(transform, false);
                 _arrows.Add(arrow);
             }

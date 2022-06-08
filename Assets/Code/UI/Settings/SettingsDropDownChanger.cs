@@ -39,8 +39,6 @@ namespace UI
             var metadata = _registryAccessor.GetFieldMetadata(_objectClass, _fieldName);  
             Dropdown.ClearOptions();
             var dropdownOptions = metadata.ValidOptions.ToList();
-            foreach(var option in dropdownOptions)
-                Debug.LogWarning(option);
             if(dropdownOptions != null)
                 Dropdown.AddOptions(dropdownOptions);
             var currentValue = Convert.ToString(_registryAccessor.GetStoredValue(_objectClass, _fieldName));
