@@ -167,9 +167,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 444161276}
-  - component: {fileID: 444161278}
+  - component: {fileID: 444161277}
   m_Layer: 0
-  m_Name: ProjectilePrefabCreator
+  m_Name: BundleProjectilePrefabCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190,7 +190,7 @@ Transform:
   m_Father: {fileID: 890581952}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &444161278
+--- !u!114 &444161277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 444161275}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a938f1f38cc3a5144942bee91c4531b9, type: 3}
+  m_Script: {fileID: 11500000, guid: bf6e8728175dfc34a8c9ba44ce0fb6b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TemplatePrefab: {fileID: 3700438737351598218, guid: 8623e49e14c4a3f4b88f64bfaaa056c5, type: 3}
@@ -284,7 +284,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -17.94}
 --- !u!1001 &689011762
 PrefabInstance:
@@ -335,7 +335,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -676,7 +676,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 0}
 --- !u!1 &942261831
 GameObject:
@@ -809,7 +809,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22414968, guid: 8a749df5e56f6422ba9fe64d83915a89, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 22414968, guid: 8a749df5e56f6422ba9fe64d83915a89, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1127,6 +1127,7 @@ MonoBehaviour:
   _projectileGenerator: {fileID: 942261833}
   _targetGenerator: {fileID: 1693222325}
   _appStateFactory: {fileID: 1817678896}
+  _bundleProjectilePrefabGenerator: {fileID: 444161277}
 --- !u!4 &1920852523
 Transform:
   m_ObjectHideFlags: 0

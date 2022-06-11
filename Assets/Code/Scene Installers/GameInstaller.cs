@@ -3,6 +3,7 @@ using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using DataManagement;
 using Game.Gameplay.Meta;
+using Game.Gameplay.Meta.Skins;
 using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence;
@@ -25,6 +26,8 @@ public class GameInstaller : MonoInstaller
     private TargetGroupGenerator _targetGenerator; 
     [SerializeField]
     private AppStateFactory _appStateFactory;
+    [SerializeField]
+    private BundleProjectilePrefabGenerator _bundleProjectilePrefabGenerator;
     
     public override void InstallBindings()
     {                
@@ -58,7 +61,10 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
-        Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
+        Container.Bind<PermanentProjectileInjester>().AsSingle().NonLazy(); 
+        Container.Bind<BundleProjectilePrefabGenerator>().FromInstance(_bundleProjectilePrefabGenerator).AsSingle();  
+        // Container.Bind<ProjectileColection>().AsSingle().NonLazy();  
+        // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }
     
     void ComposeUserContextManagement()
