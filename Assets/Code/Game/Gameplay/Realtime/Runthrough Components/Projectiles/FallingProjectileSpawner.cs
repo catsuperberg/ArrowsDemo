@@ -47,6 +47,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
                 var startTransform = projectileTransform;          
                 var mover = moverGameObject.AddComponent<BallisticMover>();
                 var projectile = MonoBehaviour.Instantiate((_projectile as IProjectile).ProjectilePrefab, Vector3.zero, Quaternion.identity);
+                projectile.SetActive(true);
                 mover.initialize(startTransform, targetTransform, 0.85f);
                 mover.StartMover(200f);
                 projectile.transform.SetParent(moverGameObject.transform, false);

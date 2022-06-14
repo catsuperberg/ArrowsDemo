@@ -168,6 +168,7 @@ GameObject:
   m_Component:
   - component: {fileID: 444161276}
   - component: {fileID: 444161277}
+  - component: {fileID: 444161278}
   m_Layer: 0
   m_Name: BundleProjectilePrefabCreator
   m_TagString: Untagged
@@ -203,6 +204,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TemplatePrefab: {fileID: 3700438737351598218, guid: 8623e49e14c4a3f4b88f64bfaaa056c5, type: 3}
+--- !u!114 &444161278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444161275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2992cea732481b448393254916ee53c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefabGenerator: {fileID: 444161277}
 --- !u!1 &620483179
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +736,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5eecbfbcfc281545b1de221a325df72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrowBundle: {fileID: 3700438737351598218, guid: 6622fa3c94d74684ea9ac0eea35983bc, type: 3}
 --- !u!1 &1288899256
 GameObject:
   m_ObjectHideFlags: 0

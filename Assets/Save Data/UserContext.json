@@ -2,7 +2,7 @@
   "Game.Gameplay.Meta.Curencies.CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "1000004421788",
+      "Value": "5545466071",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -15,7 +15,7 @@
   "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "26",
+      "Value": "1",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -37,7 +37,7 @@
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "2",
+      "Value": "1",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",

@@ -6,6 +6,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public interface IProjectileProvider
     {        
-        GameObject CreateArrows(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator);
+        GameObject CreateRandom(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator);
     }
 }

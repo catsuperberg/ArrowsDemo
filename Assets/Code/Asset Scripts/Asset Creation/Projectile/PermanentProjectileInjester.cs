@@ -12,32 +12,20 @@ namespace AssetScripts.AssetCreation
 {
     public class PermanentProjectileInjester : MonoBehaviour
     {        
-        IGameFolders _gameFolders;
+        [SerializeField]
+        BundleProjectilePrefabGenerator _prefabGenerator;
+        IGameFolders _gameFolders = new EditorGameFolders();
         List<string> _projectileFolders; 
         List<string> _modelFiles; 
         List<SkinPackage> _skins; 
         
         RawModelLoader modelLoader = new RawModelLoader();
-
-        BundleProjectilePrefabGenerator _prefabGenerator;
-
-        [Inject]
-        public void Construct(IGameFolders gameFolders, BundleProjectilePrefabGenerator prefabGenerator)
-        {
-            if(gameFolders == null)
-                throw new ArgumentNullException("IGameFolders isn't provided to " + this.GetType().Name);
-            if(prefabGenerator == null)
-                throw new ArgumentNullException("ProjectilePrefabGenerator isn't provided to " + this.GetType().Name);
-                
-            _gameFolders = gameFolders;
-            _prefabGenerator = prefabGenerator;
-        }   
         
         public void InjestProjectiles()
         {            
             ScanForProjectileFolders();
             ScanForGLBModels();
-            _ = ConvertModelsToPrefabs();
+            ConvertModelsToPrefabs();
         }
         
         void ScanForProjectileFolders()
@@ -75,11 +63,11 @@ namespace AssetScripts.AssetCreation
             return filePath;   
         }
         
-        async Task ConvertModelsToPrefabs()
+        void ConvertModelsToPrefabs()
         {
-            var skinObjects = await modelLoader.CreateInactiveGameObjects(_skins.Select(instance => instance.GLBModelPath));
+            var skinObjects = modelLoader.CreateInactiveGameObjects(_skins.Select(instance => instance.GLBModelPath));
             foreach(var skin in skinObjects)
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {_prefabGenerator.CreateBundleProjectilesPrefab(skin);}); 
+                _prefabGenerator.CreateBundleProjectilesPrefab(skin);
         }
     }
 }

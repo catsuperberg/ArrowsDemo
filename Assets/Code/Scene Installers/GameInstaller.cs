@@ -61,7 +61,6 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
-        Container.Bind<PermanentProjectileInjester>().AsSingle().NonLazy(); 
         Container.Bind<BundleProjectilePrefabGenerator>().FromInstance(_bundleProjectilePrefabGenerator).AsSingle();  
         // Container.Bind<ProjectileColection>().AsSingle().NonLazy();  
         // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    

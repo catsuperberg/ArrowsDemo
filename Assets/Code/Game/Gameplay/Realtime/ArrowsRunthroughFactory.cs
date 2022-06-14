@@ -165,7 +165,7 @@ namespace Game.Gameplay.Realtime
         
         IEnumerator ProjectileCreationCoroutine(int initialCount, float movementWidth, IInstatiator assetInstatiator, SemaphoreSlim semaphore)
         {   
-            _projectile = _projectileGenerator.CreateArrows(initialCount, movementWidth, assetInstatiator);     
+            _projectile = _projectileGenerator.CreateRandom(initialCount, movementWidth, assetInstatiator);     
                        
             _projectile.transform.SetParent(_follower.Transform);   
             AttachCameraToFollower(_follower);
