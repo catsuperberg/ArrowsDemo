@@ -26,8 +26,6 @@ public class GameInstaller : MonoInstaller
     private TargetGroupGenerator _targetGenerator; 
     [SerializeField]
     private AppStateFactory _appStateFactory;
-    [SerializeField]
-    private BundleProjectilePrefabGenerator _bundleProjectilePrefabGenerator;
     
     public override void InstallBindings()
     {                
@@ -61,7 +59,6 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
-        Container.Bind<BundleProjectilePrefabGenerator>().FromInstance(_bundleProjectilePrefabGenerator).AsSingle();  
         // Container.Bind<ProjectileColection>().AsSingle().NonLazy();  
         // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }

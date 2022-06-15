@@ -1140,7 +1140,6 @@ MonoBehaviour:
   _projectileGenerator: {fileID: 942261833}
   _targetGenerator: {fileID: 1693222325}
   _appStateFactory: {fileID: 1817678896}
-  _bundleProjectilePrefabGenerator: {fileID: 444161277}
 --- !u!4 &1920852523
 Transform:
   m_ObjectHideFlags: 0

@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UnityEngine;
 using DataAccess.DiskAccess.GameFolders;
 
 namespace DataAccess.DiskAccess.Serialization
@@ -23,31 +20,12 @@ namespace DataAccess.DiskAccess.Serialization
         
         public void SaveToDisk(object dataObject, string filePath, string fileName)
         {
-            FileStream stream = new FileStream(Path.Combine(filePath, withExtension(fileName)), FileMode.Create);        
-            string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
-            stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
-            stream.Close();        
+            JsonFileOperations.SaveAsJson(dataObject, filePath, fileName);
         }
         
         public T GetDataObjectFromFile<T>(string filePath, string fileName) where T : class
         {
-            var pathToFile = Path.Combine(filePath, withExtension(fileName));
-            if(File.Exists(pathToFile))
-            {
-                FileStream stream = new FileStream(pathToFile, FileMode.Open);
-                string json;
-                using(var sr = new StreamReader(stream)){
-                    json = sr.ReadToEnd();
-                    sr.Close();
-                }
-                stream.Close();
-                return JsonUtility.FromJson<T>(json);
-            }
-            else
-            {
-                Debug.Log("No file at: " + pathToFile);
-                return null;
-            }
+            return JsonFileOperations.GetDataObjectFromJsonFile<T>(filePath, fileName);
         }
         
         public bool FileExists(string filePath, string fileName)
@@ -76,9 +54,6 @@ namespace DataAccess.DiskAccess.Serialization
                 throw new System.Exception("Copy failed, no file found at: " + pathToSourceFile);
         }
         
-        private string withExtension(string fileName)
-        {
-            return fileName + _fileExtension;
-        }
+        private string withExtension(string fileName) => fileName + _fileExtension;
     }
 }
