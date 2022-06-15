@@ -186,9 +186,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             switch (_state)
             {
                 case State.SprayUntilAnyIsZero:
-                    return DecreaseBeforeOneIsZero;
+                    return DecreaseBeforeOneIsSpentExpontntially;
                 case State.Overkill:
-                    return DecreaseAfterOneIsZero;
+                    return DecreaseAfterOneIsSpent;
                 case State.Finished:
                     return null;
                 default:
@@ -196,32 +196,57 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             }
         }
         
-        BigInteger DecreaseBeforeOneIsZero()
+        BigInteger DecreaseBeforeOneIsSpentExpontntially()
         {
             var damage = GetFrameCountExponentially(_smallerDamageable);  
             if(damage <= 1)
-                UpdateBeforeOneIsZeroDelegate();
+                SwitchToConstantDecreaseDelegate();
                 
             AdvanceStateIfDecayTargetBeSpent(_smallerDamageable, damage); 
             DealDamage(_smallerDamageable, damage);
             return damage;
-        }
+        }        
         
-        void UpdateBeforeOneIsZeroDelegate()
+        void SwitchToConstantDecreaseDelegate()
         {
-            var timeLeftSpaying = _sprayingArrowsTime - (DateTime.Now - _timeStarted).TotalSeconds; 
+            var timeLeftSpraying = _sprayingArrowsTime - (DateTime.Now - _timeStarted).TotalSeconds; 
             if (_result != ResultType.Overkill && GetConstantDamage(_overkillTime) < 5)
             {
                 _decreaseCount = null;
-                StartOnePerCoroutineIfNotActive(_smallerDamageable, timeLeftSpaying);    
+                StartOnePerCoroutineIfNotActive(_smallerDamageable, timeLeftSpraying);    
             }
             else   
             {             
-                _decreaseCount = () => {var damage = GetFrameCountConstantSpeed(_smallerDamageable, timeLeftSpaying);
-                    AdvanceStateIfDecayTargetBeSpent(_smallerDamageable, damage); DealDamage(_smallerDamageable, damage); return damage;};
+                _decreaseCount = () => {return DecreaseBeforeOneIsSpentConstant(timeLeftSpraying);};
                 _decreaseCount();
             }
-        }       
+        }      
+                
+        BigInteger DecreaseBeforeOneIsSpentConstant(double timeLeft)
+        {
+            var speed = (double)(_smallerDamageable.DamagePoints)/timeLeft;
+            var damage = GetFrameCountConstantSpeed(_smallerDamageable, speed);
+            AdvanceStateIfDecayTargetBeSpent(_smallerDamageable, damage); 
+            DealDamage(_smallerDamageable, damage); 
+            return damage;
+        }
+        
+        BigInteger DecreaseAfterOneIsSpent()
+        {
+            var damage = GetFrameCountConstantSpeed(_largerDamageable, _overkillSpeed); 
+            if(damage <= 1)
+                UpdateAfterOneIsZeroDelegate();
+                
+            AdvanceStateIfDecayTargetBeSpent(_largerDamageable, damage);  
+            DealDamage(_largerDamageable, damage);
+            return damage;
+        }        
+        
+        void UpdateAfterOneIsZeroDelegate()
+        {
+            _decreaseCount = null;
+            StartOnePerCoroutineIfNotActive(_largerDamageable, _overkillTime); 
+        }    
         
         void StartOnePerCoroutineIfNotActive(IDamageable decayTarget, double time)
         {
@@ -246,25 +271,11 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _onePerIsRunning = false;
         }
         
-        BigInteger DecreaseAfterOneIsZero()
-        {
-            var damage = GetFrameCountConstantSpeed(_largerDamageable, _overkillSpeed); 
-            if(damage <= 1)
-                UpdateAfterOneIsZeroDelegate();
-                
-            AdvanceStateIfDecayTargetBeSpent(_largerDamageable, damage);  
-            DealDamage(_largerDamageable, damage);
-            return damage;
-        }        
-        
         void AdvanceStateIfDecayTargetBeSpent(IDamageable decayTarget, BigInteger damage)
         {                    
             var delta = decayTarget.DamagePoints - damage;
             if(delta <= 0)
-            {
-                damage += delta;
-                AdvanceSceneState();                               
-            } 
+                AdvanceSceneState();   
         }     
         
         void DealDamage(IDamageable decayTarget, BigInteger damage)
@@ -276,12 +287,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _projectile.Damage(damage);   
             _reward.IncreaseReward(damage); 
         }
-        
-        void UpdateAfterOneIsZeroDelegate()
-        {
-            _decreaseCount = null;
-            StartOnePerCoroutineIfNotActive(_largerDamageable, _overkillTime); 
-        }   
         
         BigInteger GetFrameCountExponentially(IDamageable decayTarget)
         {
