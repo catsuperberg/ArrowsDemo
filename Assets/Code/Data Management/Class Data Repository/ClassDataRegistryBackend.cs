@@ -8,8 +8,8 @@ namespace DataManagement
     public class ClassDataRegistryBackend : IRegistryBackend
     {
         public string Name {get; private set;}
-        public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get {return (Lookup<string, List<ConfigurableField>>)_currentConfigurablesData.ToLookup(p => p.Key, p => p.Value);}}
-        public Lookup<IConfigurable, string> ObjectsToUpdateOnChange {get {return (Lookup<IConfigurable, string>)_objectsToUpdateOnChange.ToLookup(p => p.Key, p => p.Value);}}
+        public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get => (Lookup<string, List<ConfigurableField>>)_currentConfigurablesData.ToLookup(p => p.Key, p => p.Value);}
+        public Lookup<IConfigurable, string> ObjectsToUpdateOnChange {get => (Lookup<IConfigurable, string>)_objectsToUpdateOnChange.ToLookup(p => p.Key, p => p.Value);}
         public Dictionary<string, List<ConfigurableField>> _currentConfigurablesData {get; private set;} = new Dictionary<string, List<ConfigurableField>>();
         public Dictionary<IConfigurable, string> _objectsToUpdateOnChange {get; private set;} = new Dictionary<IConfigurable, string>();
                 

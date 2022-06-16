@@ -1,5 +1,6 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
+using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,14 +21,25 @@ namespace AssetScripts.AssetCreation
         List<string> _modelFiles; 
         List<SkinPackage> _skinPackages;
         Dictionary<SkinPackage, GameObject> _skins; 
+        List<ProjectileSkinData> _skinsData = new List<ProjectileSkinData>();
         
         RawModelLoader _modelLoader = new RawModelLoader();
         
         public void InjestProjectiles()
         {            
+            var progressTimer = new System.Timers.Timer(800);
+            progressTimer.Elapsed += (o, e) => {Debug.Log("Projectile injest in progress");};
+            progressTimer.Start();
+            
+            _skinsData = new List<ProjectileSkinData>();
             ScanForProjectileFolders();
             ScanForGLBModels();
             InjestModels();
+            UpdateSkinDatabase();
+            
+            AssetDatabase.Refresh();
+            progressTimer.Dispose();
+            Debug.Log("Projectile injest finished");
         }
         
         void ScanForProjectileFolders()
@@ -50,7 +62,9 @@ namespace AssetScripts.AssetCreation
             var injestDataFile = Directory.GetFiles(folderOfSpecificSkin, "*injestData.json*").FirstOrDefault();
             if(injestDataFile == null)
                 injestDataFile = CreateDefaultProjectileInjestData(folderOfSpecificSkin);
-            _skinPackages.Add(new SkinPackage(modelFile, iconFile, injestDataFile));
+            
+            var name = Path.GetFileNameWithoutExtension(modelFile);
+            _skinPackages.Add(new SkinPackage(name, modelFile, iconFile, injestDataFile));
         }
         
         string CreateDefaultProjectileInjestData(string folder)
@@ -63,37 +77,51 @@ namespace AssetScripts.AssetCreation
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();
             return filePath;   
-        }
-        
-        
+        }      
         
         void InjestModels()
         {
             var skinGOs = _modelLoader.CreateInactiveGameObjects(_skinPackages.Select(instance => instance.GLBModelPath));
             _skins = _skinPackages.Zip(skinGOs, (k, v) => new { k, v }).ToDictionary(x => x.k, x => x.v);
                 
-            foreach(var skin in _skins)
+            foreach(var skin in _skins)            
                 InjestSkin(skin);
         }
         
         void InjestSkin(KeyValuePair<SkinPackage, GameObject> skin)
         {                              
             var skinFolder = GetSkinFolder(skin.Value.name);
-            CreateSkinDataObject(skin, skinFolder);  
-            _prefabGenerator.CreateBundleProjectilesPrefab(skin.Value, skinFolder);
+            var skinPrefabPath = _prefabGenerator.CreateBundleProjectilesPrefab(skin.Value, skinFolder);
+            _skinsData.Add(CreateSkinDataObject(skin.Key, skinPrefabPath));  
             CopyIcon(skin.Key, skinFolder);
         }
         
-        void CreateSkinDataObject(KeyValuePair<SkinPackage, GameObject> skin, string skinFolder)
+        ProjectileSkinData CreateSkinDataObject(SkinPackage skin, string skinPrefabPath)
         {
-            var injestData = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileInjestData>(skin.Key.MetadataPath);
+            var injestData = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileInjestData>(skin.MetadataPath);
             var skinData = new ProjectileSkinData(
-                name: skin.Value.name,
-                modelCheckSum: CalculateFileChecksum(skin.Key.GLBModelPath),
-                iconCheckSum: CalculateFileChecksum(skin.Key.IconPath),
+                name: skin.Name,
+                resourcePath: skinPrefabPath.Replace(_resourcesFolder, ""),
+                modelCheckSum: CalculateFileChecksum(skin.GLBModelPath),
+                iconCheckSum: CalculateFileChecksum(skin.IconPath),
                 baseCost: injestData.BaseCost,
                 adWatchRequired: injestData.AdWatchRequired);
-            JsonFileOperations.SaveAsJson(skinData, Path.Combine(skinFolder, skin.Value.name + ".json"));
+            return skinData;
+        }
+        
+        void UpdateSkinDatabase()
+        {
+            ProjectileDatabase skinDatabase; 
+            var skinDatabseName = "ProjectileDatabase.json";
+            var skinDatabasePath = Path.Combine(_resourcesFolder, skinDatabseName);
+            if(File.Exists(skinDatabasePath))
+                skinDatabase = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileDatabase>(skinDatabasePath);
+            else
+                skinDatabase = new ProjectileDatabase();
+            
+            skinDatabase.AddSkinsUniqueByName(_skinsData);   
+            
+            JsonFileOperations.SaveAsJson(skinDatabase, skinDatabasePath);
         }
         
         string CalculateFileChecksum(string path)

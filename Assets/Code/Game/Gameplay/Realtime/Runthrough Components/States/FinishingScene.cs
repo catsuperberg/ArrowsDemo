@@ -41,7 +41,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         double _sprayingArrowsTime = 3;
         double _overkillTime = 1;
         double _overkillSpeed;
-        bool _onePerIsRunning;
         DateTime _timeStarted;
         ResultType _result = ResultType.Blank;
         State _state = State.Blank;
@@ -66,7 +65,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents
             _reward = reward; 
             _result = CheckResult();  
             _projectileSpawner = new FallingProjectileSpawner(_projectile, _target);
-            _onePerIsRunning = false;
             
             PointCameraAtTarget();
                          
@@ -267,8 +265,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
                 _projectileSpawner.SpawnFlyingProjectiles();  
                 yield return new WaitForSeconds((float)waitSeconds);
             }
-            AdvanceSceneState();                    
-            _onePerIsRunning = false;
+            AdvanceSceneState();     
         }
         
         void AdvanceStateIfDecayTargetBeSpent(IDamageable decayTarget, BigInteger damage)
