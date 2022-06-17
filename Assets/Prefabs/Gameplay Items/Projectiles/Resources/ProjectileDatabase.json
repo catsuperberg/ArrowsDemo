@@ -2,7 +2,8 @@
     "_skins": [
         {
             "_name": "Arrow",
-            "_resourcePath": "\\Arrow\\Bundle_Arrow.prefab",
+            "_prefabPath": "Arrow\\Bundle_Arrow",
+            "_iconPath": "Arrow\\icon",
             "_modelCheckSum": "7B32A84CF29398475E6278E187C0E367FB9A84B8E513DBD0ECBA3AA148FA7B26",
             "_iconCheckSum": "497BF2A77970A3011EEC5B3804308E015B243F590A9CFD9039BBF2B5F7A857AD",
             "_baseCost": "2500",
@@ -10,7 +11,8 @@
         },
         {
             "_name": "Bolt",
-            "_resourcePath": "\\Bolt\\Bundle_Bolt.prefab",
+            "_prefabPath": "Bolt\\Bundle_Bolt",
+            "_iconPath": "Bolt\\icon",
             "_modelCheckSum": "6C41478B6C1A7CB831948BFA734B5BB81E7174B4955F1F53C33CB98AE41E9DD8",
             "_iconCheckSum": "BEB6174EDC6DA0D2F610A9AC319813BC5CC3B7A446DB62BD04A02062576F2727",
             "_baseCost": "0",
@@ -18,7 +20,8 @@
         },
         {
             "_name": "Fork",
-            "_resourcePath": "\\Fork\\Bundle_Fork.prefab",
+            "_prefabPath": "Fork\\Bundle_Fork",
+            "_iconPath": "Fork\\icon",
             "_modelCheckSum": "6A213946497BAE09DEED4D9E74F07F324C0FEA42834A758C2C4A8F7AF03E7B50",
             "_iconCheckSum": "70F96E25DF29A93043651AB6CEEEF67C1886F2A841C444942FE091BED20B7C82",
             "_baseCost": "350000",
@@ -26,7 +29,8 @@
         },
         {
             "_name": "Pencil",
-            "_resourcePath": "\\Pencil\\Bundle_Pencil.prefab",
+            "_prefabPath": "Pencil\\Bundle_Pencil",
+            "_iconPath": "Pencil\\icon",
             "_modelCheckSum": "F7E2E776BA7BDE339F21C2063BF518961F1A282E57D57B827559860B5E9149F1",
             "_iconCheckSum": "A72456E7CD20F25A39379EC696E9FB1757A8B2FF958CA8A8F7313AEB24D2DD25",
             "_baseCost": "28000",

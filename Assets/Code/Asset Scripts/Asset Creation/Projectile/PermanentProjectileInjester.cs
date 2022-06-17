@@ -9,6 +9,9 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
+
+#if UNITY_EDITOR
+
 namespace AssetScripts.AssetCreation
 {
     public class PermanentProjectileInjester : MonoBehaviour
@@ -99,9 +102,12 @@ namespace AssetScripts.AssetCreation
         ProjectileSkinData CreateSkinDataObject(SkinPackage skin, string skinPrefabPath)
         {
             var injestData = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileInjestData>(skin.MetadataPath);
+            var pathToPrefab = skinPrefabPath.Replace(_resourcesFolder + "\\", "").Replace(".prefab", "");
+            var pathToIcon = Path.Combine(Path.GetDirectoryName(pathToPrefab), "icon");
             var skinData = new ProjectileSkinData(
                 name: skin.Name,
-                resourcePath: skinPrefabPath.Replace(_resourcesFolder, ""),
+                prefabPath: pathToPrefab,
+                iconPath: pathToIcon,
                 modelCheckSum: CalculateFileChecksum(skin.GLBModelPath),
                 iconCheckSum: CalculateFileChecksum(skin.IconPath),
                 baseCost: injestData.BaseCost,
@@ -112,8 +118,8 @@ namespace AssetScripts.AssetCreation
         void UpdateSkinDatabase()
         {
             ProjectileDatabase skinDatabase; 
-            var skinDatabseName = "ProjectileDatabase.json";
-            var skinDatabasePath = Path.Combine(_resourcesFolder, skinDatabseName);
+            var skinDatabaseName = "ProjectileDatabase.json";
+            var skinDatabasePath = Path.Combine(_resourcesFolder, skinDatabaseName);
             if(File.Exists(skinDatabasePath))
                 skinDatabase = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileDatabase>(skinDatabasePath);
             else
@@ -152,3 +158,5 @@ namespace AssetScripts.AssetCreation
         }
     }
 }
+
+#endif

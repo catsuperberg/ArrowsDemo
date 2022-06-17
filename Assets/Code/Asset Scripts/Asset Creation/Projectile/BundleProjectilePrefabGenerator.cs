@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 namespace AssetScripts.AssetCreation
 {
     public class BundleProjectilePrefabGenerator : MonoBehaviour
@@ -61,3 +62,4 @@ namespace AssetScripts.AssetCreation
         }
     }
 }
+#endif

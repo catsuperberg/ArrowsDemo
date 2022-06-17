@@ -7,7 +7,8 @@ namespace AssetScripts.AssetCreation
     public class ProjectileSkinData
     {
         public string Name { get => _name;}
-        public string ResourcePath { get => _resourcePath;}
+        public string PrefabPath { get => _prefabPath;}
+        public string IconPath { get => _iconPath;}
         public string ModelCheckSum { get => _modelCheckSum;}
         public string IconCheckSum { get => _iconCheckSum;}
         
@@ -17,7 +18,9 @@ namespace AssetScripts.AssetCreation
         [UnityEngine.SerializeField]
         private string _name;
         [UnityEngine.SerializeField]
-        private string _resourcePath;
+        private string _prefabPath;
+        [UnityEngine.SerializeField]
+        private string _iconPath;
         [UnityEngine.SerializeField]
         private string _modelCheckSum;
         [UnityEngine.SerializeField]
@@ -27,14 +30,15 @@ namespace AssetScripts.AssetCreation
         [UnityEngine.SerializeField]
         private bool _adWatchRequired;
 
-        public ProjectileSkinData(string name, string resourcePath, string modelCheckSum, string iconCheckSum, BigInteger baseCost, bool adWatchRequired)
+        public ProjectileSkinData(string name, string prefabPath, string iconPath, string modelCheckSum, string iconCheckSum, BigInteger baseCost, bool adWatchRequired)
         {
             _name = name;
+            _prefabPath = prefabPath;
+            _iconPath = iconPath;
             _modelCheckSum = modelCheckSum;
             _iconCheckSum = iconCheckSum;
             _baseCost = baseCost.ToString();
             _adWatchRequired = adWatchRequired;
-            _resourcePath = resourcePath;
         }
     }
 }

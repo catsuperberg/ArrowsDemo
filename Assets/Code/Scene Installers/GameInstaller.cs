@@ -59,8 +59,19 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
+        TestLoadingResources();
         // Container.Bind<ProjectileColection>().AsSingle().NonLazy();  
         // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
+    }
+    
+    void TestLoadingResources() // TEMP 
+    {
+        
+        ProjectileDatabase skinDatabase = new ProjectileDatabase(); 
+        var skinDatabaseName = "ProjectileDatabase";        ;
+        var json = Resources.Load<TextAsset>(skinDatabaseName);
+        skinDatabase = JsonUtility.FromJson<ProjectileDatabase>(json.text);        
+        Container.Bind<ProjectileDatabase>().FromInstance(skinDatabase).AsSingle();  
     }
     
     void ComposeUserContextManagement()

@@ -2,8 +2,6 @@ using AssetScripts.Instantiation;
 using DataManagement;
 using Input.ControllerComponents;
 using System;
-using System.Linq;
-using System.IO;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
@@ -15,14 +13,18 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
     public class ProjectileGenerator : MonoBehaviour, IProjectileProvider
     {                
         IRegistryIngester _settingsRegistry;
+        ProjectileDatabase _projectileDatabase;
         
         [Inject]
-        public void Construct([Inject(Id = "settingsIngester")] IRegistryIngester registry)
+        public void Construct([Inject(Id = "settingsIngester")] IRegistryIngester registry, ProjectileDatabase projectileDatabase)
         {
             if(registry == null)
                 throw new ArgumentNullException("IRegistryIngester not provided to " + this.GetType().Name);
+            if(projectileDatabase == null)
+                throw new ArgumentNullException("ProjectileDatabase not provided to " + this.GetType().Name);
                 
             _settingsRegistry = registry; 
+            _projectileDatabase = projectileDatabase;
         }
         
         public GameObject CreateRandom(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
@@ -52,23 +54,9 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         
         List<UnityEngine.Object> Prefabs() //TEMP
         {
-            List<UnityEngine.Object> resources = new List<UnityEngine.Object>();
-            var resourcesFolder = "Assets/Prefabs/Gameplay Items/Projectiles/Resources";
-            var projectileFolders = Directory.GetDirectories(resourcesFolder).ToList();
-            List<string> prefabsInResources = new List<string>();
-            foreach(var folder in projectileFolders)
-            {
-                var prefabPath = Directory.GetFiles(folder, "*.prefab*").FirstOrDefault();
-                prefabPath = prefabPath.Replace(@"\", @"/");
-                prefabPath = prefabPath.Replace("Assets/Prefabs/Gameplay Items/Projectiles/Resources/", "");
-                prefabPath = prefabPath.Replace(".prefab", "");
-                Debug.Log("Path to prefab is: " +prefabPath);
-                prefabsInResources.Add(prefabPath);
-            }
-            
-            foreach(var resource in prefabsInResources)
-                resources.Add(Resources.Load(resource));
-            
+            List<UnityEngine.Object> resources = new List<UnityEngine.Object>();            
+            foreach(var resource in _projectileDatabase.Skins)
+                resources.Add(Resources.Load(resource.PrefabPath));            
             return resources;
         } 
     }

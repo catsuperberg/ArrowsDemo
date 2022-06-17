@@ -39,7 +39,7 @@ namespace Game.GameState
         
         void Start()
         {
-            #if !UNITY_EDITOR_WIN
+            #if !UNITY_EDITOR
                 Application.targetFrameRate = 60;
             #endif
             

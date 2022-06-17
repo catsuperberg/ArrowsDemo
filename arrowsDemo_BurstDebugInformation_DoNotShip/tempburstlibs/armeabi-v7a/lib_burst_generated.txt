@@ -146,7 +146,9 @@ Library: lib_burst_generated
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.Timeline.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Tayx.Graphy.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipeline.Universal.ShaderLibrary.dll
+--root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Siccity.GLTFUtility.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipelines.Core.ShaderLibrary.dll
+--root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Dracodec.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipelines.Universal.Shaders.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
 --assembly-folder=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\

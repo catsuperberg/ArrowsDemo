@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
 namespace AssetScripts.AssetCreation
 {
     [CustomEditor(typeof(PermanentProjectileInjester))]
-    public class trackScriptInspector : Editor
+    public class PermanentProjectileInjesterInspector : Editor
     {
         public override void OnInspectorGUI()
         {        
@@ -21,3 +20,4 @@ namespace AssetScripts.AssetCreation
         }
     }
 }
+#endif
