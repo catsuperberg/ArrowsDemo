@@ -153,8 +153,36 @@ namespace AssetScripts.AssetCreation
         
         void CopyIcon(SkinPackage skin, string skinFolder)
         {
-            var newFilePath = Path.Combine(skinFolder, "icon.png");
-            System.IO.File.Copy(skin.IconPath, newFilePath, true);
+            var newImagePath = Path.Combine(skinFolder, "icon.png");
+            AssetDatabase.CopyAsset(skin.IconPath, newImagePath);
+            ReimportAsSprite(newImagePath);
+        }     
+        
+        public static Texture2D LoadTexture(string FilePath)
+        {
+            Texture2D tex2D;
+            byte[] fileData;
+    
+            if(!File.Exists(FilePath))
+                throw new Exception("No file found at: " + FilePath);  
+            
+            fileData = File.ReadAllBytes(FilePath);
+            tex2D = new Texture2D(100, 100);  
+            if(tex2D.LoadImage(fileData))  
+                return tex2D; 
+            else
+                throw new Exception("Invalid data for texture creation: " + FilePath);  
+        }
+        
+        void ReimportAsSprite(string pathToImage)
+        {           
+            var importer = AssetImporter.GetAtPath(pathToImage) as TextureImporter;
+            if(importer == null)
+                {Debug.LogWarning("Didn't find importer at: " + pathToImage); return;}
+            
+            importer.mipmapEnabled = false;
+            importer.textureType = TextureImporterType.Sprite;
+            importer.SaveAndReimport();                
         }
     }
 }
