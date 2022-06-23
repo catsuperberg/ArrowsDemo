@@ -28,43 +28,76 @@ namespace UI
         Vector2 _cellSize;
         [SerializeField]
         Vector2 _spacing;
+        [SerializeField]
+        RectTransform _parentRectAsLimits;
+        [SerializeField]
+        bool _preserveChildSize;
         
-        bool _fitWidth;
-        bool _fitHeight;
+        bool _autoFit;
         
         public override void CalculateLayoutInputHorizontal()
         {
             base.CalculateLayoutInputHorizontal();
-            
-            _fitWidth = _fitHeight = false;
-            if((_fitType & (FitType.Width | FitType.Height | FitType.Uniform)) != 0)
+
+            _autoFit = false;
+            if ((_fitType & (FitType.Width | FitType.Height | FitType.Uniform)) != 0 && !_preserveChildSize)
             {
-                _fitWidth = _fitHeight = true;
+                _autoFit = true;
                 var elementsPerDirection = Mathf.CeilToInt(Mathf.Sqrt(transform.childCount));
                 _rows = _columns = elementsPerDirection;
             }
-            
+
             SetPrioritizedDimension();
-            var parentSize = base.rectTransform.rect;     
-            var cellWidth = _fitWidth ? GetCellDimension(parentSize.width, new List<float>{_spacing.x, padding.left, padding.right}, _columns) : _cellSize.x;
-            var cellHeight = _fitWidth ? GetCellDimension(parentSize.height, new List<float>{_spacing.y, padding.top, padding.bottom}, _rows) : _cellSize.y;  
-            _cellSize = new Vector2(cellWidth,cellHeight);
-            var rectTransform = GetComponent<RectTransform>();
-            rectTransform.SetPositionAndRotation(new Vector3(parentSize.width/2, -(_cellSize.y*_rows/2), 0), rectTransform.rotation);
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _cellSize.y*_rows);
-            rectTransform.ForceUpdateRectTransforms();
-            
-            foreach(var (childElement, i) in rectChildren.Select((childElement, i) => ( childElement, i )))
-            {
-                var positionInRow = i / _columns;
-                var positionInColumn = i % _columns;
-                var offsetX = padding.left + (_cellSize.x + _spacing.x) * positionInColumn;
-                var offsetY = padding.top + (_cellSize.y + _spacing.y) * positionInRow;                
-                SetChildAlongAxis(childElement, (int)RectTransform.Axis.Horizontal, offsetX, _cellSize.x);
-                SetChildAlongAxis(childElement, (int)RectTransform.Axis.Vertical, offsetY, _cellSize.y);
-            }
+            var containerTransform = GetComponent<RectTransform>();
+            var parentSize = transform.parent.GetComponent<RectTransform>().rect;
+            SetCellSize(containerTransform.rect);
+            if(_parentRectAsLimits != null)
+                UpdateContainerSizeAndPosition(containerTransform);
+            ResizeAndPositionChildren();
         }
-        
+
+        void UpdateContainerSizeAndPosition( RectTransform container)
+        {
+            var parentSize = _parentRectAsLimits.rect;
+            var sizeToFitRows = _cellSize.y * _rows;
+            var containerHeight = (sizeToFitRows >= parentSize.height) ? sizeToFitRows : parentSize.height;
+            container.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, containerHeight);
+            container.ForceUpdateRectTransforms();
+        }
+
+        void SetCellSize(Rect containerSize)
+        {
+            var cellWidth = _autoFit ? GetCellDimension(containerSize.width, new List<float> { _spacing.x, padding.left, padding.right }, _columns) : _cellSize.x;
+            var cellHeight = _autoFit ? GetCellDimension(containerSize.height, new List<float> { _spacing.y, padding.top, padding.bottom }, _rows) : _cellSize.y;
+            _cellSize = new Vector2(cellWidth, cellHeight);
+        }
+
+        void ResizeAndPositionChildren()
+        {
+            if(rectChildren.Count <= 1)
+                PositionSingleChildAndKeepSize();
+            else
+                foreach (var (childElement, i) in rectChildren.Select((childElement, i) => (childElement, i)))
+                    ResizeAndPositionChild(childElement, i);
+        }
+
+        private void ResizeAndPositionChild(RectTransform childElement, int i)
+        {
+            var positionInRow = i / _columns;
+            var positionInColumn = i % _columns;
+            var offsetX = padding.left + (_cellSize.x + _spacing.x) * positionInColumn;
+            var offsetY = padding.top + (_cellSize.y + _spacing.y) * positionInRow;
+            SetChildAlongAxis(childElement, (int)RectTransform.Axis.Horizontal, offsetX, _cellSize.x);
+            SetChildAlongAxis(childElement, (int)RectTransform.Axis.Vertical, offsetY, _cellSize.y);
+        }
+
+        void PositionSingleChildAndKeepSize()
+        {
+            var child = rectChildren.First();
+            SetChildAlongAxis(child, (int)RectTransform.Axis.Horizontal, padding.left);
+            SetChildAlongAxis(child, (int)RectTransform.Axis.Vertical, padding.top);
+        }
+
         void SetPrioritizedDimension()
         {
             if((_fitType & (FitType.Width | FitType.FixedColumns)) != 0)
