@@ -24,9 +24,7 @@ namespace UI
             nameof(UpgradeContext.InitialArrowCount)};
         
         IRegistryAccessor _userContextAccessor;
-        
-        ChangersManager _changersManager;
-        
+                
         public void Initialize(IRegistryAccessor registryAccessor)
         {
             if(registryAccessor == null)

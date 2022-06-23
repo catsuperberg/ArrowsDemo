@@ -23,11 +23,13 @@ namespace UI
         Type _objectClass;
         string _fieldName;
         
-        BigInteger itemPrice {get 
+        BigInteger itemPrice 
+        {get 
             {
                 var itemLevel = Convert.ToInt32(_registryAccessor.GetStoredValue(_objectClass, _fieldName));
                 return _priceCalculator.GetPrice(new PricingContext(itemLevel));
-            }}
+            }
+        }
         
         public void AttachToValue(IRegistryAccessor registryAccessor, Type objectClass, string fieldName)
         {

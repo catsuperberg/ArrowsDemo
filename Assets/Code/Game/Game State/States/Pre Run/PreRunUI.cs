@@ -14,6 +14,8 @@ namespace Game.GameState
         GameObject SettingsScreen;
         [SerializeField]
         GameObject LoadingScreen;   
+        [SerializeField]
+        GameObject SkinShop;   
          
         [SerializeField]
         private Animator PreRunAnimator; 
@@ -42,6 +44,7 @@ namespace Game.GameState
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 StartScreen.SetActive(false);
                 SettingsScreen.SetActive(false);
+                SkinShop.SetActive(false);
                 // LoadingScreen.SetActive(false);
                 });             
         }
@@ -67,6 +70,12 @@ namespace Game.GameState
         {      
             PreRunAnimator.SetTrigger("StartToSettings");
             SwitchToScreen(SettingsScreen);  
+        }
+        
+        public void SwithchToSkinShop()
+        {      
+            PreRunAnimator.SetTrigger("StartToSettings");
+            SwitchToScreen(SkinShop);  
         }
         
         public void SwithchToLoadingScreen()
