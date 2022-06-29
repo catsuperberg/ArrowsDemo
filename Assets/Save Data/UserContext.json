@@ -1,8 +1,32 @@
 {
+  "Game.Gameplay.Meta.Skins.ProjectileCollection": [
+    {
+      "Name": "_selectedSkin",
+      "Value": "invalidSkinName",
+      "Type": "System.String",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    },
+    {
+      "Name": "_boughtSkins",
+      "Value": "[]",
+      "Type": "System.Collections.Generic.List`1[System.String]",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    }
+  ],
   "Game.Gameplay.Meta.Curencies.CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "5545441782",
+      "Value": "1494",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -15,7 +39,7 @@
   "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "11",
+      "Value": "1",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -26,7 +50,7 @@
     },
     {
       "Name": "ArrowLevel",
-      "Value": "25",
+      "Value": "1",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -37,7 +61,7 @@
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "5",
+      "Value": "1",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",

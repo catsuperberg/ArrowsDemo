@@ -1,9 +1,7 @@
 using DataManagement;
-using Game.Gameplay.Meta.Curencies;
-using Game.Gameplay.Meta.PassiveIncome;
-using Game.Gameplay.Meta.UpgradeSystem;
 using System;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Gameplay.Meta
 {
@@ -14,24 +12,25 @@ namespace Game.Gameplay.Meta
         
         public event EventHandler OnUpdated;
         
-        public UserContextManager(IRegistryIngester registryIngester, IRegistryManager registryManager)
+        public UserContextManager([Inject(Id = "userRegistryManager")]IRegistryManager registryManager, UserContext context)
         {            
-            if(registryIngester == null)
-                throw new ArgumentNullException("No IRegistryIngester provided to class" + this.GetType().Name);
+            if(context == null)
+                throw new ArgumentNullException("No UserContext provided to class" + this.GetType().Name);
             if(registryManager == null)
                 throw new ArgumentNullException("No IRegistryManager provided to class" + this.GetType().Name);
                                         
             _registryManager = registryManager;
-            _context = new UserContext(new CurenciesContext(registryIngester), new UpgradeContext(registryIngester), new PassiveInvomceContext());
+            _context = context;
             _context.Upgrades.OnUpdated += DataUpdated;
             _context.Curencies.OnUpdated += DataUpdated;
+            _context.ProjectileSkins.OnUpdated += DataUpdated;
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();       
         }      
         
         void DataUpdated(object sender, EventArgs e)
         {
-            Debug.Log("User data changed");
+            Debug.Log("User data changed by: " + sender.GetType() + " hash: " + sender.GetHashCode());
             _registryManager.SaveRegisteredToNonVolatile();
             OnUpdated?.Invoke(this, EventArgs.Empty);
         }

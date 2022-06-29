@@ -44,9 +44,10 @@ public class GameInstaller : MonoInstaller
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
         
+        ComposeUserContextRepository();  
+        ComposeSettingsRepository();    
         ComposeSkinsImport();
-        ComposeUserContextManagement();  
-        ComposeSettingsManagement();    
+        ComposeUserContextManagement();
         ComposeSettings();  
         ComposeMicrointeractions();        
                                  
@@ -59,37 +60,37 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
-        TestLoadingResources();
-        // Container.Bind<ProjectileColection>().AsSingle().NonLazy();  
+        Container.Bind<ProjectileCollectionFactory>().AsSingle().NonLazy(); 
+        var projectileCollection = Container.Resolve<ProjectileCollectionFactory>().GetCurrentCollection();
+        Container.Bind<ProjectileCollection>().FromInstance(projectileCollection).AsSingle(); 
+        // Container.Bind<ProjectileCollection>().FromInstance(projectileCollection).AsSingle(); 
+        // Container.Bind<ProjectileCollection>().AsSingle().NonLazy();  
         // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }
     
-    void TestLoadingResources() // TEMP 
-    {
-        
-        ProjectileDatabase skinDatabase = new ProjectileDatabase(); 
-        var skinDatabaseName = "ProjectileDatabase";        ;
-        var json = Resources.Load<TextAsset>(skinDatabaseName);
-        skinDatabase = JsonUtility.FromJson<ProjectileDatabase>(json.text);        
-        Container.Bind<ProjectileDatabase>().FromInstance(skinDatabase).AsSingle();  
-    }
-    
-    void ComposeUserContextManagement()
+    void ComposeUserContextRepository()
     {
         var gameFolders = new GameFolders();
         var RegistryFactory = new RegistryFactory(gameFolders);
         var nonVolatileStorage = new JsonStorage(new DiskAcessor());
         var _userRegistry = RegistryFactory.CreateRegistry("UserContext", nonVolatileStorage);
-        
-        var userContextManager = new UserContextManager(_userRegistry.Ingester, _userRegistry.Manager);
-        var userContextConverter = new UserContextConverter(_userRegistry.Reader);
-        Container.Bind<IContextProvider>().FromInstance(userContextConverter).AsSingle(); 
-        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").FromInstance(userContextManager).AsTransient(); 
+        Container.Bind<UserContextFactory>().AsSingle().NonLazy();
+         
+        Container.Bind<IRegistryManager>().WithId("userRegistryManager").FromInstance(_userRegistry.Manager).AsTransient(); 
+        Container.Bind<IRegistryIngester>().WithId("userRegistryIngester").FromInstance(_userRegistry.Ingester).AsTransient(); 
         Container.Bind<IRegistryAccessor>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsTransient(); 
-        Container.Bind<IRegistryValueReader>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsTransient(); 
+        Container.Bind<IRegistryValueReader>().WithId("userRegistryAccessor").FromInstance(_userRegistry.Accessor).AsTransient();
     }
     
-    void ComposeSettingsManagement()
+    void ComposeUserContextManagement()
+    {
+        var userContext = Container.Resolve<UserContextFactory>().GetContext();
+        Container.Bind<UserContext>().FromInstance(userContext).AsSingle(); 
+        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
+        Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();                 
+    }
+    
+    void ComposeSettingsRepository()
     {
         var gameFolders = new GameFolders();
         var RegistryFactory = new RegistryFactory(gameFolders);

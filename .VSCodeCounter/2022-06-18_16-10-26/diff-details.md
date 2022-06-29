@@ -54,7 +54,7 @@ Total : 98 files,  1178 codes, -53 comments, 219 blanks, all 1344 lines
 | [Assets/Code/Game/Game State/States/Pre Run/PreRunSkipToRun.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunSkipToRun.cs) | C# | 36 | 0 | 8 | 44 |
 | [Assets/Code/Game/Game State/States/Pre Run/PreRunUI.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunUI.cs) | C# | 11 | 0 | 3 | 14 |
 | [Assets/Code/Game/Game State/States/Runthrough/RunthroughContext.cs](/Assets/Code/Game/Game%20State/States/Runthrough/RunthroughContext.cs) | C# | 0 | -11 | -2 | -13 |
-| [Assets/Code/Game/Gameplay/Meta/Skins/ProjectileColection.cs](/Assets/Code/Game/Gameplay/Meta/Skins/ProjectileColection.cs) | C# | 10 | 0 | 2 | 12 |
+| [Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs](/Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs) | C# | 10 | 0 | 2 | 12 |
 | [Assets/Code/Game/Gameplay/Realtime/ArrowsRunthroughFactory.cs](/Assets/Code/Game/Gameplay/Realtime/ArrowsRunthroughFactory.cs) | C# | 23 | 0 | 8 | 31 |
 | [Assets/Code/Game/Gameplay/Realtime/Operation Sequence/Context Provider/UserContextConverter.cs](/Assets/Code/Game/Gameplay/Realtime/Operation%20Sequence/Context%20Provider/UserContextConverter.cs) | C# | 7 | 0 | 1 | 8 |
 | [Assets/Code/Game/Gameplay/Realtime/Operation Sequence/ISequenceManager.cs](/Assets/Code/Game/Gameplay/Realtime/Operation%20Sequence/ISequenceManager.cs) | C# | -1 | 1 | 0 | 0 |

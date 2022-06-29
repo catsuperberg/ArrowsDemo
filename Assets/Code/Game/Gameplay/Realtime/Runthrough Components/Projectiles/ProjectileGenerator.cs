@@ -1,30 +1,31 @@
 using AssetScripts.Instantiation;
 using DataManagement;
+using Game.Gameplay.Meta.Skins;
+using GameMath;
 using Input.ControllerComponents;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using Zenject;
-using GameMath;
 
 namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public class ProjectileGenerator : MonoBehaviour, IProjectileProvider
     {                
         IRegistryIngester _settingsRegistry;
-        ProjectileDatabase _projectileDatabase;
+        ProjectileCollection _projectileCollection;
         
         [Inject]
-        public void Construct([Inject(Id = "settingsIngester")] IRegistryIngester registry, ProjectileDatabase projectileDatabase)
+        public void Construct([Inject(Id = "settingsIngester")] IRegistryIngester registry, ProjectileCollection projectileCollection)
         {
             if(registry == null)
                 throw new ArgumentNullException("IRegistryIngester not provided to " + this.GetType().Name);
-            if(projectileDatabase == null)
-                throw new ArgumentNullException("ProjectileDatabase not provided to " + this.GetType().Name);
+            if(projectileCollection == null)
+                throw new ArgumentNullException("ProjectileCollection not provided to " + this.GetType().Name);
                 
             _settingsRegistry = registry; 
-            _projectileDatabase = projectileDatabase;
+            _projectileCollection = projectileCollection;
         }
         
         public GameObject CreateRandom(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
@@ -32,7 +33,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
             if(assetInstatiator == null)
                 throw new System.ArgumentNullException("IInstatiator isn't provided for: " + this.GetType().Name);
                 
-            var bundle = CreateRandomBundle(assetInstatiator);            
+            var bundle = CreateSelectedSkin(assetInstatiator);            
             
             var bundleScript = bundle.GetComponent<IProjectile>();
             if(bundleScript == null)
@@ -43,21 +44,26 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
             return bundle;                                
         }
         
-        GameObject CreateRandomBundle(IInstatiator assetInstatiator) //TEMP
+        GameObject CreateSelectedSkin(IInstatiator assetInstatiator)
         {
-            var prefabs = Prefabs();
-            var prefabIndex = GlobalRandom.RandomInt(0, prefabs.Count);
-            var selectedPrefab = prefabs[prefabIndex];
-            
-            return assetInstatiator.Instantiate(selectedPrefab as GameObject, name: "Projectile (Arrow bundle)");
+            return assetInstatiator.Instantiate(_projectileCollection.GetSelectedProjectileResource());
         }
         
-        List<UnityEngine.Object> Prefabs() //TEMP
-        {
-            List<UnityEngine.Object> resources = new List<UnityEngine.Object>();            
-            foreach(var resource in _projectileDatabase.Skins)
-                resources.Add(Resources.Load(resource.PrefabPath));            
-            return resources;
-        } 
+        // GameObject CreateRandomBundle(IInstatiator assetInstatiator) //TEMP
+        // {
+        //     var prefabs = Prefabs();
+        //     var prefabIndex = GlobalRandom.RandomInt(0, prefabs.Count);
+        //     var selectedPrefab = prefabs[prefabIndex];
+            
+        //     return assetInstatiator.Instantiate(selectedPrefab as GameObject, name: "Projectile (Arrow bundle)");
+        // }
+        
+        // List<UnityEngine.Object> Prefabs() //TEMP
+        // {
+        //     List<UnityEngine.Object> resources = new List<UnityEngine.Object>();            
+        //     foreach(var resource in _projectileCollection.Skins)
+        //         resources.Add(Resources.Load(resource.PrefabPath));            
+        //     return resources;
+        // } 
     }
 }

@@ -30,20 +30,23 @@ namespace Game.GameState
         
         public IPreRun GetPreRun(GameObject preRunPrefab, bool skipToRun)
         {
-            if(skipToRun)
-            {
-                var script = new GameObject("Pre Run").AddComponent<PreRunSkipToRun>();
+            return skipToRun ? GetSkipingPreRun() : GetDefaultPreRun(preRunPrefab);
+        }
+
+        PreRunSkipToRun GetSkipingPreRun()
+        {
+            var script = new GameObject("Pre Run").AddComponent<PreRunSkipToRun>();
                 script.Initialize(_contextManager);
                 return script;
-            }
-            
+        }
+        
+        PreRun GetDefaultPreRun(GameObject preRunPrefab)
+        {
             var preRunGO = GameObject.Instantiate(preRunPrefab);
             var preRun = preRunGO.GetComponent<PreRun>();
             preRun.Initialize(_userContextNotifier, _contextManager);
-            // var upgradeShop = preRunGO.GetComponentInChildren<UpgradeShop>();
-            // upgradeShop.Initialize(_userContextAccessor); 
             var upgradeShop = preRunGO.GetComponentInChildren<ShopManager>();
-            upgradeShop.Initialize(_userContextAccessor);           
+            upgradeShop.Initialize(_userContextAccessor);
             return preRun;
         }
     }

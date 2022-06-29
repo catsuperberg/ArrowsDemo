@@ -3,6 +3,7 @@ using Game.Gameplay.Meta.UpgradeSystem;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using GameMath;
 using System;
+using Zenject;
 
 namespace Game.Gameplay.Realtime.OperationSequence
 {
@@ -12,7 +13,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         (int min, int max) speedRange = (20, 50);
         
-        public UserContextConverter(IRegistryValueReader registryReader)
+        public UserContextConverter([Inject(Id = "userRegistryAccessor")] IRegistryValueReader registryReader)
         {            
             if(registryReader == null)
                 throw new ArgumentNullException("IRegistryValueReader isn't provided to " + this.GetType().Name);

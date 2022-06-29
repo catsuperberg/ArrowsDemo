@@ -1,0 +1,111 @@
+using AssetScripts.AssetCreation;
+using DataManagement;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEngine;
+using GameMath;
+using Newtonsoft.Json;
+
+namespace Game.Gameplay.Meta.Skins
+{
+    public class ProjectileCollection : IConfigurable
+    {
+        [StoredField]
+        List<string> _boughtSkins = new List<string>();
+        [StoredField]
+        string _selectedSkin = "invalidSkinName";
+        
+        Dictionary<string, ISkinProvider> _accessibleSkins;
+        List<ISkinProvider> _skinProviders;
+
+        public event EventHandler OnUpdated;        
+        
+        public ProjectileCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders)
+        {
+            if(registry == null)
+                throw new ArgumentNullException("IRegistryIngester not provided or empty at: " + this.GetType().Name);
+            if(skinProviders == null || !skinProviders.Any())
+                throw new ArgumentNullException("List<ISkinProvider> not provided or empty at: " + this.GetType().Name);
+                
+            registry.Register(this, true, true);
+            _skinProviders = skinProviders;            
+            AssembleAccessibleSkins();
+        }
+        
+        void AssembleAccessibleSkins()
+        {
+            _accessibleSkins = new Dictionary<string, ISkinProvider>();
+            foreach(var provider in _skinProviders)
+            {
+                var skinsToAdd = provider.Names.ToDictionary(key => key, value => provider);
+                foreach(var skin in skinsToAdd.Where(kvp => !_accessibleSkins.ContainsKey(kvp.Key)))
+                    _accessibleSkins.Add(skin.Key, skin.Value);
+            }
+            if(!_accessibleSkins.Any())
+                throw new Exception("No accessible skins after collection assembly");
+        }
+        
+        public GameObject GetSelectedProjectileResource()
+        {
+            MakeSureSelectedSkinValid();
+            var skinProvider = _accessibleSkins[_selectedSkin];
+            return skinProvider.LoadResource(_selectedSkin) as GameObject;
+        }
+        
+        void MakeSureSelectedSkinValid()
+        {
+            if(_selectedSkin == null || !_accessibleSkins.ContainsKey(_selectedSkin))
+                SwitchToRandomSelectableIfSelectedInvalid();
+        }
+        
+        void SwitchToFirstSelectableIfSelectedInvalid()
+        {
+            UpdateField(nameof(_selectedSkin), _accessibleSkins.Keys.First());
+        }
+        
+        void SwitchToRandomSelectableIfSelectedInvalid()
+        {
+            UpdateField(nameof(_selectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
+        }
+        
+        bool ValidSelectable(string name)
+        {
+            return false;
+        }
+        
+        
+        public void UpdateField(string fieldName, string fieldValue)
+        {            
+            SetFieldValue(fieldName, fieldValue);
+            
+            OnUpdated?.Invoke(this, EventArgs.Empty);            
+        }
+        
+        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
+        {            
+            if(updatedValues.Count == 0)
+                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
+            
+            foreach(var fieldData in updatedValues)
+                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);
+            
+            OnUpdated?.Invoke(this, EventArgs.Empty);            
+        }
+        
+        void SetFieldValue(string fieldName, string fieldValue)
+        {
+            switch(fieldName)
+            {
+                case nameof(_selectedSkin):
+                    _selectedSkin = fieldValue;
+                    break;
+                case nameof(_boughtSkins):
+                    _boughtSkins = JsonConvert.DeserializeObject<List<string>>(fieldValue);
+                    break;
+                default:
+                    throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);
+            }
+        }
+    }
+}

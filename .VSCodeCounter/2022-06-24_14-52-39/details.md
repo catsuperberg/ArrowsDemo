@@ -1,10 +1,10 @@
 # Details
 
-Date : 2022-06-18 16:10:26
+Date : 2022-06-24 14:52:39
 
 Directory c:\\Unity\\ArrowsDemo\\Assets\\Code
 
-Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
+Total : 188 files,  8094 codes, 194 comments, 1281 blanks, all 9569 lines
 
 [Summary](results.md) / Details / [Diff Summary](diff.md) / [Diff Details](diff-details.md)
 
@@ -15,7 +15,7 @@ Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
 | [Assets/Code/Asset Scripts/Asset Creation/ProjectilePrefabCreator.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/ProjectilePrefabCreator.cs) | C# | 17 | 56 | 10 | 83 |
 | [Assets/Code/Asset Scripts/Asset Creation/ProjectileRawModelLoader.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/ProjectileRawModelLoader.cs) | C# | 35 | 0 | 6 | 41 |
 | [Assets/Code/Asset Scripts/Asset Creation/Projectile/BundleProjectilePrefabGenerator.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/BundleProjectilePrefabGenerator.cs) | C# | 58 | 0 | 7 | 65 |
-| [Assets/Code/Asset Scripts/Asset Creation/Projectile/PermanentProjectileInjester.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/PermanentProjectileInjester.cs) | C# | 139 | 0 | 23 | 162 |
+| [Assets/Code/Asset Scripts/Asset Creation/Projectile/PermanentProjectileInjester.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/PermanentProjectileInjester.cs) | C# | 162 | 0 | 28 | 190 |
 | [Assets/Code/Asset Scripts/Asset Creation/Projectile/PermanentProjectileInjesterInspector.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/PermanentProjectileInjesterInspector.cs) | C# | 20 | 0 | 4 | 24 |
 | [Assets/Code/Asset Scripts/Asset Creation/Projectile/ProjectileSkinData.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/ProjectileSkinData.cs) | C# | 40 | 0 | 4 | 44 |
 | [Assets/Code/Asset Scripts/Asset Creation/Projectile/TemporaryProjectileInjester.cs](/Assets/Code/Asset%20Scripts/Asset%20Creation/Projectile/TemporaryProjectileInjester.cs) | C# | 0 | 0 | 1 | 1 |
@@ -94,10 +94,10 @@ Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
 | [Assets/Code/Game/Game State/States/Post Run/RewardApplier.cs](/Assets/Code/Game/Game%20State/States/Post%20Run/RewardApplier.cs) | C# | 41 | 0 | 7 | 48 |
 | [Assets/Code/Game/Game State/States/Pre Run/IPreRun.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/IPreRun.cs) | C# | 12 | 0 | 1 | 13 |
 | [Assets/Code/Game/Game State/States/Pre Run/PreRun.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRun.cs) | C# | 82 | 1 | 17 | 100 |
-| [Assets/Code/Game/Game State/States/Pre Run/PreRunFactory.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunFactory.cs) | C# | 43 | 2 | 5 | 50 |
+| [Assets/Code/Game/Game State/States/Pre Run/PreRunFactory.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunFactory.cs) | C# | 47 | 0 | 6 | 53 |
 | [Assets/Code/Game/Game State/States/Pre Run/PreRunSkipToRun.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunSkipToRun.cs) | C# | 36 | 0 | 8 | 44 |
 | [Assets/Code/Game/Game State/States/Pre Run/PreRunStates.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunStates.cs) | C# | 10 | 0 | 0 | 10 |
-| [Assets/Code/Game/Game State/States/Pre Run/PreRunUI.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunUI.cs) | C# | 102 | 2 | 20 | 124 |
+| [Assets/Code/Game/Game State/States/Pre Run/PreRunUI.cs](/Assets/Code/Game/Game%20State/States/Pre%20Run/PreRunUI.cs) | C# | 110 | 2 | 21 | 133 |
 | [Assets/Code/Game/Game State/States/Runthrough/RunFinishContext.cs](/Assets/Code/Game/Game%20State/States/Runthrough/RunFinishContext.cs) | C# | 14 | 0 | 2 | 16 |
 | [Assets/Code/Game/Game State/States/Runthrough/Runthrough.cs](/Assets/Code/Game/Game%20State/States/Runthrough/Runthrough.cs) | C# | 170 | 0 | 33 | 203 |
 | [Assets/Code/Game/Game State/States/Runthrough/RunthroughContext.cs](/Assets/Code/Game/Game%20State/States/Runthrough/RunthroughContext.cs) | C# | 25 | 0 | 2 | 27 |
@@ -112,7 +112,7 @@ Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
 | [Assets/Code/Game/Gameplay/Meta/Shop/InitialArrowsPrice.cs](/Assets/Code/Game/Gameplay/Meta/Shop/InitialArrowsPrice.cs) | C# | 19 | 0 | 2 | 21 |
 | [Assets/Code/Game/Gameplay/Meta/Shop/PriceCalculatorFactory.cs](/Assets/Code/Game/Gameplay/Meta/Shop/PriceCalculatorFactory.cs) | C# | 27 | 0 | 2 | 29 |
 | [Assets/Code/Game/Gameplay/Meta/Shop/PricingContext.cs](/Assets/Code/Game/Gameplay/Meta/Shop/PricingContext.cs) | C# | 12 | 0 | 2 | 14 |
-| [Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs](/Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs) | C# | 10 | 0 | 2 | 12 |
+| [Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs](/Assets/Code/Game/Gameplay/Meta/Skins/ProjectileCollection.cs) | C# | 55 | 3 | 16 | 74 |
 | [Assets/Code/Game/Gameplay/Meta/Upgrade System/UpgradeContext.cs](/Assets/Code/Game/Gameplay/Meta/Upgrade%20System/UpgradeContext.cs) | C# | 59 | 0 | 11 | 70 |
 | [Assets/Code/Game/Gameplay/Meta/User Context/IUpdatableUserContext.cs](/Assets/Code/Game/Gameplay/Meta/User%20Context/IUpdatableUserContext.cs) | C# | 8 | 0 | 0 | 8 |
 | [Assets/Code/Game/Gameplay/Meta/User Context/UserContext.cs](/Assets/Code/Game/Gameplay/Meta/User%20Context/UserContext.cs) | C# | 18 | 0 | 2 | 20 |
@@ -179,11 +179,12 @@ Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
 | [Assets/Code/Input/Controller Components/ButtonsMovementController.cs](/Assets/Code/Input/Controller%20Components/ButtonsMovementController.cs) | C# | 69 | 0 | 8 | 77 |
 | [Assets/Code/Input/Controller Components/ISensitivitySetable.cs](/Assets/Code/Input/Controller%20Components/ISensitivitySetable.cs) | C# | 7 | 0 | 0 | 7 |
 | [Assets/Code/Input/Controller Components/TouchTranslationMovementController.cs](/Assets/Code/Input/Controller%20Components/TouchTranslationMovementController.cs) | C# | 128 | 0 | 24 | 152 |
-| [Assets/Code/Scene Installers/GameInstaller.cs](/Assets/Code/Scene%20Installers/GameInstaller.cs) | C# | 100 | 2 | 14 | 116 |
+| [Assets/Code/Scene Installers/GameInstaller.cs](/Assets/Code/Scene%20Installers/GameInstaller.cs) | C# | 101 | 2 | 14 | 117 |
 | [Assets/Code/Settings/GraphicSettings/GraphicsPresset.cs](/Assets/Code/Settings/GraphicSettings/GraphicsPresset.cs) | C# | 68 | 0 | 14 | 82 |
 | [Assets/Code/Settings/GraphicSettings/ResolutionScaling.cs](/Assets/Code/Settings/GraphicSettings/ResolutionScaling.cs) | C# | 50 | 0 | 10 | 60 |
 | [Assets/Code/Settings/SettingsRegistryManager.cs](/Assets/Code/Settings/SettingsRegistryManager.cs) | C# | 32 | 0 | 6 | 38 |
 | [Assets/Code/UI/Coin Display/CoinDisplay.cs](/Assets/Code/UI/Coin%20Display/CoinDisplay.cs) | C# | 46 | 0 | 10 | 56 |
+| [Assets/Code/UI/Elements/FlexibleGridLayout.cs](/Assets/Code/UI/Elements/FlexibleGridLayout.cs) | C# | 112 | 0 | 23 | 135 |
 | [Assets/Code/UI/Elements/ToggleVisualizer.cs](/Assets/Code/UI/Elements/ToggleVisualizer.cs) | C# | 56 | 0 | 13 | 69 |
 | [Assets/Code/UI/Finishing Scene/RewardDisplay.cs](/Assets/Code/UI/Finishing%20Scene/RewardDisplay.cs) | C# | 35 | 4 | 9 | 48 |
 | [Assets/Code/UI/MainMenu.cs](/Assets/Code/UI/MainMenu.cs) | C# | 19 | 0 | 3 | 22 |
@@ -191,12 +192,11 @@ Total : 188 files,  7963 codes, 193 comments, 1247 blanks, all 9403 lines
 | [Assets/Code/UI/Settings/SettingToggleChanger.cs](/Assets/Code/UI/Settings/SettingToggleChanger.cs) | C# | 49 | 0 | 10 | 59 |
 | [Assets/Code/UI/Settings/SettingsDropDownChanger.cs](/Assets/Code/UI/Settings/SettingsDropDownChanger.cs) | C# | 58 | 0 | 10 | 68 |
 | [Assets/Code/UI/Settings/SettingsPanel.cs](/Assets/Code/UI/Settings/SettingsPanel.cs) | C# | 60 | 0 | 7 | 67 |
+| [Assets/Code/UI/Skin Shop/SkinBuyer.cs](/Assets/Code/UI/Skin%20Shop/SkinBuyer.cs) | C# | 23 | 0 | 6 | 29 |
+| [Assets/Code/UI/Skin Shop/SkinSelector.cs](/Assets/Code/UI/Skin%20Shop/SkinSelector.cs) | C# | 23 | 0 | 6 | 29 |
 | [Assets/Code/UI/UI_StateManager.cs](/Assets/Code/UI/UI_StateManager.cs) | C# | 100 | 26 | 10 | 136 |
-| [Assets/Code/UI/Upgrade Shop/ChangersManager.cs](/Assets/Code/UI/Upgrade%20Shop/ChangersManager.cs) | C# | 28 | 0 | 4 | 32 |
-| [Assets/Code/UI/Upgrade Shop/ItemBuyer.cs](/Assets/Code/UI/Upgrade%20Shop/ItemBuyer.cs) | C# | 67 | 0 | 11 | 78 |
-| [Assets/Code/UI/Upgrade Shop/ShopManager.cs](/Assets/Code/UI/Upgrade%20Shop/ShopManager.cs) | C# | 44 | 7 | 9 | 60 |
-| [Assets/Code/UI/Upgrade Shop/UpgradeShop.cs](/Assets/Code/UI/Upgrade%20Shop/UpgradeShop.cs) | C# | 40 | 0 | 9 | 49 |
-| [Assets/Code/UI/Upgrade Shop/ValueChanger.cs](/Assets/Code/UI/Upgrade%20Shop/ValueChanger.cs) | C# | 41 | 0 | 8 | 49 |
+| [Assets/Code/UI/Upgrade Shop/ItemBuyer.cs](/Assets/Code/UI/Upgrade%20Shop/ItemBuyer.cs) | C# | 69 | 0 | 11 | 80 |
+| [Assets/Code/UI/Upgrade Shop/ShopManager.cs](/Assets/Code/UI/Upgrade%20Shop/ShopManager.cs) | C# | 43 | 7 | 8 | 58 |
 | [Assets/Code/UI/Utils/TouchSelectionDiscarder.cs](/Assets/Code/UI/Utils/TouchSelectionDiscarder.cs) | C# | 39 | 0 | 9 | 48 |
 | [Assets/Code/Utils/GameObjectExtensions.cs](/Assets/Code/Utils/GameObjectExtensions.cs) | C# | 20 | 1 | 1 | 22 |
 
