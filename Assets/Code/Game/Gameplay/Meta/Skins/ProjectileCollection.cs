@@ -1,6 +1,7 @@
 using AssetScripts.AssetCreation;
 using DataManagement;
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,10 @@ namespace Game.Gameplay.Meta.Skins
         [StoredField]
         string _selectedSkin = "invalidSkinName";
         
+        public List<string> AccesibleNames {get => _accessibleSkins.Keys.ToList();}
+        public List<string> BoughtSkins { get => _boughtSkins;}
+        public string SelectedSkin { get => _selectedSkin;}
+
         Dictionary<string, ISkinProvider> _accessibleSkins;
         List<ISkinProvider> _skinProviders;
 
@@ -53,28 +58,37 @@ namespace Game.Gameplay.Meta.Skins
             return skinProvider.LoadResource(_selectedSkin) as GameObject;
         }
         
+        public Sprite GetSkinIcon(string name)
+        {
+            if(SkinUnaccessible(name))
+                throw new ArgumentNullException("No skin with such name in ProjectileCollection: " + name);
+                
+            var result = _accessibleSkins[name].Icon(name);
+            return result;
+        }
+        
+        public BigInteger GetSkinPrice(string name)
+        {
+            if(SkinUnaccessible(name))
+                throw new ArgumentNullException("No skin with such name in ProjectileCollection: " + name);
+                
+            return _accessibleSkins[name].Price(name);
+        }
+        
         void MakeSureSelectedSkinValid()
         {
-            if(_selectedSkin == null || !_accessibleSkins.ContainsKey(_selectedSkin))
+            if (_selectedSkin == null || SkinUnaccessible(_selectedSkin))
                 SwitchToRandomSelectableIfSelectedInvalid();
         }
-        
-        void SwitchToFirstSelectableIfSelectedInvalid()
-        {
+
+        bool SkinUnaccessible(string name) => !_accessibleSkins.ContainsKey(name);
+
+        void SwitchToFirstSelectableIfSelectedInvalid() =>
             UpdateField(nameof(_selectedSkin), _accessibleSkins.Keys.First());
-        }
         
-        void SwitchToRandomSelectableIfSelectedInvalid()
-        {
+        void SwitchToRandomSelectableIfSelectedInvalid() =>
             UpdateField(nameof(_selectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
-        }
-        
-        bool ValidSelectable(string name)
-        {
-            return false;
-        }
-        
-        
+            
         public void UpdateField(string fieldName, string fieldValue)
         {            
             SetFieldValue(fieldName, fieldValue);

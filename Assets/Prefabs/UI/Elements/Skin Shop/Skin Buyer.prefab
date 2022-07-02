@@ -238,6 +238,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4491333350156063871}
+  - component: {fileID: 3858701675776953722}
   m_Layer: 5
   m_Name: Skin Buyer
   m_TagString: Untagged
@@ -264,9 +265,23 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -270, y: -297.6521}
+  m_AnchoredPosition: {x: -270, y: -300}
   m_SizeDelta: {x: 540, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3858701675776953722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5368649290037811340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47979970bca4d0443b800a5fc55fc736, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PriceText: {fileID: 2976675882386756484}
+  Icon: {fileID: 7828777796482011006}
 --- !u!1 &6526787967442787903
 GameObject:
   m_ObjectHideFlags: 0

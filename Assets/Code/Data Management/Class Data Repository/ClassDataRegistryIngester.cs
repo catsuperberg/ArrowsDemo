@@ -24,7 +24,6 @@ namespace DataManagement
         
         public void Register(IConfigurable configurableObject, bool updateThisInstanceOnChanges, bool loadStoredFieldsOnRegistration)
         {
-            Debug.Log("Registering instance of class: " + configurableObject.GetType() + " in class data registry");
             var classType = configurableObject.GetType();   
             ActualizeClassFields(configurableObject, classType);         
             if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))

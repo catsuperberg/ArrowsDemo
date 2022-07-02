@@ -74,7 +74,9 @@ namespace UI
 
         void ResizeAndPositionChildren()
         {
-            if(rectChildren.Count <= 1)
+            if(rectChildren.Count < 1)
+                return;
+            if(rectChildren.Count == 1)
                 PositionSingleChildAndKeepSize();
             else
                 foreach (var (childElement, i) in rectChildren.Select((childElement, i) => (childElement, i)))

@@ -1,10 +1,13 @@
 using AssetScripts.AssetCreation;
 using DataManagement;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using UnityEngine;
 using Zenject;
+
+using Vector2 = UnityEngine.Vector2;
 
 namespace Game.Gameplay.Meta.Skins
 {
@@ -30,8 +33,15 @@ namespace Game.Gameplay.Meta.Skins
         public Sprite Icon(string name)
         {
             var skinData = GetSkinIfValid(name);
-            return Resources.Load(skinData.IconPath) as Sprite;
+            var texture = Resources.Load(skinData.IconPath) as Texture2D;
+            return Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width / 2, texture.height / 2));
         }        
+        
+        public BigInteger Price(string name)
+        {
+            var skinData = GetSkinIfValid(name);
+            return skinData.BaseCost;            
+        }    
         
         ProjectileSkinData GetSkinIfValid(string name)
         {            

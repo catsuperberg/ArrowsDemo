@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 
 namespace Game.Gameplay.Meta.Skins
@@ -9,5 +10,6 @@ namespace Game.Gameplay.Meta.Skins
         
         UnityEngine.Object LoadResource(string name);
         Sprite Icon(string name);        
+        BigInteger Price(string name);        
     }
 }

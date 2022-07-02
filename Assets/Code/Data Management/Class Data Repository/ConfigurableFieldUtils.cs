@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
+using static Utils.TypeUtils;
 
 namespace DataManagement
 {    
@@ -36,16 +37,12 @@ namespace DataManagement
         
         static StringValueTypePair GetValueType(InfoHolder infoHolder)
         {
-            var stringValue = (IsGenericList(infoHolder.Type)) ?
+            var stringValue = (IsGenericList(infoHolder.Type)) ? // HACK Crappy way to support lists as stored field
                 JsonConvert.SerializeObject(infoHolder.Value, Formatting.Indented) :
                 infoHolder.Value.ToString();
             
              return new StringValueTypePair(stringValue, infoHolder.Type.ToString());          
-        }
-        
-        static bool IsGenericList(Type type) =>
-            type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(List<>));
-        
+        }        
         
         public static List<ConfigurableField> InjectValues(List<ConfigurableField> recievingChangebles, List<ConfigurableField> sourceChangebles)
         {
