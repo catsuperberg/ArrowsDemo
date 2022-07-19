@@ -2,10 +2,12 @@ using DataManagement;
 using ExtensionMethods;
 using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Meta.Curencies;
+using Game.Gameplay.Meta.UpgradeSystem;
 using System;
 using System.Numerics;
 using TMPro;
 using UnityEngine;
+using static GameMath.FibonacciUtils;
 
 namespace UI
 {    
@@ -18,63 +20,35 @@ namespace UI
         [SerializeField]
         TMP_Text PriceText;
         
-        IRegistryAccessor _registryAccessor;
-        IItemPriceCalculator _priceCalculator;
-        Type _objectClass;
+        IUpgradeShopService _shopService;
         string _fieldName;
         
-        BigInteger itemPrice 
-        {get 
-            {
-                var itemLevel = Convert.ToInt32(_registryAccessor.GetStoredValue(_objectClass, _fieldName));
-                return _priceCalculator.GetPrice(new PricingContext(itemLevel));
-            }
-        }
         
-        public void AttachToValue(IRegistryAccessor registryAccessor, Type objectClass, string fieldName)
+        public void AttachToValue(IUpgradeShopService shopService, string fieldName)
         {
-            if(registryAccessor == null)
-                throw new NullReferenceException("No IRegistryAccessor implimentation provided to: " + this.GetType().Name);
+            if(shopService == null)
+                throw new NullReferenceException("No IUpgradeShopService implimentation provided to: " + this.GetType().Name);
             
-            _registryAccessor = registryAccessor;
-            _objectClass = objectClass;
-            _fieldName = fieldName;
-            
-            var calculatorFactory = new PriceCalculatorFactory();
-            _priceCalculator = calculatorFactory.GetCalculatorFor(_fieldName);
+            _shopService = shopService;
+            _fieldName = fieldName;            
             if(NameText != null)
                 NameText.text = _fieldName;
             updateValueText();            
         }
         
-        public void BuyItem(string increment = "1")
-        {
-            if(EnoughFunds())
-            {
-                ChargePlayerCoins();
-                _registryAccessor.ApplyOperationOnRegisteredField(_objectClass, _fieldName, OperationType.Increase, increment);
-                updateValueText();
-            }
-        }
-        
-        bool EnoughFunds()
-        {            
-            var coinsString = _registryAccessor.GetStoredValue(typeof(CurenciesContext), nameof(CurenciesContext.CommonCoins));
-            var Funds = BigInteger.Parse(coinsString);
-            return Funds >= itemPrice;
-        }
-        
-        void ChargePlayerCoins()
-        {
-            
-            _registryAccessor.ApplyOperationOnRegisteredField(typeof(CurenciesContext), nameof(CurenciesContext.CommonCoins), 
-                OperationType.Decrease, itemPrice.ToString());
-        }
-        
         public void updateValueText()
         {
-            ValueText.text = _registryAccessor.GetStoredValue(_objectClass, _fieldName);   
-            PriceText.text = itemPrice.ParseToReadable();
+            ValueText.text = _shopService.GetUpgradeValue(_fieldName);   
+            PriceText.text = _shopService.GetUpgradePrice(_fieldName).ParseToReadable();
+        }
+        
+        public void BuyItem(string increment = "1")
+        {
+            if(_shopService.EnoughFundsToUpgrade(_fieldName))
+            {
+                _shopService.BuyUpgrade(_fieldName);
+                updateValueText();
+            }
         }
     }
 }

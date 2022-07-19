@@ -80,7 +80,6 @@ namespace DataManagement
                 
         public string GetStoredValue(Type classType, string fieldName)
         {
-            
             var field = GetFirstField(classType, fieldName);
             return field.Value;
         }

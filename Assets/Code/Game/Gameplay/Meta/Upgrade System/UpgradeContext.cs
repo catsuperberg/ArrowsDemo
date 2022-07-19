@@ -14,9 +14,10 @@ namespace Game.Gameplay.Meta.UpgradeSystem
         [StoredField]
         public int InitialArrowCount {get; private set;} = 1;
         [StoredField]
-        public int LuckLevel {get; private set;} = 1;  
+        public int PassiveIncome {get; private set;} = 1;  
                 
         public event EventHandler OnUpdated;
+                
         
         public UpgradeContext()
         {
@@ -59,8 +60,8 @@ namespace Game.Gameplay.Meta.UpgradeSystem
                 case nameof(InitialArrowCount):
                     InitialArrowCount = Convert.ToInt32(fieldValue);
                     break;
-                case nameof(LuckLevel):
-                    LuckLevel = Convert.ToInt32(fieldValue);
+                case nameof(PassiveIncome):
+                    PassiveIncome = Convert.ToInt32(fieldValue);
                     break;
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);

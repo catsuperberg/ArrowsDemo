@@ -9,6 +9,10 @@ namespace Game.Gameplay.Meta.Curencies
     {
         [StoredField]
         public BigInteger CommonCoins {get; private set;} = 0;
+        [StoredField]
+        public BigInteger SkinTokens {get; private set;} = 0;
+        [StoredField]
+        public BigInteger LifetimeSpending {get; private set;} = 0;
                 
         public event EventHandler OnUpdated;
         
@@ -44,8 +48,14 @@ namespace Game.Gameplay.Meta.Curencies
         {
             switch(fieldName)
             {
-                case nameof(CommonCoins):
+                case nameof(CommonCoins):                 
                     CommonCoins = BigInteger.Parse(fieldValue);
+                    break;
+                case nameof(SkinTokens):
+                    SkinTokens = BigInteger.Parse(fieldValue);
+                    break;
+                case nameof(LifetimeSpending):
+                    LifetimeSpending = BigInteger.Parse(fieldValue);
                     break;
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);

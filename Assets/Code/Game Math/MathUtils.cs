@@ -83,6 +83,21 @@ namespace GameMath
         }
     }
     
+    public static class FibonacciUtils
+    {
+        static bool IsPerfectSquare(int x)
+        {
+            int s = (int)Math.Sqrt(x);
+            return (s * s == x);
+        }
+        
+        public static bool IsFibonacci(int n)
+        {
+            return IsPerfectSquare(5 * n * n + 4)
+                || IsPerfectSquare(5 * n * n - 4);
+        }
+    }
+    
     public static class GlobalRandom
     {
         private static readonly Random Random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());

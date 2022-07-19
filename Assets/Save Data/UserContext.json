@@ -1,17 +1,6 @@
 {
   "Game.Gameplay.Meta.Skins.ProjectileCollection": [
     {
-      "Name": "_selectedSkin",
-      "Value": "invalidSkinName",
-      "Type": "System.String",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
       "Name": "_boughtSkins",
       "Value": "[]",
       "Type": "System.Collections.Generic.List`1[System.String]",
@@ -21,13 +10,11 @@
         "MaxValue": "NaN",
         "ValidOptions": null
       }
-    }
-  ],
-  "Game.Gameplay.Meta.Curencies.CurenciesContext": [
+    },
     {
-      "Name": "CommonCoins",
-      "Value": "1131",
-      "Type": "System.Numerics.BigInteger",
+      "Name": "_selectedSkin",
+      "Value": "invalidSkinName",
+      "Type": "System.String",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
@@ -39,7 +26,7 @@
   "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "1",
+      "Value": "8",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -50,7 +37,7 @@
     },
     {
       "Name": "ArrowLevel",
-      "Value": "2",
+      "Value": "9",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -61,7 +48,7 @@
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "1",
+      "Value": "29",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -71,9 +58,44 @@
       }
     },
     {
-      "Name": "LuckLevel",
+      "Name": "PassiveIncome",
       "Value": "1",
       "Type": "System.Int32",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    }
+  ],
+  "Game.Gameplay.Meta.Curencies.CurenciesContext": [
+    {
+      "Name": "CommonCoins",
+      "Value": "35998695954",
+      "Type": "System.Numerics.BigInteger",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    },
+    {
+      "Name": "SkinTokens",
+      "Value": "9",
+      "Type": "System.Numerics.BigInteger",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    },
+    {
+      "Name": "LifetimeSpending",
+      "Value": "1310465",
+      "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",

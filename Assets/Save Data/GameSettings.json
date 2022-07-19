@@ -15,7 +15,7 @@
   "Settings.GraphicsPresset": [
     {
       "Name": "CurrentQualityLevel",
-      "Value": "Ultra",
+      "Value": "Medium",
       "Type": "System.String",
       "Metadata": {
         "PrettyName": "Graphics quality",

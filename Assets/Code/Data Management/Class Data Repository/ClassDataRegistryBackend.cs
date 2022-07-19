@@ -50,18 +50,27 @@ namespace DataManagement
             UpdateObjectsFields(instance, instance.GetType().FullName);
         }
         
-        public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurables, bool overrideOnPresent)
+        public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurableClasses, bool overrideOnPresent)
         {
-            if(!sourceConfigurables.Any())
+            if(!sourceConfigurableClasses.Any())
                 return;
-            foreach(var configurable in sourceConfigurables)
+            foreach(var newClassConfigurables in sourceConfigurableClasses)
             {
-                if(!_currentConfigurablesData.ContainsKey(configurable.Key))
-                    _currentConfigurablesData.Add(configurable.Key, configurable.Value);
+                if(!_currentConfigurablesData.ContainsKey(newClassConfigurables.Key))
+                    _currentConfigurablesData.Add(newClassConfigurables.Key, newClassConfigurables.Value);
                 else if (overrideOnPresent)
-                    _currentConfigurablesData[configurable.Key] = configurable.Value;                    
+                    OverridePresentFields(newClassConfigurables);
+                    // _currentConfigurablesData[classConfigurables.Key] = classConfigurables.Value;                    
             }
             NotifyAboutDataUpdate();
+        }
+        
+        void OverridePresentFields(KeyValuePair<string, List<ConfigurableField>> newConfigurables)
+        {
+            var currentFields = _currentConfigurablesData[newConfigurables.Key];
+            foreach(var field in newConfigurables.Value)
+                currentFields[currentFields.FindIndex(instance => instance.Name == field.Name)] = field;
+            _currentConfigurablesData[newConfigurables.Key] = currentFields;
         }
         
         public void OverrideConfigurables(Dictionary<string, List<ConfigurableField>> newConfigurables)

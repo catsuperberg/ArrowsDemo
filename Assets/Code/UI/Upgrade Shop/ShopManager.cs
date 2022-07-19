@@ -1,6 +1,7 @@
 using DataManagement;
-using Game.Gameplay.Meta.UpgradeSystem;
 using Game.Gameplay.Meta.Curencies;
+using Game.Gameplay.Meta.Shop;
+using Game.Gameplay.Meta.UpgradeSystem;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,14 +24,14 @@ namespace UI
             nameof(UpgradeContext.CrossbowLevel),
             nameof(UpgradeContext.InitialArrowCount)};
         
-        IRegistryAccessor _userContextAccessor;
+        IUpgradeShopService _shopService;
                 
         public void Initialize(IRegistryAccessor registryAccessor)
         {
             if(registryAccessor == null)
                 throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
                                 
-            _userContextAccessor = registryAccessor;
+            _shopService = new UpgradeShopService(registryAccessor, typeof(UpgradeContext));
             InitializeBuyers();            
         }
         
@@ -51,7 +52,7 @@ namespace UI
         
         void AttachBuyerToRegistry(ItemBuyer buyer, string field)
         {
-            buyer.AttachToValue(_userContextAccessor, typeof(UpgradeContext), field);
+            buyer.AttachToValue(_shopService, field);
             buyer.updateValueText();            
         }
     }
