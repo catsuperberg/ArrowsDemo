@@ -26,7 +26,10 @@ namespace DataManagement
         public Type GetFieldType(Type classType, string fieldName)
         {
             var field = GetFirstField(classType, fieldName);
-            return Type.GetType(field.Type);            
+            var fieldType = Type.GetType(field.Type);
+            if(fieldType == null)
+                fieldType = typeof(System.Numerics.BigInteger).Assembly.GetType(field.Type); // HACK Too specific about assembly
+            return fieldType;                     
         }
                 
         public string GetStoredValue(Type classType, string fieldName)
