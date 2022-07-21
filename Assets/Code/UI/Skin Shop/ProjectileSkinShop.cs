@@ -1,9 +1,6 @@
-using DataManagement;
-using ExtensionMethods;
-using Game.Gameplay.Meta.Curencies;
 using Game.Gameplay.Meta.Skins;
 using System;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -24,9 +21,10 @@ namespace UI
         public void Construct(ProjectileCollection skinCollection)
         {
             _skinCollection = skinCollection ?? throw new ArgumentNullException(nameof(skinCollection));
+            var orderedSkinEntries = from entry in _skinCollection.SkinNamesAndPrices orderby entry.Value ascending select entry;
             
-            foreach(var skin in _skinCollection.AccesibleNames)
-                CreateMenuElementForSkin(skin);
+            foreach(var skin in orderedSkinEntries)
+                CreateMenuElementForSkin(skin.Key);
         }
         
         void CreateMenuElementForSkin(string name)

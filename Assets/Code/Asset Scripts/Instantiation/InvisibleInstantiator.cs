@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AssetScripts.Instantiation
@@ -34,10 +36,12 @@ namespace AssetScripts.Instantiation
             }
         }
             
-        public void UndoImplementationSpecifics()
+        public async Task UndoImplementationSpecifics()
         {
             LeaveOnlyValidInstances();
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {Undo();});      
+            var semaphore = new SemaphoreSlim(0, 1); 
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {Undo(); semaphore.Release();});   
+            await semaphore.WaitAsync();    
         }
         
         void Undo()

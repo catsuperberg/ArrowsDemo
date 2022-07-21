@@ -33,8 +33,7 @@ namespace Game.GameState
             _contextManager = contextManager;
             
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent()); 
-                StartCoroutine(HookUpEventsOnNextFrame());});
+                StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent());});
             if(!_contextManager.ContextReady)
                 StartLoading();
         }
@@ -45,6 +44,7 @@ namespace Game.GameState
             while(!_contextManager.ContextReady)
                 yield return null;
             _UI.SwithchToStartScreen(); 
+            StartCoroutine(HookUpEventsOnNextFrame());
         }
         
         IEnumerator HookUpEventsOnNextFrame()
@@ -58,34 +58,22 @@ namespace Game.GameState
         
         void StartLoading()
         { 
-            if(!_contextManager.CurrentlyGenerating)
+            if(!_contextManager.RequestBeingProcessed)
                 _contextManager.StartContextUpdate();
         }
         
         void UIStartButtonPressed(object caller, EventArgs args)
         {                
+            if(!_contextManager.ContextReady)
+                return;
+                
             CurrentRunthroughContext = _contextManager.CurrentRunthroughContext;
             OnProceedToNextState?.Invoke(this, EventArgs.Empty);
         }
                 
         void UserContextUpdated(object caller, EventArgs e)
         {            
-            // if(!_contextManager.ContextReady) // HACK Reward aplier updates values in the end of a frame and aparently update event buffers until next, so on creation of new PreRun both StartLoading and update call updating level
-                UpdateLevelIfRequestsStopForMs(200);
-        }
-        
-        void UpdateLevelIfRequestsStopForMs(int timeMs)
-        {
-            _contextUpdateTimer.Dispose();
-            _contextUpdateTimer = new Timer(timeMs);
-            _contextUpdateTimer.Elapsed += UpdateOnContextChange;
-            _contextUpdateTimer.Enabled = true;
-        }
-        
-        void UpdateOnContextChange(object caller, EventArgs args)
-        {
-            _contextUpdateTimer?.Dispose();
-            _contextManager.StartContextUpdate(); 
+            _contextManager.RequestContextUpdate();
         }
         
         void OnDestroy()

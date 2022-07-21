@@ -1,11 +1,11 @@
-using Game.Gameplay.Meta.Curencies;
 using DataManagement;
 using ExtensionMethods;
+using Game.Gameplay.Meta.Curencies;
 using System;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using Zenject;
-using System.Numerics;
 
 namespace UI
 {
@@ -44,13 +44,13 @@ namespace UI
         
         void UpdateAppearanceFromRegistry()
         {
-            var curenciesString = _curencieDataReader.GetStoredValue(typeof(CurenciesContext), _selectedCurency.ToString());            
+            var curencyString = _curencieDataReader.GetStoredValue(typeof(CurenciesContext), _selectedCurency.ToString());            
             var valueType = _curencieDataReader.GetFieldType(typeof(CurenciesContext), _selectedCurency.ToString());
             var ammountOfCurency = "";
             if(valueType == typeof(BigInteger))
-                ammountOfCurency = BigInteger.Parse(curenciesString).ParseToReadable();
+                ammountOfCurency = BigInteger.Parse(curencyString).ParseToReadable();
             else
-                ammountOfCurency = curenciesString.ToString();
+                ammountOfCurency = curencyString.ToString();
             _curencieIndicator.text = ammountOfCurency;
         }      
         

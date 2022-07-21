@@ -239,6 +239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4491333350156063871}
   - component: {fileID: 3858701675776953722}
+  - component: {fileID: 4744873426327064831}
   m_Layer: 5
   m_Name: Skin Buyer
   m_TagString: Untagged
@@ -280,8 +281,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47979970bca4d0443b800a5fc55fc736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BuyButton: {fileID: 78099097778503386}
   PriceText: {fileID: 2976675882386756484}
   Icon: {fileID: 7828777796482011006}
+--- !u!114 &4744873426327064831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5368649290037811340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 2
 --- !u!1 &6526787967442787903
 GameObject:
   m_ObjectHideFlags: 0

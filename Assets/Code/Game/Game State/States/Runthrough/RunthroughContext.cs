@@ -9,7 +9,13 @@ namespace Game.Gameplay.Realtime
     public class RunthroughContext
     {
         public Playfield PlayfieldForRun;
+        public GameObject PlayfieldObject {get => PlayfieldForRun == null ? null : PlayfieldForRun.GameObject;}
         public ITrackFollower Follower; 
+        public GameObject FollowerObject {get => Follower == null ? 
+            null : 
+            Follower.Transform == null ? 
+                null : 
+                Follower.Transform.gameObject;}
         public GameObject Projectile;
         public IInstatiator Instatiator;
         public SequenceContext GenerationContext;

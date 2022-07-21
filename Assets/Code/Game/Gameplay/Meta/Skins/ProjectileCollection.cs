@@ -17,7 +17,8 @@ namespace Game.Gameplay.Meta.Skins
         [StoredField]
         string _selectedSkin = "invalidSkinName";
         
-        public List<string> AccesibleNames {get => _accessibleSkins.Keys.ToList();}
+        public Dictionary<string, BigInteger> SkinNamesAndPrices 
+            {get => _accessibleSkins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Price(kvp.Key));}
         public List<string> BoughtSkins { get => _boughtSkins;}
         public string SelectedSkin { get => _selectedSkin;}
 

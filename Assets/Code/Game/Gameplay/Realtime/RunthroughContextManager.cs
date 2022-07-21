@@ -1,7 +1,10 @@
 using AssetScripts.Instantiation;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+
+using Timer = System.Timers.Timer;
 
 namespace Game.Gameplay.Realtime
 {
@@ -10,87 +13,129 @@ namespace Game.Gameplay.Realtime
         IRunthroughFactory _runtimeFactory;  
         
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
-        public bool ContextReady {get {return (CurrentContextValid() && !CurrentlyGenerating);}}
-        public bool CurrentlyGenerating {get; private set;} = false;
+        RunthroughContext _contextToDestroy = null;
         
-        bool CurrentContextValid()
-        {
-            return CurrentRunthroughContext != null && CurrentRunthroughContext.Follower != null && CurrentRunthroughContext.Instatiator != null &&
+        public bool ContextReady {get {return CurrentContextValid && !RequestBeingProcessed;}}
+        public bool RequestBeingProcessed {get => _generating || _requestWaiting;}
+             
+        bool _generating         
+            {get => Convert.ToBoolean(Interlocked.Read(ref _lockingGenerationFlag));
+             set => Interlocked.Exchange(ref _lockingGenerationFlag, Convert.ToInt64(value));}
+        long _lockingGenerationFlag = 0;
+        
+        bool _requestWaiting => _multiRequestFilterTimer != null; 
+        bool CurrentContextValid
+            => CurrentRunthroughContext != null && CurrentRunthroughContext.Follower != null && CurrentRunthroughContext.Instatiator != null &&
                 CurrentRunthroughContext.PlayfieldForRun != null && CurrentRunthroughContext.Projectile != null;
-        }
-        
-        private RunthroughContext _nextRunthroughContext = null;
+                
+        Timer _multiRequestFilterTimer = null;
+        bool _requestDuringGeneration = false;
         
         public RunthroughContextManager(IRunthroughFactory runtimeFactory)
-        {            
-            if(runtimeFactory == null)
-                throw new ArgumentNullException("IRuntimeFactory isn't provided to " + this.GetType().Name);
-                
-            _runtimeFactory = runtimeFactory;
+        {
+            _runtimeFactory = runtimeFactory ?? throw new ArgumentNullException(nameof(runtimeFactory));
         }
         
         public void StartContextUpdate()
         {
-            _ = UpdateContext();
+            RegisterCurrentContextForDestruction();
+            StartUpdate();
+        }  
+        
+        public void RequestContextUpdate(int requestTimeoutMS = 250)
+        {
+            RegisterCurrentContextForDestruction();
+            if(!_generating)
+                UpdateIfRequestsStopForMs(requestTimeoutMS);
+            else
+                _requestDuringGeneration = true;
+        }             
+        
+        void UpdateIfRequestsStopForMs(int timeMs)
+        {
+            _multiRequestFilterTimer?.Dispose();
+            _multiRequestFilterTimer = new Timer(timeMs);
+            _multiRequestFilterTimer.Elapsed += UpdateOnContextChange;
+            _multiRequestFilterTimer.Enabled = true;
         }
         
-        public async Task<RunthroughContext> GetContextWhenReady()
+        void UpdateOnContextChange(object caller, EventArgs args)
         {
-            if(ContextReady)
-                return CurrentRunthroughContext;
-            
-            if(!CurrentlyGenerating)
-                await UpdateContext();
-                        
-            return CurrentRunthroughContext;
+            _multiRequestFilterTimer?.Dispose();
+            _multiRequestFilterTimer = null;
+            StartUpdate();
         }
+        
+        
+        void StartUpdate()
+        {
+            _ = UpdateContext();            
+        }
+        
+        void RegisterCurrentContextForDestruction()
+        {
+            if(CurrentRunthroughContext == null)
+                return;
+            _contextToDestroy = CurrentRunthroughContext; 
+            CurrentRunthroughContext = null;
+            // UnityMainThreadDispatcher.Instance().Enqueue(() 
+            //     => {_contextToDestroy = CurrentRunthroughContext; CurrentRunthroughContext = null;});
+        }  
+        
         
         async Task UpdateContext()
         {  
-            CurrentlyGenerating = true;
-            await CreateLevel(); 
-            HideCurrentLevel();
-            ShowNextLevel();
-            ClearLevel(); 
-            CurrentRunthroughContext = _nextRunthroughContext;
-            _nextRunthroughContext = null;
-            CurrentlyGenerating = false;
+            _generating = true;
+            var _generatedContext = await _runtimeFactory.GetRunthroughContextHiden();
+            await DestroyOldContext();
+            await RevealContextPlayfield(_generatedContext);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {UpdateCurrentContext(_generatedContext);});
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {RenewRequestIfBoofered();});
+            _generating = false;
         }
-        
-        async Task CreateLevel()
-        {          
-            _nextRunthroughContext = await _runtimeFactory.GetRunthroughContextHiden();          
-        }
-        
-        void HideCurrentLevel()
+                
+        async Task DestroyOldContext()
         {
-            if(!CurrentContextValid())
+            if(_contextToDestroy == null)
                 return;
                 
-            if(CurrentRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
-                CurrentRunthroughContext.Instatiator.RedoImplementationSpecifics();
+            var semaphore = new SemaphoreSlim(0,1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {ClearOldContext(); semaphore.Release();});
+            await semaphore.WaitAsync();
         }
         
-        void ShowNextLevel()
+        void ClearOldContext()
         {
-            if(_nextRunthroughContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
-                _nextRunthroughContext.Instatiator.UndoImplementationSpecifics();
+            DestroyIfPresent(_contextToDestroy.Projectile);
+            DestroyIfPresent(_contextToDestroy.FollowerObject);
+            DestroyIfPresent(_contextToDestroy.PlayfieldObject);
+            _contextToDestroy = null;
+        }                
+        
+        void DestroyIfPresent(GameObject objectToDestroy)
+        {
+            if(objectToDestroy != null)
+                GameObject.Destroy(objectToDestroy);
         }
         
-        void ClearLevel()
-        {      
-            if(!CurrentContextValid())
+        async Task RevealContextPlayfield(RunthroughContext newContext)
+        {
+            if(newContext.Instatiator.GetType() == typeof(InvisibleInstantiator))
+                await newContext.Instatiator.UndoImplementationSpecifics();
+        }
+        
+        void UpdateCurrentContext(RunthroughContext newContext)
+        {
+            CurrentRunthroughContext = newContext;
+        }
+        
+        void RenewRequestIfBoofered()
+        {
+            if(!_requestDuringGeneration)
                 return;
-            var tempContext = CurrentRunthroughContext;
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {ClearingCurrentLevel(tempContext); tempContext = null;});
-        }
-        
-        void ClearingCurrentLevel(RunthroughContext context)
-        {              
-            GameObject.Destroy(context.Projectile);
-            GameObject.Destroy(context.Follower.Transform.gameObject);
-            GameObject.Destroy(context.PlayfieldForRun.GameObject);
-            context = null;
+            
+            _requestDuringGeneration = false;
+            RequestContextUpdate();
         }
     }
 }

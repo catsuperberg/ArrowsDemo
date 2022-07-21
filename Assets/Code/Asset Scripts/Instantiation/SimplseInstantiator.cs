@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AssetScripts.Instantiation
@@ -21,7 +22,7 @@ namespace AssetScripts.Instantiation
             return instance;
         }
             
-        public void UndoImplementationSpecifics()
+        public async Task UndoImplementationSpecifics()
         {
             throw new System.Exception("This implementation of IInstantiator has nothing to undo");
         }

@@ -27,7 +27,7 @@ namespace Game.GameState
              if(contextManager == null)
                 throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
                 
-            contextManager.StartContextUpdate();
+            contextManager.RequestContextUpdate(20);
             
             _preAdTease.Initialize(finishContext, PlayerCoins);
             _preAdTease.OnCoinsTransferred += RewardSelected;

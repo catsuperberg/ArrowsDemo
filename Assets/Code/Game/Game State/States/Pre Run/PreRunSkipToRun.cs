@@ -37,7 +37,7 @@ namespace Game.GameState
         
         void StartLoading()
         { 
-            if(!_contextManager.CurrentlyGenerating)
+            if(!_contextManager.RequestBeingProcessed)
                 _contextManager.StartContextUpdate();
         }
     }

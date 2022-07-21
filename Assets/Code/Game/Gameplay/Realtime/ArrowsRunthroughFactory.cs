@@ -113,11 +113,11 @@ namespace Game.Gameplay.Realtime
         
         async Task AssemblePlayfield(Spline track, GameObject gates, GameObject targets)
         {            
-            var PlayfieldAsemblySemaphore = new SemaphoreSlim(0, 1);
+            var playfieldAsemblySemaphore = new SemaphoreSlim(0, 1);
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 StartCoroutine(PlayfieldAssemblyCoroutine(track, gates, targets,
-                PlayfieldAsemblySemaphore));});
-            await PlayfieldAsemblySemaphore.WaitAsync();  
+                playfieldAsemblySemaphore));});
+            await playfieldAsemblySemaphore.WaitAsync();  
         }
         
         IEnumerator PlaceAtEndCoroutine(GameObject entity, Vector3 position, SemaphoreSlim semaphore)

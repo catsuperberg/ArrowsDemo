@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AssetScripts.Instantiation
@@ -8,7 +9,7 @@ namespace AssetScripts.Instantiation
         public IList<GameObject> Instantiated {get;} 
         public GameObject Instantiate(GameObject original, string name = null, Transform parent = null, 
            Vector3? position = null, Quaternion? rotation = null);
-        public void UndoImplementationSpecifics();
+        public Task UndoImplementationSpecifics();
         public void RedoImplementationSpecifics();
     }
 }
