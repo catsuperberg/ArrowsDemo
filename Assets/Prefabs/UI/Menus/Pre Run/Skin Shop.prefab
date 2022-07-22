@@ -1200,7 +1200,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 435024749314433947, guid: 6549e0e1cefca3a4f932f91e595d0028, type: 3}
       propertyPath: m_Name
-      value: Tocken Display
+      value: Token Display
       objectReference: {fileID: 0}
     - target: {fileID: 7900621124580289792, guid: 6549e0e1cefca3a4f932f91e595d0028, type: 3}
       propertyPath: m_Pivot.x

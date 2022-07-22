@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6755006403930039268}
   - component: {fileID: 4418947192102503087}
   m_Layer: 5
-  m_Name: Tocken Display
+  m_Name: Token Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

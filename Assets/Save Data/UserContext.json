@@ -2,7 +2,7 @@
   "Game.Gameplay.Meta.Skins.ProjectileCollection": [
     {
       "Name": "_boughtSkins",
-      "Value": "[]",
+      "Value": "[\"Arrow\",\"Pencil\"]",
       "Type": "System.Collections.Generic.List`1[System.String]",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -26,7 +26,7 @@
   "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
     {
       "Name": "CrossbowLevel",
-      "Value": "50",
+      "Value": "11",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -37,7 +37,7 @@
     },
     {
       "Name": "ArrowLevel",
-      "Value": "77",
+      "Value": "13",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -48,7 +48,7 @@
     },
     {
       "Name": "InitialArrowCount",
-      "Value": "57",
+      "Value": "20",
       "Type": "System.Int32",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -72,7 +72,7 @@
   "Game.Gameplay.Meta.Curencies.CurenciesContext": [
     {
       "Name": "CommonCoins",
-      "Value": "1926692587415508367",
+      "Value": "639674005306582402",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -83,7 +83,7 @@
     },
     {
       "Name": "SkinTokens",
-      "Value": "9",
+      "Value": "78",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -94,7 +94,7 @@
     },
     {
       "Name": "LifetimeSpending",
-      "Value": "2045296307316060",
+      "Value": "1287020298350253769",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",

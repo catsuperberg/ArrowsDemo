@@ -106,6 +106,9 @@ namespace Game.Gameplay.Realtime
         
         void ClearOldContext()
         {
+            if(_contextToDestroy == null)
+                return;
+                
             DestroyIfPresent(_contextToDestroy.Projectile);
             DestroyIfPresent(_contextToDestroy.FollowerObject);
             DestroyIfPresent(_contextToDestroy.PlayfieldObject);

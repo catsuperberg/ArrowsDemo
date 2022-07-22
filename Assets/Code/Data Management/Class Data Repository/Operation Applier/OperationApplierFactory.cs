@@ -19,7 +19,7 @@ namespace DataManagement
             else if(valueType == typeof(bool).FullName)
                 return new BoolApplier();
             else if(IsGenericList(valueType))
-                return new BoolApplier();
+                return new ListApplier();
             throw new ArgumentException("Factory was requested to create applier for illigal type: " + valueType);
         }        
     }    

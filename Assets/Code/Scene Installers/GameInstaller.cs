@@ -49,7 +49,8 @@ public class GameInstaller : MonoInstaller
         ComposeSkinsImport();
         ComposeUserContextManagement();
         ComposeSettings();  
-        ComposeMicrointeractions();        
+        ComposeMicrointeractions(); 
+        ComposeSkinShop();       
                                  
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
@@ -67,6 +68,11 @@ public class GameInstaller : MonoInstaller
         // Container.Bind<ProjectileCollection>().AsSingle().NonLazy();  
         // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }
+    
+    void ComposeSkinShop()
+    {
+        Container.Bind<SkinShopService>().AsSingle().NonLazy(); 
+    } 
     
     void ComposeUserContextRepository()
     {

@@ -13,9 +13,9 @@ namespace Game.Gameplay.Meta.Skins
     public class ProjectileCollection : IConfigurable
     {
         [StoredField]
-        List<string> _boughtSkins = new List<string>();
+        public List<string> _boughtSkins = new List<string>();
         [StoredField]
-        string _selectedSkin = "invalidSkinName";
+        public string _selectedSkin = "invalidSkinName";
         
         public Dictionary<string, BigInteger> SkinNamesAndPrices 
             {get => _accessibleSkins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Price(kvp.Key));}
@@ -51,7 +51,7 @@ namespace Game.Gameplay.Meta.Skins
             if(!_accessibleSkins.Any())
                 throw new Exception("No accessible skins after collection assembly");
         }
-        
+                
         public GameObject GetSelectedProjectileResource()
         {
             MakeSureSelectedSkinValid();

@@ -5,5 +5,6 @@ namespace DataManagement
         Replace,
         Increase,
         Decrease,
+        Append
     }
 }

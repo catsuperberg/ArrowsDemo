@@ -38,7 +38,7 @@ namespace DataManagement
         static StringValueTypePair GetValueType(InfoHolder infoHolder)
         {
             var stringValue = (IsGenericList(infoHolder.Type)) ? // HACK Crappy way to support lists as stored field
-                JsonConvert.SerializeObject(infoHolder.Value, Formatting.Indented) :
+                JsonConvert.SerializeObject(infoHolder.Value) :
                 infoHolder.Value.ToString();
             
              return new StringValueTypePair(stringValue, infoHolder.Type.ToString());          
