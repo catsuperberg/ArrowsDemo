@@ -7,7 +7,7 @@ using Zenject;
 
 namespace UI
 {
-    public class ProjectileSkinShop : MonoBehaviour
+    public class ProjectileSkinShopManager : MonoBehaviour
     {
         [SerializeField]
         GameObject BuyerPrefab;
@@ -16,15 +16,13 @@ namespace UI
         [SerializeField]
         Transform ContainerForElements;
         
-        ProjectileCollection _skinCollection;
-        // SkinShopService _shopService;
+        SkinShopService _shopService;
 
         [Inject]
-        public void Construct(ProjectileCollection skinCollection, SkinShopService shopService)
+        public void Construct(SkinShopService shopService)
         {
-            _skinCollection = skinCollection ?? throw new ArgumentNullException(nameof(skinCollection));
-            // _shopService = shopService ?? throw new ArgumentNullException(nameof(shopService));
-            var orderedSkinEntries = from entry in _skinCollection.SkinNamesAndPrices orderby entry.Value ascending select entry;
+            _shopService = shopService ?? throw new ArgumentNullException(nameof(shopService));
+            var orderedSkinEntries = from entry in _shopService.SkinsPriceTable orderby entry.Value ascending select entry;
             
             foreach(var skin in orderedSkinEntries)
                 CreateCorrectElementWithContainer(skin.Key);
@@ -34,34 +32,32 @@ namespace UI
         {
             var elementContainerObj = new GameObject("Container for: " + name);
             elementContainerObj.transform.SetParent(ContainerForElements);
-            var skinContainer = elementContainerObj.transform;
-            // var skinContainer = Instantiate(elementContainerObj, Vector3.zero, Quaternion.identity, ContainerForElements).transform;
+            var skinUIContainer = elementContainerObj.transform;
             
-            if(_skinCollection.BoughtSkins.Contains(name))
-                CreateSelectorForSkin(name, skinContainer);
+            if(_shopService.BoughtSkins.Contains(name))
+                CreateSelectorForSkin(name, skinUIContainer);
             else
-                CreateBuyerForSkin(name, skinContainer);
+                CreateBuyerForSkin(name, skinUIContainer);
             
         }
         
-        void CreateSelectorForSkin(string name, Transform skinContainer)
+        void CreateSelectorForSkin(string name, Transform skinUIContainer)
         {            
-            var elementGO = Instantiate(SelectorPrefab, skinContainer, worldPositionStays: false);
+            var elementGO = Instantiate(SelectorPrefab, skinUIContainer, worldPositionStays: false);
             elementGO.name = name;            
-            SetParentRectTransformToChildSettings(skinContainer.gameObject, elementGO);  
-            // var element = elementGO.GetComponent<SkinSelector>();
-            // element.AttachToSkin(name, _skinCollection);
-            // element.OnSkinBought += PromoteBuyerToSelector;
+            SetParentRectTransformToChildSettings(skinUIContainer.gameObject, elementGO);  
+            var element = elementGO.GetComponent<SkinSelector>();
+            element.AttachToSkin(name);
         }
         
-        void CreateBuyerForSkin(string name, Transform skinContainer)
+        void CreateBuyerForSkin(string name, Transform skinUIContainer)
         {
-            var elementGO = Instantiate(BuyerPrefab, skinContainer, worldPositionStays: false);
+            var elementGO = Instantiate(BuyerPrefab, skinUIContainer, worldPositionStays: false);
             elementGO.name = name;     
-            SetParentRectTransformToChildSettings(skinContainer.gameObject, elementGO);     
+            SetParentRectTransformToChildSettings(skinUIContainer.gameObject, elementGO);     
             
             var element = elementGO.GetComponent<SkinBuyer>();
-            element.AttachToSkin(name, _skinCollection);
+            element.AttachToSkin(name);
             element.OnSkinBought += PromoteBuyerToSelector;
         }
         

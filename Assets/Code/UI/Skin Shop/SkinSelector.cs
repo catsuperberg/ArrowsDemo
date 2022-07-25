@@ -1,29 +1,67 @@
 using DataManagement;
-using ExtensionMethods;
-using Game.Gameplay.Meta.Shop;
-using Game.Gameplay.Meta.Curencies;
+using Game.Gameplay.Meta.Skins;
 using System;
-using System.Numerics;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
 
 namespace UI
 {    
     public class SkinSelector : MonoBehaviour
     {
         [SerializeField]
+        UnityEngine.UI.Image Icon;
+        [SerializeField]
+        GameObject Border;
+        [SerializeField]
+        Button SelectButton;
+        [SerializeField]
         TMP_Text ButtonText;
+        [SerializeField]
+        string UnselectedText;
+        [SerializeField]
+        string SelectedText;
         
-        bool _selected;
+        SkinShopService _shopService;
+        public string SkinName {get; private set;}
         
-        public void AttachToSkin()
+        [Inject]
+        public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryValueReader userRegistry, SkinShopService shopService)
+        {            
+            if(userRegistry == null)
+                throw new ArgumentNullException("IRegistryValueReader not provided to " + this.GetType().Name);
+            if(shopService == null)
+                throw new ArgumentNullException("SkinShopService not provided to " + this.GetType().Name);
+
+            _shopService = shopService;
+            userRegistry.OnUpdated += DataInRegistryUpdated;
+        }
+        
+        void DataInRegistryUpdated(object caller, EventArgs args)
         {
-            
+            UpdateAppearance();
+        }
+        
+        public void AttachToSkin(string name)
+        {
+            SkinName = name;
+            var icon = _shopService.SkinIcon(SkinName);
+            Icon.sprite = icon;
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {UpdateAppearance();});   
         }
         
         public void Select()
         {
-            
+            _shopService.SelectSkin(SkinName);
         }
+        
+        void UpdateAppearance()
+        {
+            var skinSelected = _shopService.IsSelectedSkin(SkinName);
+            SelectButton.interactable = !skinSelected;
+            Border.SetActive(skinSelected);
+            ButtonText.text = skinSelected ? SelectedText : UnselectedText;
+        }   
     }
 }

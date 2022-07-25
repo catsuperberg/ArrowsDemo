@@ -13,14 +13,12 @@ namespace Game.Gameplay.Meta.Skins
     public class ProjectileCollection : IConfigurable
     {
         [StoredField]
-        public List<string> _boughtSkins = new List<string>();
+        public List<string> BoughtSkins {get; private set;} = new List<string>();
         [StoredField]
-        public string _selectedSkin = "invalidSkinName";
-        
+        public string SelectedSkin {get; private set;} = "invalidSkinName";
+                
         public Dictionary<string, BigInteger> SkinNamesAndPrices 
             {get => _accessibleSkins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Price(kvp.Key));}
-        public List<string> BoughtSkins { get => _boughtSkins;}
-        public string SelectedSkin { get => _selectedSkin;}
 
         Dictionary<string, ISkinProvider> _accessibleSkins;
         List<ISkinProvider> _skinProviders;
@@ -55,8 +53,8 @@ namespace Game.Gameplay.Meta.Skins
         public GameObject GetSelectedProjectileResource()
         {
             MakeSureSelectedSkinValid();
-            var skinProvider = _accessibleSkins[_selectedSkin];
-            return skinProvider.LoadResource(_selectedSkin) as GameObject;
+            var skinProvider = _accessibleSkins[SelectedSkin];
+            return skinProvider.LoadResource(SelectedSkin) as GameObject;
         }
         
         public Sprite GetSkinIcon(string name)
@@ -78,17 +76,17 @@ namespace Game.Gameplay.Meta.Skins
         
         void MakeSureSelectedSkinValid()
         {
-            if (_selectedSkin == null || SkinUnaccessible(_selectedSkin))
+            if (SelectedSkin == null || SkinUnaccessible(SelectedSkin))
                 SwitchToRandomSelectableIfSelectedInvalid();
         }
 
         bool SkinUnaccessible(string name) => !_accessibleSkins.ContainsKey(name);
 
         void SwitchToFirstSelectableIfSelectedInvalid() =>
-            UpdateField(nameof(_selectedSkin), _accessibleSkins.Keys.First());
+            UpdateField(nameof(SelectedSkin), _accessibleSkins.Keys.First());
         
         void SwitchToRandomSelectableIfSelectedInvalid() =>
-            UpdateField(nameof(_selectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
+            UpdateField(nameof(SelectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
             
         public void UpdateField(string fieldName, string fieldValue)
         {            
@@ -112,11 +110,11 @@ namespace Game.Gameplay.Meta.Skins
         {
             switch(fieldName)
             {
-                case nameof(_selectedSkin):
-                    _selectedSkin = fieldValue;
+                case nameof(SelectedSkin):
+                    SelectedSkin = fieldValue;
                     break;
-                case nameof(_boughtSkins):
-                    _boughtSkins = JsonConvert.DeserializeObject<List<string>>(fieldValue);
+                case nameof(BoughtSkins):
+                    BoughtSkins = JsonConvert.DeserializeObject<List<string>>(fieldValue);
                     break;
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);

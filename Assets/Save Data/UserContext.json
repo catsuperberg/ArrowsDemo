@@ -1,28 +1,4 @@
 {
-  "Game.Gameplay.Meta.Skins.ProjectileCollection": [
-    {
-      "Name": "_boughtSkins",
-      "Value": "[\"Arrow\",\"Pencil\"]",
-      "Type": "System.Collections.Generic.List`1[System.String]",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
-      "Name": "_selectedSkin",
-      "Value": "invalidSkinName",
-      "Type": "System.String",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    }
-  ],
   "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
     {
       "Name": "CrossbowLevel",
@@ -83,7 +59,7 @@
     },
     {
       "Name": "SkinTokens",
-      "Value": "78",
+      "Value": "60",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -96,6 +72,30 @@
       "Name": "LifetimeSpending",
       "Value": "1287020298350253769",
       "Type": "System.Numerics.BigInteger",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    }
+  ],
+  "Game.Gameplay.Meta.Skins.ProjectileCollection": [
+    {
+      "Name": "BoughtSkins",
+      "Value": "[\"Arrow\",\"Pencil\"]",
+      "Type": "System.Collections.Generic.List`1[System.String]",
+      "Metadata": {
+        "PrettyName": "Undefined attribute name",
+        "MinValue": "NaN",
+        "MaxValue": "NaN",
+        "ValidOptions": null
+      }
+    },
+    {
+      "Name": "SelectedSkin",
+      "Value": "invalidSkinName",
+      "Type": "System.String",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
         "MinValue": "NaN",
