@@ -1,12 +1,12 @@
 using AssetScripts.AssetCreation;
 using DataManagement;
-using System;
-using System.Numerics;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
 using GameMath;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using UnityEngine;
 
 namespace Game.Gameplay.Meta.Skins
 {
@@ -52,7 +52,7 @@ namespace Game.Gameplay.Meta.Skins
                 
         public GameObject GetSelectedProjectileResource()
         {
-            MakeSureSelectedSkinValid();
+            // MakeSureSelectedSkinValid();
             var skinProvider = _accessibleSkins[SelectedSkin];
             return skinProvider.LoadResource(SelectedSkin) as GameObject;
         }
@@ -74,19 +74,19 @@ namespace Game.Gameplay.Meta.Skins
             return _accessibleSkins[name].Price(name);
         }
         
-        void MakeSureSelectedSkinValid()
-        {
-            if (SelectedSkin == null || SkinUnaccessible(SelectedSkin))
-                SwitchToRandomSelectableIfSelectedInvalid();
-        }
+        // void MakeSureSelectedSkinValid()
+        // {
+        //     if (SelectedSkin == null || SkinUnaccessible(SelectedSkin))
+        //         SwitchToRandomSelectableIfSelectedInvalid();
+        // }
 
         bool SkinUnaccessible(string name) => !_accessibleSkins.ContainsKey(name);
 
-        void SwitchToFirstSelectableIfSelectedInvalid() =>
-            UpdateField(nameof(SelectedSkin), _accessibleSkins.Keys.First());
+        // void SwitchToFirstSelectableIfSelectedInvalid() =>
+        //     UpdateField(nameof(SelectedSkin), _accessibleSkins.Keys.First());
         
-        void SwitchToRandomSelectableIfSelectedInvalid() =>
-            UpdateField(nameof(SelectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
+        // void SwitchToRandomSelectableIfSelectedInvalid() =>
+        //     UpdateField(nameof(SelectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
             
         public void UpdateField(string fieldName, string fieldValue)
         {            

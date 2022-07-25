@@ -28,7 +28,15 @@ public class GameInstaller : MonoInstaller
     private AppStateFactory _appStateFactory;
     
     public override void InstallBindings()
-    {                
+    {      
+        ComposeUserContextRepository();  
+        ComposeSettingsRepository();    
+        ComposeSkinsImport();
+        ComposeUserContextManagement();
+        ComposeSettings();  
+        ComposeMicrointeractions(); 
+        ComposeSkinShop();       
+        
         Container.Bind<OperationExecutor>().AsTransient().NonLazy();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();
@@ -43,14 +51,6 @@ public class GameInstaller : MonoInstaller
         else if (Application.platform == RuntimePlatform.Android)
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
-        
-        ComposeUserContextRepository();  
-        ComposeSettingsRepository();    
-        ComposeSkinsImport();
-        ComposeUserContextManagement();
-        ComposeSettings();  
-        ComposeMicrointeractions(); 
-        ComposeSkinShop();       
                                  
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     

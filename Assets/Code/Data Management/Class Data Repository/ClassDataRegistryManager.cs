@@ -15,6 +15,8 @@ namespace DataManagement
         string _pathToEntry;        
         Dictionary<string, List<ConfigurableField>> _nonVolatileConfigurablesData = new Dictionary<string, List<ConfigurableField>>();
         
+        public event System.EventHandler OnRegisteredUpdated;
+        
         public ClassDataRegistryManager(IRegistryBackend registry, INonVolatileStorage nonVolatileStorage, IGameFolders gameFolders, bool updateRegistryOnConstruction = true)
         {
             if(registry == null)
@@ -66,6 +68,8 @@ namespace DataManagement
         {            
             foreach(var instance in _registry.ObjectsToUpdateOnChange)
                 _registry.UpdateInstanceWithStoredValues(instance.Key);
+                
+            OnRegisteredUpdated?.Invoke(this, EventArgs.Empty);
         }        
                 
         void refreshNonVolatileData()

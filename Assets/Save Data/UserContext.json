@@ -59,7 +59,7 @@
     },
     {
       "Name": "SkinTokens",
-      "Value": "60",
+      "Value": "58",
       "Type": "System.Numerics.BigInteger",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -83,7 +83,7 @@
   "Game.Gameplay.Meta.Skins.ProjectileCollection": [
     {
       "Name": "BoughtSkins",
-      "Value": "[\"Arrow\",\"Pencil\"]",
+      "Value": "[\"Bolt\",\"Arrow\",\"Pencil\"]",
       "Type": "System.Collections.Generic.List`1[System.String]",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
@@ -94,7 +94,7 @@
     },
     {
       "Name": "SelectedSkin",
-      "Value": "invalidSkinName",
+      "Value": "Arrow",
       "Type": "System.String",
       "Metadata": {
         "PrettyName": "Undefined attribute name",
