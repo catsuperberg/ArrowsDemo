@@ -9,9 +9,9 @@ namespace DataManagement
     {
         public string Name {get; private set;}
         public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get => (Lookup<string, List<ConfigurableField>>)_currentConfigurablesData.ToLookup(p => p.Key, p => p.Value);}
-        public Lookup<IConfigurable, string> ObjectsToUpdateOnChange {get => (Lookup<IConfigurable, string>)_objectsToUpdateOnChange.ToLookup(p => p.Key, p => p.Value);}
+        public IList<IConfigurable> ObjectsToUpdateOnChange {get => _objectsToUpdateOnChange.AsReadOnly();}
         public Dictionary<string, List<ConfigurableField>> _currentConfigurablesData {get; private set;} = new Dictionary<string, List<ConfigurableField>>();
-        public Dictionary<IConfigurable, string> _objectsToUpdateOnChange {get; private set;} = new Dictionary<IConfigurable, string>();
+        public List<IConfigurable> _objectsToUpdateOnChange {get; private set;} = new List<IConfigurable>();
                 
         public event EventHandler OnUpdated;
         
@@ -37,8 +37,7 @@ namespace DataManagement
             }
             else
                 throw new NoFieldException("No field found to update, trying to update: " + fieldName + " in " + className);
-            
-            if(_objectsToUpdateOnChange.ContainsValue(className))
+            if(_objectsToUpdateOnChange.Any(entry => entry.GetType().FullName == className))
                 UpdateSingleFieldOfAllRegistered(className, fieldName, fieldValue);
             
             if(dataUpdated)
@@ -99,7 +98,7 @@ namespace DataManagement
         
         public void RegisterInstanceForUpdates(IConfigurable instance, string className)
         {
-            _objectsToUpdateOnChange.Add(instance, className);
+            _objectsToUpdateOnChange.Add(instance);
         }
         
         public void UnregisterInstance(IConfigurable instance)
@@ -110,24 +109,23 @@ namespace DataManagement
         void UpdateSingleFieldOfAllRegistered(string className, string fieldName, string fieldValue)
         {
             clearDeletedRegistrations();
-            
-            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.Value == className).Select(x => x.Key);
+                        
+            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.GetType().FullName == className);
             foreach(var instance in objectsToUpdate)
                 TryWritingField(instance, fieldName, fieldValue);
         }
         
         void clearDeletedRegistrations()
         {
-            var dictionarryWithoutEmptyInstances = _objectsToUpdateOnChange
-                .Where(f => f.Key != null)
-                .ToDictionary(x => x.Key, x => x.Value);
+            var listWithoutEmptyInstances = _objectsToUpdateOnChange
+                .Where(f => f != null);
                 
-            _objectsToUpdateOnChange = dictionarryWithoutEmptyInstances;  
+            _objectsToUpdateOnChange = listWithoutEmptyInstances.ToList();  
         }
         
         public void UpdateAllRegisteredOfClass(string className)
         {
-            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.Value == className).Select(x => x.Key);
+            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.GetType().FullName == className);
             foreach(var instance in objectsToUpdate)
                 UpdateObjectsFields(instance, className);
         }

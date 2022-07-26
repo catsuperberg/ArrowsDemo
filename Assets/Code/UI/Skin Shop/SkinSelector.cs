@@ -24,6 +24,7 @@ namespace UI
         string SelectedText;
         
         SkinShopService _shopService;
+        IRegistryValueReader _userRegistry;
         public string SkinName {get; private set;}
         
         [Inject]
@@ -35,7 +36,13 @@ namespace UI
                 throw new ArgumentNullException("SkinShopService not provided to " + this.GetType().Name);
 
             _shopService = shopService;
-            userRegistry.OnUpdated += DataInRegistryUpdated;
+            _userRegistry = userRegistry;
+            _userRegistry.OnUpdated += DataInRegistryUpdated;
+        }
+        
+        void OnDestroy()
+        {
+            _userRegistry.OnUpdated -= DataInRegistryUpdated;
         }
         
         void DataInRegistryUpdated(object caller, EventArgs args)

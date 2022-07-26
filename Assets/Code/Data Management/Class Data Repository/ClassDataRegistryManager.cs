@@ -67,7 +67,7 @@ namespace DataManagement
         public void UpdateRegistered()
         {            
             foreach(var instance in _registry.ObjectsToUpdateOnChange)
-                _registry.UpdateInstanceWithStoredValues(instance.Key);
+                _registry.UpdateInstanceWithStoredValues(instance);
                 
             OnRegisteredUpdated?.Invoke(this, EventArgs.Empty);
         }        

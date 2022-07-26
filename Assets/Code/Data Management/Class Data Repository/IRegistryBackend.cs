@@ -8,7 +8,7 @@ namespace DataManagement
     {
         public string Name {get;} 
         public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get;}
-        public Lookup<IConfigurable, string> ObjectsToUpdateOnChange {get;}
+        public IList<IConfigurable> ObjectsToUpdateOnChange {get;}
         
         public void UpdateRegisteredField(string className, string fieldName, string fieldValue);
         public void UpdateInstanceWithStoredValues(IConfigurable instance);
