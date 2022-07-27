@@ -1,107 +1,116 @@
-{
-  "Game.Gameplay.Meta.Skins.ProjectileCollection": [
-    {
-      "Name": "BoughtSkins",
-      "Value": "[\"Bolt\",\"Arrow\"]",
-      "Type": "System.Collections.Generic.List`1[System.String]",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
+[
+  {
+    "ClassName": "Game.Gameplay.Meta.Skins.ProjectileCollection",
+    "Fields": [
+      {
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"Arrow\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SelectedSkin",
+        "Value": "Bolt",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
       }
-    },
-    {
-      "Name": "SelectedSkin",
-      "Value": "Arrow",
-      "Type": "System.String",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.Curencies.CurenciesContext",
+    "Fields": [
+      {
+        "Name": "LifetimeSpending",
+        "Value": "8250",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "CommonCoins",
+        "Value": "54",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SkinTokens",
+        "Value": "2",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
       }
-    }
-  ],
-  "Game.Gameplay.Meta.Curencies.CurenciesContext": [
-    {
-      "Name": "CommonCoins",
-      "Value": "7170",
-      "Type": "System.Numerics.BigInteger",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
+    "Fields": [
+      {
+        "Name": "ArrowLevel",
+        "Value": "9",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "InitialArrowCount",
+        "Value": "6",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "CrossbowLevel",
+        "Value": "1",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "PassiveIncome",
+        "Value": "1",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
       }
-    },
-    {
-      "Name": "SkinTokens",
-      "Value": "1",
-      "Type": "System.Numerics.BigInteger",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
-      "Name": "LifetimeSpending",
-      "Value": "8090",
-      "Type": "System.Numerics.BigInteger",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    }
-  ],
-  "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext": [
-    {
-      "Name": "CrossbowLevel",
-      "Value": "5",
-      "Type": "System.Int32",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
-      "Name": "ArrowLevel",
-      "Value": "1",
-      "Type": "System.Int32",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
-      "Name": "InitialArrowCount",
-      "Value": "4",
-      "Type": "System.Int32",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    },
-    {
-      "Name": "PassiveIncome",
-      "Value": "1",
-      "Type": "System.Int32",
-      "Metadata": {
-        "PrettyName": "Undefined attribute name",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
-      }
-    }
-  ]
-}
+    ]
+  }
+]

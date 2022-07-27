@@ -9,7 +9,7 @@ namespace DataManagement
 {    
     public static class ConfigurableFieldUtils
     {
-        public static List<ConfigurableField> GetInstanceConfigurablesWithCurrentValues(IConfigurable objectReference, Type classType)
+        public static List<ConfigurableField> GetInstanceFieldsWithCurrentValues(IConfigurable objectReference, Type classType)
         {   
             var configurables = new List<ConfigurableField>();
             var fields = classType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)

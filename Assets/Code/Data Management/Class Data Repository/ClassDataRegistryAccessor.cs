@@ -26,20 +26,20 @@ namespace DataManagement
         
         public List<Type> GetRegisteredClasses()
         {
-            var classNames = _registry.CurrentConfigurablesData.Select(entry => entry.Key).ToList();
+            var classNames = _registry.Configurables.RegisteredConfigurables.Select(entry => entry.ClassName).ToList();
             var classTypes = classNames.Select(entry => Type.GetType(entry)).ToList();
             return classTypes;
         }
         
         public List<string> GetRegisteredFields(Type classType)
         {
-            if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
+            if(!_registry.Configurables.ClassRegistered(classType.FullName))
                 throw new NoConfigurablesException("No registered configurables for class: " + classType.FullName);
                 
-            var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
+            var fields = _registry.Configurables.GetFields(classType.FullName);
             var fieldNames = fields.Select(x => x.Name).ToList();
             return fieldNames;
-        }  
+        }
                                 
         public void ResetRegisteredFieldsToDefault(Type classType)
         {
@@ -54,7 +54,7 @@ namespace DataManagement
             }
             finally
             {
-                var defaultConfigurables = ConfigurableFieldUtils.GetInstanceConfigurablesWithCurrentValues((IConfigurable)tempInstance, classType);
+                var defaultConfigurables = ConfigurableFieldUtils.GetInstanceFieldsWithCurrentValues((IConfigurable)tempInstance, classType);
                 _registry.OverrideClassData(classType.FullName, defaultConfigurables);
                 _registry.UpdateAllRegisteredOfClass(classType.FullName);
                 tempInstance = null;                
@@ -64,12 +64,13 @@ namespace DataManagement
         public void ApplyOperationOnRegisteredField(Type classType, string fieldName, OperationType operation, string fieldIncrement)
         {
             var valueInRegistry = GetStoredValue(classType, fieldName);
-            var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
+            var fields = _registry.Configurables.GetFields(classType.FullName);
             var field = fields.FirstOrDefault(x => x.Name == fieldName);
             var fieldType = field.Type;            
             var operationApplier = OperationApplierFactory.GetApplier(fieldType);
             var newValue = operationApplier.GetResultOfOperation(valueInRegistry, fieldIncrement, operation);
-            _registry.UpdateRegisteredField(classType.FullName, fieldName, newValue);
+            var Configurables = new ConfigurableField(field.Name, newValue, field.Type, field.Metadata);
+            _registry.UpdateRegisteredField(classType.FullName, Configurables);
         }
         
         public Type GetFieldType(Type classType, string fieldName)
@@ -95,9 +96,9 @@ namespace DataManagement
         
         ConfigurableField GetFirstField(Type classType, string fieldName)
         {
-             if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
+             if(!_registry.Configurables.ClassRegistered(classType.FullName))
                 throw new NullReferenceException("No registered configurables found for class " + classType.FullName);
-            var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
+            var fields = _registry.Configurables.GetFields(classType.FullName);
             var field = fields.FirstOrDefault(x => x.Name == fieldName);
             if(field == null)
                 throw new NullReferenceException("No field found for class in regisrty. Class name: " + classType.FullName + "Field: "  + fieldName);

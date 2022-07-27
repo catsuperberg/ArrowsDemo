@@ -46,9 +46,9 @@ namespace DataManagement
         
         ConfigurableField GetFirstField(Type classType, string fieldName)
         {
-             if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
+             if(!_registry.Configurables.ClassRegistered(classType.FullName))
                 throw new NullReferenceException("No registered configurables found for class " + classType.FullName);
-            var fields = _registry.CurrentConfigurablesData[classType.FullName].First();
+            var fields = _registry.Configurables.GetFields(classType.FullName);
             var field = fields.FirstOrDefault(x => x.Name == fieldName);
             if(field == null)
                 throw new NullReferenceException("No field found for class in regisrty. Class name: " + classType.FullName + "Field: "  + fieldName);

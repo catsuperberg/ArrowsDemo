@@ -1,61 +1,73 @@
-{
-  "Settings.ResolutionScaling": [
-    {
-      "Name": "Scaling",
-      "Value": "1",
-      "Type": "System.Single",
-      "Metadata": {
-        "PrettyName": "Resolution scaling",
-        "MinValue": 0.2,
-        "MaxValue": 1.0,
-        "ValidOptions": null
+[
+  {
+    "ClassName": "Settings.ResolutionScaling",
+    "Fields": [
+      {
+        "Name": "Scaling",
+        "Value": "1",
+        "Type": "System.Single",
+        "Metadata": {
+          "PrettyName": "Resolution scaling",
+          "MinValue": 0.2,
+          "MaxValue": 1.0,
+          "ValidOptions": null
+        }
       }
-    }
-  ],
-  "Settings.GraphicsPresset": [
-    {
-      "Name": "CurrentQualityLevel",
-      "Value": "Ultra",
-      "Type": "System.String",
-      "Metadata": {
-        "PrettyName": "Graphics quality",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": [
-          "Very Low",
-          "Low",
-          "Medium",
-          "High",
-          "Very High",
-          "Ultra"
-        ]
+    ]
+  },
+  {
+    "ClassName": "Settings.GraphicsPresset",
+    "Fields": [
+      {
+        "Name": "CurrentQualityLevel",
+        "Value": "Medium",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Graphics quality",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": [
+            "Very Low",
+            "Low",
+            "Medium",
+            "High",
+            "Very High",
+            "Ultra"
+          ]
+        }
       }
-    }
-  ],
-  "Game.Microinteracions.VibrationService": [
-    {
-      "Name": "VibrationEnabled",
-      "Value": "True",
-      "Type": "System.Boolean",
-      "Metadata": {
-        "PrettyName": "Vibration",
-        "MinValue": "NaN",
-        "MaxValue": "NaN",
-        "ValidOptions": null
+    ]
+  },
+  {
+    "ClassName": "Game.Microinteracions.VibrationService",
+    "Fields": [
+      {
+        "Name": "VibrationEnabled",
+        "Value": "True",
+        "Type": "System.Boolean",
+        "Metadata": {
+          "PrettyName": "Vibration",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
       }
-    }
-  ],
-  "Input.ControllerComponents.TouchTranslationMovementController": [
-    {
-      "Name": "Sensitivity",
-      "Value": "8",
-      "Type": "System.Single",
-      "Metadata": {
-        "PrettyName": "Sensitivity",
-        "MinValue": 3.0,
-        "MaxValue": 15.0,
-        "ValidOptions": null
+    ]
+  },
+  {
+    "ClassName": "Input.ControllerComponents.TouchTranslationMovementController",
+    "Fields": [
+      {
+        "Name": "Sensitivity",
+        "Value": "8",
+        "Type": "System.Single",
+        "Metadata": {
+          "PrettyName": "Sensitivity",
+          "MinValue": 3.0,
+          "MaxValue": 15.0,
+          "ValidOptions": null
+        }
       }
-    }
-  ]
-}
+    ]
+  }
+]

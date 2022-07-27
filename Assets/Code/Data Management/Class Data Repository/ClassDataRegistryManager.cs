@@ -13,7 +13,7 @@ namespace DataManagement
         IRegistryBackend _registry;
         INonVolatileStorage _nonVolatileStorage;
         string _pathToEntry;        
-        Dictionary<string, List<ConfigurableField>> _nonVolatileConfigurablesData = new Dictionary<string, List<ConfigurableField>>();
+        List<ConfigurableClassData> _nonVolatileConfigurables = new List<ConfigurableClassData>();
         
         public event System.EventHandler OnRegisteredUpdated;
         
@@ -52,16 +52,16 @@ namespace DataManagement
             
             refreshNonVolatileData();
             var toOverrideRegisteredClasses = (prioritisedSource == SyncPriority.OnDuplicateGetFromNonVolitile) ? true : false;
-            _registry.WriteToRegistry(_nonVolatileConfigurablesData, toOverrideRegisteredClasses);
+            _registry.WriteToRegistry(_nonVolatileConfigurables, toOverrideRegisteredClasses);
             UpdateRegistered();
         }
         
         public void SaveRegisteredToNonVolatile()
         {
             Debug.Log("Saving registered data to non volatile storage"); 
-            var curentConfigurables = (Dictionary<string, List<ConfigurableField>>)_registry.CurrentConfigurablesData.ToDictionary(group => group.Key, group => group.First());
-            _nonVolatileConfigurablesData = curentConfigurables;
-            _nonVolatileStorage.WriteEntry(_pathToEntry, _nonVolatileConfigurablesData);
+            // var curentConfigurables = (Dictionary<string, List<ConfigurableField>>)_registry.CurrentConfigurablesData.ToDictionary(group => group.Key, group => group.First());
+            _nonVolatileConfigurables = _registry.Configurables.RegisteredConfigurables.ToList();
+            _nonVolatileStorage.WriteEntry(_pathToEntry, _nonVolatileConfigurables);
         }
         
         public void UpdateRegistered()
@@ -74,10 +74,10 @@ namespace DataManagement
                 
         void refreshNonVolatileData()
         {
-            Dictionary<string, List<ConfigurableField>> dataFromStorage = null;
+            List<ConfigurableClassData> dataFromStorage = null;
             try
             {
-                dataFromStorage = _nonVolatileStorage.ReadEntry<Dictionary<string, List<ConfigurableField>>>(_pathToEntry);
+                dataFromStorage = _nonVolatileStorage.ReadEntry<List<ConfigurableClassData>>(_pathToEntry);
             }
             catch(Exception e)
             {
@@ -87,26 +87,26 @@ namespace DataManagement
             finally
             {                
                 if(dataIsValid(dataFromStorage))
-                    _nonVolatileConfigurablesData = UpdateToValidMetadata(dataFromStorage);
+                    _nonVolatileConfigurables = UpdateToValidMetadata(dataFromStorage);
             }
         }
         
-        bool dataIsValid(Dictionary<string, List<ConfigurableField>> data)
+        bool dataIsValid(List<ConfigurableClassData> data)
         {
             if(data == null)
                 return false;
-            if(!data.Values.Any())
+            if(!data.Any())
                 return false;
-            return data.Values.First().Any();
+            return true;
         }
         
-        Dictionary<string, List<ConfigurableField>> UpdateToValidMetadata(Dictionary<string, List<ConfigurableField>> data)
+        List<ConfigurableClassData> UpdateToValidMetadata(List<ConfigurableClassData> data)
         {
-            var dataWithNewMetadata = new Dictionary<string, List<ConfigurableField>>();
+            var configurablesWithNewMetadata = new List<ConfigurableClassData>();
             foreach(var entry in data)
-                dataWithNewMetadata.Add(entry.Key, updateFields(Type.GetType(entry.Key), entry.Value));
-                            
-            return dataWithNewMetadata;
+                configurablesWithNewMetadata.Add(new ConfigurableClassData(entry.ClassName, updateFields(Type.GetType(entry.ClassName), entry.Fields.ToList())));
+                    
+            return configurablesWithNewMetadata;
         }
         
         List<ConfigurableField> updateFields(Type classType, List<ConfigurableField> fields)

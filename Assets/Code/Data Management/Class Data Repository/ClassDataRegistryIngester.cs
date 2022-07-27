@@ -26,8 +26,8 @@ namespace DataManagement
         {
             var classType = configurableObject.GetType();   
             ActualizeClassFields(configurableObject, classType);         
-            if(!_registry.CurrentConfigurablesData.Contains(classType.FullName))
-                RegisterConfigurablesForClass(configurableObject, classType);    
+            if(!_registry.Configurables.ClassRegistered(classType.FullName))
+                RegisterClassWithFields(configurableObject, classType);    
             if(updateThisInstanceOnChanges)
                 _registry.RegisterInstanceForUpdates(configurableObject, classType.FullName);
             if(loadStoredFieldsOnRegistration)
@@ -39,22 +39,22 @@ namespace DataManagement
             _registry.UnregisterInstance(instance);
         }
         
-        void RegisterConfigurablesForClass(IConfigurable configurableObject, Type classType)
+        void RegisterClassWithFields(IConfigurable configurableObject, Type classType)
         {
-            var defaultConfigurables = ConfigurableFieldUtils.GetInstanceConfigurablesWithCurrentValues(configurableObject, classType);
-            List<ConfigurableField> configurables;
-            if(_registry.CurrentConfigurablesData.Contains(classType.FullName))
-                configurables = ConfigurableFieldUtils.InjectValues(defaultConfigurables, _registry.CurrentConfigurablesData[classType.FullName].First());
+            var defaultFields = ConfigurableFieldUtils.GetInstanceFieldsWithCurrentValues(configurableObject, classType);
+            List<ConfigurableField> fields;
+            if(_registry.Configurables.ClassRegistered(classType.FullName))
+                fields = ConfigurableFieldUtils.InjectValues(defaultFields, _registry.Configurables.GetFields(classType.FullName).ToList());
             else
-                configurables = defaultConfigurables;
-            _registry.RegisterNewConfigurablesForClass(classType, configurables);
+                fields = defaultFields;
+            _registry.RegisterClassIfNew(classType, fields);
         }
         
         void ActualizeClassFields(IConfigurable configurableObject, Type classType)
         {
-            var defaultConfigurables = ConfigurableFieldUtils.GetInstanceConfigurablesWithCurrentValues(configurableObject, classType);
-            var storedChangebles = _registry.CurrentConfigurablesData[classType.FullName].FirstOrDefault();
-            if(storedChangebles == null)
+            var defaultConfigurables = ConfigurableFieldUtils.GetInstanceFieldsWithCurrentValues(configurableObject, classType);
+            var storedFields = _registry.Configurables.GetFields(classType.FullName);
+            if(storedFields == null)
             {
                 Debug.Log("No changebles found in storage for: " + classType);
                 Debug.Log("Skiping actualizing");
@@ -65,7 +65,7 @@ namespace DataManagement
             foreach(var field in defaultConfigurables)
             {
                 ConfigurableField fieldToAdd;
-                var fieldFoundInRegestry = storedChangebles.FirstOrDefault(x => x.Name == field.Name);
+                var fieldFoundInRegestry = storedFields.FirstOrDefault(x => x.Name == field.Name);
                 if(fieldFoundInRegestry != null)
                     fieldToAdd = GetStoredFieldIfValid(fieldFoundInRegestry, field);
                 else

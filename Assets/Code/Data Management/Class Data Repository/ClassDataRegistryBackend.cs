@@ -8,103 +8,61 @@ namespace DataManagement
     public class ClassDataRegistryBackend : IRegistryBackend
     {
         public string Name {get; private set;}
-        public Lookup<string, List<ConfigurableField>> CurrentConfigurablesData {get => (Lookup<string, List<ConfigurableField>>)_currentConfigurablesData.ToLookup(p => p.Key, p => p.Value);}
-        public IList<IConfigurable> ObjectsToUpdateOnChange {get => _objectsToUpdateOnChange.AsReadOnly();}
-        public Dictionary<string, List<ConfigurableField>> _currentConfigurablesData {get; private set;} = new Dictionary<string, List<ConfigurableField>>();
-        public List<IConfigurable> _objectsToUpdateOnChange {get; private set;} = new List<IConfigurable>();
+        public IList<IConfigurable> ObjectsToUpdateOnChange {get => _objectsToUpdateOnChange.AsReadOnly();}        
+        public IConfigurableCollectionReader Configurables {get => _configurables as IConfigurableCollectionReader;}
+        
+        public ConfigurablesCollection _configurables {get; private set;} = new ConfigurablesCollection();
+        List<IConfigurable> _objectsToUpdateOnChange = new List<IConfigurable>();
                 
         public event EventHandler OnUpdated;
         
-        void NotifyAboutDataUpdate()
+        void NotifyAboutDataUpdate(object caller, RegistryChangeArgs args)
         {
             OnUpdated?.Invoke(this, EventArgs.Empty);
+            UpgradeInstances(args.ClassName);
+        }
+        
+        void UpgradeInstances(string classToUpdate)
+        {
+            if(_objectsToUpdateOnChange.Any(entry => entry.GetType().FullName == classToUpdate))
+                foreach(var field in _configurables.GetFields(classToUpdate))
+                    UpdateSingleFieldOfAllRegistered(classToUpdate, field.Name, field.Value);
         }
         
         public ClassDataRegistryBackend(string nameForTheRegistry)
         {
             Name = nameForTheRegistry;
+            _configurables.OnChanges += NotifyAboutDataUpdate;
         }
         
-        public void UpdateRegisteredField(string className, string fieldName, string fieldValue)
-        {
-            var dataUpdated = false;
-            var indexOfTargetField = _currentConfigurablesData[className].FindIndex(x => x.Name == fieldName);
-            if(indexOfTargetField != -1)
-            {
-                var currentField = _currentConfigurablesData[className][indexOfTargetField]; 
-                _currentConfigurablesData[className][indexOfTargetField] = new ConfigurableField(fieldName, fieldValue, currentField.Type, currentField.Metadata);
-                dataUpdated = true;
-            }
-            else
-                throw new NoFieldException("No field found to update, trying to update: " + fieldName + " in " + className);
-            if(_objectsToUpdateOnChange.Any(entry => entry.GetType().FullName == className))
-                UpdateSingleFieldOfAllRegistered(className, fieldName, fieldValue);
-            
-            if(dataUpdated)
-                NotifyAboutDataUpdate();
-        }
+        public void UpdateRegisteredField(string className, ConfigurableField field)
+            => _configurables.SetRegisteredField(className, field);
         
         public void UpdateInstanceWithStoredValues(IConfigurable instance)
-        {
-            UpdateObjectsFields(instance, instance.GetType().FullName);
-        }
+            => UpdateObjectsFields(instance, instance.GetType().FullName);
         
-        public void WriteToRegistry(Dictionary<string, List<ConfigurableField>> sourceConfigurableClasses, bool overrideOnPresent)
-        {
-            if(!sourceConfigurableClasses.Any())
-                return;
-            foreach(var newClassConfigurables in sourceConfigurableClasses)
-            {
-                if(!_currentConfigurablesData.ContainsKey(newClassConfigurables.Key))
-                    _currentConfigurablesData.Add(newClassConfigurables.Key, newClassConfigurables.Value);
-                else if (overrideOnPresent)
-                    OverridePresentFields(newClassConfigurables);
-                    // _currentConfigurablesData[classConfigurables.Key] = classConfigurables.Value;                    
-            }
-            NotifyAboutDataUpdate();
-        }
+        public void WriteToRegistry(List<ConfigurableClassData> configurablesToPush, bool overrideOnPresent)
+            => _configurables.PushData(configurablesToPush, overrideOnPresent);
         
-        void OverridePresentFields(KeyValuePair<string, List<ConfigurableField>> newConfigurables)
-        {
-            var currentFields = _currentConfigurablesData[newConfigurables.Key];
-            foreach(var field in newConfigurables.Value)
-                currentFields[currentFields.FindIndex(instance => instance.Name == field.Name)] = field;
-            _currentConfigurablesData[newConfigurables.Key] = currentFields;
-        }
-        
-        public void OverrideConfigurables(Dictionary<string, List<ConfigurableField>> newConfigurables)
-        {
-            _currentConfigurablesData = newConfigurables;
-            NotifyAboutDataUpdate();
-        }
+        // public void OverrideConfigurables(ConfigurablesCollection newConfigurables)
+        //     => _configurables = newConfigurables;
         
         public void OverrideClassData(string className, List<ConfigurableField> newData)
-        {
-            if(!_currentConfigurablesData.ContainsKey(className))
-                throw new NoConfigurablesException("No registered configurables for class: " + className);
-            
-            _currentConfigurablesData[className] = newData;
-            NotifyAboutDataUpdate();
-        }
+            => _configurables.SetRegisteredFields(className, newData);
         
-        public void RegisterNewConfigurablesForClass(Type objectType, List<ConfigurableField> fields)
+        public void RegisterClassIfNew(Type objectType, List<ConfigurableField> fields)
         {
-            if(_currentConfigurablesData.ContainsKey(objectType.FullName))
+            if(_configurables.ClassRegistered(objectType.FullName))
                 return;
         
-            _currentConfigurablesData.Add(objectType.FullName, fields);
-            NotifyAboutDataUpdate();
+            _configurables.SetRegisteredFields(objectType.FullName, fields);
         }
         
         public void RegisterInstanceForUpdates(IConfigurable instance, string className)
-        {
-            _objectsToUpdateOnChange.Add(instance);
-        }
+            => _objectsToUpdateOnChange.Add(instance);
         
         public void UnregisterInstance(IConfigurable instance)
-        {
-            _objectsToUpdateOnChange.Remove(instance);
-        }
+            =>_objectsToUpdateOnChange.Remove(instance);
         
         void UpdateSingleFieldOfAllRegistered(string className, string fieldName, string fieldValue)
         {
@@ -132,10 +90,10 @@ namespace DataManagement
         
         void UpdateObjectsFields(IConfigurable instanceToUpdate, string className)
         {
-            if(!_currentConfigurablesData.ContainsKey(className))
+            if(!_configurables.ClassRegistered(className))
                 throw new NoConfigurablesException("No registered configurables for class: " + className);
                 
-            var configurables = _currentConfigurablesData[className];
+            var configurables = _configurables.GetFields(className);
             TryWritingFields(instanceToUpdate, configurables);                
         }
                 
@@ -151,7 +109,7 @@ namespace DataManagement
             }
         }
         
-        void TryWritingFields(IConfigurable objectToUpdate, List<ConfigurableField> fields)
+        void TryWritingFields(IConfigurable objectToUpdate, IList<ConfigurableField> fields)
         {
             var fieldData = new List<(string fieldName, string fieldValue)>();
             foreach(var configurable in fields)
