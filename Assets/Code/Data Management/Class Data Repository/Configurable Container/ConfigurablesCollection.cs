@@ -17,7 +17,7 @@ namespace DataManagement
         public IList<ConfigurableClassData> RegisteredConfigurables {get => _dataForClasses.AsReadOnly();}
         List<ConfigurableClassData> _dataForClasses = new List<ConfigurableClassData>(); 
         
-        public EventHandler<RegistryChangeArgs> OnChanges;
+        public event EventHandler<RegistryChangeArgs> OnChanges;
         
         public ConfigurablesCollection()    {}
         

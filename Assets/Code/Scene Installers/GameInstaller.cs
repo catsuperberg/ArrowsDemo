@@ -52,6 +52,7 @@ public class GameInstaller : MonoInstaller
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
                                  
+        Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();                      
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
@@ -92,7 +93,8 @@ public class GameInstaller : MonoInstaller
     {
         var userContext = Container.Resolve<UserContextFactory>().GetContext();
         Container.Bind<UserContext>().FromInstance(userContext).AsSingle(); 
-        Container.Bind<IUpdatedNotification>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
+        Container.Bind<IUpgradeContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
+        Container.Bind<ISkinContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
         Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();                 
     }
     

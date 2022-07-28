@@ -6,6 +6,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public interface IProjectile : IPausable, IUpdatedNotification
     {
+        public float MovementWidth {get;}
         public GameObject GameObject {get;}
         public GameObject ProjectilePrefab {get;}
         public BigInteger Count {get;}

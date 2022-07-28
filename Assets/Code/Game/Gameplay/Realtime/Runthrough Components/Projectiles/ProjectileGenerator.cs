@@ -28,12 +28,25 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
             _projectileCollection = projectileCollection;
         }
         
-        public GameObject CreateRandom(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
+        public GameObject CreateSelected(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator)
         {
             if(assetInstatiator == null)
                 throw new System.ArgumentNullException("IInstatiator isn't provided for: " + this.GetType().Name);
                 
             var bundle = CreateSelectedSkin(assetInstatiator);            
+            
+            var bundleScript = bundle.GetComponent<IProjectile>();
+            if(bundleScript == null)
+                throw new System.Exception("No IProjectileObject in selected prefab");
+            bundleScript.Initialize(initialCount, movementWidth, collisionEnabled: false);
+            var configurableComponent = bundle.AddComponent<TouchTranslationMovementController>(); // FIXME should search for generic IConfigurable with init\register method
+            configurableComponent.Initialize(_settingsRegistry);
+            return bundle;                                
+        }
+        
+        public GameObject CreateSelected(BigInteger initialCount, float movementWidth)
+        {
+            var bundle = Instantiate(_projectileCollection.GetSelectedProjectileResource());            
             
             var bundleScript = bundle.GetComponent<IProjectile>();
             if(bundleScript == null)

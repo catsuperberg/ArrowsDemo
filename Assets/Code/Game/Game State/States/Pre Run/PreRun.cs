@@ -1,4 +1,4 @@
-
+using Game.Gameplay.Meta;
 using Game.Gameplay.Realtime;
 using System;
 using System.Collections;
@@ -13,7 +13,8 @@ namespace Game.GameState
         [SerializeField]
         PreRunUI _UI;
         
-        IUpdatedNotification _userContextNotifier; 
+        IUpgradeContextNotifier _upgradesNotifier; 
+        ISkinContextNotifier _skinNotifier; 
         RunthroughContextManager _contextManager;
         
         private Timer _contextUpdateTimer = new Timer();
@@ -22,15 +23,11 @@ namespace Game.GameState
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
         public event EventHandler OnProceedToNextState;
                 
-        public void Initialize(IUpdatedNotification userContextNotifier, RunthroughContextManager contextManager)
-        {
-             if(userContextNotifier == null)
-                throw new ArgumentNullException("IUpdatedNotification isn't provided to " + this.GetType().Name);
-             if(contextManager == null)
-                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
-                
-            _userContextNotifier = userContextNotifier;
-            _contextManager = contextManager;
+        public void Initialize(IUpgradeContextNotifier upgradesNotifier, ISkinContextNotifier skinNotifier, RunthroughContextManager contextManager)
+        {                
+            _upgradesNotifier = upgradesNotifier ?? throw new ArgumentNullException(nameof(upgradesNotifier));
+            _skinNotifier = skinNotifier ?? throw new ArgumentNullException(nameof(skinNotifier));
+            _contextManager = contextManager ?? throw new ArgumentNullException(nameof(contextManager));
             
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 StartCoroutine(ShowLoadingScreenUntilPlayfieldPresent());});
@@ -53,7 +50,8 @@ namespace Game.GameState
             while(i-- > 0)
                 yield return null;
             _UI.OnStartRunthrough += UIStartButtonPressed;
-            _userContextNotifier.OnUpdated += UserContextUpdated;
+            _upgradesNotifier.OnNewRunthroughComponents += UserContextUpdated;
+            _skinNotifier.OnNewSelectedSkin += SkinUpdated;
         }
         
         void StartLoading()
@@ -76,13 +74,19 @@ namespace Game.GameState
             _contextManager.RequestContextUpdate();
         }
         
+        void SkinUpdated(object caller, EventArgs e)
+        {            
+            _contextManager.UpdateProjectileToSelected();
+        }
+        
         void OnDestroy()
         {
-            _userContextNotifier.OnUpdated -= UserContextUpdated;
-            _userContextNotifier = null;
+            _upgradesNotifier.OnNewRunthroughComponents -= UserContextUpdated;
+            _upgradesNotifier = null;
+            _skinNotifier.OnNewSelectedSkin -= SkinUpdated;
+            _skinNotifier = null;
             Destroy(_UI);
-            _UI = null;
-            _userContextNotifier = null;            
+            _UI = null;          
         }
     }
 }

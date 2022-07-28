@@ -1,38 +1,67 @@
 using DataManagement;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
 namespace Game.Gameplay.Meta
 {
-    public class UserContextManager : IUpdatedNotification
+    public interface IUpgradeContextNotifier
+    {
+        public event EventHandler OnNewRunthroughComponents; 
+    }
+    
+    public interface ISkinContextNotifier
+    {
+        public event EventHandler OnNewSelectedSkin;         
+    }
+    
+    public class UserContextManager : IUpgradeContextNotifier, ISkinContextNotifier
     {
         UserContext _context;        
-        IRegistryManager _registryManager;        
+        IRegistryManager _registryManager;      
+        IRegistryValueReader _registryReader;        
+                        
+        public event EventHandler OnNewRunthroughComponents; 
+        public event EventHandler OnNewSelectedSkin; 
         
-        public event EventHandler OnUpdated;
+        static readonly ReadOnlyCollection<string> _runtrhoughComponents = new ReadOnlyCollection<string>(new[] {
+            nameof(UpgradeSystem.UpgradeContext.CrossbowLevel), nameof(UpgradeSystem.UpgradeContext.ArrowLevel), 
+            nameof(UpgradeSystem.UpgradeContext.InitialArrowCount)});
         
-        public UserContextManager([Inject(Id = "userRegistryManager")]IRegistryManager registryManager, UserContext context)
-        {            
-            if(context == null)
-                throw new ArgumentNullException("No UserContext provided to class" + this.GetType().Name);
-            if(registryManager == null)
-                throw new ArgumentNullException("No IRegistryManager provided to class" + this.GetType().Name);
-                                        
-            _registryManager = registryManager;
-            _context = context;
-            _context.Upgrades.OnUpdated += DataUpdated;
-            _context.Curencies.OnUpdated += DataUpdated;
-            _context.ProjectileSkins.OnUpdated += DataUpdated;
+        public UserContextManager([Inject(Id = "userRegistryManager")]IRegistryManager registryManager, 
+            [Inject(Id = "userRegistryAccessor")]IRegistryValueReader registryReader, UserContext context)
+        {                                                    
+            _registryManager = registryManager ?? throw new ArgumentNullException(nameof(registryManager));
+            _registryReader = registryReader ?? throw new ArgumentNullException(nameof(registryReader));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            
+            registryReader.OnNewData += FilterUpdatedData;
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();       
         }      
         
-        void DataUpdated(object sender, EventArgs e)
+        
+        void FilterUpdatedData(object caller, RegistryChangeArgs args)
         {
-            Debug.Log("User data changed by: " + sender.GetType() + " hash: " + sender.GetHashCode());
-            _registryManager.SaveRegisteredToNonVolatile();
-            OnUpdated?.Invoke(this, EventArgs.Empty);
+            if(args.ClassName ==  typeof(UpgradeSystem.UpgradeContext).FullName)
+                NotifyAboutUpgrades(args.Fields);
+            else if(args.ClassName ==  typeof(Skins.ProjectileCollection).FullName)
+                NotifyAboutSkins(args.Fields);
+        }
+        
+        void NotifyAboutUpgrades(List<string> changedFields)
+        {
+            if(changedFields.Intersect(_runtrhoughComponents).Any())
+                OnNewRunthroughComponents?.Invoke(this, EventArgs.Empty);
+        }
+        
+        void NotifyAboutSkins(List<string> changedFields)
+        {
+            if(changedFields.Contains(nameof(Skins.ProjectileCollection.SelectedSkin)))
+                OnNewSelectedSkin?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -1,4 +1,5 @@
 using AssetScripts.Instantiation;
+using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace Game.Gameplay.Realtime
 {
     public class RunthroughContextManager
     {
-        IRunthroughFactory _runtimeFactory;  
+        IRunthroughFactory _runtimeFactory; 
+        ProjectileInPlaceReplacer _projectileReplacer; 
         
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
         RunthroughContext _contextToDestroy = null;
@@ -31,9 +33,10 @@ namespace Game.Gameplay.Realtime
         Timer _multiRequestFilterTimer = null;
         bool _requestDuringGeneration = false;
         
-        public RunthroughContextManager(IRunthroughFactory runtimeFactory)
+        public RunthroughContextManager(IRunthroughFactory runtimeFactory, ProjectileInPlaceReplacer projectileReplacer)
         {
             _runtimeFactory = runtimeFactory ?? throw new ArgumentNullException(nameof(runtimeFactory));
+            _projectileReplacer = projectileReplacer ?? throw new ArgumentNullException(nameof(projectileReplacer));
         }
         
         public void StartContextUpdate()
@@ -49,7 +52,16 @@ namespace Game.Gameplay.Realtime
                 UpdateIfRequestsStopForMs(requestTimeoutMS);
             else
                 _requestDuringGeneration = true;
-        }             
+        }       
+        
+        public void UpdateProjectileToSelected()
+        {
+            var projectileParent = CurrentRunthroughContext.Projectile.transform.parent;
+            var newProjectile = _projectileReplacer.CreateNewProjectileFromPrototype(CurrentRunthroughContext.Projectile);
+            newProjectile.transform.SetParent(projectileParent);
+            GameObject.Destroy(CurrentRunthroughContext.Projectile);
+            CurrentRunthroughContext.Projectile = newProjectile;
+        }      
         
         void UpdateIfRequestsStopForMs(int timeMs)
         {
@@ -67,10 +79,7 @@ namespace Game.Gameplay.Realtime
         }
         
         
-        void StartUpdate()
-        {
-            _ = UpdateContext();            
-        }
+        void StartUpdate() => _ = UpdateContext();  
         
         void RegisterCurrentContextForDestruction()
         {

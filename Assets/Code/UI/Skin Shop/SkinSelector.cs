@@ -37,12 +37,12 @@ namespace UI
 
             _shopService = shopService;
             _userRegistry = userRegistry;
-            _userRegistry.OnUpdated += DataInRegistryUpdated;
+            _userRegistry.OnNewData += DataInRegistryUpdated;
         }
         
         void OnDestroy()
         {
-            _userRegistry.OnUpdated -= DataInRegistryUpdated;
+            _userRegistry.OnNewData -= DataInRegistryUpdated;
         }
         
         void DataInRegistryUpdated(object caller, EventArgs args)

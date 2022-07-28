@@ -11,18 +11,19 @@ namespace DataManagement
         public IList<IConfigurable> ObjectsToUpdateOnChange {get => _objectsToUpdateOnChange.AsReadOnly();}        
         public IConfigurableCollectionReader Configurables {get => _configurables as IConfigurableCollectionReader;}
         
-        public ConfigurablesCollection _configurables {get; private set;} = new ConfigurablesCollection();
+        ConfigurablesCollection _configurables = new ConfigurablesCollection();
         List<IConfigurable> _objectsToUpdateOnChange = new List<IConfigurable>();
                 
-        public event EventHandler OnUpdated;
-        
-        void NotifyAboutDataUpdate(object caller, RegistryChangeArgs args)
+        public event EventHandler<RegistryChangeArgs> OnNewData 
         {
-            OnUpdated?.Invoke(this, EventArgs.Empty);
-            UpgradeInstances(args.ClassName);
+            add => _configurables.OnChanges += value;
+            remove => _configurables.OnChanges -= value;
         }
         
-        void UpgradeInstances(string classToUpdate)
+        void UpdateData(object caller, RegistryChangeArgs args)
+            => UpdateInstances(args.ClassName);
+        
+        void UpdateInstances(string classToUpdate)
         {
             if(_objectsToUpdateOnChange.Any(entry => entry.GetType().FullName == classToUpdate))
                 foreach(var field in _configurables.GetFields(classToUpdate))
@@ -32,7 +33,7 @@ namespace DataManagement
         public ClassDataRegistryBackend(string nameForTheRegistry)
         {
             Name = nameForTheRegistry;
-            _configurables.OnChanges += NotifyAboutDataUpdate;
+            _configurables.OnChanges += UpdateData;
         }
         
         public void UpdateRegisteredField(string className, ConfigurableField field)
@@ -63,15 +64,7 @@ namespace DataManagement
         
         public void UnregisterInstance(IConfigurable instance)
             =>_objectsToUpdateOnChange.Remove(instance);
-        
-        void UpdateSingleFieldOfAllRegistered(string className, string fieldName, string fieldValue)
-        {
-            clearDeletedRegistrations();
-                        
-            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.GetType().FullName == className);
-            foreach(var instance in objectsToUpdate)
-                TryWritingField(instance, fieldName, fieldValue);
-        }
+                
         
         void clearDeletedRegistrations()
         {
@@ -86,6 +79,15 @@ namespace DataManagement
             var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.GetType().FullName == className);
             foreach(var instance in objectsToUpdate)
                 UpdateObjectsFields(instance, className);
+        }
+        
+        void UpdateSingleFieldOfAllRegistered(string className, string fieldName, string fieldValue)
+        {
+            clearDeletedRegistrations();
+                        
+            var objectsToUpdate = _objectsToUpdateOnChange.Where(x => x.GetType().FullName == className);
+            foreach(var instance in objectsToUpdate)
+                TryWritingField(instance, fieldName, fieldValue);
         }
         
         void UpdateObjectsFields(IConfigurable instanceToUpdate, string className)

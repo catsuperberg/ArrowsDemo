@@ -25,7 +25,7 @@ namespace Settings
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();  
             
-            _registryReader.OnUpdated += DataUpdated;    
+            _registryReader.OnNewData += DataUpdated;    
         }      
         
         void DataUpdated(object sender, EventArgs e)

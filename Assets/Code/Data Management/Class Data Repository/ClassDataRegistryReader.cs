@@ -7,7 +7,11 @@ namespace DataManagement
     {
         IRegistryBackend _registry;
         
-        public event EventHandler OnUpdated;
+        public event EventHandler<RegistryChangeArgs> OnNewData 
+        {
+            add => _registry.OnNewData += value;
+            remove => _registry.OnNewData -= value;
+        }
         
         public ClassDataRegistryReader(IRegistryBackend registry)
         {
@@ -15,13 +19,13 @@ namespace DataManagement
                 throw new ArgumentNullException("No registry implimentation provided to " + this.GetType().Name);                
             
             _registry = registry;
-            _registry.OnUpdated += DataInRegistryUpdated;
+            // _registry.OnNewData += DataInRegistryUpdated;
         }
         
-        void DataInRegistryUpdated(object caller, EventArgs args)
-        {
-            OnUpdated?.Invoke(this, EventArgs.Empty);
-        }        
+        // void DataInRegistryUpdated(object caller, EventArgs args)
+        // {
+        //     OnUpdated?.Invoke(this, EventArgs.Empty);
+        // }        
         
         public Type GetFieldType(Type classType, string fieldName)
         {

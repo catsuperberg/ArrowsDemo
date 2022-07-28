@@ -17,7 +17,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
     public class ArrowBundle : MonoBehaviour, IProjectile, IMovable, IDamageableWithTransforms
     {
         [SerializeField]
-        public float MovementWidth;
+        public float MovementWidth {get; private set;}
         [SerializeField]
         public float UpwardOffset = 4;
         [SerializeField]

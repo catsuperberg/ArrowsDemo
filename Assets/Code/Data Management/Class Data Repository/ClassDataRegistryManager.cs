@@ -15,7 +15,7 @@ namespace DataManagement
         string _pathToEntry;        
         List<ConfigurableClassData> _nonVolatileConfigurables = new List<ConfigurableClassData>();
         
-        public event System.EventHandler OnRegisteredUpdated;
+        public event EventHandler OnRegisteredUpdated;
         
         public ClassDataRegistryManager(IRegistryBackend registry, INonVolatileStorage nonVolatileStorage, IGameFolders gameFolders, bool updateRegistryOnConstruction = true)
         {
@@ -59,7 +59,6 @@ namespace DataManagement
         public void SaveRegisteredToNonVolatile()
         {
             Debug.Log("Saving registered data to non volatile storage"); 
-            // var curentConfigurables = (Dictionary<string, List<ConfigurableField>>)_registry.CurrentConfigurablesData.ToDictionary(group => group.Key, group => group.First());
             _nonVolatileConfigurables = _registry.Configurables.RegisteredConfigurables.ToList();
             _nonVolatileStorage.WriteEntry(_pathToEntry, _nonVolatileConfigurables);
         }

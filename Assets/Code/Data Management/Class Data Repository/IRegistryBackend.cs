@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace DataManagement
 {
-    public interface IRegistryBackend : IUpdatedNotification
+    public interface IRegistryBackend
     {
         public string Name {get;} 
         public IConfigurableCollectionReader Configurables {get;}
         public IList<IConfigurable> ObjectsToUpdateOnChange {get;}
+        
+        public event EventHandler<RegistryChangeArgs> OnNewData;
         
         public void UpdateRegisteredField(string className, ConfigurableField field);
         public void UpdateInstanceWithStoredValues(IConfigurable instance);

@@ -1,5 +1,6 @@
-using Game.Gameplay.Realtime;
 using DataManagement;
+using Game.Gameplay.Meta;
+using Game.Gameplay.Realtime;
 using System;
 using UI;
 using UnityEngine;
@@ -10,22 +11,19 @@ namespace Game.GameState
     public class PreRunFactory
     {
         RunthroughContextManager _contextManager;  
-        IUpdatedNotification _userContextNotifier; 
+        IUpgradeContextNotifier _upgradesNotifier; 
+        ISkinContextNotifier _skinNotifier; 
         IRegistryAccessor _userContextAccessor;
         
-        public PreRunFactory(RunthroughContextManager contextManager, [Inject(Id = "userContextNotifier")] IUpdatedNotification userContextNotifier,
+        public PreRunFactory(RunthroughContextManager contextManager, 
+            [Inject(Id = "userContextNotifier")] IUpgradeContextNotifier upgradesNotifier,
+            [Inject(Id = "userContextNotifier")] ISkinContextNotifier skinNotifier,
             [Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor)
         {
-            if(contextManager == null)
-                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
-             if(userContextNotifier == null)
-                throw new ArgumentNullException("IUpdatedNotification isn't provided to " + this.GetType().Name);
-            if(registryAccessor == null)
-                throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
-                                             
-            _contextManager = contextManager;
-            _userContextNotifier = userContextNotifier;
-            _userContextAccessor = registryAccessor;               
+            _contextManager = contextManager ?? throw new ArgumentNullException(nameof(contextManager));
+            _upgradesNotifier = upgradesNotifier ?? throw new ArgumentNullException(nameof(upgradesNotifier));
+            _skinNotifier = skinNotifier ?? throw new ArgumentNullException(nameof(skinNotifier));
+            _userContextAccessor = registryAccessor ?? throw new ArgumentNullException(nameof(registryAccessor));
         }
         
         public IPreRun GetPreRun(GameObject preRunPrefab, bool skipToRun)
@@ -44,7 +42,7 @@ namespace Game.GameState
         {
             var preRunGO = GameObject.Instantiate(preRunPrefab);
             var preRun = preRunGO.GetComponent<PreRun>();
-            preRun.Initialize(_userContextNotifier, _contextManager);
+            preRun.Initialize(_upgradesNotifier, _skinNotifier, _contextManager);
             var upgradeShop = preRunGO.GetComponentInChildren<ShopManager>();
             upgradeShop.Initialize(_userContextAccessor);
             return preRun;

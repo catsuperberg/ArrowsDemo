@@ -27,7 +27,7 @@ namespace UI
                 throw new ArgumentNullException("IRegistryValueReader not provided to " + this.GetType().Name);
             
             _curencieDataReader = registryAccessor;
-            _curencieDataReader.OnUpdated += DataInRegistryUpdated;
+            _curencieDataReader.OnNewData += DataInRegistryUpdated;
             UpdateAppearanceFromRegistry();
         }
         
