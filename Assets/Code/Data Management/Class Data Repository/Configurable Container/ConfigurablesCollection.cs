@@ -4,14 +4,6 @@ using System.Linq;
 
 namespace DataManagement
 {
-    public interface IConfigurableCollectionReader
-    {
-        public IList<ConfigurableClassData> RegisteredConfigurables {get;}
-        
-        public bool ClassRegistered(string className);
-        public IList<ConfigurableField> GetFields(string className);
-    }
-    
     public class ConfigurablesCollection : IConfigurableCollectionReader
     {
         public IList<ConfigurableClassData> RegisteredConfigurables {get => _dataForClasses.AsReadOnly();}
@@ -21,9 +13,9 @@ namespace DataManagement
         
         public ConfigurablesCollection()    {}
         
-        public ConfigurablesCollection(List<ConfigurableClassData> initialData)
+        public ConfigurablesCollection(IList<ConfigurableClassData> initialData)
         {
-            _dataForClasses = initialData;
+            _dataForClasses = initialData.ToList();
         }
         
         public bool ClassRegistered(string className) => _dataForClasses.Any(configurable => configurable.ClassName == className);

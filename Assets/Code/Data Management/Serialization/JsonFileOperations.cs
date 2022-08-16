@@ -1,6 +1,7 @@
 using System.IO;
 using System.Text;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace DataAccess.DiskAccess.Serialization
 {
@@ -9,20 +10,27 @@ namespace DataAccess.DiskAccess.Serialization
         public static void SaveAsJson(object dataObject, string filePath, string fileName)
         {
             FileStream stream = new FileStream(Path.Combine(filePath, withExtension(fileName)), FileMode.Create);        
-            string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
+            string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
+            // string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();        
         }
         
-        public static void SaveAsJson(object dataObject, string filePath)
+        public static void SaveAsJson<T>(T dataObject, string filePath)
         {
-            FileStream stream = new FileStream(filePath, FileMode.Create);        
-            string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
+            string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
+            // string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
+            if(json == "{}" || json == "[]")
+                throw new System.Exception("Empty json generated");
+                
+            if(File.Exists(filePath))
+                File.Delete(filePath);
+            FileStream stream = new FileStream(filePath, FileMode.Create);   
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();        
         }
         
-        public static T GetDataObjectFromJsonFile<T>(string filePath, string fileName) where T : class
+        public static T GetObjectFromJsonFile<T>(string filePath, string fileName) where T : class
         {
             var pathToFile = Path.Combine(filePath, withExtension(fileName));
             if(File.Exists(pathToFile))
@@ -34,7 +42,8 @@ namespace DataAccess.DiskAccess.Serialization
                     sr.Close();
                 }
                 stream.Close();
-                return JsonUtility.FromJson<T>(json);
+                return JsonConvert.DeserializeObject<T>(json);
+                // return JsonUtility.FromJson<T>(json);
             }
             else
             {
@@ -43,7 +52,7 @@ namespace DataAccess.DiskAccess.Serialization
             }
         }
         
-        public static T GetDataObjectFromJsonFile<T>(string filePath) where T : class
+        public static T GetObjectFromJsonFile<T>(string filePath) where T : class
         {
             if(File.Exists(filePath))
             {
@@ -54,7 +63,8 @@ namespace DataAccess.DiskAccess.Serialization
                     sr.Close();
                 }
                 stream.Close();
-                return JsonUtility.FromJson<T>(json);
+                return JsonConvert.DeserializeObject<T>(json);
+                // return JsonUtility.FromJson<T>(json);
             }
             else
             {

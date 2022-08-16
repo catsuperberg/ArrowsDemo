@@ -11,17 +11,10 @@ namespace AssetScripts.AssetCreation
 
         public SkinPackage(string name, string gLBModelPath, string iconPath, string metadataPath)
         {
-            if (gLBModelPath == null)
-                throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to glb model");
-            if (iconPath == null)
-                throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to icon");
-            if (metadataPath == null)
-                throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to metadata");
-
             Name = name;
-            GLBModelPath = gLBModelPath;
-            IconPath = iconPath;
-            MetadataPath = metadataPath;
+            GLBModelPath = gLBModelPath ?? throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to glb model");
+            IconPath = iconPath ?? throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to icon");
+            MetadataPath = metadataPath ?? throw new ArgumentNullException("Can't create " + this.GetType().Name + " without specifying path to metadata");
         }
     }
 }

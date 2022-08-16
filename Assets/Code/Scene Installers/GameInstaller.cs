@@ -65,9 +65,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ProjectileCollectionFactory>().AsSingle().NonLazy(); 
         var projectileCollection = Container.Resolve<ProjectileCollectionFactory>().GetCurrentCollection();
         Container.Bind<ProjectileCollection>().FromInstance(projectileCollection).AsSingle(); 
-        // Container.Bind<ProjectileCollection>().FromInstance(projectileCollection).AsSingle(); 
-        // Container.Bind<ProjectileCollection>().AsSingle().NonLazy();  
-        // Container.Bind<ProjectileRawModelLoader>().AsSingle().NonLazy();    
     }
     
     void ComposeSkinShop()

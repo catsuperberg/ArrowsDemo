@@ -100,30 +100,63 @@ namespace GameMath
     
     public static class GlobalRandom
     {
-        private static readonly Random Random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
-        private static readonly object SyncLock = new object();
+        private static readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
+        private static readonly object _syncLock = new object();
+        const string _chars = "abcdefghijklmnoprqrstuwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-";
         
         public static int RandomInt(int min, int max)
         {
-            lock(SyncLock)  // synchronize
+            lock(_syncLock)  // synchronize
             {
-                return Random.Next(min, max);
+                return _random.Next(min, max);
+            }
+        }
+        
+        public static int RandomIntInclusive(int from, int to)
+        {
+            lock(_syncLock)  // synchronize
+            {
+                return _random.Next(from, to+1);
+            }
+        }
+        
+        public static int RandomIntInclusive(int max)
+        {
+            lock(_syncLock)  // synchronize
+            {
+                return _random.Next(0, max < int.MaxValue ? max+1 : int.MaxValue);
+            }
+        }
+        
+        public static bool RandomBool()
+        {
+            lock(_syncLock)  // synchronize
+            {
+                return Convert.ToBoolean(_random.Next(2));
             }
         }
                 
         public static double RandomDouble()
         {
-            lock(SyncLock) // synchronize
+            lock(_syncLock) // synchronize
             {
-                return Random.NextDouble();
+                return _random.NextDouble();
             }
         }
                 
         public static double RandomDouble(double min, double max)
         {
-            lock(SyncLock) // synchronize
+            lock(_syncLock) // synchronize
             {                
-                return Random.NextDouble() * (max - min) + min;
+                return _random.NextDouble() * (max - min) + min;
+            }
+        }
+                
+        public static string RandomString(int length)
+        {
+            lock(_syncLock) // synchronize
+            {                
+                return new string(Enumerable.Repeat(_chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
             }
         }
     }

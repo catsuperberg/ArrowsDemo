@@ -38,18 +38,19 @@ namespace Game.Gameplay.Meta
             _registryReader = registryReader ?? throw new ArgumentNullException(nameof(registryReader));
             _context = context ?? throw new ArgumentNullException(nameof(context));
             
-            registryReader.OnNewData += FilterUpdatedData;
+            registryReader.OnNewData += ProcessUpdatedData;
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();       
         }      
         
         
-        void FilterUpdatedData(object caller, RegistryChangeArgs args)
+        void ProcessUpdatedData(object caller, RegistryChangeArgs args)
         {
             if(args.ClassName ==  typeof(UpgradeSystem.UpgradeContext).FullName)
                 NotifyAboutUpgrades(args.Fields);
             else if(args.ClassName ==  typeof(Skins.ProjectileCollection).FullName)
                 NotifyAboutSkins(args.Fields);
+            SaveToNonVolatile();
         }
         
         void NotifyAboutUpgrades(List<string> changedFields)
@@ -63,5 +64,8 @@ namespace Game.Gameplay.Meta
             if(changedFields.Contains(nameof(Skins.ProjectileCollection.SelectedSkin)))
                 OnNewSelectedSkin?.Invoke(this, EventArgs.Empty);
         }
+        
+        void SaveToNonVolatile()
+            => _registryManager.SaveRegisteredToNonVolatile();
     }
 }

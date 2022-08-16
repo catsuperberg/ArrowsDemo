@@ -1,6 +1,6 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
-using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
+using Game.Gameplay.Meta.Skins;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -101,15 +101,15 @@ namespace AssetScripts.AssetCreation
         
         ProjectileSkinData CreateSkinDataObject(SkinPackage skin, string skinPrefabPath)
         {
-            var injestData = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileInjestData>(skin.MetadataPath);
+            var injestData = JsonFileOperations.GetObjectFromJsonFile<ProjectileInjestData>(skin.MetadataPath);
             var pathToPrefab = skinPrefabPath.Replace(_resourcesFolder + "\\", "").Replace(".prefab", "");
             var pathToIcon = Path.Combine(Path.GetDirectoryName(pathToPrefab), "icon");
             var skinData = new ProjectileSkinData(
                 name: skin.Name,
                 prefabPath: pathToPrefab,
                 iconPath: pathToIcon,
-                modelCheckSum: CalculateFileChecksum(skin.GLBModelPath),
-                iconCheckSum: CalculateFileChecksum(skin.IconPath),
+                // modelCheckSum: CalculateFileChecksum(skin.GLBModelPath),
+                // iconCheckSum: CalculateFileChecksum(skin.IconPath),
                 baseCost: injestData.BaseCost,
                 adWatchRequired: injestData.AdWatchRequired);
             return skinData;
@@ -117,13 +117,13 @@ namespace AssetScripts.AssetCreation
         
         void UpdateSkinDatabase()
         {
-            ProjectileDatabase skinDatabase; 
+            PermanentSkinsDatabase<ProjectileSkinData> skinDatabase; 
             var skinDatabaseName = "ProjectileDatabase.json";
             var skinDatabasePath = Path.Combine(_resourcesFolder, skinDatabaseName);
             if(File.Exists(skinDatabasePath))
-                skinDatabase = JsonFileOperations.GetDataObjectFromJsonFile<ProjectileDatabase>(skinDatabasePath);
+                skinDatabase = JsonFileOperations.GetObjectFromJsonFile<PermanentSkinsDatabase<ProjectileSkinData>>(skinDatabasePath);
             else
-                skinDatabase = new ProjectileDatabase();
+                skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>();
             
             skinDatabase.AddSkinsUniqueByName(_skinsData);   
             

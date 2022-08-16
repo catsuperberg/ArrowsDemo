@@ -40,7 +40,7 @@ namespace Game.Gameplay.Meta.Skins
         public BigInteger Price(string name)
         {
             var skinData = GetSkinIfValid(name);
-            return skinData.BaseCost;            
+            return skinData.BaseCost ?? throw new Exception("Skin cost is null during execution");            
         }    
         
         ProjectileSkinData GetSkinIfValid(string name)

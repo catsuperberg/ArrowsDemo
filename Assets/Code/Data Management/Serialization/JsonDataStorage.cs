@@ -25,7 +25,7 @@ namespace DataAccess.DiskAccess.Serialization
         
         public T GetDataObjectFromFile<T>(string filePath, string fileName) where T : class
         {
-            return JsonFileOperations.GetDataObjectFromJsonFile<T>(filePath, fileName);
+            return JsonFileOperations.GetObjectFromJsonFile<T>(filePath, fileName);
         }
         
         public bool FileExists(string filePath, string fileName)
