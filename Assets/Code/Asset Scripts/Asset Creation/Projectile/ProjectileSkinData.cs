@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace AssetScripts.AssetCreation
 {
     [Serializable]
-    public class ProjectileSkinData : ISkinData<ProjectileSkinData>
+    public class ProjectileSkinData : ISkinData<ProjectileSkinData>, ISkinDataEnricher<ProjectileSkinData, ProjectileInjestData>
     {
         public string Name { get => _name;}
         public string PrefabPath { get => _prefabPath;}
@@ -53,6 +53,13 @@ namespace AssetScripts.AssetCreation
             var skinDataWithDefaults = new ProjectileSkinData();            
             return new ProjectileSkinData(Name, PrefabPath, IconPath, skinDataWithDefaults.BaseCost, skinDataWithDefaults.AdWatchRequired);
         }
+        
+        public ProjectileSkinData EnrichWithInjestData(ProjectileInjestData injestData)
+            => new ProjectileSkinData(Name, PrefabPath, IconPath, injestData.BaseCost, injestData.AdWatchRequired);
+        
+        public ProjectileSkinData ToSkinData(string name, ProjectileInjestData injestData)
+            => new ProjectileSkinData(name, null, null, injestData.BaseCost, injestData.AdWatchRequired);
+        
         
         // public ProjectileSkinData(string name, string prefabPath, string iconPath, BigInteger? baseCost, bool? adWatchRequired) : 
         //     base(name, prefabPath, iconPath, baseCost, adWatchRequired)

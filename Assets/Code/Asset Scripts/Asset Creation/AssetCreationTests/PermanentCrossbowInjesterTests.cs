@@ -114,7 +114,7 @@ public class PermanentCrossbowInjesterTests
         Assert.That(updateTimes[_skinWithFullUpdate], Is.GreaterThan(creationTimes[_skinWithFullUpdate]));
         Assert.That(updateTimes[_skinWithOnlyModel], Is.GreaterThan(creationTimes[_skinWithOnlyModel]));
         
-        var updatedSkinData = JsonFileOperations.GetObjectFromJsonFile<List<CrossbowSkinData>>(_testDatabaseJson);
+        var updatedSkinData = JsonFile.GetObjectFromFile<List<CrossbowSkinData>>(_testDatabaseJson);
         VerifyDatabaseHasUpdatedEntry(_skinWithFullUpdate, updatedSkinData);
         VerifyDatabaseHasUpdatedEntry(_skinWithOnlyData, updatedSkinData);
     }    
@@ -128,7 +128,7 @@ public class PermanentCrossbowInjesterTests
     
     void VerifyDatabaseHasUpdatedEntry(string skinName, List<CrossbowSkinData> updatedData)
     {
-        var injestData = JsonFileOperations.GetObjectFromJsonFile<CrossbowInjestData>(SkinInjestDataPath(skinName));
+        var injestData = JsonFile.GetObjectFromFile<CrossbowInjestData>(SkinInjestDataPath(skinName));
         Assert.That(updatedData.First(entry => entry.Name == skinName).BaseCost, Is.EqualTo(injestData.BaseCost));
         Assert.That(updatedData.First(entry => entry.Name == skinName).AdWatchRequired, Is.EqualTo(injestData.AdWatchRequired));
     }

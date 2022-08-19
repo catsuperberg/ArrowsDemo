@@ -20,12 +20,12 @@ namespace DataAccess.DiskAccess.Serialization
         
         public void SaveToDisk(object dataObject, string filePath, string fileName)
         {
-            JsonFileOperations.SaveAsJson(dataObject, filePath, fileName);
+            JsonFile.SaveAsJson(dataObject, filePath, fileName);
         }
         
         public T GetDataObjectFromFile<T>(string filePath, string fileName) where T : class
         {
-            return JsonFileOperations.GetObjectFromJsonFile<T>(filePath, fileName);
+            return JsonFile.GetObjectFromFile<T>(filePath, fileName);
         }
         
         public bool FileExists(string filePath, string fileName)

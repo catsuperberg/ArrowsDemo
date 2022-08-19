@@ -101,7 +101,7 @@ namespace AssetScripts.AssetCreation
         
         ProjectileSkinData CreateSkinDataObject(SkinPackage skin, string skinPrefabPath)
         {
-            var injestData = JsonFileOperations.GetObjectFromJsonFile<ProjectileInjestData>(skin.MetadataPath);
+            var injestData = JsonFile.GetObjectFromFile<ProjectileInjestData>(skin.MetadataPath);
             var pathToPrefab = skinPrefabPath.Replace(_resourcesFolder + "\\", "").Replace(".prefab", "");
             var pathToIcon = Path.Combine(Path.GetDirectoryName(pathToPrefab), "icon");
             var skinData = new ProjectileSkinData(
@@ -121,13 +121,13 @@ namespace AssetScripts.AssetCreation
             var skinDatabaseName = "ProjectileDatabase.json";
             var skinDatabasePath = Path.Combine(_resourcesFolder, skinDatabaseName);
             if(File.Exists(skinDatabasePath))
-                skinDatabase = JsonFileOperations.GetObjectFromJsonFile<PermanentSkinsDatabase<ProjectileSkinData>>(skinDatabasePath);
+                skinDatabase = JsonFile.GetObjectFromFile<PermanentSkinsDatabase<ProjectileSkinData>>(skinDatabasePath);
             else
                 skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>();
             
             skinDatabase.AddSkinsUniqueByName(_skinsData);   
             
-            JsonFileOperations.SaveAsJson(skinDatabase, skinDatabasePath);
+            JsonFile.SaveAsJson(skinDatabase, skinDatabasePath);
         }
         
         string CalculateFileChecksum(string path)

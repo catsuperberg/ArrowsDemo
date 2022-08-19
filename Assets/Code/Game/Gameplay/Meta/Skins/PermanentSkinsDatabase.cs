@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Game.Gameplay.Meta.Skins
 {
     [Serializable]
-    public class PermanentSkinsDatabase<T> : ISkinDatabaseReader<T> where T : ISkinData<T>
+    public class PermanentSkinsDatabase<T> : ISkinDatabaseReader<T> where T : ISkinData<T>//, T>  //HACK using T for TTwo as database don't have to know about injestdata
     {        
         public IList<T> Skins {get => ValidSkins().AsReadOnly();}
         public readonly string PathToDatabase;
@@ -27,7 +27,7 @@ namespace Game.Gameplay.Meta.Skins
             _skins = LoadFromFile() ?? new List<T>();
         }
         
-        List<T> LoadFromFile() => JsonFileOperations.GetObjectFromJsonFile<List<T>>(PathToDatabase);
+        List<T> LoadFromFile() => JsonFile.GetObjectFromFile<List<T>>(PathToDatabase);
         
         public void AddSkinsUniqueByName(List<T> skinsData)
         {
@@ -68,7 +68,7 @@ namespace Game.Gameplay.Meta.Skins
                 
         public void SaveToPermanent()
         {
-            JsonFileOperations.SaveAsJson(_skins, PathToDatabase);
+            JsonFile.SaveAsJson(_skins, PathToDatabase);
         }
         
         List<T> ValidSkins()

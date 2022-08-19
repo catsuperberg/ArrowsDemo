@@ -3,15 +3,20 @@ using System.Numerics;
 
 namespace AssetScripts.AssetCreation
 {
-    public interface ISkinData<T>
+    public interface ISkinData<TOne>
     {
-        public string Name {get;}
-        public string PrefabPath {get;}
-        public string IconPath {get;}
-        public BigInteger? BaseCost {get;}
-        public bool? AdWatchRequired {get;}
-        
-        public T GetNewWithUpdatedValues(T data);
-        public T EnrichWithDefaultValues();
+        string Name {get;}
+        string PrefabPath {get;}
+        string IconPath {get;}
+        BigInteger? BaseCost {get;}
+        bool? AdWatchRequired {get;}
+                TOne GetNewWithUpdatedValues(TOne data);
+        TOne EnrichWithDefaultValues();
+    }
+    
+    public interface ISkinDataEnricher<TOne, TTwo> : ISkinData<TOne>
+    {
+        TOne EnrichWithInjestData(TTwo injestData);
+        TOne ToSkinData(string name, TTwo injestData);// => throw new NotImplementedException();
     }
 }

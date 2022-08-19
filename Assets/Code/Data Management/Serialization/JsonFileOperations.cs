@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace DataAccess.DiskAccess.Serialization
 {
-    public static class JsonFileOperations
+    public static class JsonFile
     {
         public static void SaveAsJson(object dataObject, string filePath, string fileName)
         {
@@ -30,7 +30,7 @@ namespace DataAccess.DiskAccess.Serialization
             stream.Close();        
         }
         
-        public static T GetObjectFromJsonFile<T>(string filePath, string fileName) where T : class
+        public static T GetObjectFromFile<T>(string filePath, string fileName) where T : class
         {
             var pathToFile = Path.Combine(filePath, withExtension(fileName));
             if(File.Exists(pathToFile))
@@ -52,7 +52,7 @@ namespace DataAccess.DiskAccess.Serialization
             }
         }
         
-        public static T GetObjectFromJsonFile<T>(string filePath) where T : class
+        public static T GetObjectFromFile<T>(string filePath) where T : class
         {
             if(File.Exists(filePath))
             {

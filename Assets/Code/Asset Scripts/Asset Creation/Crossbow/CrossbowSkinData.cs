@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace AssetScripts.AssetCreation
 {
     [Serializable]
-    public class CrossbowSkinData : ISkinData<CrossbowSkinData>
+    public class CrossbowSkinData : ISkinData<CrossbowSkinData>, ISkinDataEnricher<CrossbowSkinData, CrossbowInjestData>
     {
         public string Name { get => _name;}
         public string PrefabPath { get => _prefabPath;}
@@ -54,6 +54,12 @@ namespace AssetScripts.AssetCreation
             return new CrossbowSkinData(Name, PrefabPath, IconPath, skinDataWithDefaults.BaseCost, skinDataWithDefaults.AdWatchRequired);
         }
         
+        public CrossbowSkinData EnrichWithInjestData(CrossbowInjestData injestData)
+            => new CrossbowSkinData(Name, PrefabPath, IconPath, injestData.BaseCost, injestData.AdWatchRequired);
+        
+        public CrossbowSkinData ToSkinData(string name, CrossbowInjestData injestData)
+            => new CrossbowSkinData(name, null, null, injestData.BaseCost, injestData.AdWatchRequired);            
+                    
         // public CrossbowSkinData(string name, string prefabPath, string iconPath, BigInteger? baseCost, bool? adWatchRequired) : 
         //     base(name, prefabPath, iconPath, baseCost, adWatchRequired)
         // {
