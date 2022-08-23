@@ -6,6 +6,6 @@ namespace Game.Gameplay.Meta.Skins
 {
     public interface ISkinDatabaseReader<T>
     {        
-        public IList<T> Skins {get;}
+        IList<T> Skins {get;}
     }
 }

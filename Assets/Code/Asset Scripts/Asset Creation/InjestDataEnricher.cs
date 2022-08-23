@@ -1,5 +1,6 @@
 using DataAccess.DiskAccess.Serialization;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,21 +10,36 @@ namespace AssetScripts.AssetCreation
         where TOne : ISkinDataEnricher<TOne, TTwo> 
         where TTwo : BasicInjestData
     {                   
-        TOne hackInstanceToCall = (TOne)Activator.CreateInstance(typeof(TOne)); // HACK can't access static method for generic type
+        TOne _hackInstanceToCall = (TOne)Activator.CreateInstance(typeof(TOne)); // HACK can't access static method for generic type
             
-        public List<TOne> GetInjestDataForAllSkins(IEnumerable<TOne> skinsWithAssetPaths, IEnumerable<(string name, string pathToData)> skinInjestDataPaths)
+        IEnumerable<(string name, string pathToData)> _skinInjestDataPaths;
+            
+        public InjestDataEnricher(string folderOfFoldersWithInjestData)
+        {
+            _skinInjestDataPaths = ScanForDataToInjest(folderOfFoldersWithInjestData);
+        }    
+        
+        protected IEnumerable<(string name, string pathToData)> ScanForDataToInjest(string injestFolder)
+        {
+            var skinDataFolders = Directory.GetDirectories(injestFolder).Where(entry => Directory.GetFiles(entry, "injestData.*").Any());
+            return skinDataFolders
+                .Select(entry => (name: new DirectoryInfo(entry).Name, pathToData: Directory.GetFiles(entry, "injestData.*").FirstOrDefault()));
+        }
+            
+        public List<TOne> GetInjestDataForAllSkins(IEnumerable<TOne> skinsWithAssetPaths)
         {            
-            var data = new List<TOne>();
-            var fullDataSkinsRaw = skinsWithAssetPaths.Where(entry => skinInjestDataPaths.Any(skin => skin.name == entry.Name));
+            var fullDataSkinsRaw = skinsWithAssetPaths.Where(entry => _skinInjestDataPaths.Any(skin => skin.name == entry.Name));
             var modelOnlySkinsRaw = skinsWithAssetPaths.Except(fullDataSkinsRaw);
-            var dataOnlySkins = skinInjestDataPaths.Where(entry => !fullDataSkinsRaw.Any(skin => skin.Name == entry.name))
-                .Select(entry => hackInstanceToCall.ToSkinData(entry.name, LoadInjestData(entry.pathToData)));            
+            
+            var dataOnlySkins = _skinInjestDataPaths.Where(entry => !fullDataSkinsRaw.Any(skin => skin.Name == entry.name))
+                .Select(entry => _hackInstanceToCall.ToSkinData(entry.name, LoadInjestData(entry.pathToData)));            
             var fullDataSkins = fullDataSkinsRaw
                 .Select(entry => entry.EnrichWithInjestData(
-                    LoadInjestData(skinInjestDataPaths.First(skin => skin.name == entry.Name).pathToData)));
+                    LoadInjestData(_skinInjestDataPaths.First(skin => skin.name == entry.Name).pathToData)));
             var modelOnlySkins = modelOnlySkinsRaw   
                 .Select(entry => entry.EnrichWithDefaultValues());
                 
+            var data = new List<TOne>();
             data.AddRange(modelOnlySkins);    
             data.AddRange(dataOnlySkins);          
             data.AddRange(fullDataSkins);  

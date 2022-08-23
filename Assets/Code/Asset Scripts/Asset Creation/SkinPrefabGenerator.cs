@@ -7,7 +7,7 @@ using UnityEditor;
 #if UNITY_EDITOR
 namespace AssetScripts.AssetCreation
 {
-    public class SkinPrefabGenerator : MonoBehaviour
+    public class SkinPrefabGenerator : ISkinPrefabGenerator
     {     
         public string CreatePrefab(GameObject skinObject, string folderToSaveTo)
         {          

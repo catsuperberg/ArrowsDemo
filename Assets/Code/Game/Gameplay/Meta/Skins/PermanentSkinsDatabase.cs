@@ -8,10 +8,11 @@ using UnityEngine;
 namespace Game.Gameplay.Meta.Skins
 {
     [Serializable]
-    public class PermanentSkinsDatabase<T> : ISkinDatabaseReader<T> where T : ISkinData<T>//, T>  //HACK using T for TTwo as database don't have to know about injestdata
+    public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>//, T>  //HACK using T for TTwo as database don't have to know about injestdata
     {        
         public IList<T> Skins {get => ValidSkins().AsReadOnly();}
-        public readonly string PathToDatabase;
+        public string PathToDatabase {get => _pathToDatabase;}
+        public readonly string _pathToDatabase;
         [SerializeField]
         List<T> _skins;
         
@@ -23,11 +24,11 @@ namespace Game.Gameplay.Meta.Skins
         
         public PermanentSkinsDatabase(string jsonPath)
         {
-            PathToDatabase = jsonPath;
+            _pathToDatabase = jsonPath;
             _skins = LoadFromFile() ?? new List<T>();
         }
         
-        List<T> LoadFromFile() => JsonFile.GetObjectFromFile<List<T>>(PathToDatabase);
+        List<T> LoadFromFile() => JsonFile.GetObjectFromFile<List<T>>(_pathToDatabase);
         
         public void AddSkinsUniqueByName(List<T> skinsData)
         {
@@ -67,9 +68,7 @@ namespace Game.Gameplay.Meta.Skins
             => data.GetType().GetProperties().Select(entry => entry.GetValue(data)).Any(value => value == null);
                 
         public void SaveToPermanent()
-        {
-            JsonFile.SaveAsJson(_skins, PathToDatabase);
-        }
+            => JsonFile.SaveAsJson(_skins, _pathToDatabase);
         
         List<T> ValidSkins()
         {
