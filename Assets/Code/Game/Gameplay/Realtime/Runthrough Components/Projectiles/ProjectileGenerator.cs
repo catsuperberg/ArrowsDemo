@@ -1,13 +1,12 @@
 using AssetScripts.Instantiation;
 using DataManagement;
 using Game.Gameplay.Meta.Skins;
-using GameMath;
 using Input.ControllerComponents;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using Zenject;
+using Utils;
 
 namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
@@ -58,25 +57,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         }
         
         GameObject CreateSelectedSkin(IInstatiator assetInstatiator)
-        {
-            return assetInstatiator.Instantiate(_projectileCollection.GetSelectedProjectileResource());
-        }
-        
-        // GameObject CreateRandomBundle(IInstatiator assetInstatiator) //TEMP
-        // {
-        //     var prefabs = Prefabs();
-        //     var prefabIndex = GlobalRandom.RandomInt(0, prefabs.Count);
-        //     var selectedPrefab = prefabs[prefabIndex];
-            
-        //     return assetInstatiator.Instantiate(selectedPrefab as GameObject, name: "Projectile (Arrow bundle)");
-        // }
-        
-        // List<UnityEngine.Object> Prefabs() //TEMP
-        // {
-        //     List<UnityEngine.Object> resources = new List<UnityEngine.Object>();            
-        //     foreach(var resource in _projectileCollection.Skins)
-        //         resources.Add(Resources.Load(resource.PrefabPath));            
-        //     return resources;
-        // } 
+            => assetInstatiator.Instantiate(_projectileCollection.GetSelectedProjectileResource());
     }
 }

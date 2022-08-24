@@ -1,4 +1,3 @@
-using Game.Gameplay.Meta.Skins;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +17,7 @@ namespace AssetScripts.AssetCreation
     
     public abstract class AssetMaker
     {        
-        (string injestFolder, string outputFolder) _folders;
+        protected (string injestFolder, string outputFolder) _folders;
         
         RawModelLoader _modelLoader;
         ISkinPrefabGenerator _prefabGenerator;

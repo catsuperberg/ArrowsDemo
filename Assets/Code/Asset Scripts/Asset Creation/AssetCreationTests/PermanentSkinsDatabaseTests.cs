@@ -22,10 +22,10 @@ public class PermanentSkinsDatabaseTests
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Crossbow";
     const string _testDatabaseJson = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources/TestDatabase.json";
     const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
-    PermanentSkinsDatabase<CrossbowSkinData> _database;
+    PermanentSkinsDatabase<ProjectileSkinData> _database;
     
-    List<CrossbowSkinData> _testData1;
-    List<CrossbowSkinData> _testData2;
+    List<ProjectileSkinData> _testData1;
+    List<ProjectileSkinData> _testData2;
         
     [SetUp]
     public void TestSetup()
@@ -41,26 +41,26 @@ public class PermanentSkinsDatabaseTests
         _testData1 = allDataInChunks[0];
         _testData2 = allDataInChunks[1];
         
-        _database = new PermanentSkinsDatabase<CrossbowSkinData>(_testDatabaseJson);            
+        _database = new PermanentSkinsDatabase<ProjectileSkinData>(_testDatabaseJson);            
     }
     
-    List<CrossbowSkinData> GenerateRandomData(int numberOfEntries)
+    List<ProjectileSkinData> GenerateRandomData(int numberOfEntries)
     {
-        var tempData = new List<CrossbowSkinData>();
+        var tempData = new List<ProjectileSkinData>();
         while(tempData.Count < numberOfEntries)
             AddIfUnique(tempData, GetRandomData());
         return tempData;
     }
     
-    void AddIfUnique(List<CrossbowSkinData> list, CrossbowSkinData data)
+    void AddIfUnique(List<ProjectileSkinData> list, ProjectileSkinData data)
     {
         if(list.Any(entry => entry.Name == data.Name))
             return;
         list.Add(data);
     }
     
-    CrossbowSkinData GetRandomData()
-        => new CrossbowSkinData(
+    ProjectileSkinData GetRandomData()
+        => new ProjectileSkinData(
                 name: GlobalRandom.RandomString(10),
                 prefabPath: GlobalRandom.RandomString(10),
                 iconPath: GlobalRandom.RandomString(10),
@@ -84,8 +84,8 @@ public class PermanentSkinsDatabaseTests
     {
         _database.AddSkinsUniqueByName(_testData1);
         Assert.That(_database.Skins, Is.EquivalentTo(_testData1));
-        var oneOldOneNew = new List<CrossbowSkinData>{_testData1.First(), _testData2.First()};
-        var expectedData = new List<CrossbowSkinData>(_testData1);
+        var oneOldOneNew = new List<ProjectileSkinData>{_testData1.First(), _testData2.First()};
+        var expectedData = new List<ProjectileSkinData>(_testData1);
         expectedData.Add(_testData2.First());
         _database.AddSkinsUniqueByName(oneOldOneNew);        
         Assert.That(_database.Skins, Is.EquivalentTo(expectedData));
@@ -96,14 +96,14 @@ public class PermanentSkinsDatabaseTests
     {
         _database.SetSkinsDataKeepOldPropertiesOnNull(_testData1);
         Assert.That(_database.Skins, Is.EquivalentTo(_testData1));
-        var modifiedEntry = new CrossbowSkinData(
+        var modifiedEntry = new ProjectileSkinData(
                 name: _testData1.First().Name,
                 prefabPath: _testData2.First().PrefabPath,
                 iconPath: _testData2.First().IconPath,
                 baseCost: _testData2.First().BaseCost,
                 adWatchRequired: _testData2.First().AdWatchRequired);
-        _database.SetSkinsDataKeepOldPropertiesOnNull(new List<CrossbowSkinData>{modifiedEntry});
-        var expectedData = new List<CrossbowSkinData>{modifiedEntry, _testData1[1], _testData1[2]};
+        _database.SetSkinsDataKeepOldPropertiesOnNull(new List<ProjectileSkinData>{modifiedEntry});
+        var expectedData = new List<ProjectileSkinData>{modifiedEntry, _testData1[1], _testData1[2]};
         Assert.That(_database.Skins, Is.EquivalentTo(expectedData));
     }
     
@@ -121,7 +121,7 @@ public class PermanentSkinsDatabaseTests
     {  
         _database.AddSkinsUniqueByName(_testData1);
         _database.SaveToPermanent();      
-        var newDatabase = new PermanentSkinsDatabase<CrossbowSkinData>(_testDatabaseJson);
+        var newDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(_testDatabaseJson);
         var newData = JsonConvert.SerializeObject(newDatabase.Skins);
         var oldData = JsonConvert.SerializeObject(_database.Skins);
         Assert.That(newData, Is.Not.EqualTo("{}"));

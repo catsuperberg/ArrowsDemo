@@ -7,23 +7,25 @@ using UnityEditor;
 #if UNITY_EDITOR
 namespace AssetScripts.AssetCreation
 {
-    public class BundleProjectilePrefabGenerator : MonoBehaviour
-    {     
-        [SerializeField]
-        GameObject TemplatePrefab;
+    public class BundleProjectilePrefabGenerator : MonoBehaviour, ISkinPrefabGenerator
+    {             
+        const string _bundlePrefabPath = "Assets/Prefabs/Gameplay Items/Projectiles/BundleTemplate.prefab";
         
-        public string CreateBundleProjectilesPrefab(GameObject skinObject, string skinFolder)
+        public string CreatePrefab(GameObject skinObject, string skinFolder)
         {          
-            var projectile = Instantiate(TemplatePrefab);
-            projectile.name = "Bundle_" + skinObject.name;
+            var templatePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_bundlePrefabPath);
+            var projectile = Instantiate(templatePrefab);
+            var tempSkinGO = Instantiate(skinObject);
+            tempSkinGO.name = skinObject.name;
+            projectile.name = "Bundle_" + tempSkinGO.name;
             var projectileAsset = projectile.transform.Find("Projectile Asset");
-            BlenderToGameTransform(skinObject);
-            skinObject.transform.SetParent(projectileAsset, false);
-            skinObject.SetActive(true);
-            skinObject.AddComponent<FlyingMovement>();
-            var bundleScript = projectile.GetComponent<IProjectile>();
+            BlenderToGameTransform(tempSkinGO);
+            tempSkinGO.transform.SetParent(projectileAsset, false);
+            tempSkinGO.SetActive(true);
+            tempSkinGO.AddComponent<FlyingMovement>();
             
-            SaveModel(skinObject, skinFolder);
+            SaveModel(tempSkinGO, skinFolder);
+            SavePrefab(tempSkinGO, skinFolder);
             var pathToProjectile = SavePrefab(projectile, skinFolder);
             DestroyImmediate(projectile);
             return pathToProjectile;
@@ -39,6 +41,7 @@ namespace AssetScripts.AssetCreation
             var mesh = modelObject.GetComponent<MeshFilter>().sharedMesh;
             var texture = material.GetTexture("_MainTex");
                         
+            // Order is relevant, material wouldn't have texture if texture is't saved before it  
             if(texture != null)
                 AssetDatabase.CreateAsset(texture, System.IO.Path.Combine(folder, textureName)); 
             AssetDatabase.CreateAsset(material, System.IO.Path.Combine(folder, materialName)); 

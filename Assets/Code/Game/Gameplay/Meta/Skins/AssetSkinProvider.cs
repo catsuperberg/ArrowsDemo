@@ -1,11 +1,13 @@
 using AssetScripts.AssetCreation;
 using DataManagement;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using Zenject;
+using Utils;
 
 using Vector2 = UnityEngine.Vector2;
 
@@ -27,15 +29,14 @@ namespace Game.Gameplay.Meta.Skins
         public UnityEngine.Object LoadResource(string name)
         {
             var skinData = GetSkinIfValid(name);
-            return Resources.Load(skinData.PrefabPath);
+            return Resources.Load(skinData.PrefabPath.GetResourcesOnlyPath().GetPathWithoutExtension());
         }
         
         public Sprite Icon(string name)
         {
             var skinData = GetSkinIfValid(name);
-            var texture = Resources.Load(skinData.IconPath) as Texture2D;
-            return Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(texture.width / 2, texture.height / 2));
-        }        
+            return Resources.Load<Sprite>(skinData.IconPath.GetResourcesOnlyPath().GetPathWithoutExtension());
+        }    
         
         public BigInteger Price(string name)
         {

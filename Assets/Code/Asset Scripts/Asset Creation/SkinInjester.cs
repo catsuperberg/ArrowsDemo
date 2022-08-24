@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace AssetScripts.AssetCreation
 {
-    public class SkinInjester<TSkinData, TInjestData>
+    public class SkinInjester<TSkinData, TInjestData> : ISkinInjester
         where TSkinData : ISkinData<TSkinData>, ISkinDataEnricher<TSkinData, TInjestData> 
         where TInjestData : BasicInjestData
     {

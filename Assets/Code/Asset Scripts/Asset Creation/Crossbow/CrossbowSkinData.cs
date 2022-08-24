@@ -58,23 +58,6 @@ namespace AssetScripts.AssetCreation
             => new CrossbowSkinData(Name, PrefabPath, IconPath, injestData.BaseCost, injestData.AdWatchRequired);
         
         public CrossbowSkinData ToSkinData(string name, CrossbowInjestData injestData)
-            => new CrossbowSkinData(name, null, null, injestData.BaseCost, injestData.AdWatchRequired);            
-                    
-        // public CrossbowSkinData(string name, string prefabPath, string iconPath, BigInteger? baseCost, bool? adWatchRequired) : 
-        //     base(name, prefabPath, iconPath, baseCost, adWatchRequired)
-        // {
-            
-        // }
-        
-        // public CrossbowSkinData GetNewWithUpdatedValues(CrossbowSkinData data)
-        // {
-        //     var newName = data.Name ?? Name;
-        //     var newPrefabPath = data.PrefabPath ?? PrefabPath;
-        //     var newIconPath = data.IconPath ?? IconPath;
-        //     var newBaseCost = data.BaseCost ?? BaseCost;
-        //     var newAdWatchRequired = data.AdWatchRequired ?? AdWatchRequired;
-            
-        //     return new CrossbowSkinData(newName, newPrefabPath, newIconPath, newBaseCost, newAdWatchRequired);
-        // }
+            => new CrossbowSkinData(name, null, null, injestData.BaseCost, injestData.AdWatchRequired);  
     }
 }

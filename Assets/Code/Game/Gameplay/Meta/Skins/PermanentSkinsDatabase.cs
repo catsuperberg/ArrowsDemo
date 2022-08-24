@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Game.Gameplay.Meta.Skins
 {
     [Serializable]
-    public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>//, T>  //HACK using T for TTwo as database don't have to know about injestdata
+    public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>
     {        
         public IList<T> Skins {get => ValidSkins().AsReadOnly();}
         public string PathToDatabase {get => _pathToDatabase;}
@@ -16,11 +16,11 @@ namespace Game.Gameplay.Meta.Skins
         [SerializeField]
         List<T> _skins;
         
-        // FIXME should be depricated
-        public PermanentSkinsDatabase()
-        {
+        // // FIXME should be depricated
+        // public PermanentSkinsDatabase()
+        // {
             
-        }
+        // }
         
         public PermanentSkinsDatabase(string jsonPath)
         {

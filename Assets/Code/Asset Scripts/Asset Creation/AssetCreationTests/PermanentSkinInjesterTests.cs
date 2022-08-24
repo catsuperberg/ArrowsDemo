@@ -3,11 +3,9 @@ using DataAccess.DiskAccess.Serialization;
 using Game.Gameplay.Meta.Skins;
 using NUnit.Framework;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -17,9 +15,8 @@ using UnityEngine.TestTools;
 public class PermanentSkinInjesterTests
 {
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/FullInjestSet/Crossbow";
-    const string _tempAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Temp/Crossbow";
     const string _testUpdateAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/InjestSetWithUpdates/Crossbow";
-    const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
+    const string _tempAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Temp/Crossbow";const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
     const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Iconizer.prefab";
     const string _testDatabaseJson = _testResourcesFolder + "/Crossbow.json";
     List<string> _skinNames;
@@ -43,17 +40,12 @@ public class PermanentSkinInjesterTests
         iconGenerator.Initialize(iconizerPrefab);                
         _database = new PermanentSkinsDatabase<CrossbowSkinData>(_testDatabaseJson);
         
-        var tempSkinFolder = CopyInjestAssetsToTempFolder(_skinWithOnlyData);
-        
         var assetMaker = new CrossbowAssetMaker(loader, prefabGenerator, iconGenerator, (_testAssetsFolder, _testResourcesFolder));
         var updateAssetMaker = new CrossbowAssetMaker(loader, prefabGenerator, iconGenerator, (_testUpdateAssetsFolder, _testResourcesFolder));
-        var tempAssetMaker = new CrossbowAssetMaker(loader, prefabGenerator, iconGenerator, (_tempAssetsFolder, _testResourcesFolder));
         var dataEnricher = new InjestDataEnricher<CrossbowSkinData, CrossbowInjestData>(_testAssetsFolder);
         var updateDataEnricher = new InjestDataEnricher<CrossbowSkinData, CrossbowInjestData>(_testUpdateAssetsFolder);
-        var tempDataEnricher = new InjestDataEnricher<CrossbowSkinData, CrossbowInjestData>(_tempAssetsFolder);
         _injester = new SkinInjester<CrossbowSkinData, CrossbowInjestData>(assetMaker, _database, dataEnricher);
         _updateInjester = new SkinInjester<CrossbowSkinData, CrossbowInjestData>(updateAssetMaker, _database, updateDataEnricher);
-        _tempInjester = new SkinInjester<CrossbowSkinData, CrossbowInjestData>(tempAssetMaker, _database, tempDataEnricher);
         
         _objectsToDestroy =  new List<GameObject>();
         _skinNames = Directory.GetDirectories(_testAssetsFolder).Select(entry => new DirectoryInfo(Path.GetFileName(entry)).Name).ToList();
@@ -72,6 +64,7 @@ public class PermanentSkinInjesterTests
         Directory.GetFiles(_testResourcesFolder).ToList().ForEach(File.Delete);
         Directory.GetDirectories(_testResourcesFolder).ToList().ForEach(entry => AssetDatabase.DeleteAsset(entry));
         Directory.GetDirectories(_tempAssetsFolder).ToList().ForEach(entry => AssetDatabase.DeleteAsset(entry));
+        AssetDatabase.Refresh();
     }
     
     [Test]
@@ -149,19 +142,35 @@ public class PermanentSkinInjesterTests
     [Test]
     public void OnlyDataTest()
     {
+        var tempSkinFolder = CopyInjestAssetsToTempFolder(_skinWithOnlyData);
+        TempInjesterSetup();
         Assert.That(_tempInjester.InjestSkins, Throws.Exception.TypeOf<ArgumentNullException>());
-    }    
+    }  
     
     // assert that default values provided for database entry
     [Test]
     public void OnlyModelTest()
     {
         var tempSkinFolder = CopyInjestAssetsToTempFolder(_skinWithOnlyModel);
+        TempInjesterSetup();
         _tempInjester.InjestSkins();
         var defaultSkinData = new CrossbowSkinData();
         Assert.That(_database.Skins.First().BaseCost, Is.EqualTo(defaultSkinData.BaseCost));
         Assert.That(_database.Skins.First().AdWatchRequired, Is.EqualTo(defaultSkinData.AdWatchRequired));
-    } 
+    }   
+    
+    void TempInjesterSetup()
+    {
+        var loader = new RawModelLoader();
+        var prefabGenerator = new SkinPrefabGenerator();
+        var iconizerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_iconizerPrefabPath);         
+        var iconGenerator = new PrefabIconGenerator();        
+        iconGenerator.Initialize(iconizerPrefab);                
+        _database = new PermanentSkinsDatabase<CrossbowSkinData>(_testDatabaseJson);
+        var tempAssetMaker = new CrossbowAssetMaker(loader, prefabGenerator, iconGenerator, (_tempAssetsFolder, _testResourcesFolder));
+        var tempDataEnricher = new InjestDataEnricher<CrossbowSkinData, CrossbowInjestData>(_tempAssetsFolder);
+        _tempInjester = new SkinInjester<CrossbowSkinData, CrossbowInjestData>(tempAssetMaker, _database, tempDataEnricher);
+    }
     
     string CopyInjestAssetsToTempFolder(string skinName)
     {

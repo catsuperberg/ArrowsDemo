@@ -158,7 +158,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &444161275
+--- !u!1 &585702362
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,57 +166,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 444161276}
-  - component: {fileID: 444161277}
-  - component: {fileID: 444161278}
+  - component: {fileID: 585702363}
+  - component: {fileID: 585702364}
   m_Layer: 0
-  m_Name: BundleProjectilePrefabCreator
-  m_TagString: EditorOnly
+  m_Name: EditorProjectileInjester
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &444161276
+--- !u!4 &585702363
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 444161275}
+  m_GameObject: {fileID: 585702362}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 890581952}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &444161277
+--- !u!114 &585702364
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 444161275}
+  m_GameObject: {fileID: 585702362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf6e8728175dfc34a8c9ba44ce0fb6b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b71585c53638394f988dd33057989e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TemplatePrefab: {fileID: 3700438737351598218, guid: 8623e49e14c4a3f4b88f64bfaaa056c5, type: 3}
---- !u!114 &444161278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 444161275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2992cea732481b448393254916ee53c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _prefabGenerator: {fileID: 444161277}
+  _AssetPath: Assets/Asset Injest/Projectiles
+  _OutputResourcesPath: Assets/Prefabs/Gameplay Items/Projectiles/Resources
 --- !u!1 &620483179
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +596,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 444161276}
+  - {fileID: 1848015131}
+  - {fileID: 585702363}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1111,6 +1099,52 @@ MonoBehaviour:
   PostRunPrefab: {fileID: 1896561388112300760, guid: c97996dc76ef1d14dbae74e5c5e7fe48, type: 3}
   PostRunFailedPrefab: {fileID: 1896561388112300760, guid: 3b600a6f50dc7cc459424fb8ed8c9ca8, type: 3}
   AdPrefab: {fileID: 6730845506523904189, guid: 81676cfe8b7912045947623b3d280e01, type: 3}
+--- !u!1 &1848015130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1848015131}
+  - component: {fileID: 1848015132}
+  m_Layer: 0
+  m_Name: EditorSkinInjester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1848015131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848015130}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 890581952}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1848015132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848015130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1f6ac9768ed576408d5523ea678e2f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _AssetPath: Assets/Asset Injest/Crossbow
+  _OutputResourcesPath: Assets/Prefabs/Gameplay Items/Crossbows/Resources
 --- !u!1 &1920852521
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,17 +1,13 @@
-using Game.Gameplay.Meta.Skins;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
+using Utils;
 
 namespace AssetScripts.AssetCreation
 {
     public class CrossbowAssetMaker : AssetMaker, IAssetMaker<CrossbowSkinData>
-    {        
-        (string injestFolder, string outputFolder) _folders;           
-        
+    {                 
         public CrossbowAssetMaker(
             RawModelLoader modelLoader, ISkinPrefabGenerator prefabGenerator, PrefabIconGenerator iconGenerator, 
             (string injestFolder, string outputFolder) InOutFolders)
@@ -31,8 +27,8 @@ namespace AssetScripts.AssetCreation
         CrossbowSkinData AssignAssetPath(string assetFolder)
         {
             var name = new DirectoryInfo(Path.GetFileName(assetFolder)).Name;
-            var prefabPath = Directory.GetFiles(assetFolder, "*.prefab").First();
-            var iconPath = Directory.GetFiles(assetFolder, "icon_*").First();
+            var prefabPath = Directory.GetFiles(assetFolder, "*.prefab").First().ReplaceBackSlashes();
+            var iconPath = Directory.GetFiles(assetFolder, "icon_*").First().ReplaceBackSlashes();
             return new CrossbowSkinData(name,prefabPath,iconPath, null, null);
         }
     }

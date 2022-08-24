@@ -74,10 +74,11 @@ namespace Game.Gameplay.Meta.Skins
         
         ISkinProvider PermanentProvider()
         {
-            var skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(); 
-            var skinDatabaseName = "ProjectileDatabase";
-            var json = Resources.Load<TextAsset>(skinDatabaseName);
-            skinDatabase = JsonUtility.FromJson<PermanentSkinsDatabase<ProjectileSkinData>>(json.text);      
+            // var skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(); 
+            // var skinDatabaseName = "Projectiles";
+            // var json = Resources.Load<TextAsset>(skinDatabaseName);
+            // skinDatabase = JsonUtility.FromJson<PermanentSkinsDatabase<ProjectileSkinData>>(json.text);      
+            var skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>("Assets/Prefabs/Gameplay Items/Projectiles/Resources/Projectiles.json"); 
             return new AssetSkinProvider(skinDatabase.Skins);
         }
     }
