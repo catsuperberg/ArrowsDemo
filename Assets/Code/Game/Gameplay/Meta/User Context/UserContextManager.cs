@@ -48,7 +48,7 @@ namespace Game.Gameplay.Meta
         {
             if(args.ClassName ==  typeof(UpgradeSystem.UpgradeContext).FullName)
                 NotifyAboutUpgrades(args.Fields);
-            else if(args.ClassName ==  typeof(Skins.ProjectileCollection).FullName)
+            else if(args.ClassName ==  typeof(Skins.SkinCollection).FullName)
                 NotifyAboutSkins(args.Fields);
             SaveToNonVolatile();
         }
@@ -61,7 +61,7 @@ namespace Game.Gameplay.Meta
         
         void NotifyAboutSkins(List<string> changedFields)
         {
-            if(changedFields.Contains(nameof(Skins.ProjectileCollection.SelectedSkin)))
+            if(changedFields.Contains(nameof(Skins.SkinCollection.SelectedSkin)))
                 OnNewSelectedSkin?.Invoke(this, EventArgs.Empty);
         }
         

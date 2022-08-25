@@ -2,12 +2,11 @@ using Game.Gameplay.Meta.Skins;
 using System;
 using System.Linq;
 using UnityEngine;
-// using UnityEngine.UI;
 using Zenject;
 
 namespace UI
 {
-    public class ProjectileSkinShopManager : MonoBehaviour
+    public class CrossbowSkinShopManager : MonoBehaviour
     {
         [SerializeField]
         GameObject BuyerPrefab;
@@ -19,7 +18,7 @@ namespace UI
         SkinShopService _shopService;
 
         [Inject]
-        public void Construct([Inject(Id = "projectilesShop")] SkinShopService shopService)
+        public void Construct([Inject(Id = "crossbowsShop")] SkinShopService shopService)
         {
             _shopService = shopService ?? throw new ArgumentNullException(nameof(shopService));
             var orderedSkinEntries = from entry in _shopService.SkinsPriceTable orderby entry.Value ascending select entry;

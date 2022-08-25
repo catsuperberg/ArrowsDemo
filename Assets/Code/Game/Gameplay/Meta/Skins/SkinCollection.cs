@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Meta.Skins
 {
-    public class ProjectileCollection : IConfigurable
+    public class SkinCollection : IConfigurable
     {
         [StoredField]
         public List<string> BoughtSkins {get; private set;} = new List<string>();
@@ -25,7 +25,7 @@ namespace Game.Gameplay.Meta.Skins
 
         public event EventHandler OnUpdated;        
         
-        public ProjectileCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders)
+        public SkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders)
         {
             if(registry == null)
                 throw new ArgumentNullException("IRegistryIngester not provided or empty at: " + this.GetType().Name);
@@ -50,9 +50,8 @@ namespace Game.Gameplay.Meta.Skins
                 throw new Exception("No accessible skins after collection assembly");
         }
                 
-        public GameObject GetSelectedProjectileResource()
+        public GameObject GetSelectedSkinResource()
         {
-            // MakeSureSelectedSkinValid();
             var skinProvider = _accessibleSkins[SelectedSkin];
             return skinProvider.LoadResource(SelectedSkin) as GameObject;
         }
@@ -60,7 +59,7 @@ namespace Game.Gameplay.Meta.Skins
         public Sprite GetSkinIcon(string name)
         {
             if(SkinUnaccessible(name))
-                throw new ArgumentNullException("No skin with such name in ProjectileCollection: " + name);
+                throw new ArgumentNullException("No skin with such name in SkinCollection: " + name);
                 
             var result = _accessibleSkins[name].Icon(name);
             return result;
@@ -69,25 +68,13 @@ namespace Game.Gameplay.Meta.Skins
         public BigInteger GetSkinPrice(string name)
         {
             if(SkinUnaccessible(name))
-                throw new ArgumentNullException("No skin with such name in ProjectileCollection: " + name);
+                throw new ArgumentNullException("No skin with such name in SkinCollection: " + name);
                 
             return _accessibleSkins[name].Price(name);
         }
         
-        // void MakeSureSelectedSkinValid()
-        // {
-        //     if (SelectedSkin == null || SkinUnaccessible(SelectedSkin))
-        //         SwitchToRandomSelectableIfSelectedInvalid();
-        // }
-
         bool SkinUnaccessible(string name) => !_accessibleSkins.ContainsKey(name);
-
-        // void SwitchToFirstSelectableIfSelectedInvalid() =>
-        //     UpdateField(nameof(SelectedSkin), _accessibleSkins.Keys.First());
         
-        // void SwitchToRandomSelectableIfSelectedInvalid() =>
-        //     UpdateField(nameof(SelectedSkin), _accessibleSkins.ElementAt(GlobalRandom.RandomInt(0, _accessibleSkins.Count)).Key);
-            
         public void UpdateField(string fieldName, string fieldValue)
         {            
             SetFieldValue(fieldName, fieldValue);

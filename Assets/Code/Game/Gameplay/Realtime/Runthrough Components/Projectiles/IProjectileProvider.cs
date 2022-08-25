@@ -6,7 +6,6 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
 {    
     public interface IProjectileProvider
     {        
-        GameObject CreateSelected(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator);
-        GameObject CreateSelected(BigInteger initialCount, float movementWidth);
+        GameObject CreateSelected(BigInteger initialCount, float movementWidth, IInstatiator assetInstatiator = null);
     }
 }

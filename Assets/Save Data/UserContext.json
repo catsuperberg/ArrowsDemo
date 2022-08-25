@@ -30,17 +30,6 @@
     "ClassName": "Game.Gameplay.Meta.Curencies.CurenciesContext",
     "Fields": [
       {
-        "Name": "CommonCoins",
-        "Value": "272",
-        "Type": "System.Numerics.BigInteger",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
         "Name": "SkinTokens",
         "Value": "0",
         "Type": "System.Numerics.BigInteger",
@@ -52,8 +41,19 @@
         }
       },
       {
+        "Name": "CommonCoins",
+        "Value": "6526",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
         "Name": "LifetimeSpending",
-        "Value": "0",
+        "Value": "34956",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -69,7 +69,7 @@
     "Fields": [
       {
         "Name": "CrossbowLevel",
-        "Value": "1",
+        "Value": "10",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -80,7 +80,7 @@
       },
       {
         "Name": "ArrowLevel",
-        "Value": "1",
+        "Value": "6",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -91,7 +91,7 @@
       },
       {
         "Name": "InitialArrowCount",
-        "Value": "1",
+        "Value": "7",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -104,6 +104,33 @@
         "Name": "PassiveIncome",
         "Value": "1",
         "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.Skins.SkinCollection",
+    "Fields": [
+      {
+        "Name": "SelectedSkin",
+        "Value": "pencil",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"Arrow\",\"pencil\",\"Wood\",\"RedWood\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",

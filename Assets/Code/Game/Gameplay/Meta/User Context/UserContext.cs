@@ -10,14 +10,16 @@ namespace Game.Gameplay.Meta
         public readonly CurenciesContext Curencies; 
         public readonly UpgradeContext Upgrades;  
         public readonly PassiveInvomceContext PassiveInvomce;     
-        public readonly ProjectileCollection ProjectileSkins;
+        public readonly SkinCollection ProjectileSkins;    
+        public readonly SkinCollection CrossbowSkins;
 
-        public UserContext(CurenciesContext curencies, UpgradeContext upgrades, PassiveInvomceContext passiveInvomce, ProjectileCollection projectileSkins)
+        public UserContext(CurenciesContext curencies, UpgradeContext upgrades, PassiveInvomceContext passiveInvomce, SkinCollection projectileSkins, SkinCollection crossbowSkins)
         {
             Curencies = curencies;
             Upgrades = upgrades;
             PassiveInvomce = passiveInvomce;
             ProjectileSkins = projectileSkins;
+            CrossbowSkins = crossbowSkins;
         }
     }
 }

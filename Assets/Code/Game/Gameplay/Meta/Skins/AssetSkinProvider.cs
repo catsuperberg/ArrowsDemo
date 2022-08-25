@@ -1,24 +1,20 @@
 using AssetScripts.AssetCreation;
-using DataManagement;
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using UnityEngine;
-using Zenject;
 using Utils;
 
-using Vector2 = UnityEngine.Vector2;
 
 namespace Game.Gameplay.Meta.Skins
 {
-    public class AssetSkinProvider : ISkinProvider
+    public class AssetSkinProvider<T> : ISkinProvider where T : ISkinData<T>, ISkinData
     {
         public IList<string> Names {get => _permanentSkinData.Select(instance => instance.Name).ToList().AsReadOnly();}        
-        IList<ProjectileSkinData> _permanentSkinData;
+        IList<T> _permanentSkinData;
 
-        public AssetSkinProvider(IList<ProjectileSkinData> permanentSkinData)
+        public AssetSkinProvider(IList<T> permanentSkinData)
         {
             if(permanentSkinData == null || !permanentSkinData.Any())
                 throw new ArgumentNullException("List<ProjectileSkinData> not provided or empty at: " + this.GetType().Name);
@@ -44,7 +40,7 @@ namespace Game.Gameplay.Meta.Skins
             return skinData.BaseCost ?? throw new Exception("Skin cost is null during execution");            
         }    
         
-        ProjectileSkinData GetSkinIfValid(string name)
+        T GetSkinIfValid(string name)
         {            
             var skinData = _permanentSkinData.First(instance => instance.Name == name);
             if(skinData == null)

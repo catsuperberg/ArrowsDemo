@@ -8,19 +8,13 @@ using UnityEngine;
 namespace Game.Gameplay.Meta.Skins
 {
     [Serializable]
-    public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>
+    public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>, ISkinData
     {        
         public IList<T> Skins {get => ValidSkins().AsReadOnly();}
         public string PathToDatabase {get => _pathToDatabase;}
         public readonly string _pathToDatabase;
         [SerializeField]
         List<T> _skins;
-        
-        // // FIXME should be depricated
-        // public PermanentSkinsDatabase()
-        // {
-            
-        // }
         
         public PermanentSkinsDatabase(string jsonPath)
         {

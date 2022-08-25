@@ -27,14 +27,11 @@ namespace UI
         public EventHandler OnSkinBought;
         
         [Inject]
-        public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryValueReader userRegistry, SkinShopService shopService)
+        public void Construct([Inject(Id = "userRegistryAccessor")] IRegistryValueReader userRegistry)
         {            
             if(userRegistry == null)
                 throw new ArgumentNullException("IRegistryValueReader not provided to " + this.GetType().Name);
-            if(shopService == null)
-                throw new ArgumentNullException("SkinShopService not provided to " + this.GetType().Name);
-
-            _shopService = shopService;
+                
             _userRegistry = userRegistry;
             _userRegistry.OnNewData += DataInRegistryUpdated;
         }
@@ -49,8 +46,9 @@ namespace UI
             UpdateAppearance();
         }
         
-        public void AttachToSkin(string name)
+        public void AttachToSkin(string name, SkinShopService shopService)
         {
+            _shopService = shopService ?? throw new ArgumentNullException(nameof(shopService));
             SkinName = name;
             _price = _shopService.SkinPrice(SkinName);
             PriceText.text = _price.ParseToReadable();

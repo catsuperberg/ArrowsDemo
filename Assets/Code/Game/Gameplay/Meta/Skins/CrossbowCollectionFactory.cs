@@ -4,11 +4,11 @@ using Zenject;
 
 namespace Game.Gameplay.Meta.Skins
 {
-    public class ProjectileCollectionFactory : SkinCollectionFactory
+    public class CrossbowCollectionFactory : SkinCollectionFactory
     {             
-        const string _pathToDatabase = "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Projectiles.json";
+        const string _pathToDatabase = "Assets/Prefabs/Gameplay Items/Crossbows/Resources/Crossbows.json";
            
-        public ProjectileCollectionFactory(
+        public CrossbowCollectionFactory(
             [Inject(Id = "userRegistryIngester")] IRegistryIngester registryInjester,
             [Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor,
             [Inject(Id = "userRegistryManager")] IRegistryManager registryManager) : base (registryInjester, registryAccessor, registryManager)
@@ -17,8 +17,8 @@ namespace Game.Gameplay.Meta.Skins
         
         override protected ISkinProvider PermanentProvider()
         {     
-            var skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(_pathToDatabase); 
-            return new AssetSkinProvider<ProjectileSkinData>(skinDatabase.Skins);
+            var skinDatabase = new PermanentSkinsDatabase<CrossbowSkinData>(_pathToDatabase); 
+            return new AssetSkinProvider<CrossbowSkinData>(skinDatabase.Skins);
         }
     }
 }

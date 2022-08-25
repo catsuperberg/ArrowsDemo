@@ -57,7 +57,7 @@ Material:
     - _AlphaCutoff: 0
     - _BumpScale: 1
     - _Metallic: 0
-    - _QueueControl: -1
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _Roughness: 0.5
     m_Colors:

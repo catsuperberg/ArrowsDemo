@@ -1,8 +1,5 @@
 using DataManagement;
-using ExtensionMethods;
 using Game.Gameplay.Meta.Curencies;
-using Game.Gameplay.Meta.Shop;
-using Game.Gameplay.Meta.Skins;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -14,39 +11,34 @@ namespace Game.Gameplay.Meta.Skins
 {    
     public class SkinShopService
     {
-        ProjectileCollection _projectileCollection;
+        SkinCollection _skins;
         IRegistryAccessor _userRegistry;
         string _skinPriceInTokens = "1";
         
-        public SkinShopService([Inject(Id = "userRegistryAccessor")] IRegistryAccessor userRegistry, ProjectileCollection projectileCollection)
+        public SkinShopService([Inject(Id = "userRegistryAccessor")] IRegistryAccessor userRegistry, SkinCollection skinCollection)
         {
             _userRegistry = userRegistry ?? throw new ArgumentNullException(nameof(userRegistry));
-            _projectileCollection = projectileCollection ?? throw new ArgumentNullException(nameof(projectileCollection));
+            _skins = skinCollection ?? throw new ArgumentNullException(nameof(skinCollection));
         }
         
         public Dictionary<string, BigInteger> SkinsPriceTable
-            => _projectileCollection.SkinNamesAndPrices;
+            => _skins.SkinNamesAndPrices;
         
         public bool EnoughtSpendingForSkin(string name)
         {
             var spentString = _userRegistry.GetStoredValue(typeof(CurenciesContext), nameof(CurenciesContext.LifetimeSpending)); 
             var amountSpent = BigInteger.Parse(spentString);  
-            var price = _projectileCollection.GetSkinPrice(name);  
+            var price = _skins.GetSkinPrice(name);  
             return amountSpent >= price;
         }
         
-        public bool IsSelectedSkin(string name) 
-        {
-            return _projectileCollection.SelectedSkin == name;
-        }
+        public bool IsSelectedSkin(string name) => _skins.SelectedSkin == name;
             
-        public List<string> BoughtSkins => _projectileCollection.BoughtSkins;
+        public List<string> BoughtSkins => _skins.BoughtSkins;
         
-        public BigInteger SkinPrice(string name)
-            => _projectileCollection.GetSkinPrice(name);
+        public BigInteger SkinPrice(string name) => _skins.GetSkinPrice(name);
          
-        public Sprite SkinIcon(string name)
-            => _projectileCollection.GetSkinIcon(name);         
+        public Sprite SkinIcon(string name) => _skins.GetSkinIcon(name);         
         
         public void BuySkin(string name)
         {
@@ -54,12 +46,12 @@ namespace Game.Gameplay.Meta.Skins
                 return;
                 
             ChargePlayerToken();
-            _userRegistry.ApplyOperationOnRegisteredField(typeof(ProjectileCollection), nameof(ProjectileCollection.BoughtSkins),
+            _userRegistry.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.BoughtSkins),
                 OperationType.Append, JsonConvert.SerializeObject(new List<string>{name}));
         }
         
         public void SelectSkin(string name)
-            => _userRegistry.ApplyOperationOnRegisteredField(typeof(ProjectileCollection), nameof(ProjectileCollection.SelectedSkin),
+            => _userRegistry.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.SelectedSkin),
                     OperationType.Replace, name);
         
         bool EnoughtTokens()
@@ -70,10 +62,8 @@ namespace Game.Gameplay.Meta.Skins
         }
         
         void ChargePlayerToken()
-        {            
-            _userRegistry.ApplyOperationOnRegisteredField(typeof(CurenciesContext), nameof(CurenciesContext.SkinTokens), 
+            => _userRegistry.ApplyOperationOnRegisteredField(typeof(CurenciesContext), nameof(CurenciesContext.SkinTokens), 
                 OperationType.Decrease, _skinPriceInTokens);
-        }
         
     }
 }

@@ -62,14 +62,22 @@ public class GameInstaller : MonoInstaller
     
     void ComposeSkinsImport()
     {
-        Container.Bind<ProjectileCollectionFactory>().AsSingle().NonLazy(); 
-        var projectileCollection = Container.Resolve<ProjectileCollectionFactory>().GetCurrentCollection();
-        Container.Bind<ProjectileCollection>().FromInstance(projectileCollection).AsSingle(); 
+        Container.Bind<ProjectileCollectionFactory>().AsSingle(); 
+        Container.Bind<SkinCollection>().WithId("projectiles").FromResolveGetter<ProjectileCollectionFactory>(factory => factory.GetCurrentCollection()); 
+        Container.Bind<CrossbowCollectionFactory>().AsSingle(); 
+        Container.Bind<SkinCollection>().WithId("crossbows").FromResolveGetter<CrossbowCollectionFactory>(factory => factory.GetCurrentCollection()); 
     }
     
     void ComposeSkinShop()
     {
-        Container.Bind<SkinShopService>().AsSingle().NonLazy(); 
+        var prjectileShopService = new SkinShopService(
+            Container.TryResolveId<IRegistryAccessor>("userRegistryAccessor"), 
+            Container.TryResolveId<SkinCollection>("projectiles"));
+        Container.Bind<SkinShopService>().WithId("projectilesShop").FromInstance(prjectileShopService); 
+        var crossbowShopService = new SkinShopService(
+            Container.TryResolveId<IRegistryAccessor>("userRegistryAccessor"), 
+            Container.TryResolveId<SkinCollection>("crossbows"));
+        Container.Bind<SkinShopService>().WithId("crossbowsShop").FromInstance(crossbowShopService); 
     } 
     
     void ComposeUserContextRepository()
@@ -88,8 +96,7 @@ public class GameInstaller : MonoInstaller
     
     void ComposeUserContextManagement()
     {
-        var userContext = Container.Resolve<UserContextFactory>().GetContext();
-        Container.Bind<UserContext>().FromInstance(userContext).AsSingle(); 
+        Container.Bind<UserContext>().FromResolveGetter<UserContextFactory>(factory => factory.GetContext());
         Container.Bind<IUpgradeContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
         Container.Bind<ISkinContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
         Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();                 
