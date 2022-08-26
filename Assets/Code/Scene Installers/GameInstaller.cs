@@ -8,6 +8,7 @@ using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
+using Game.Gameplay.Realtime.PlayfieldComponents.Crossbow;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
@@ -22,6 +23,8 @@ public class GameInstaller : MonoInstaller
     private ArrowsRunthroughFactory _runthroughFactory;
     [SerializeField]
     private ProjectileGenerator _projectileGenerator; 
+    [SerializeField]
+    private CrossbowGenerator _crossbowGenerator; 
     [SerializeField]
     private TargetGroupGenerator _targetGenerator; 
     [SerializeField]
@@ -44,6 +47,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
+        Container.Bind<ICrossbowProvider>().FromInstance(_crossbowGenerator).AsSingle();  
                 
         Container.Bind<IDiskSerialization>().To<JsonDataStorage>().AsSingle();
         if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
@@ -52,7 +56,8 @@ public class GameInstaller : MonoInstaller
             Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
         Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
                                  
-        Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();                      
+        Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();  
+        Container.Bind<CrossbowInPlaceReplacer>().AsSingle().NonLazy();                           
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
         Container.Bind<IRunthroughFactory>().FromInstance(_runthroughFactory).AsSingle();     
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        

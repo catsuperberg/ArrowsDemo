@@ -1,5 +1,7 @@
 using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
+using Game.Gameplay.Realtime.PlayfieldComponents.Crossbow;
+using Game.Gameplay.Realtime.PlayfieldComponents;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace Game.Gameplay.Realtime
     {
         IRunthroughFactory _runtimeFactory; 
         ProjectileInPlaceReplacer _projectileReplacer; 
+        CrossbowInPlaceReplacer _crossbowReplacer;
         
         public RunthroughContext CurrentRunthroughContext {get; private set;} = null;
         RunthroughContext _contextToDestroy = null;
@@ -33,10 +36,13 @@ namespace Game.Gameplay.Realtime
         Timer _multiRequestFilterTimer = null;
         bool _requestDuringGeneration = false;
         
-        public RunthroughContextManager(IRunthroughFactory runtimeFactory, ProjectileInPlaceReplacer projectileReplacer)
+        public RunthroughContextManager(
+            IRunthroughFactory runtimeFactory, ProjectileInPlaceReplacer projectileReplacer,
+            CrossbowInPlaceReplacer crossbowReplacer)
         {
             _runtimeFactory = runtimeFactory ?? throw new ArgumentNullException(nameof(runtimeFactory));
             _projectileReplacer = projectileReplacer ?? throw new ArgumentNullException(nameof(projectileReplacer));
+            _crossbowReplacer = crossbowReplacer ?? throw new ArgumentNullException(nameof(crossbowReplacer));
         }
         
         public void StartContextUpdate()
@@ -63,6 +69,23 @@ namespace Game.Gameplay.Realtime
             CurrentRunthroughContext.Projectile = newProjectile;
         }      
         
+        public void UpdateCrossbowToSelected()
+        {
+            var crossbowParent = CurrentRunthroughContext.PlayfieldForRun.Crossbow.transform.parent;
+            var newCrossbow = _crossbowReplacer.CreateNewSelectedCrossbow();
+            newCrossbow.transform.SetParent(crossbowParent);
+            GameObject.Destroy(CurrentRunthroughContext.PlayfieldForRun.Crossbow);
+            var oldField = CurrentRunthroughContext.PlayfieldForRun;
+            var newContext = new RunthroughContext(
+                playfieldForRun: new Playfield(oldField.Track, newCrossbow, oldField.Gates, oldField.Targets, oldField.GameObject),
+                follower: CurrentRunthroughContext.Follower,
+                projectile: CurrentRunthroughContext.Projectile,
+                instatiator: CurrentRunthroughContext.Instatiator,
+                generationContext: CurrentRunthroughContext.GenerationContext);
+            CurrentRunthroughContext = newContext;
+            
+        }     
+        
         void UpdateIfRequestsStopForMs(int timeMs)
         {
             _multiRequestFilterTimer?.Dispose();
@@ -77,8 +100,7 @@ namespace Game.Gameplay.Realtime
             _multiRequestFilterTimer = null;
             StartUpdate();
         }
-        
-        
+                
         void StartUpdate() => _ = UpdateContext();  
         
         void RegisterCurrentContextForDestruction()
@@ -87,8 +109,6 @@ namespace Game.Gameplay.Realtime
                 return;
             _contextToDestroy = CurrentRunthroughContext; 
             CurrentRunthroughContext = null;
-            // UnityMainThreadDispatcher.Instance().Enqueue(() 
-            //     => {_contextToDestroy = CurrentRunthroughContext; CurrentRunthroughContext = null;});
         }  
         
         
@@ -137,9 +157,7 @@ namespace Game.Gameplay.Realtime
         }
         
         void UpdateCurrentContext(RunthroughContext newContext)
-        {
-            CurrentRunthroughContext = newContext;
-        }
+            => CurrentRunthroughContext = newContext;
         
         void RenewRequestIfBoofered()
         {

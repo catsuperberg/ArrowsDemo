@@ -15,7 +15,8 @@ namespace Game.Gameplay.Meta
     
     public interface ISkinContextNotifier
     {
-        public event EventHandler OnNewSelectedSkin;         
+        public event EventHandler OnSelectedProjectileSkin;    
+        public event EventHandler OnSelectedCrossbowSkin;       
     }
     
     public class UserContextManager : IUpgradeContextNotifier, ISkinContextNotifier
@@ -25,7 +26,8 @@ namespace Game.Gameplay.Meta
         IRegistryValueReader _registryReader;        
                         
         public event EventHandler OnNewRunthroughComponents; 
-        public event EventHandler OnNewSelectedSkin; 
+        public event EventHandler OnSelectedProjectileSkin; 
+        public event EventHandler OnSelectedCrossbowSkin; 
         
         static readonly ReadOnlyCollection<string> _runtrhoughComponents = new ReadOnlyCollection<string>(new[] {
             nameof(UpgradeSystem.UpgradeContext.CrossbowLevel), nameof(UpgradeSystem.UpgradeContext.ArrowLevel), 
@@ -48,8 +50,10 @@ namespace Game.Gameplay.Meta
         {
             if(args.ClassName ==  typeof(UpgradeSystem.UpgradeContext).FullName)
                 NotifyAboutUpgrades(args.Fields);
-            else if(args.ClassName ==  typeof(Skins.SkinCollection).FullName)
-                NotifyAboutSkins(args.Fields);
+            else if(args.ClassName ==  typeof(Skins.ProjectileSkinCollection).FullName)
+                NotifyAboutProjectileSkin(args.Fields);
+            else if(args.ClassName ==  typeof(Skins.CrossbowSkinCollection).FullName)
+                NotifyAboutCrossbowSkin(args.Fields);
             SaveToNonVolatile();
         }
         
@@ -59,10 +63,16 @@ namespace Game.Gameplay.Meta
                 OnNewRunthroughComponents?.Invoke(this, EventArgs.Empty);
         }
         
-        void NotifyAboutSkins(List<string> changedFields)
+        void NotifyAboutProjectileSkin(List<string> changedFields)
         {
             if(changedFields.Contains(nameof(Skins.SkinCollection.SelectedSkin)))
-                OnNewSelectedSkin?.Invoke(this, EventArgs.Empty);
+                OnSelectedProjectileSkin?.Invoke(this, EventArgs.Empty);
+        }
+        
+        void NotifyAboutCrossbowSkin(List<string> changedFields)
+        {
+            if(changedFields.Contains(nameof(Skins.SkinCollection.SelectedSkin)))
+                OnSelectedCrossbowSkin?.Invoke(this, EventArgs.Empty);
         }
         
         void SaveToNonVolatile()

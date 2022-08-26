@@ -51,7 +51,8 @@ namespace Game.GameState
                 yield return null;
             _UI.OnStartRunthrough += UIStartButtonPressed;
             _upgradesNotifier.OnNewRunthroughComponents += UserContextUpdated;
-            _skinNotifier.OnNewSelectedSkin += SkinUpdated;
+            _skinNotifier.OnSelectedProjectileSkin += ProjectileSkinUpdated;
+            _skinNotifier.OnSelectedCrossbowSkin += CrossbowSkinUpdated;
         }
         
         void StartLoading()
@@ -74,16 +75,18 @@ namespace Game.GameState
             _contextManager.RequestContextUpdate();
         }
         
-        void SkinUpdated(object caller, EventArgs e)
-        {            
-            _contextManager.UpdateProjectileToSelected();
-        }
+        void ProjectileSkinUpdated(object caller, EventArgs e)
+            => _contextManager.UpdateProjectileToSelected();
+            
+        void CrossbowSkinUpdated(object caller, EventArgs e)
+            => _contextManager.UpdateCrossbowToSelected();
         
         void OnDestroy()
         {
             _upgradesNotifier.OnNewRunthroughComponents -= UserContextUpdated;
             _upgradesNotifier = null;
-            _skinNotifier.OnNewSelectedSkin -= SkinUpdated;
+            _skinNotifier.OnSelectedProjectileSkin -= ProjectileSkinUpdated;
+            _skinNotifier.OnSelectedCrossbowSkin -= CrossbowSkinUpdated;
             _skinNotifier = null;
             Destroy(_UI);
             _UI = null;          

@@ -4,6 +4,7 @@ using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents;
+using Game.Gameplay.Realtime.PlayfieldComponents.Crossbow;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using SplineMesh;
@@ -32,6 +33,7 @@ namespace Game.Gameplay.Realtime
         ISplineTrackProvider _splineMeshGenerator;
         ITrackPopulator _trackPopulator;        
         ITargetProvider _targetGenerator;
+        ICrossbowProvider _crossbowGenerator;  
                 
         IProjectileProvider _projectileGenerator;  
         
@@ -41,31 +43,22 @@ namespace Game.Gameplay.Realtime
         Playfield _playfield;
         ITrackFollower _follower;
         GameObject _projectile;
+        GameObject _crossbow;
                 
         [Inject]
-        public void Construct(ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
-            ITargetProvider targetGenerator, IProjectileProvider projectileGenerator,
-            IContextProvider runContextProvider, ISequenceManager sequenceManager)
-        {
-            if(splineMeshGenerator == null)
-                throw new System.Exception("ISplineTrackProvider isn't provided to " + this.GetType().Name);
-            if(trackPopulator == null)
-                throw new System.Exception("ITrackPopulator isn't provided to " + this.GetType().Name);
-            if(targetGenerator == null)
-                throw new System.Exception("ITargerProvider isn't provided to " + this.GetType().Name);
-            if(projectileGenerator == null)
-                throw new System.Exception("IProjectileProvider not provided to " + this.GetType().Name);
-            if(runContextProvider == null)
-                throw new System.Exception("IContextProvider isn't provided to " + this.GetType().Name);
-             if(sequenceManager == null)
-                throw new System.Exception("ISequenceManager isn't provided to " + this.GetType().Name);
-               
-            _splineMeshGenerator = splineMeshGenerator;
-            _trackPopulator = trackPopulator;
-            _targetGenerator = targetGenerator; 
-            _projectileGenerator = projectileGenerator;         
-            _runContextProvider = runContextProvider;
-            _sequenceManager = sequenceManager;                        
+        public void Construct(
+            ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
+            ITargetProvider targetGenerator, ICrossbowProvider crossbowGenerator,
+            IProjectileProvider projectileGenerator, IContextProvider runContextProvider,
+            ISequenceManager sequenceManager)
+        {               
+            _splineMeshGenerator = splineMeshGenerator ?? throw new System.ArgumentNullException(nameof(splineMeshGenerator));
+            _trackPopulator = trackPopulator ?? throw new System.ArgumentNullException(nameof(trackPopulator));            
+            _targetGenerator = targetGenerator ?? throw new System.ArgumentNullException(nameof(targetGenerator)); 
+            _crossbowGenerator = crossbowGenerator ?? throw new System.ArgumentNullException(nameof(crossbowGenerator));
+            _projectileGenerator = projectileGenerator ?? throw new System.ArgumentNullException(nameof(projectileGenerator));         
+            _runContextProvider = runContextProvider ?? throw new System.ArgumentNullException(nameof(runContextProvider));
+            _sequenceManager = sequenceManager ?? throw new System.ArgumentNullException(nameof(sequenceManager));                        
         }
         
         public async Task<RunthroughContext> GetRunthroughContextHiden()
@@ -88,11 +81,12 @@ namespace Game.Gameplay.Realtime
             (int Min, int Max) targetCountRange = (1, MaxTargerCount(targetScore)); 
                         
             var track = await _splineMeshGenerator.GetRandomizedTrackAsync(sequenceContext.Length, _trackSplineMesh, instantiator); 
+            var crossbow = await GetCrossbow();
             var gates = await _trackPopulator.PlaceGatesAsync(_gatePrefab, track, sequence, instantiator);   
             var targets = await _targetGenerator.GetTargetAsync(_targetPrefabs, targetScore, targetCountRange, instantiator);   
                         
             await PlaceAtTrackEnd(targets, track, new Vector3(0, -105, 105));            
-            await AssemblePlayfield(track, gates, targets);            
+            await AssemblePlayfield(track, gates, targets, crossbow);            
             
             return _playfield;
         }
@@ -111,11 +105,11 @@ namespace Game.Gameplay.Realtime
             await PlaceAtTrackEndSemaphore.WaitAsync();  
         }
         
-        async Task AssemblePlayfield(Spline track, GameObject gates, GameObject targets)
+        async Task AssemblePlayfield(Spline track, GameObject gates, GameObject targets, GameObject crossbow)
         {            
             var playfieldAsemblySemaphore = new SemaphoreSlim(0, 1);
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                StartCoroutine(PlayfieldAssemblyCoroutine(track, gates, targets,
+                StartCoroutine(PlayfieldAssemblyCoroutine(track, gates, targets, crossbow,
                 playfieldAsemblySemaphore));});
             await playfieldAsemblySemaphore.WaitAsync();  
         }
@@ -127,10 +121,10 @@ namespace Game.Gameplay.Realtime
             yield return null;
         }
         
-        IEnumerator PlayfieldAssemblyCoroutine(Spline track, GameObject gates, GameObject targets, SemaphoreSlim semaphore)
+        IEnumerator PlayfieldAssemblyCoroutine(Spline track, GameObject gates, GameObject targets, GameObject crossbow, SemaphoreSlim semaphore)
         {   
             var playfieldObject = new GameObject("playfield");   
-            _playfield = new Playfield(track.gameObject, gates, targets, playfieldObject);
+            _playfield = new Playfield(track.gameObject, crossbow, gates, targets, playfieldObject);
             semaphore.Release();
             yield return null;
         }  
@@ -170,6 +164,22 @@ namespace Game.Gameplay.Realtime
             _projectile.transform.SetParent(_follower.Transform);   
             AttachCameraToFollower(_follower);
                          
+            semaphore.Release();
+            yield return null;
+        }  
+                 
+        
+        async Task<GameObject> GetCrossbow()
+        {            
+            var crossbowCreationSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(CrossbowCreationCoroutine(crossbowCreationSemaphore));});
+            await crossbowCreationSemaphore.WaitAsync();
+            return _crossbow;
+        }
+        
+        IEnumerator CrossbowCreationCoroutine(SemaphoreSlim semaphore)
+        {   
+            _crossbow = _crossbowGenerator.CreateSelected();   
             semaphore.Release();
             yield return null;
         }  
