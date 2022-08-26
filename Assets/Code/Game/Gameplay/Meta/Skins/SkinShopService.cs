@@ -46,12 +46,12 @@ namespace Game.Gameplay.Meta.Skins
                 return;
                 
             ChargePlayerToken();
-            _userRegistry.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.BoughtSkins),
+            _userRegistry.ApplyOperationOnRegisteredField(_skins.GetType(), nameof(SkinCollection.BoughtSkins),
                 OperationType.Append, JsonConvert.SerializeObject(new List<string>{name}));
         }
         
         public void SelectSkin(string name)
-            => _userRegistry.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.SelectedSkin),
+            => _userRegistry.ApplyOperationOnRegisteredField(_skins.GetType(), nameof(SkinCollection.SelectedSkin),
                     OperationType.Replace, name);
         
         bool EnoughtTokens()

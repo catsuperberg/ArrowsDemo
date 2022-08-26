@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEditor;
 using Utils;
 
+#if UNITY_EDITOR
+
 namespace AssetScripts.AssetCreation
 {
     public class ProjectileAssetMaker : AssetMaker, IAssetMaker<ProjectileSkinData>
@@ -33,3 +35,5 @@ namespace AssetScripts.AssetCreation
         }
     }
 }
+
+#endif

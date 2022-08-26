@@ -590,8 +590,8 @@ GameObject:
   - component: {fileID: 5211837660086501726}
   - component: {fileID: 3419006834491467533}
   - component: {fileID: 511151673675147120}
-  - component: {fileID: 4124555213177538093}
   - component: {fileID: 7922795315530861221}
+  - component: {fileID: 4124555213177538093}
   m_Layer: 5
   m_Name: Crossbow Menu
   m_TagString: Untagged
@@ -702,19 +702,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4124555213177538093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3393520543363607764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _containerSource: 2
 --- !u!114 &7922795315530861221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -730,6 +717,19 @@ MonoBehaviour:
   BuyerPrefab: {fileID: 5368649290037811340, guid: 764bd952d05f5ec47a192da4bb79932c, type: 3}
   SelectorPrefab: {fileID: 5368649290037811340, guid: 9a9f054358da3984a93e53d16ce0a583, type: 3}
   ContainerForElements: {fileID: 6159566441478837799}
+--- !u!114 &4124555213177538093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3393520543363607764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717a02054ef2699498e6bd4234fd7995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _containerSource: 2
 --- !u!1 &3677085339273473987
 GameObject:
   m_ObjectHideFlags: 0

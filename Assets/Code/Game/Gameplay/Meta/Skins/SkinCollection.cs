@@ -10,6 +10,22 @@ using UnityEngine;
 
 namespace Game.Gameplay.Meta.Skins
 {
+    public class CrossbowSkinCollection : SkinCollection
+    {
+        public CrossbowSkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders) 
+            : base(registry, skinProviders)
+        {
+        }
+    }
+    
+    public class ProjectileSkinCollection : SkinCollection
+    {
+        public ProjectileSkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders) 
+            : base(registry, skinProviders)
+        {
+        }
+    }
+    
     public class SkinCollection : IConfigurable
     {
         [StoredField]

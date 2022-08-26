@@ -1,12 +1,12 @@
 Library: lib_burst_generated
 --platform=Android
---backend=burst-llvm-11
+--backend=burst-llvm-12
 --target=ARMV7A_NEON32
 --global-safety-checks-setting=Off
 --dump=Function
 --float-precision=Standard
 --disable-warnings=BC1370
---compilation-defines=UNITY_2021_3_5
+--compilation-defines=UNITY_2021_3_8
 --compilation-defines=UNITY_2021_3
 --compilation-defines=UNITY_2021
 --compilation-defines=UNITY_5_3_OR_NEWER
@@ -104,6 +104,9 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_MONO
 --compilation-defines=NET_STANDARD_2_0
 --compilation-defines=NET_STANDARD
+--compilation-defines=NET_STANDARD_2_1
+--compilation-defines=NETSTANDARD
+--compilation-defines=NETSTANDARD2_1
 --compilation-defines=ENABLE_CUSTOM_RENDER_TEXTURE
 --compilation-defines=ENABLE_DIRECTOR
 --compilation-defines=ENABLE_LOCALIZATION
@@ -123,7 +126,7 @@ Library: lib_burst_generated
 --compilation-defines=ENABLE_XR_MODULE
 --compilation-defines=ENABLE_INPUT_SYSTEM_PACKAGE
 --compilation-defines=UNITY_INPUT_SYSTEM_ENABLE_VR
---compilation-defines=UNITY_XR_AVAILABLE
+--compilation-defines=UNITY_INPUT_SYSTEM_ENABLE_XR
 --compilation-defines=UNITY_INPUT_SYSTEM_ENABLE_PHYSICS
 --compilation-defines=UNITY_INPUT_SYSTEM_ENABLE_PHYSICS2D
 --compilation-defines=UNITY_INPUT_SYSTEM_ENABLE_UI
@@ -138,7 +141,7 @@ Library: lib_burst_generated
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipelines.Core.Runtime.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Zenject.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.Mathematics.dll
---root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Assembly-CSharp.dll
+--root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\MainGame.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.InputSystem.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.RenderPipelines.Universal.Runtime.dll
 --root-assembly=C:\Unity\ArrowsDemo\Temp\StagingArea\Data\Managed\Unity.Burst.dll

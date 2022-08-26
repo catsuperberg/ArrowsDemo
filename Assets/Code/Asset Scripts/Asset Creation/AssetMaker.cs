@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+#if UNITY_EDITOR
+
 namespace AssetScripts.AssetCreation
 {
     public interface IAssetMaker<T>
@@ -78,3 +80,5 @@ namespace AssetScripts.AssetCreation
             => _modelsToSave.Select(entry => Path.Combine(_folders.outputFolder, entry.name)).ToList();
     }
 }
+
+#endif

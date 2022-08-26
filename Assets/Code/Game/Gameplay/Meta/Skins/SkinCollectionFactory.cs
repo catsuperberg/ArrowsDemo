@@ -32,7 +32,7 @@ namespace Game.Gameplay.Meta.Skins
         {
             var providers = new List<ISkinProvider>();
             providers.Add(PermanentProvider());
-            _latestCollection = new SkinCollection(_registryInjester, providers);
+            _latestCollection = CreateColletcion(_registryInjester, providers);
             _registryManager.OnRegisteredUpdated += PrepareCollectionAfterNonVolatileLoaded; // HACK _latestCollection ony needed so it's possible to clean up non valid stuff in non volatile storage
             return _latestCollection;
         }
@@ -48,7 +48,7 @@ namespace Game.Gameplay.Meta.Skins
         {
             var skinPriceTable = collection.SkinNamesAndPrices;
             foreach(var skin in skinPriceTable.Where(entry => entry.Value == 0))
-                _registryAccessor.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.BoughtSkins),
+                _registryAccessor.ApplyOperationOnRegisteredField(_latestCollection.GetType(), nameof(SkinCollection.BoughtSkins),
                     OperationType.Append, JsonConvert.SerializeObject(new List<string> {skin.Key}));
         }
         
@@ -65,10 +65,12 @@ namespace Game.Gameplay.Meta.Skins
         {
             var skinsToChooseFrom = collection.BoughtSkins.Where(x => collection.SkinNamesAndPrices.ContainsKey(x)).ToList();
             var newSelected = skinsToChooseFrom.ElementAt(GlobalRandom.RandomInt(0, skinsToChooseFrom.Count));
-            _registryAccessor.ApplyOperationOnRegisteredField(typeof(SkinCollection), nameof(SkinCollection.SelectedSkin),
+            _registryAccessor.ApplyOperationOnRegisteredField(_latestCollection.GetType(), nameof(SkinCollection.SelectedSkin),
                     OperationType.Replace, newSelected);
         }
         
         protected virtual ISkinProvider PermanentProvider() => throw new NotImplementedException();
+        protected virtual SkinCollection CreateColletcion(IRegistryIngester registry, List<ISkinProvider> skinProviders)
+             => throw new NotImplementedException();
     }
 }

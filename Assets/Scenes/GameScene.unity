@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 585702364}
   m_Layer: 0
   m_Name: EditorProjectileInjester
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 890581952}
   m_Layer: 0
   m_Name: Asset Creation
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1111,7 +1111,7 @@ GameObject:
   - component: {fileID: 1848015132}
   m_Layer: 0
   m_Name: EditorSkinInjester
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

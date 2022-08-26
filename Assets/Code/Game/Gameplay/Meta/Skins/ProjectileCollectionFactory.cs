@@ -1,5 +1,6 @@
 using AssetScripts.AssetCreation;
 using DataManagement;
+using System.Collections.Generic;
 using Zenject;
 
 namespace Game.Gameplay.Meta.Skins
@@ -20,5 +21,8 @@ namespace Game.Gameplay.Meta.Skins
             var skinDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(_pathToDatabase); 
             return new AssetSkinProvider<ProjectileSkinData>(skinDatabase.Skins);
         }
+        
+        override protected SkinCollection CreateColletcion(IRegistryIngester registry, List<ISkinProvider> skinProviders)
+             => new ProjectileSkinCollection(registry, skinProviders);
     }
 }
