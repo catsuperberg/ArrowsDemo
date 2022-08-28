@@ -1,0 +1,74 @@
+[
+  {
+    "_name": "ModernCarbon",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/ModernCarbon.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/icon_ModernCarbon.asset",
+    "_baseCost": "1000000",
+    "_adWatchRequired": false,
+    "Name": "ModernCarbon",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/ModernCarbon.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/icon_ModernCarbon.asset",
+    "BaseCost": 1000000,
+    "AdWatchRequired": false
+  },
+  {
+    "_name": "ModernCarbonTinted",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/ModernCarbonTinted.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/icon_ModernCarbonTinted.asset",
+    "_baseCost": "25000000",
+    "_adWatchRequired": false,
+    "Name": "ModernCarbonTinted",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/ModernCarbonTinted.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/icon_ModernCarbonTinted.asset",
+    "BaseCost": 25000000,
+    "AdWatchRequired": false
+  },
+  {
+    "_name": "ModernRedWood",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWood/ModernRedWood.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWood/icon_ModernRedWood.asset",
+    "_baseCost": "150000",
+    "_adWatchRequired": false,
+    "Name": "ModernRedWood",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWood/ModernRedWood.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWood/icon_ModernRedWood.asset",
+    "BaseCost": 150000,
+    "AdWatchRequired": false
+  },
+  {
+    "_name": "ModernRedWoodGold",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWoodGold/ModernRedWoodGold.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWoodGold/icon_ModernRedWoodGold.asset",
+    "_baseCost": "550000",
+    "_adWatchRequired": false,
+    "Name": "ModernRedWoodGold",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWoodGold/ModernRedWoodGold.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernRedWoodGold/icon_ModernRedWoodGold.asset",
+    "BaseCost": 550000,
+    "AdWatchRequired": false
+  },
+  {
+    "_name": "RedWood",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/RedWood/RedWood.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/RedWood/icon_RedWood.asset",
+    "_baseCost": "2500",
+    "_adWatchRequired": false,
+    "Name": "RedWood",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/RedWood/RedWood.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/RedWood/icon_RedWood.asset",
+    "BaseCost": 2500,
+    "AdWatchRequired": false
+  },
+  {
+    "_name": "Wood",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/Wood/Wood.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/Wood/icon_Wood.asset",
+    "_baseCost": "0",
+    "_adWatchRequired": false,
+    "Name": "Wood",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/Wood/Wood.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/Wood/icon_Wood.asset",
+    "BaseCost": 0,
+    "AdWatchRequired": false
+  }
+]

@@ -2,85 +2,6 @@
     "name": "Controls",
     "maps": [
         {
-            "name": "Debug",
-            "id": "3e3929c6-85c3-445a-b5e8-97b992f7970c",
-            "actions": [
-                {
-                    "name": "StartGame",
-                    "type": "Button",
-                    "id": "d6bbe472-c291-4f29-b08d-1e1e4b915e9d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "GenerateNewTarget",
-                    "type": "Button",
-                    "id": "28396063-f112-4fdc-9553-f6553091d2ba",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "GenerateTrackForFirstTarget",
-                    "type": "Button",
-                    "id": "a7594f6f-8b00-4c85-9e66-1c76fc83f9f1",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "d5cea6d3-1e22-4846-a5f1-e741e37779df",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "afba2ef2-1beb-42b9-a1ba-c91b34a0b4b7",
-                    "path": "<Touchscreen>/primaryTouch/press",
-                    "interactions": "Hold(duration=2)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartGame",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3974af06-b741-4cb7-b3c3-20f7d9a6fa19",
-                    "path": "<Keyboard>/f1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GenerateNewTarget",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "edb47982-1f8e-4fe7-b2ad-e0370e8a969f",
-                    "path": "<Keyboard>/f2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "GenerateTrackForFirstTarget",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "Movement",
             "id": "0244154c-d07c-480d-8a14-3351962b1372",
             "actions": [
@@ -178,12 +99,12 @@
             "actions": [
                 {
                     "name": "PrimaryContact",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "8324c267-a7d2-44e7-ae2c-9f828966f1ac",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": "Press",
-                    "initialStateCheck": false
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PrimaryPosition",
@@ -199,7 +120,7 @@
                 {
                     "name": "",
                     "id": "419561db-0a9f-48df-9fc0-7e60923ce7b7",
-                    "path": "<Touchscreen>/primaryTouch/press",
+                    "path": "<Touchscreen>/primaryTouch/startPosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -215,6 +136,127 @@
                     "processors": "",
                     "groups": "",
                     "action": "PrimaryPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UISignals",
+            "id": "3797fbfd-0460-43f6-80bf-f8f09c2982f2",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "e7e81eb7-493f-4243-b4a6-7e2607c988b5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Esc",
+                    "type": "Button",
+                    "id": "76354c9e-8132-410f-bfac-3b17954b8e88",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Back",
+                    "type": "Button",
+                    "id": "e144c858-8153-4477-938d-3c1a84bdd3c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Direction",
+                    "type": "Value",
+                    "id": "2229541f-7d0f-4da0-a345-5fda6288fd5b",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5f75b0b5-bdd9-4b4b-ac32-396de98adeaa",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73eb3f04-620b-4f6d-aff0-c0d85be71fe0",
+                    "path": "*/{PrimaryAction}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "664acea3-8673-4899-9585-1eeab85b3b61",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Esc",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9087ec7f-75bd-492b-a21d-9189fde7cd5d",
+                    "path": "*/{Cancel}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Esc",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5b509c8-3501-4f15-aaca-ca8b51abc89f",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "015c0670-2292-4493-98ed-c176aa4ce493",
+                    "path": "*/{Back}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "357769e0-739f-4843-8204-8984a484842f",
+                    "path": "*/{Hatswitch}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Direction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

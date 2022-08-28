@@ -1,0 +1,170 @@
+[
+  {
+    "ClassName": "Game.Gameplay.Meta.Skins.ProjectileCollection",
+    "Fields": [
+      {
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SelectedSkin",
+        "Value": "Bolt",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.Curencies.CurenciesContext",
+    "Fields": [
+      {
+        "Name": "CommonCoins",
+        "Value": "16854699",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "LifetimeSpending",
+        "Value": "6770355",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SkinTokens",
+        "Value": "16",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
+    "Fields": [
+      {
+        "Name": "CrossbowLevel",
+        "Value": "26",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "ArrowLevel",
+        "Value": "39",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "InitialArrowCount",
+        "Value": "25",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "PassiveIncome",
+        "Value": "1",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.Skins.ProjectileSkinCollection",
+    "Fields": [
+      {
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"pencil\",\"fork\",\"Arrow\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SelectedSkin",
+        "Value": "Arrow",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Gameplay.Meta.Skins.CrossbowSkinCollection",
+    "Fields": [
+      {
+        "Name": "BoughtSkins",
+        "Value": "[\"Wood\",\"RedWood\",\"ModernRedWoodGold\",\"ModernCarbon\",\"ModernRedWood\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SelectedSkin",
+        "Value": "ModernRedWoodGold",
+        "Type": "System.String",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  }
+]

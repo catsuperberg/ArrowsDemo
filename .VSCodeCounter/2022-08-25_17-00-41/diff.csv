@@ -1,0 +1,128 @@
+"filename", "language", "C#", "JSON", "comment", "blank", "total"
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\PermanentSkinInjesterTests.cs", "C#", 167, 0, 2, 27, 196
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\PermanentSkinsDatabaseTests.cs", "C#", 114, 0, 1, 17, 132
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\PrefabIconGeneratorTests.cs", "C#", 75, 0, 0, 16, 91
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\RawModelLoaderTests.cs", "C#", 70, 0, 0, 9, 79
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\SkinPrefabGeneratorTests.cs", "C#", 121, 0, 0, 20, 141
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\ModernCarbonTinted\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\ModernCarbon\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\ModernRedWoodGold\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\ModernRedWood\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\RedWood\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Crossbow\Wood\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\FullInjestSet\Crossbow\DataUpdate\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\FullInjestSet\Crossbow\ModelAndDataUpdates\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\FullInjestSet\Crossbow\ModelUpdate\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\InjestSetWithUpdates\Crossbow\DataUpdate\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\InjestSetWithUpdates\Crossbow\ModelAndDataUpdates\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Projectiles\Arrow\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Projectiles\Bolt\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Projectiles\fork\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\TestAssets\Projectiles\pencil\injestData.json", "JSON", 0, 4, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetMaker.cs", "C#", 65, 0, 3, 12, 80
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\BaseSkinData.cs", "C#", 41, 0, 8, 6, 55
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Crossbow\CrossbowAssetMaker.cs", "C#", 31, 0, 0, 4, 35
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Crossbow\CrossbowSkinData.cs", "C#", 54, 0, 0, 9, 63
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Crossbow\CrossbowSkinInjester.cs", "C#", 38, 0, 0, 7, 45
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\EditorSkinInjester.cs", "C#", 16, 0, 6, 6, 28
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\EditorSkinInjesterInspector.cs", "C#", 20, 0, 0, 4, 24
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ISkinData.cs", "C#", 23, 0, 0, 3, 26
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ISkinPrefabGenerator.cs", "C#", 14, 0, 0, 1, 15
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Iconizer.cs", "C#", 62, 0, 0, 10, 72
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\InjestDataEnricher.cs", "C#", 44, 0, 0, 8, 52
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\InjestData\BasicInjestData.cs", "C#", 18, 0, 10, 4, 32
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\InjestData\CrossbowInjestData.cs", "C#", 8, 0, 0, 1, 9
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\InjestData\ProjectileInjestData.cs", "C#", 8, 0, 0, 1, 9
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\PrefabIconGenerator.cs", "C#", 33, 0, 0, 4, 37
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ProjectileInjestData.cs", "C#", -23, 0, 0, -4, -27
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ProjectilePrefabCreator.cs", "C#", -17, 0, -56, -10, -83
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ProjectileRawModelLoader.cs", "C#", -35, 0, 0, -6, -41
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\BundleProjectilePrefabGenerator.cs", "C#", 2, 0, 1, 0, 3
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\PermanentProjectileInjester.cs", "C#", -162, 0, 0, -28, -190
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\PermanentProjectileInjesterInspector.cs", "C#", -20, 0, 0, -4, -24
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\ProjectileAssetMaker.cs", "C#", 31, 0, 0, 4, 35
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\ProjectileSkinData.cs", "C#", 14, 0, 0, 5, 19
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\ProjectileSkinInjester.cs", "C#", 38, 0, 0, 7, 45
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\TemporaryProjectileInjester.cs", "C#", 0, 0, 0, -1, -1
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\RawModelLoader.cs", "C#", 14, 0, 0, 5, 19
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\SkinInjester copy.cs", "C#", 14, 0, 0, 1, 15
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\SkinInjester.cs", "C#", 42, 0, 0, 8, 50
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\SkinPackage.cs", "C#", -6, 0, 0, -1, -7
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\SkinPrefabGenerator.cs", "C#", 49, 0, 1, 7, 57
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\IIntantiator.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\InvisibleInstantiator.cs", "C#", 4, 0, 0, 0, 4
+"c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\SimplseInstantiator.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryAccessor.cs", "C#", -36, 0, 0, -9, -45
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryBackend.cs", "C#", -35, 0, 2, 0, -33
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryIngester.cs", "C#", -1, 0, 0, 0, -1
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryManager.cs", "C#", 1, 0, 0, 2, 3
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryReader.cs", "C#", 2, 0, 5, 0, 7
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRepositoryTests\ConfigurableCollectionTests.cs", "C#", 65, 0, 0, 12, 77
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\ConfigurableClassData.cs", "C#", 19, 0, 0, 3, 22
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\ConfigurableField.cs", "C#", 31, 0, 7, 5, 43
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\ConfigurableFieldUtils.cs", "C#", 58, 0, 0, 7, 65
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\ConfigurablesCollection.cs", "C#", 79, 0, 0, 17, 96
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\FieldMetadata.cs", "C#", 20, 0, 0, 2, 22
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\IConfigurable.cs", "C#", 10, 0, 0, 1, 11
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\IConfigurableCollectionReader.cs", "C#", 10, 0, 0, 2, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\RegistryChangeArgs.cs", "C#", 15, 0, 0, 2, 17
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ConfigurableField.cs", "C#", -17, 0, 0, -1, -18
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ConfigurableFieldUtils.cs", "C#", -48, 0, 0, -6, -54
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\FieldMetadata.cs", "C#", -20, 0, 0, -2, -22
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IConfigurable.cs", "C#", -10, 0, 0, -1, -11
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IRegistryBackend.cs", "C#", 0, 0, 1, 1, 2
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IRegistryManager.cs", "C#", 1, 0, 0, 1, 2
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IRegistryValueReader.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\InfoHolder.cs", "C#", 30, 0, 0, 5, 35
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Operation Applier\ListApplier.cs", "C#", 32, 0, 0, 2, 34
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Operation Applier\OperationApplierFactory.cs", "C#", 3, 0, 0, 0, 3
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\OperationTypeEnum.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Data Management\Serialization\JsonFileOperations.cs", "C#", 5, 0, 4, 1, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Game Math\MathUtils.cs", "C#", 42, 0, 0, 6, 48
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\Pre Run\PreRun.cs", "C#", -5, 0, -1, -2, -8
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\Pre Run\PreRunFactory.cs", "C#", -1, 0, 0, -1, -2
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\Runthrough\RunthroughContext.cs", "C#", 6, 0, 0, 0, 6
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Curencies\CurenciesContext.cs", "C#", 10, 0, 0, 0, 10
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Shop\IUpgradeShopService.cs", "C#", 11, 0, 0, 1, 12
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Shop\PriceCalculatorFactory.cs", "C#", 16, 0, 2, 4, 22
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Shop\UpgradeShopService.cs", "C#", 74, 0, 0, 11, 85
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\AssetSkinProvider.cs", "C#", 43, 0, 0, 9, 52
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\CrossbowCollectionFactory.cs", "C#", 21, 0, 0, 3, 24
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ISkinDatabase.cs", "C#", 15, 0, 0, 2, 17
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ISkinDatabaseReader.cs", "C#", 10, 0, 0, 1, 11
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ISkinProvider.cs", "C#", 13, 0, 0, 2, 15
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\PermanentSkinsDatabase.cs", "C#", 60, 0, 0, 12, 72
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ProjectileCollection.cs", "C#", -55, 0, -3, -16, -74
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ProjectileCollectionFactory.cs", "C#", 21, 0, 0, 3, 24
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinCollection.cs", "C#", 92, 0, 0, 19, 111
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinCollectionFactory.cs", "C#", 63, 0, 0, 11, 74
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinShopService.cs", "C#", 55, 0, 0, 14, 69
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Upgrade System\UpgradeContext.cs", "C#", 0, 0, 0, 1, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\User Context\UserContext.cs", "C#", 5, 0, 0, 0, 5
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\User Context\UserContextFactory.cs", "C#", 31, 0, 0, 3, 34
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\User Context\UserContextManager.cs", "C#", 25, 0, 0, 7, 32
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Operation Sequence\Context Provider\UserContextConverter.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Track\Track Follower\SplineFollower.cs", "C#", 4, 0, 0, 1, 5
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Runthrough Components\Projectiles\IProjectile.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Runthrough Components\Projectiles\ProjectileDatabase.cs", "C#", -27, 0, 0, -3, -30
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Runthrough Components\Projectiles\ProjectileGenerator.cs", "C#", -12, 0, 0, -3, -15
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Runthrough Components\Projectiles\ProjectileInPlaceReplacer.cs", "C#", 22, 0, 0, 4, 26
+"c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\RunthroughContextManager.cs", "C#", 45, 0, 2, 10, 57
+"c:\Unity\ArrowsDemo\Assets\Code\Scene Installers\GameInstaller.cs", "C#", 14, 0, -2, 0, 12
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Coin Display\CoinDisplay.cs", "C#", -46, 0, 0, -10, -56
+"c:\Unity\ArrowsDemo\Assets\Code\UI\CurencieDisplays\CoinDisplay.cs", "C#", 46, 0, 0, 10, 56
+"c:\Unity\ArrowsDemo\Assets\Code\UI\CurencieDisplays\Curency.cs", "C#", 9, 0, 0, 1, 10
+"c:\Unity\ArrowsDemo\Assets\Code\UI\CurencieDisplays\CurencyDisplay.cs", "C#", 53, 0, 0, 10, 63
+"c:\Unity\ArrowsDemo\Assets\Code\UI\CurencieDisplays\ICurencyDisplay.cs", "C#", 15, 0, 0, 2, 17
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Elements\FlexibleGridLayout.cs", "C#", 2, 0, 0, 0, 2
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\CrossbowSkinShopManager.cs", "C#", 69, 0, 0, 13, 82
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\ProjectileSkinShopManager.cs", "C#", 69, 0, 1, 13, 83
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\SkinBuyer.cs", "C#", 40, 0, 0, 4, 44
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\SkinSelector.cs", "C#", 42, 0, 0, 3, 45
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\TokenDisplay.cs", "C#", 46, 0, 0, 10, 56
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Upgrade Shop\ItemBuyer.cs", "C#", -22, 0, 0, -4, -26
+"c:\Unity\ArrowsDemo\Assets\Code\UI\Upgrade Shop\ShopManager.cs", "C#", 1, 0, 0, 0, 1
+"c:\Unity\ArrowsDemo\Assets\Code\Utils\ListExtensions.cs", "C#", 10, 0, 0, 1, 11
+"c:\Unity\ArrowsDemo\Assets\Code\Utils\PathUtils.cs", "C#", 13, 0, 0, 3, 16
+"c:\Unity\ArrowsDemo\Assets\Code\Utils\TypeUtils.cs", "C#", 15, 0, 0, 2, 17
+"Total", "-", 2147, 60, -6, 353, 2554
