@@ -30,8 +30,8 @@
     "ClassName": "Game.Gameplay.Meta.Curencies.CurenciesContext",
     "Fields": [
       {
-        "Name": "SkinTokens",
-        "Value": "16",
+        "Name": "CommonCoins",
+        "Value": "16127278",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -41,8 +41,8 @@
         }
       },
       {
-        "Name": "CommonCoins",
-        "Value": "16127278",
+        "Name": "SkinTokens",
+        "Value": "16",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -117,9 +117,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.ProjectileSkinCollection",
     "Fields": [
       {
-        "Name": "SelectedSkin",
-        "Value": "Arrow",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"pencil\",\"fork\",\"Arrow\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -128,9 +128,9 @@
         }
       },
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Bolt\",\"pencil\",\"fork\",\"Arrow\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "Arrow",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -144,9 +144,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.CrossbowSkinCollection",
     "Fields": [
       {
-        "Name": "SelectedSkin",
-        "Value": "ModernRedWoodGold",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Wood\",\"RedWood\",\"ModernRedWoodGold\",\"ModernCarbon\",\"ModernRedWood\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -155,9 +155,9 @@
         }
       },
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Wood\",\"RedWood\",\"ModernRedWoodGold\",\"ModernCarbon\",\"ModernRedWood\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "ModernRedWoodGold",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",

@@ -12,5 +12,9 @@ namespace Utils
             
         public static string GetPathWithoutExtension(this string path)
             => Regex.Match(path, @".*(?=\..*)").ToString();
+            
+             
+        public static string GetAtResourcesWithNoExtension(this string path)
+            => path.GetResourcesOnlyPath().GetPathWithoutExtension();
     }
 }

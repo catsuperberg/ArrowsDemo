@@ -2,6 +2,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using Newtonsoft.Json;
+using Utils;
 
 namespace DataAccess.DiskAccess.Serialization
 {
@@ -71,6 +72,12 @@ namespace DataAccess.DiskAccess.Serialization
                 Debug.Log("No file at: " + filePath);
                 return null;
             }
+        }
+        
+        public static T LoadFromResources<T>(string pathToResource) where T : class
+        {
+            var json = Resources.Load<TextAsset>(pathToResource.GetAtResourcesWithNoExtension());
+            return JsonConvert.DeserializeObject<T>(json.text);  
         }
         
         private static string withExtension(string fileName) => fileName + ".json";
