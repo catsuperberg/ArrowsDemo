@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-
-[TestFixture]
-[RequiresPlayMode(true)]
 public class RawModelLoaderTests
 {
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets";

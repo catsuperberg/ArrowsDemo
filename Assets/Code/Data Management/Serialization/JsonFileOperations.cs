@@ -12,7 +12,6 @@ namespace DataAccess.DiskAccess.Serialization
         {
             FileStream stream = new FileStream(Path.Combine(filePath, withExtension(fileName)), FileMode.Create);        
             string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
-            // string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();        
         }
@@ -20,7 +19,6 @@ namespace DataAccess.DiskAccess.Serialization
         public static void SaveAsJson<T>(T dataObject, string filePath)
         {
             string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
-            // string json = JsonUtility.ToJson(dataObject, prettyPrint: true);
             if(json == "{}" || json == "[]")
                 throw new System.Exception("Empty json generated");
                 
@@ -44,7 +42,6 @@ namespace DataAccess.DiskAccess.Serialization
                 }
                 stream.Close();
                 return JsonConvert.DeserializeObject<T>(json);
-                // return JsonUtility.FromJson<T>(json);
             }
             else
             {
@@ -65,7 +62,6 @@ namespace DataAccess.DiskAccess.Serialization
                 }
                 stream.Close();
                 return JsonConvert.DeserializeObject<T>(json);
-                // return JsonUtility.FromJson<T>(json);
             }
             else
             {
@@ -74,11 +70,14 @@ namespace DataAccess.DiskAccess.Serialization
             }
         }
         
-        public static T LoadFromResources<T>(string pathToResource) where T : class
-        {
-            var json = Resources.Load<TextAsset>(pathToResource.GetAtResourcesWithNoExtension());
-            return JsonConvert.DeserializeObject<T>(json.text);  
-        }
+        // public static T LoadFromResources<T>(string filePath) where T : class
+        // {
+        //     if(File.Exists(filePath)) // for some reason file always doesn't exist
+        //         Debug.Log("File found at: " + filePath);
+            
+        //     var json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
+        //     return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
+        // }
         
         private static string withExtension(string fileName) => fileName + ".json";
     }

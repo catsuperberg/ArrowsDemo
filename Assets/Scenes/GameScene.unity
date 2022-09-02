@@ -301,7 +301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_audioModuleState
@@ -1061,7 +1061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f6ac9768ed576408d5523ea678e2f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _AssetPath: Assets/Asset Injest/Crossbow
+  _AssetPath: Assets/Asset Injest/Crossbows
   _OutputResourcesPath: Assets/Prefabs/Gameplay Items/Crossbows/Resources
 --- !u!1 &1920852521
 GameObject:

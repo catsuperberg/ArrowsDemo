@@ -32,6 +32,7 @@ namespace Game.Gameplay.Meta.Skins
         {
             var providers = new List<ISkinProvider>();
             providers.Add(PermanentProvider());
+            providers.Add(ExternalProvider());
             _latestCollection = CreateColletcion(_registryInjester, providers);
             _registryManager.OnRegisteredUpdated += PrepareCollectionAfterNonVolatileLoaded; // HACK _latestCollection ony needed so it's possible to clean up non valid stuff in non volatile storage
             return _latestCollection;
@@ -55,7 +56,7 @@ namespace Game.Gameplay.Meta.Skins
         void MakeSureSelectedSkinValid(SkinCollection collection)
         {
             var selected = collection.SelectedSkin;
-            if(collection.BoughtSkins.Contains(selected) || collection.SkinNamesAndPrices.ContainsKey(selected))
+            if(collection.BoughtSkins.Contains(selected) && collection.SkinNamesAndPrices.ContainsKey(selected))
                 return;
             
             SwitchToRandomSelectable(collection);
@@ -70,6 +71,7 @@ namespace Game.Gameplay.Meta.Skins
         }
         
         protected virtual ISkinProvider PermanentProvider() => throw new NotImplementedException();
+        protected virtual ISkinProvider ExternalProvider() => throw new NotImplementedException();
         protected virtual SkinCollection CreateColletcion(IRegistryIngester registry, List<ISkinProvider> skinProviders)
              => throw new NotImplementedException();
     }

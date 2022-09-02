@@ -17,16 +17,5 @@ namespace AssetScripts.AssetCreation
         public BasicInjestData()
         {
         }
-        // public BasicInjestData()
-        // {
-        //     _baseCost = "0";
-        //     _adWatchRequired = false;            
-        // }
-
-        // public BasicInjestData(BigInteger baseCost, bool adWatchRequired)
-        // {
-        //     _baseCost = baseCost.ToString();
-        //     _adWatchRequired = adWatchRequired;
-        // }
     }    
 }

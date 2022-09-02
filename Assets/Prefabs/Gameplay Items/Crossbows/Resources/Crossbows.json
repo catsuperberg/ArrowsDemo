@@ -1,17 +1,5 @@
 [
   {
-    "_name": "ModernCarbon",
-    "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/ModernCarbon.prefab",
-    "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/icon_ModernCarbon.asset",
-    "_baseCost": "1000000",
-    "_adWatchRequired": false,
-    "Name": "ModernCarbon",
-    "PrefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/ModernCarbon.prefab",
-    "IconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbon/icon_ModernCarbon.asset",
-    "BaseCost": 1000000,
-    "AdWatchRequired": false
-  },
-  {
     "_name": "ModernCarbonTinted",
     "_prefabPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/ModernCarbonTinted.prefab",
     "_iconPath": "Assets/Prefabs/Gameplay Items/Crossbows/Resources/ModernCarbonTinted/icon_ModernCarbonTinted.asset",

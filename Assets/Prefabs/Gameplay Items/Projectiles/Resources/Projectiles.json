@@ -1,17 +1,5 @@
 [
   {
-    "_name": "Arrow",
-    "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Arrow/Bundle_Arrow.prefab",
-    "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Arrow/icon_Arrow.asset",
-    "_baseCost": "2500",
-    "_adWatchRequired": false,
-    "Name": "Arrow",
-    "PrefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Arrow/Bundle_Arrow.prefab",
-    "IconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Arrow/icon_Arrow.asset",
-    "BaseCost": 2500,
-    "AdWatchRequired": false
-  },
-  {
     "_name": "Bolt",
     "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Bolt/Bundle_Bolt.prefab",
     "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Bolt/icon_Bolt.asset",
@@ -24,26 +12,26 @@
     "AdWatchRequired": false
   },
   {
-    "_name": "fork",
-    "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/fork/Bundle_fork.prefab",
-    "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/fork/icon_fork.asset",
+    "_name": "Fork",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Fork/Bundle_Fork.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Fork/icon_Fork.asset",
     "_baseCost": "350000",
     "_adWatchRequired": false,
-    "Name": "fork",
-    "PrefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/fork/Bundle_fork.prefab",
-    "IconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/fork/icon_fork.asset",
+    "Name": "Fork",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Fork/Bundle_Fork.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Fork/icon_Fork.asset",
     "BaseCost": 350000,
     "AdWatchRequired": false
   },
   {
-    "_name": "pencil",
-    "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/pencil/Bundle_pencil.prefab",
-    "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/pencil/icon_pencil.asset",
+    "_name": "Pencil",
+    "_prefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Pencil/Bundle_Pencil.prefab",
+    "_iconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Pencil/icon_Pencil.asset",
     "_baseCost": "28000",
     "_adWatchRequired": false,
-    "Name": "pencil",
-    "PrefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/pencil/Bundle_pencil.prefab",
-    "IconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/pencil/icon_pencil.asset",
+    "Name": "Pencil",
+    "PrefabPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Pencil/Bundle_Pencil.prefab",
+    "IconPath": "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Pencil/icon_Pencil.asset",
     "BaseCost": 28000,
     "AdWatchRequired": false
   }

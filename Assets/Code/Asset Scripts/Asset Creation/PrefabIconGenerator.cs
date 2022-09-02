@@ -1,12 +1,4 @@
-using DataAccess.DiskAccess.GameFolders;
-using Siccity.GLTFUtility;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
 using UnityEngine;
 
 namespace AssetScripts.AssetCreation

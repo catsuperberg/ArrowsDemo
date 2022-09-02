@@ -1,6 +1,8 @@
 using AssetScripts.AssetCreation;
+using DataAccess.DiskAccess.Serialization;
 using Game.Gameplay.Meta.Skins;
 using GameMath;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +12,6 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Newtonsoft.Json;
 
 
 using System.Text;
@@ -70,7 +71,7 @@ public class PermanentSkinsDatabaseTests
     [TearDown]
     public void TestTeardown()
     {        
-        // ClearPrefabFolder();
+        ClearPrefabFolder();
     }
     
     void ClearPrefabFolder()
@@ -121,11 +122,17 @@ public class PermanentSkinsDatabaseTests
     {  
         _database.AddSkinsUniqueByName(_testData1);
         _database.SaveToPermanent();      
+        Assert.That(_testDatabaseJson, Does.Exist);
+        var fromJson = JsonFile.GetObjectFromFile<IList<ProjectileSkinData>>(_testDatabaseJson);
+        var serializedFromJson = JsonConvert.SerializeObject(fromJson);
+        var serializedFromDatabase = JsonConvert.SerializeObject(_database.Skins);
+        Assert.That(serializedFromJson, 
+            Is.EqualTo(serializedFromDatabase));
         var newDatabase = new PermanentSkinsDatabase<ProjectileSkinData>(_testDatabaseJson);
-        var newData = JsonConvert.SerializeObject(newDatabase.Skins);
-        var oldData = JsonConvert.SerializeObject(_database.Skins);
+        var newData = JsonConvert.SerializeObject(newDatabase.Skins, Formatting.Indented);
+        var oldData = JsonConvert.SerializeObject(_database.Skins, Formatting.Indented);
+        Assert.That(newData, Is.EquivalentTo(oldData));
         Assert.That(newData, Is.Not.EqualTo("{}"));
         Assert.That(newData, Is.Not.EqualTo("[]"));
-        Assert.That(newData, Is.EquivalentTo(oldData));
     }
 }

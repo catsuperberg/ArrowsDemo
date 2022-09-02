@@ -1,6 +1,4 @@
-using AssetScripts.AssetCreation;
 using DataManagement;
-using GameMath;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,6 +49,7 @@ namespace Game.Gameplay.Meta.Skins
             registry.Register(this, true, true);
             _skinProviders = skinProviders;            
             AssembleAccessibleSkins();
+            // SelectFirstAccessibleIfSelectedInvalid();
         }
         
         void AssembleAccessibleSkins()
@@ -64,6 +63,14 @@ namespace Game.Gameplay.Meta.Skins
             }
             if(!_accessibleSkins.Any())
                 throw new Exception("No accessible skins after collection assembly");
+        }
+        
+        void SelectFirstAccessibleIfSelectedInvalid()
+        {
+            if(_accessibleSkins.Keys.Contains(SelectedSkin))
+                return;
+            
+            SelectedSkin = _accessibleSkins.Keys.First(entry => BoughtSkins.Contains(entry));
         }
                 
         public GameObject GetSelectedSkinResource()

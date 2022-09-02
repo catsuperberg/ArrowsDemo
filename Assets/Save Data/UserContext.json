@@ -41,8 +41,8 @@
         }
       },
       {
-        "Name": "LifetimeSpending",
-        "Value": "6770355",
+        "Name": "SkinTokens",
+        "Value": "7",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -52,8 +52,8 @@
         }
       },
       {
-        "Name": "SkinTokens",
-        "Value": "16",
+        "Name": "LifetimeSpending",
+        "Value": "6770355",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -117,9 +117,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.ProjectileSkinCollection",
     "Fields": [
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Bolt\",\"pencil\",\"fork\",\"Arrow\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "Arrow",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -128,9 +128,9 @@
         }
       },
       {
-        "Name": "SelectedSkin",
-        "Value": "Arrow",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"Arrow\",\"Pencil\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -145,7 +145,7 @@
     "Fields": [
       {
         "Name": "BoughtSkins",
-        "Value": "[\"Wood\",\"RedWood\",\"ModernRedWoodGold\",\"ModernCarbon\",\"ModernRedWood\"]",
+        "Value": "[\"Wood\",\"ModernCarbon\"]",
         "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -156,7 +156,7 @@
       },
       {
         "Name": "SelectedSkin",
-        "Value": "ModernRedWoodGold",
+        "Value": "Wood",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

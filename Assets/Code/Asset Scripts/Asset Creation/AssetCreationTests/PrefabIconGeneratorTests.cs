@@ -21,7 +21,7 @@ public class PrefabIconGeneratorTests
        
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets";
     const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
-    const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Iconizer.prefab";
+    const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Resources/Iconizer.prefab";
     List<string> _pathsToModels;
     List<string> _skinNames;
     List<GameObject> _objectsToDestroy;

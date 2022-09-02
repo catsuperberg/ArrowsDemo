@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1811528310128322558
+--- !u!1 &1904807661843936949
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9030894134268103885}
-  - component: {fileID: 768693774904645782}
-  - component: {fileID: 4486759857851374768}
+  - component: {fileID: 9135658272540424479}
+  - component: {fileID: 3408688454721065108}
+  - component: {fileID: 5831101401803151703}
   m_Layer: 0
   m_Name: RedWood
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9030894134268103885
+--- !u!4 &9135658272540424479
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1811528310128322558}
+  m_GameObject: {fileID: 1904807661843936949}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,13 +33,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &768693774904645782
+--- !u!23 &3408688454721065108
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1811528310128322558}
+  m_GameObject: {fileID: 1904807661843936949}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -53,7 +53,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8cd89a6afba63514988eaeca0e287ca2, type: 2}
+  - {fileID: 2100000, guid: 7515548b1c21d004f817535974c7b546, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -75,11 +75,11 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &4486759857851374768
+--- !u!33 &5831101401803151703
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1811528310128322558}
-  m_Mesh: {fileID: 4300000, guid: 7b17d77d1dd1f2f4997ee1d811b38e9a, type: 2}
+  m_GameObject: {fileID: 1904807661843936949}
+  m_Mesh: {fileID: 4300000, guid: cc6e9bc43761d6f4390f45631c5d7c23, type: 2}

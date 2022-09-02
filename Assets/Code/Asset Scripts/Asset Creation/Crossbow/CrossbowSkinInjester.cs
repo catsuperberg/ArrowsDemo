@@ -1,8 +1,4 @@
 using Game.Gameplay.Meta.Skins;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,13 +14,14 @@ namespace AssetScripts.AssetCreation
         [SerializeField]
         string _OutputResourcesPath;
         
-        const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Iconizer.prefab";
+        const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Resources/Iconizer.prefab";
         string _databaseJsonPath => _OutputResourcesPath + "/Crossbows.json";
         
         override public void InjestSkins()
         {
             var injester = ComposeInjester();
             injester.InjestSkins();
+            AssetDatabase.Refresh();
         }
         
         ISkinInjester ComposeInjester()

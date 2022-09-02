@@ -1,22 +1,32 @@
-using AssetScripts.Movement;
-using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using System;
 using UnityEngine;
 using UnityEditor;
 
-#if UNITY_EDITOR
 namespace AssetScripts.AssetCreation
 {
     public class SkinPrefabGenerator : ISkinPrefabGenerator
-    {     
+    {                     
+        public UnityEngine.Object CreateRuntimeResource(GameObject skinObject)
+        {
+            var prefabResource = Resources.InstanceIDToObject(PrepareGameObject(skinObject).GetInstanceID());
+            ISkinPrefabGenerator.HideUnderResourceContainer((GameObject)prefabResource);             
+            return prefabResource;
+        }
+        
         public string CreatePrefab(GameObject skinObject, string folderToSaveTo)
         {          
-            BlenderToGameTransform(skinObject);
-            skinObject.SetActive(true);
+            PrepareGameObject(skinObject);
             
             SaveModel(skinObject, folderToSaveTo);
             var pathToPrefab = SavePrefab(skinObject, folderToSaveTo);
             return pathToPrefab;
+        }
+        
+        GameObject PrepareGameObject(GameObject skinObject)
+        {
+            BlenderToGameTransform(skinObject);
+            skinObject.SetActive(true);
+            return skinObject;
         }
 
         void SaveModel(GameObject modelObject, string folder)
@@ -54,4 +64,3 @@ namespace AssetScripts.AssetCreation
         }
     }
 }
-#endif
