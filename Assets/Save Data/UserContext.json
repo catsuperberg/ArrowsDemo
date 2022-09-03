@@ -117,9 +117,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.ProjectileSkinCollection",
     "Fields": [
       {
-        "Name": "SelectedSkin",
-        "Value": "Arrow",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"Arrow\",\"Pencil\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -128,9 +128,9 @@
         }
       },
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Bolt\",\"Arrow\",\"Pencil\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "Bolt",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",

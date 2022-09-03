@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
@@ -22,7 +20,7 @@ namespace DataAccess.DiskAccess.GameFolders
                                 
             SettingsFolder = getFolderOrCreateWhereAllowed("Settings Data");
             SaveFolder = getFolderOrCreateWhereAllowed("Save Data");
-            AssetInjest = getFolderOrCreateWhereAllowed("Asset Injest");
+            AssetInjest = getFolderOrCreateWhereAllowed("Runtime Injest");
             StreamingAssetsPath = Application.streamingAssetsPath;
             
             Debug.Log("========== GAME FOLDERS ==========");

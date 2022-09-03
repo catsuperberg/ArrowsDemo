@@ -22,7 +22,7 @@ namespace Game.Gameplay.Meta.Skins
             _skins = LoadFromFile() ?? new List<T>();
         }
         
-        List<T> LoadFromFile() => JsonFile.GetObjectFromFile<List<T>>(_pathToDatabase);
+        List<T> LoadFromFile() => JsonFile.LoadFromResources<List<T>>(_pathToDatabase);
         
         public void AddSkinsUniqueByName(List<T> skinsData)
         {

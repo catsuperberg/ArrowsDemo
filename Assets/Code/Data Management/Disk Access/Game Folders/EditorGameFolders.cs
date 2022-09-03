@@ -20,7 +20,7 @@ namespace DataAccess.DiskAccess.GameFolders
         {
             SettingsFolder = "Assets/Settings Data";
             SaveFolder = "Assets/Save Data";
-            AssetInjest = "Assets/Asset Injest";
+            AssetInjest = "Assets/Runtime Injest";
             StreamingAssetsPath = "Assets/StreamingAssetsPath";
             
             Debug.Log("========== GAME FOLDERS ==========");

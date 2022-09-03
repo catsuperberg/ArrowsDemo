@@ -18,29 +18,9 @@ namespace AssetScripts.AssetCreation
             ISkinPrefabGenerator.HideUnderResourceContainer((GameObject)skinObject);
             return resource;
         }
-        
-        public string CreatePrefab(GameObject skinObject, string skinFolder)
-        {          
-            var instantiatedGOs = PrepareGameObject(skinObject);
-            
-            SaveModel(instantiatedGOs.tempSkin, skinFolder);
-            SavePrefab(instantiatedGOs.tempSkin, skinFolder);
-            var pathToProjectile = SavePrefab(instantiatedGOs.fullPrefab, skinFolder);
-            GameObject.DestroyImmediate(instantiatedGOs.fullPrefab);
-            return pathToProjectile;
-        }        
                 
         (GameObject fullPrefab, GameObject tempSkin) PrepareGameObject(GameObject skinObject)
         {
-            // #if UNITY_EDITOR
-            //     var templatePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_bundlePrefabPath);
-            //     var projectile = GameObject.Instantiate(templatePrefab);
-            // #endif
-            // #if !UNITY_EDITOR
-            //     var projectile = GameObject.Instantiate(Resources.Load<GameObject>(_bundlePrefabPath.GetAtResourcesWithNoExtension())); 
-            // #endif
-            // var tempResource = Resources.Load<UnityEngine.Object>(_bundlePrefabPath.GetAtResourcesWithNoExtension());
-            // var projectile = GameObject.Instantiate(tempResource);
             var projectile = GameObject.Instantiate(Resources.Load<GameObject>(_bundlePrefabPath.GetAtResourcesWithNoExtension())); 
             var tempSkinGO = GameObject.Instantiate(skinObject);
             tempSkinGO.name = skinObject.name;
@@ -52,6 +32,18 @@ namespace AssetScripts.AssetCreation
             tempSkinGO.AddComponent<FlyingMovement>();
             return (projectile, tempSkinGO);
         }
+        
+        #if UNITY_EDITOR
+        public string CreatePrefab(GameObject skinObject, string skinFolder)
+        {          
+            var instantiatedGOs = PrepareGameObject(skinObject);
+            
+            SaveModel(instantiatedGOs.tempSkin, skinFolder);
+            SavePrefab(instantiatedGOs.tempSkin, skinFolder);
+            var pathToProjectile = SavePrefab(instantiatedGOs.fullPrefab, skinFolder);
+            GameObject.DestroyImmediate(instantiatedGOs.fullPrefab);
+            return pathToProjectile;
+        }        
 
         void SaveModel(GameObject modelObject, string folder)
         {
@@ -80,6 +72,8 @@ namespace AssetScripts.AssetCreation
             
             return fullPath.Replace("Assets/Prefabs/Gameplay Items/Projectiles/Resources/", "");
         }
+        #endif
+        
         void BlenderToGameTransform(GameObject GOtoCorrect)
         {
             GOtoCorrect.transform.position = Vector3.zero;

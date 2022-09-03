@@ -32,6 +32,7 @@ public class GameInstaller : MonoInstaller
     
     public override void InstallBindings()
     {      
+        ComposeDiskAccess();
         ComposeUserContextRepository();  
         ComposeSettingsRepository();    
         ComposeSkinsImport();
@@ -48,14 +49,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
         Container.Bind<ICrossbowProvider>().FromInstance(_crossbowGenerator).AsSingle();  
-                
-        Container.Bind<IDiskSerialization>().To<JsonDataStorage>().AsSingle();
-        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
-            Container.Bind<IStreamingAssetsReader>().To<WinStreamingAssets>().AsSingle();
-        else if (Application.platform == RuntimePlatform.Android)
-            Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
-        Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
-                                 
+                                                 
         Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();  
         Container.Bind<CrossbowInPlaceReplacer>().AsSingle().NonLazy();                           
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();
@@ -63,6 +57,16 @@ public class GameInstaller : MonoInstaller
         Container.Bind<PreRunFactory>().AsSingle().NonLazy();        
         Container.Bind<RunthroughFactory>().AsSingle().NonLazy();    
         Container.Bind<IAppStateFactory>().FromInstance(_appStateFactory).AsSingle();  
+    }
+    
+    void ComposeDiskAccess()
+    {        
+        Container.Bind<IDiskSerialization>().To<JsonDataStorage>().AsSingle();
+        if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
+            Container.Bind<IStreamingAssetsReader>().To<WinStreamingAssets>().AsSingle();
+        else if (Application.platform == RuntimePlatform.Android)
+            Container.Bind<IStreamingAssetsReader>().To<AndroidStreamingAssets>().AsSingle();
+        Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
     }
     
     void ComposeSkinsImport()

@@ -1,29 +1,31 @@
 using AssetScripts.AssetCreation;
+using DataAccess.DiskAccess.GameFolders;
 using DataManagement;
+using System.IO;
 using System.Collections.Generic;
-using Zenject;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Gameplay.Meta.Skins
 {
     public class ProjectileCollectionFactory : SkinCollectionFactory
     {             
         const string _pathToDatabase = "Assets/Prefabs/Gameplay Items/Projectiles/Resources/Projectiles.json";
-        const string _pathToExternalSkins = "Assets/Asset Injest/Runtime Injest/Projectiles";
+        const string _skinFolderName = "Projectiles";
         const string _iconizerPrefabResourcePath = "iconizer";
         ExternalSkins _externalSkinGenerator;
            
         public ProjectileCollectionFactory(
             [Inject(Id = "userRegistryIngester")] IRegistryIngester registryInjester,
             [Inject(Id = "userRegistryAccessor")] IRegistryAccessor registryAccessor,
-            [Inject(Id = "userRegistryManager")] IRegistryManager registryManager) : base (registryInjester, registryAccessor, registryManager)
+            [Inject(Id = "userRegistryManager")] IRegistryManager registryManager, IGameFolders gameFolders) : base (registryInjester, registryAccessor, registryManager)
         {            
             var prefabGenerator = new BundleProjectilePrefabGenerator();
             var iconizerPrefab = Resources.Load<GameObject>(_iconizerPrefabResourcePath);  
             var iconGeneratorGo = new GameObject();
             var iconGenerator = iconGeneratorGo.AddComponent<PrefabIconGenerator>();        
             iconGenerator.Initialize(iconizerPrefab);    
-            _externalSkinGenerator = new ExternalSkins(prefabGenerator, iconGenerator, _pathToExternalSkins);
+            _externalSkinGenerator = new ExternalSkins(prefabGenerator, iconGenerator, Path.Combine(gameFolders.AssetInjest, _skinFolderName));
             GameObject.Destroy(iconGeneratorGo);
         }
         

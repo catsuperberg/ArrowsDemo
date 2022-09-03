@@ -12,7 +12,16 @@ namespace AssetScripts.AssetCreation
             ISkinPrefabGenerator.HideUnderResourceContainer((GameObject)prefabResource);             
             return prefabResource;
         }
+                
         
+        GameObject PrepareGameObject(GameObject skinObject)
+        {
+            BlenderToGameTransform(skinObject);
+            skinObject.SetActive(true);
+            return skinObject;
+        }
+        
+        #if UNITY_EDITOR
         public string CreatePrefab(GameObject skinObject, string folderToSaveTo)
         {          
             PrepareGameObject(skinObject);
@@ -22,13 +31,6 @@ namespace AssetScripts.AssetCreation
             return pathToPrefab;
         }
         
-        GameObject PrepareGameObject(GameObject skinObject)
-        {
-            BlenderToGameTransform(skinObject);
-            skinObject.SetActive(true);
-            return skinObject;
-        }
-
         void SaveModel(GameObject modelObject, string folder)
         {
             var textureName = "texture_" + modelObject.name + ".asset";
@@ -56,6 +58,7 @@ namespace AssetScripts.AssetCreation
             
             return fullPath.Replace("Assets/Prefabs/Gameplay Items/Projectiles/Resources/", "");
         }
+        #endif
         
         void BlenderToGameTransform(GameObject GOtoFix)
         {

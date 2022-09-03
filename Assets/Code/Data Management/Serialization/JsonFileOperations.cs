@@ -70,14 +70,11 @@ namespace DataAccess.DiskAccess.Serialization
             }
         }
         
-        // public static T LoadFromResources<T>(string filePath) where T : class
-        // {
-        //     if(File.Exists(filePath)) // for some reason file always doesn't exist
-        //         Debug.Log("File found at: " + filePath);
-            
-        //     var json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
-        //     return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
-        // }
+        public static T LoadFromResources<T>(string filePath) where T : class
+        {            
+            var json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
+            return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
+        }
         
         private static string withExtension(string fileName) => fileName + ".json";
     }

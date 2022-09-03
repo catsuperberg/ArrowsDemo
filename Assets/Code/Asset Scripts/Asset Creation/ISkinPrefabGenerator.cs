@@ -7,8 +7,11 @@ namespace AssetScripts.AssetCreation
         const string _containerTag = "RuntimeResourceContainer";
         static GameObject _container;
         
-        public string CreatePrefab(GameObject skinObject, string folderToSaveTo);  
         public UnityEngine.Object CreateRuntimeResource(GameObject skinObject);
+        
+        #if UNITY_EDITOR
+        public string CreatePrefab(GameObject skinObject, string folderToSaveTo);  
+        #endif
              
         static void HideUnderResourceContainer(GameObject instance)
         {
