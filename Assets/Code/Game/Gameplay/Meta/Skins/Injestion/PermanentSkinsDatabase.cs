@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 namespace Game.Gameplay.Meta.Skins
 {
@@ -62,7 +63,13 @@ namespace Game.Gameplay.Meta.Skins
             => data.GetType().GetProperties().Select(entry => entry.GetValue(data)).Any(value => value == null);
                 
         public void SaveToPermanent()
-            => JsonFile.SaveAsJson(_skins, _pathToDatabase);
+        {
+            JsonFile.SaveAsJson(_skins, _pathToDatabase);
+            #if UNITY_EDITOR
+                if(_pathToDatabase.Contains("Resources"))
+                    AssetDatabase.Refresh();
+            #endif
+        }
         
         List<T> ValidSkins()
         {
