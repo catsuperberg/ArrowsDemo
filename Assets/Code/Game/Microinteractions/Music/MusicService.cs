@@ -36,7 +36,7 @@ namespace Game.Microinteracions
         void StartNewBackgroundMusicTrackLooped()
         {
             var newTrack = Resources.Load<AudioClip>(MusicFiles[GlobalRandom.RandomInt(0, MusicFiles.Count)]);
-            _currentTrackTimer = new Timer(SecondsToMs(newTrack.length));
+            _currentTrackTimer = new Timer(MathUtils.SecondsToMs(newTrack.length));
             _currentTrackTimer.Enabled = true ;
             _source.clip = newTrack;
             _source.Play();
@@ -48,12 +48,6 @@ namespace Game.Microinteracions
             _currentTrackTimer.Elapsed -= TrackFinished;
             _currentTrackTimer.Dispose();  
             UnityMainThreadDispatcher.Instance().Enqueue(() => {StartNewBackgroundMusicTrackLooped();});            
-        }
-        
-        void SetMixerVolume()
-        {
-            _mixerGroup.audioMixer.SetFloat("VolumeMusic", PartToNegativeDB(MusicVolume));
-            _source.mute = MusicVolume <= 0;
         }
             
         internal override void SetFieldValue(string fieldName, string fieldValue)
@@ -69,8 +63,10 @@ namespace Game.Microinteracions
             }
         }
         
-        float SecondsToMs(float time) => time * 1000;
-        float PartToNegativeDB(float partValue) => (partValue > 0) ?  Mathf.Log10(Math.Clamp(partValue, 0, 1)) * 20 : -80.0f;
-    }    
-    
+        void SetMixerVolume()
+        {
+            _mixerGroup.audioMixer.SetFloat("VolumeMusic", MathUtils.PartToNegativeDB(MusicVolume));
+            _source.mute = MusicVolume <= 0;
+        }
+    }        
 }

@@ -4,9 +4,9 @@ using Zenject;
 
 namespace Game.Microinteracions
 {
-    public class VibrationInteractor : MonoBehaviour
+    public class SFXInteractor : MonoBehaviour
     {
-        VibrationService _vibrator;
+        SFXService _sfx;
         
         void Awake()
         {
@@ -16,18 +16,18 @@ namespace Game.Microinteracions
         }
         
         [Inject]
-        public void Construct(VibrationService vibrator)
-        {
-            _vibrator = vibrator ?? throw new ArgumentNullException(nameof(vibrator)); 
+        public void Construct(SFXService sfx)
+        {                
+            _sfx = sfx ?? throw new ArgumentNullException(nameof(sfx)); 
         }
     
         void PerformIfCorrectMicrointeration(object caller, MicrointeractionEventArgs args)
-        {
-            if(_vibrator == null || !_vibrator.VibrationEnabled || !(args.Packet is VibrationPacket))
+        {       
+            if(_sfx == null || !(args.Packet is SFXPacket))
                 return;
-                
-            var packet = args.Packet as VibrationPacket;
-            _vibrator.ExecuteEffect(packet.EffectToTrigger);
+                     
+            var packet = args.Packet as SFXPacket;
+            _sfx.ExecuteEffect(packet.EffectToTrigger);
         }
     }
 }

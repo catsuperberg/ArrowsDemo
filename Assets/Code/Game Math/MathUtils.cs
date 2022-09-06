@@ -162,7 +162,10 @@ namespace GameMath
     }
     
     public static class MathUtils
-    {     
+    {        
+        public static float SecondsToMs(float time) => time * 1000;
+        public static float PartToNegativeDB(float partValue) => (partValue > 0) ?  UnityEngine.Mathf.Log10(Math.Clamp(partValue, 0, 1)) * 20 : -80.0f;
+        
         public static T MathClamp<T>(T val, T min, T max) where T : IComparable<T>
         {
             if (val.CompareTo(min) < 0) return min;
@@ -249,6 +252,7 @@ namespace GameMath
         {
             return NthOrderStatistic(list, n, 0, list.Count - 1, rnd);
         }
+        
         private static T NthOrderStatistic<T>(this IList<T> list, int n, int start, int end, Random rnd) where T : IComparable<T>
         {
             while (true)

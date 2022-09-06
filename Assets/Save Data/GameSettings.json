@@ -20,7 +20,7 @@
     "Fields": [
       {
         "Name": "CurrentQualityLevel",
-        "Value": "High",
+        "Value": "Medium",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Graphics quality",
@@ -75,10 +75,26 @@
     "Fields": [
       {
         "Name": "MusicVolume",
-        "Value": "1",
+        "Value": "0.5969855",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Music",
+          "MinValue": 0.0,
+          "MaxValue": 1.0,
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Microinteracions.SFXService",
+    "Fields": [
+      {
+        "Name": "SFXVolume",
+        "Value": "1",
+        "Type": "System.Single",
+        "Metadata": {
+          "PrettyName": "Sound",
           "MinValue": 0.0,
           "MaxValue": 1.0,
           "ValidOptions": null

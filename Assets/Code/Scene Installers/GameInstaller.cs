@@ -135,6 +135,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ResolutionScaling>().AsSingle().NonLazy();  
         Container.Bind<GraphicsPresset>().AsSingle().NonLazy(); 
         Container.Bind<MusicService>().AsSingle().NonLazy(); 
+        Container.Bind<SFXService>().AsSingle().NonLazy(); 
     }  
     
     void ComposeMicrointeractions()

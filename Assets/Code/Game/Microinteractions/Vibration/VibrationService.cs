@@ -1,6 +1,5 @@
 using DataManagement;
 using System;
-using System.Collections.Generic;
 using Zenject;
 
 namespace Game.Microinteracions
@@ -12,8 +11,7 @@ namespace Game.Microinteracions
         
         public VibrationService([Inject(Id = "settingsIngester")] IRegistryIngester registry)
         {
-            registry.Register(this, true, true);  
-            
+            registry.Register(this, true, true);              
             Vibration.Init();        
         }
         

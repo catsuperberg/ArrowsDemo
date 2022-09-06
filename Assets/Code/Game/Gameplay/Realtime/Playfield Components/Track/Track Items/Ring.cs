@@ -50,6 +50,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
             SpendAllInList(FindRingsInPair());                
             bool isBestChoice = IsBestInPair(initialValue);
             ActivateVibration(isBestChoice);
+            ActivateSound(isBestChoice);
             ActivateAnimation(isBestChoice);
             return newValue;
                 
@@ -79,6 +80,12 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             var vibrationType = (isPositive) ? VibrationEffect.SmallVibration : VibrationEffect.Negative;
             OnMicrointerationTriggered?.Invoke(this, new MicrointeractionEventArgs(new VibrationPacket(vibrationType)));
+        }
+        
+        void ActivateSound(bool isPositive)
+        {
+            var soundEffect = (isPositive) ? SoundEffect.Affirmative : SoundEffect.Negative;
+            OnMicrointerationTriggered?.Invoke(this, new MicrointeractionEventArgs(new SFXPacket(soundEffect)));
         }
         
         void ActivateAnimation(bool isPositive)
