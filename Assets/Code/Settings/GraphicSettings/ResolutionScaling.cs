@@ -8,13 +8,11 @@ using Zenject;
 
 namespace Settings
 {
-    public class ResolutionScaling : IConfigurable
+    public class ResolutionScaling : Configurable
     {               
         [StoredField("Resolution scaling", 0.2f, 1f)]
         public float Scaling {get; private set;} = 1;        
-                 
-        public event EventHandler OnUpdated;
-        
+                         
         public ResolutionScaling([Inject(Id = "settingsIngester")] IRegistryIngester registry)
         {
             registry.Register(this, true, true);   
@@ -26,25 +24,7 @@ namespace Settings
                 urp.renderScale = Convert.ToSingle(Scaling);
         }
         
-        public void UpdateField(string fieldName, string fieldValue)
-        {            
-            SetFieldValue(fieldName, fieldValue);        
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);   
-        }
-        
-        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
-        {            
-            if(updatedValues.Count == 0)
-                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
-            
-            foreach(var fieldData in updatedValues)
-                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);       
-                
-            OnUpdated?.Invoke(this, EventArgs.Empty);    
-        }
-        
-        void SetFieldValue(string fieldName, string fieldValue)
+        internal override void SetFieldValue(string fieldName, string fieldValue)
         {
             switch(fieldName)
             {

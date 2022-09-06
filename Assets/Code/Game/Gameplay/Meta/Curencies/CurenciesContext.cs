@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Game.Gameplay.Meta.Curencies
 {
-    public class CurenciesContext : IConfigurable
+    public class CurenciesContext : Configurable
     {
         [StoredField]
         public BigInteger CommonCoins {get; private set;} = 0;
@@ -13,12 +13,9 @@ namespace Game.Gameplay.Meta.Curencies
         public BigInteger SkinTokens {get; private set;} = 0;
         [StoredField]
         public BigInteger LifetimeSpending {get; private set;} = 0;
-                
-        public event EventHandler OnUpdated;
         
         public CurenciesContext()
-        {
-            
+        {            
         }
         
         public CurenciesContext(IRegistryIngester registry)
@@ -26,25 +23,7 @@ namespace Game.Gameplay.Meta.Curencies
             registry.Register(this, true, true);            
         }    
         
-        public void UpdateField(string fieldName, string fieldValue)
-        {            
-            SetFieldValue(fieldName, fieldValue);
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);            
-        }
-        
-        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
-        {            
-            if(updatedValues.Count == 0)
-                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
-            
-            foreach(var fieldData in updatedValues)
-                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);            
-        }
-        
-        void SetFieldValue(string fieldName, string fieldValue)
+        internal override void SetFieldValue(string fieldName, string fieldValue)
         {
             switch(fieldName)
             {

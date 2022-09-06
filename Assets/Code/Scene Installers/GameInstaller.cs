@@ -1,4 +1,3 @@
-using AssetScripts.AssetCreation;
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using DataManagement;
@@ -29,17 +28,23 @@ public class GameInstaller : MonoInstaller
     private TargetGroupGenerator _targetGenerator; 
     [SerializeField]
     private AppStateFactory _appStateFactory;
+    [SerializeField]
+    AudioSource MusicSource;
+    [SerializeField]
+    AudioSource SFXSource;
     
     public override void InstallBindings()
     {      
         ComposeDiskAccess();
         ComposeUserContextRepository();  
         ComposeSettingsRepository();    
+        
+        ComposeAudio();  
+        ComposeSettings();   
         ComposeSkinsImport();
         ComposeUserContextManagement();
-        ComposeSettings();  
         ComposeMicrointeractions(); 
-        ComposeSkinShop();       
+        ComposeSkinShop();    
         
         Container.Bind<OperationExecutor>().AsTransient().NonLazy();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
@@ -129,10 +134,17 @@ public class GameInstaller : MonoInstaller
     {
         Container.Bind<ResolutionScaling>().AsSingle().NonLazy();  
         Container.Bind<GraphicsPresset>().AsSingle().NonLazy(); 
+        Container.Bind<MusicService>().AsSingle().NonLazy(); 
     }  
     
     void ComposeMicrointeractions()
     {
         Container.Bind<VibrationService>().AsSingle().NonLazy();
     }
+    
+    void ComposeAudio()
+    {
+        Container.Bind<AudioSource>().WithId("Music").FromInstance(MusicSource).AsTransient();  
+        Container.Bind<AudioSource>().WithId("SFX").FromInstance(SFXSource).AsTransient();  
+    }    
 }

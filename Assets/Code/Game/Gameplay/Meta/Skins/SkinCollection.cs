@@ -24,7 +24,7 @@ namespace Game.Gameplay.Meta.Skins
         }
     }
     
-    public class SkinCollection : IConfigurable
+    public class SkinCollection : Configurable
     {
         [StoredField]
         public List<string> BoughtSkins {get; private set;} = new List<string>();
@@ -35,9 +35,7 @@ namespace Game.Gameplay.Meta.Skins
             {get => _accessibleSkins.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Price(kvp.Key));}
 
         Dictionary<string, ISkinProvider> _accessibleSkins;
-        List<ISkinProvider> _skinProviders;
-
-        public event EventHandler OnUpdated;        
+        List<ISkinProvider> _skinProviders;     
         
         public SkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders)
         {
@@ -97,26 +95,8 @@ namespace Game.Gameplay.Meta.Skins
         }
         
         bool SkinUnaccessible(string name) => !_accessibleSkins.ContainsKey(name);
-        
-        public void UpdateField(string fieldName, string fieldValue)
-        {            
-            SetFieldValue(fieldName, fieldValue);
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);            
-        }
-        
-        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
-        {            
-            if(updatedValues.Count == 0)
-                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
-            
-            foreach(var fieldData in updatedValues)
-                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);            
-        }
-        
-        void SetFieldValue(string fieldName, string fieldValue)
+                
+        internal override void SetFieldValue(string fieldName, string fieldValue)
         {
             switch(fieldName)
             {

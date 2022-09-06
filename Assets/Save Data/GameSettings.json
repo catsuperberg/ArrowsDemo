@@ -20,7 +20,7 @@
     "Fields": [
       {
         "Name": "CurrentQualityLevel",
-        "Value": "Medium",
+        "Value": "High",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Graphics quality",
@@ -65,6 +65,22 @@
           "PrettyName": "Sensitivity",
           "MinValue": 3.0,
           "MaxValue": 15.0,
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Microinteracions.MusicService",
+    "Fields": [
+      {
+        "Name": "MusicVolume",
+        "Value": "1",
+        "Type": "System.Single",
+        "Metadata": {
+          "PrettyName": "Music",
+          "MinValue": 0.0,
+          "MaxValue": 1.0,
           "ValidOptions": null
         }
       }

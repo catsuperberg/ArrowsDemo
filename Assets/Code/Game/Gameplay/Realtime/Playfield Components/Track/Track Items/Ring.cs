@@ -30,9 +30,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         }
         
         public void Spend()
-        {
-            _spent = true;
-        }
+            => _spent = true;
         
         void UpdateApearance()
         {

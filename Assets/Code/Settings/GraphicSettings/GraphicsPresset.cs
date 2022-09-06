@@ -13,12 +13,10 @@ namespace Settings
         public string[] Options {get {return QualitySettings.names;}}
     }
     
-    public class GraphicsPresset : IConfigurable
+    public class GraphicsPresset : Configurable
     {               
         [StoredField("Graphics quality", OptionGetter: typeof(GraphicOptionsGetter))]
-        public string CurrentQualityLevel {get; private set;} = QualitySettings.names[QualitySettings.GetQualityLevel()];       
-                 
-        public event EventHandler OnUpdated;
+        public string CurrentQualityLevel {get; private set;} = QualitySettings.names[QualitySettings.GetQualityLevel()];      
         
         public GraphicsPresset([Inject(Id = "settingsIngester")] IRegistryIngester registry)
         {
@@ -48,25 +46,7 @@ namespace Settings
             return (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
         }
         
-        public void UpdateField(string fieldName, string fieldValue)
-        {            
-            SetFieldValue(fieldName, fieldValue);        
-            
-            OnUpdated?.Invoke(this, EventArgs.Empty);   
-        }
-        
-        public void UpdateFields(List<(string fieldName, string fieldValue)> updatedValues)
-        {            
-            if(updatedValues.Count == 0)
-                throw new System.Exception("No field data in array provided to UpdateFields function of class: " + this.GetType().Name);
-            
-            foreach(var fieldData in updatedValues)
-                SetFieldValue(fieldData.fieldName, fieldData.fieldValue);       
-                
-            OnUpdated?.Invoke(this, EventArgs.Empty);    
-        }
-        
-        void SetFieldValue(string fieldName, string fieldValue)
+        internal override void SetFieldValue(string fieldName, string fieldValue)
         {
             switch(fieldName)
             {
