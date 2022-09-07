@@ -26,23 +26,20 @@ namespace Game.GameState
         IRegistryAccessor _userContextAccessor;
         RunthroughContextManager _contextManager;  
         
+        AudioSource _musicSource;
+        
         [Inject]
-        public void Construct(PreRunFactory preRunFactory, RunthroughFactory runthroughFactory, 
-            [Inject(Id = "userRegistryAccessor")] IRegistryAccessor userContextAccessor, RunthroughContextManager contextManager)
-        {
-            if(preRunFactory == null)
-                throw new ArgumentNullException("PreRunFactory isn't provided to " + this.GetType().Name);
-            if(runthroughFactory == null)
-                throw new ArgumentNullException("runthroughFactory isn't provided to " + this.GetType().Name);        
-            if(userContextAccessor == null)
-                throw new ArgumentNullException("IRegistryAccessor not provided to " + this.GetType().Name);
-            if(contextManager == null)
-                throw new ArgumentNullException("RunthroughContextManager isn't provided to " + this.GetType().Name);
-                            
-            _preRunFactory = preRunFactory;
-            _runthroughFactory = runthroughFactory;
-            _userContextAccessor = userContextAccessor;  
-            _contextManager = contextManager;          
+        public void Construct(
+            PreRunFactory preRunFactory, RunthroughFactory runthroughFactory, 
+            [Inject(Id = "userRegistryAccessor")] IRegistryAccessor userContextAccessor, 
+            RunthroughContextManager contextManager, 
+            [Inject(Id = "Music")] AudioSource musicSource)    
+        {                            
+            _preRunFactory = preRunFactory ?? throw new ArgumentNullException(nameof(preRunFactory));
+            _runthroughFactory = runthroughFactory ?? throw new ArgumentNullException(nameof(runthroughFactory));
+            _userContextAccessor = userContextAccessor ?? throw new ArgumentNullException(nameof(userContextAccessor));  
+            _contextManager = contextManager ?? throw new ArgumentNullException(nameof(contextManager));     
+            _musicSource = musicSource ?? throw new ArgumentNullException(nameof(musicSource));
         }
         
         public IPreRun GetPreRun(bool skipToRun)
@@ -84,6 +81,7 @@ namespace Game.GameState
         {
             var adStateGO = Instantiate(AdPrefab);
             var adState = adStateGO.GetComponent<AdState>();   
+            adState.Initialize(_musicSource);
             return adState;            
         }
         

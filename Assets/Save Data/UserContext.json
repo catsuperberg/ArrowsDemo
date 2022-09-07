@@ -31,7 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "51662739",
+        "Value": "59774791",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

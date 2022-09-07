@@ -11,7 +11,7 @@ namespace Game.Gameplay.Meta.Skins
     [Serializable]
     public class PermanentSkinsDatabase<T> : ISkinDatabase<T>, ISkinDatabaseReader<T> where T : ISkinData<T>, ISkinData
     {        
-        public IList<T> Skins {get => ValidSkins().AsReadOnly();}
+        public IList<T> Skins {get => _skins.AsReadOnly();}
         public string PathToDatabase {get => _pathToDatabase;}
         public readonly string _pathToDatabase;
         [SerializeField]
@@ -69,11 +69,6 @@ namespace Game.Gameplay.Meta.Skins
                 if(_pathToDatabase.Contains("Resources"))
                     AssetDatabase.Refresh();
             #endif
-        }
-        
-        List<T> ValidSkins()
-        {
-            return _skins; // TEMP should check if everything needed for skin is present
         }
     }
 }
