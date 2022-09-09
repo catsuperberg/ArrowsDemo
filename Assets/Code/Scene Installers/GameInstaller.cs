@@ -32,6 +32,8 @@ public class GameInstaller : MonoInstaller
     AudioSource MusicSource;
     [SerializeField]
     AudioSource SFXSource;
+    [SerializeField]
+    ScatterModels BackgroundScatterModels;
     
     public override void InstallBindings()
     {      
@@ -53,8 +55,9 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
-        Container.Bind<ICrossbowProvider>().FromInstance(_crossbowGenerator).AsSingle();  
+        Container.Bind<ScatterModels>().FromInstance(BackgroundScatterModels).AsSingle();  
                                                  
+        Container.Bind<ICrossbowProvider>().FromInstance(_crossbowGenerator).AsSingle(); 
         Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();  
         Container.Bind<CrossbowInPlaceReplacer>().AsSingle().NonLazy();                           
         Container.Bind<RunthroughContextManager>().AsSingle().NonLazy();

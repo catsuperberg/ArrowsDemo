@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e22da48fa2a07247836b89d3aaa42bd, type: 3}
+  m_Name: ScatterModels
+  m_EditorClassIdentifier: 
+  PrefabsVillageStuff:
+  - {fileID: 3982193353020606081, guid: af988f27f5b242e409f1a18a2d830ea2, type: 3}
+  - {fileID: 7853822965800224896, guid: 3976feb5d3a713f49b07e4b366dd144e, type: 3}
+  - {fileID: 7187465087843860036, guid: 26e335b57df73874dbf4a21fa957fd57, type: 3}
+  - {fileID: 550233200719150173, guid: b8f54234b24ea9f46b5a356d91bac3a4, type: 3}
+  - {fileID: 7814736500891146485, guid: fe1bd116a2c75284b85e6e6e11cf5731, type: 3}
+  - {fileID: 4812755942708136862, guid: 83c85ee620e633748806561308f6e052, type: 3}
+  - {fileID: 174797510910800523, guid: 1a05a4a8050dd9643bc514301d1b65ce, type: 3}
+  - {fileID: 1857141258141429438, guid: 827115ef698b241438269a140507ce95, type: 3}
+  - {fileID: 7787791403409174649, guid: 8eb0e0189dba8c949a865438a3c74d6a, type: 3}
+  - {fileID: 8701311779247213787, guid: 7f8fb25f9071bf0409036cc2b1fbb729, type: 3}
+  - {fileID: 8329407307520815170, guid: bfee5b6c0355cf64883144ce59eb3234, type: 3}
+  - {fileID: 2105366642534929201, guid: a42af47c01b5c444dbfeebd47091cca0, type: 3}
+  - {fileID: 6127332222984814029, guid: 2ef446b9ebd1f94449e29914922e2d92, type: 3}
+  - {fileID: 3546852941870802248, guid: 6eebd35f818738342953f2addaccdc0a, type: 3}
+  - {fileID: 7903727944743152022, guid: 94372b7e64f575d47b7386932824fcf2, type: 3}
+  - {fileID: 9083662817681411613, guid: 07d2c4efe7698de428c64aa3f1f26693, type: 3}
+  - {fileID: 2932915690758655861, guid: d65865250bef9d34a82e12be86db8503, type: 3}
+  - {fileID: 2615382999327293063, guid: 91db33cb51f669a4488142eb6cf4edf4, type: 3}
+  PrefabsTerrain:
+  - {fileID: 8400013264767308183, guid: 7369883d4f832e547b081a20d61e6697, type: 3}
+  - {fileID: 638972051434549229, guid: 592aa7fa4cb4fd046a017e03fed40c5f, type: 3}
+  - {fileID: 4161748770072176830, guid: d35c11de4ddc6524e879a732e9c765c8, type: 3}
+  PrefabsVegetation:
+  - {fileID: 4300330320217981037, guid: c6c1f5af43d8b494994bc3c1f6632726, type: 3}
+  - {fileID: 7304809255007645381, guid: 7588631d705a6d14797bc0fe6538fe84, type: 3}
+  - {fileID: 4308787194056943363, guid: 6880202bbc7e8234bbc669ff8e707f74, type: 3}
+  - {fileID: 6513808445595170660, guid: 8569297ad3bca59479af5884a3e0df86, type: 3}
+  - {fileID: 7659249882046532640, guid: 4c469badbc66e0a43833f930fb78665a, type: 3}
+  - {fileID: 4455632342990967446, guid: 37530b9f4aeb223438b4446166769b57, type: 3}
+  - {fileID: 5205932146699596176, guid: f7a3928fd4736c4429c322e0cb62ecd0, type: 3}
+  - {fileID: 7208094285523412364, guid: dd05f93c68c318445b2196ed0f152eb4, type: 3}
+  - {fileID: 3617126396052796855, guid: 5ec249954b18c494785d0ef2af031179, type: 3}
+  - {fileID: 1178662482800972713, guid: 718fd011c890fc343b7293a3ad7f4615, type: 3}
+  - {fileID: 7841664570148070727, guid: ebda6f05f58540848b09060b968140c9, type: 3}

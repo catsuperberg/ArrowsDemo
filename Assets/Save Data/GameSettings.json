@@ -75,7 +75,7 @@
     "Fields": [
       {
         "Name": "MusicVolume",
-        "Value": "0.5969855",
+        "Value": "0",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Music",

@@ -10,6 +10,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
     public interface ITrackPopulator
     {
         public Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence, IInstatiator assetInstatiator);
-        public Task<GameObject> SpreadObjectsAsync(List<GameObject> prefabsToSpread, int dencityCoefficient, IInstatiator assetInstatiator);
+        public Task<GameObject> SpreadBackgroundScatterAsync(
+            IEnumerable<IEnumerable<GameObject>> GroupsOfPrefabsToSpread, Spline track, 
+            (float dencityCoefficient, float width) parameters, IInstatiator assetInstatiator);
     }
 }

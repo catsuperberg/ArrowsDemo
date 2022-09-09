@@ -33,7 +33,8 @@ namespace Game.Gameplay.Realtime
         ISplineTrackProvider _splineMeshGenerator;
         ITrackPopulator _trackPopulator;        
         ITargetProvider _targetGenerator;
-        ICrossbowProvider _crossbowGenerator;  
+        ICrossbowProvider _crossbowGenerator; 
+        ScatterModels _scatterModels; 
                 
         IProjectileProvider _projectileGenerator;  
         
@@ -50,7 +51,7 @@ namespace Game.Gameplay.Realtime
             ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
             ITargetProvider targetGenerator, ICrossbowProvider crossbowGenerator,
             IProjectileProvider projectileGenerator, IContextProvider runContextProvider,
-            ISequenceManager sequenceManager)
+            ISequenceManager sequenceManager, ScatterModels scatterModels)
         {               
             _splineMeshGenerator = splineMeshGenerator ?? throw new System.ArgumentNullException(nameof(splineMeshGenerator));
             _trackPopulator = trackPopulator ?? throw new System.ArgumentNullException(nameof(trackPopulator));            
@@ -58,7 +59,8 @@ namespace Game.Gameplay.Realtime
             _crossbowGenerator = crossbowGenerator ?? throw new System.ArgumentNullException(nameof(crossbowGenerator));
             _projectileGenerator = projectileGenerator ?? throw new System.ArgumentNullException(nameof(projectileGenerator));         
             _runContextProvider = runContextProvider ?? throw new System.ArgumentNullException(nameof(runContextProvider));
-            _sequenceManager = sequenceManager ?? throw new System.ArgumentNullException(nameof(sequenceManager));                        
+            _sequenceManager = sequenceManager ?? throw new System.ArgumentNullException(nameof(sequenceManager));
+            _scatterModels = scatterModels ?? throw new System.ArgumentNullException(nameof(scatterModels));                  
         }
         
         public async Task<RunthroughContext> GetRunthroughContextHiden()
@@ -83,6 +85,9 @@ namespace Game.Gameplay.Realtime
             var track = await _splineMeshGenerator.GetRandomizedTrackAsync(sequenceContext.Length, _trackSplineMesh, instantiator); 
             var crossbow = await GetCrossbow();
             var gates = await _trackPopulator.PlaceGatesAsync(_gatePrefab, track, sequence, instantiator);   
+            var backgroundScatter = await _trackPopulator.SpreadBackgroundScatterAsync(
+                _scatterModels.AllGroups, track, 
+                (dencityCoefficient: 1, width: 120), instantiator);   
             var targets = await _targetGenerator.GetTargetAsync(_targetPrefabs, targetScore, targetCountRange, instantiator);   
                         
             await PlaceAtTrackEnd(targets, track, new Vector3(0, -105, 105));            
