@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,5 +9,5 @@ public class ScatterModels : ScriptableObject
     public List<GameObject> PrefabsVegetation;
     
     public List<List<GameObject>> AllGroups 
-        {get => new List<List<GameObject>>{PrefabsVillageStuff, PrefabsTerrain, PrefabsVegetation};} 
+        {get => new List<List<GameObject>>{PrefabsVillageStuff, PrefabsVegetation};} 
 }

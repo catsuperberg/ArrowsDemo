@@ -87,7 +87,7 @@ namespace Game.Gameplay.Realtime
             var gates = await _trackPopulator.PlaceGatesAsync(_gatePrefab, track, sequence, instantiator);   
             var backgroundScatter = await _trackPopulator.SpreadBackgroundScatterAsync(
                 _scatterModels.AllGroups, track, 
-                (dencityCoefficient: 1, width: 120), instantiator);   
+                (dencityCoefficient: 1, width: 180), instantiator);   
             var targets = await _targetGenerator.GetTargetAsync(_targetPrefabs, targetScore, targetCountRange, instantiator);   
                         
             await PlaceAtTrackEnd(targets, track, new Vector3(0, -105, 105));            

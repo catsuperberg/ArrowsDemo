@@ -19,7 +19,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         OperationExecutor _exec;
         float _runUpLength = 40;
         int _nextPairID = 0;
-        float _scatterHeight = -60;
         
         
         GameObject _allGates;
@@ -185,70 +184,129 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         }
         
         
+        
+        
         public async Task<GameObject> SpreadBackgroundScatterAsync(
             IEnumerable<IEnumerable<GameObject>> GroupsOfPrefabsToSpread, Spline track, 
             (float dencityCoefficient, float width) parameters, IInstatiator assetInstatiator)
         {
-            // var GroupsWithBounds = GroupsOfPrefabsToSpread
-            //                             .Select(entry => EnrichWithBounds(entry));
-            // var PrefabsToInstantiateAt = ScatterAlongTheTrack(GroupsWithBounds, track, parameters).ToList();
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                
-            var GroupsWithBounds = GroupsOfPrefabsToSpread
-                                        .Select(entry => EnrichWithBounds(entry));
-            var PrefabsToInstantiateAt = ScatterAlongTheTrack(GroupsWithBounds, track, parameters).ToList();
-                
-                PrefabsToInstantiateAt.ForEach(entry => 
-                    Instantiate(entry.prefab, position: entry.position, rotation: Quaternion.identity));}); 
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {    
+                            
+                var scatterPlacer = new TrackBackgroundScatterPlacer(GroupsOfPrefabsToSpread, track, parameters);
+                var toInstantiate = scatterPlacer.SpreadAssets();                 
+                toInstantiate.ForEach(entry => 
+                    Instantiate(entry.prefab, position: entry.position, rotation: Quaternion.identity));   
+            
+            }); 
                 
             return null;
         }
         
-        Dictionary<GameObject, Bounds> EnrichWithBounds(IEnumerable<GameObject> prefabs)
-            => prefabs.ToDictionary(entry => entry, entry => entry.GetComponent<Renderer>().bounds);
-            
-        List<(GameObject prefab, Vector3 position)> ScatterAlongTheTrack(
-                IEnumerable<Dictionary<GameObject, Bounds>> groupsOfPrefabs, Spline track,
-                (float dencityCoefficient, float width) parameters)
-        {
-            var scattered = new List<(GameObject prefab, Vector3 position)>();
-            
-            var positionOnTrack = _runUpLength;
-            var nextClumpChance = 20;
-            var group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
-            
-            while(positionOnTrack < track.Length)
-            {
-                if((GlobalRandom.RandomIntInclusive(0, nextClumpChance) > nextClumpChance-1))
-                {
-                    group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
-                    positionOnTrack += _runUpLength/2;
-                }
-                    
-                var left = GlobalRandom.RandomBool();
-                var assetGroup = groupsOfPrefabs.ToArray()[group].ToArray();
-                var asset = assetGroup[GlobalRandom.RandomInt(0, assetGroup.Count())];
-                var position = Place(asset.Value, track.GetSampleAtDistance(positionOnTrack).location, parameters.width, scattered, left);         
-                positionOnTrack += asset.Value.extents.x;
-                scattered.Add((asset.Key, position));         
-            }            
-            
-            return scattered;
-        }
+        // Dictionary<GameObject, float> EnrichWithRadius(IEnumerable<GameObject> prefabs)
+        //     => prefabs.ToDictionary(entry => entry, entry => 
+        //         entry.GetComponent<Renderer>().bounds.extents.magnitude);// * entry.GetComponent<Transform>().localScale.x);
         
-        Vector3 Place(Bounds bounds, Vector3 pointAtTrack, float maxWidth, List<(GameObject prefab, Vector3 position)> alreadyPlaced, bool left)
-        {
-            var insideKeepOutWidth = maxWidth * 0.35f;
-            var minDistanceFromTrack = bounds.extents.x/2 + insideKeepOutWidth;
-            var initialOffset = minDistanceFromTrack >= maxWidth ? 
-                minDistanceFromTrack : 
-                (float)GlobalRandom.RandomDouble(minDistanceFromTrack, maxWidth);    
-                
-            initialOffset = left ? -initialOffset : initialOffset;        
+        // List<(GameObject prefab, Vector3 position)> ScatterAlongTheTrack(
+        //         IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs, Spline track,
+        //         (float dencityCoefficient, float width) parameters, Side side)
+        // {
+        //     var scattered = new List<(GameObject prefab, Vector3 position)>();
+        //     while(!EndRiched(scattered))
+        //         scattered.AddRange(GenerateIsland(scattered, groupsOfPrefabs));
+        //     return scattered;
+        // }
+        
+        // bool EndRiched(List<(GameObject prefab, Vector3 position)> scattered)
+        //     => FurthestCenter(scattered).z >= _trackEndZ;
+        
+        // Vector3 FurthestCenter(List<(GameObject prefab, Vector3 position)> scattered)
+        //     => scattered.Aggregate((e1, e2) => e1.position.z > e2.position.z ? e1 : e2).position;
+        
+        // List<(GameObject prefab, Vector3 position)> GenerateIsland(
+        //     List<(GameObject prefab, Vector3 position)> scattered, 
+        //     IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs)
+        // {
+        //     var islandScatter = new List<(GameObject prefab, Vector3 position)>();
+        //     var startZ = scattered.Any() ? FurthestCenter(scattered).z : _runUpLength*2;
+        //     var islandCount = 0;
+        //     var mainAssets = groupsOfPrefabs.ToArray()[GlobalRandom.RandomInt(0, groupsOfPrefabs.Count())].ToArray();
+        //     var additionalAssets = groupsOfPrefabs.ToArray()[GlobalRandom.RandomInt(0, groupsOfPrefabs.Count())].ToArray();
+        //     additionalAssets = (mainAssets != additionalAssets) ? additionalAssets : null;
             
-            var position = pointAtTrack + new Vector3(initialOffset, 0, 0);
-            position.y = _scatterHeight;
-            return position;
-        }
+        //     do
+        //     {
+        //         var asset = mainAssets[GlobalRandom.RandomInt(0, mainAssets.Count())];
+        //         var position = Vector3.zero;
+        //         islandScatter.Add((prefab: asset.Key, position: position));
+        //     } while(DecideToStopIsland(islandScatter, groupsOfPrefabs.SelectMany(entry => entry).ToDictionary(x => x.Key, y => y.Value), islandCount++));
+            
+        //     return islandScatter;
+        // }
+        
+        // Vector3 PlaceAtRandomAngleInfront(KeyValuePair<GameObject, float> asset, List<(GameObject prefab, Vector3 position)> islandScattered)
+        // {
+            
+        //     return Vector3.zero;
+        // }
+        
+        // bool DecideToStopIsland(
+        //     List<(GameObject prefab, Vector3 position)> islandScattered, 
+        //     Dictionary<GameObject, float> combinedAssetRadii,
+        //     int islandCount)
+        // {
+        //     var islandArea = islandScattered
+        //                         .Sum(placed => Mathf.PI + Mathf.Pow(combinedAssetRadii[placed.prefab], 2));
+        //     var chance = (int)((_islandControllArea / islandArea)*100);
+        //     return GlobalRandom.RandomIntInclusive(0, 100) < chance;
+        // }
+            
+            
+            
+            
+            
+            
+        // List<(GameObject prefab, Vector3 position)> ScatterAlongTheTrack(
+        //         IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs, Spline track,
+        //         (float dencityCoefficient, float width) parameters)
+        // {Q
+        //     var scattered = new List<(GameObject prefab, Vector3 position)>();
+            
+        //     var positionOnTrack = _runUpLength;
+        //     var nextClumpChance = 20;
+        //     var group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
+            
+        //     while(positionOnTrack < track.Length)
+        //     {
+        //         if((GlobalRandom.RandomIntInclusive(0, nextClumpChance) > nextClumpChance-1))
+        //         {
+        //             group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
+        //             positionOnTrack += _runUpLength/2;
+        //         }
+                    
+        //         var left = GlobalRandom.RandomBool();
+        //         var assetGroup = groupsOfPrefabs.ToArray()[group].ToArray();
+        //         var asset = assetGroup[GlobalRandom.RandomInt(0, assetGroup.Count())];
+        //         var position = Place(asset.Value, track.GetSampleAtDistance(positionOnTrack).location, parameters.width, scattered, left);         
+        //         positionOnTrack += asset.Value;
+        //         scattered.Add((asset.Key, position));         
+        //     }            
+            
+        //     return scattered;
+        // }
+        
+        // Vector3 Place(float radius, Vector3 pointAtTrack, float maxWidth, List<(GameObject prefab, Vector3 position)> alreadyPlaced, bool left)
+        // {
+        //     var insideKeepOutWidth = maxWidth * 0.35f;
+        //     var minDistanceFromTrack = radius + insideKeepOutWidth;
+        //     var initialOffset = minDistanceFromTrack >= maxWidth ? 
+        //         minDistanceFromTrack : 
+        //         (float)GlobalRandom.RandomDouble(minDistanceFromTrack, maxWidth);    
+                
+        //     initialOffset = left ? -initialOffset : initialOffset;        
+            
+        //     var position = pointAtTrack + new Vector3(initialOffset, 0, 0);
+        //     position.y = _scatterHeight;
+        //     return position;
+        // }
     }
 }
