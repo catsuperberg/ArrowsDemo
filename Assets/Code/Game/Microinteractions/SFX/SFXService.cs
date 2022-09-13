@@ -63,8 +63,9 @@ namespace Game.Microinteracions
         
         void SetMixerVolume()
         {
-            _mixerGroup.audioMixer.SetFloat("VolumeSFX",  MathUtils.PartToNegativeDB(SFXVolume));
-            _source.mute = SFXVolume <= 0;
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>{    
+                _mixerGroup.audioMixer.SetFloat("VolumeSFX",  MathUtils.PartToNegativeDB(SFXVolume));
+                _source.mute = SFXVolume <= 0;});
         }
     }    
     

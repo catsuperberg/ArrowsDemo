@@ -31,7 +31,18 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "27624583",
+        "Value": "2141647519051",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "LifetimeSpending",
+        "Value": "250321195",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -50,23 +61,23 @@
           "MaxValue": "NaN",
           "ValidOptions": null
         }
-      },
-      {
-        "Name": "LifetimeSpending",
-        "Value": "126232740",
-        "Type": "System.Numerics.BigInteger",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
       }
     ]
   },
   {
     "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
     "Fields": [
+      {
+        "Name": "InitialArrowCount",
+        "Value": "25",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
       {
         "Name": "CrossbowLevel",
         "Value": "38",
@@ -80,18 +91,7 @@
       },
       {
         "Name": "ArrowLevel",
-        "Value": "39",
-        "Type": "System.Int32",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
-        "Name": "InitialArrowCount",
-        "Value": "25",
+        "Value": "40",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

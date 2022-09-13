@@ -11,17 +11,12 @@ namespace Settings
         
         public event EventHandler OnUpdated;
         
-        public SettingsRegistryManager(IRegistryIngester registryIngester, IRegistryManager registryManager, IRegistryValueReader registryReader)
-        {            
-            if(registryIngester == null)
-                throw new ArgumentNullException("No IRegistryIngester provided to class" + this.GetType().Name);
-            if(registryManager == null)
-                throw new ArgumentNullException("No IRegistryManager provided to class" + this.GetType().Name);
-            if(registryReader == null)
-                throw new ArgumentNullException( "No IRegistryValueReader provided to class" + this.GetType().Name);
-                                        
-            _registryManager = registryManager;
-            _registryReader = registryReader;
+        public SettingsRegistryManager(
+            IRegistryManager registryManager, 
+            IRegistryValueReader registryReader)
+        {
+            _registryManager = registryManager ?? throw new ArgumentNullException(nameof(registryManager));
+            _registryReader = registryReader ?? throw new ArgumentNullException(nameof(registryReader));
             _registryManager.SyncRegistryAndNonVolatile();   
             _registryManager.UpdateRegistered();  
             

@@ -9,8 +9,9 @@ namespace AssetScripts.Instantiation
         public IList<GameObject> Instantiated {get {return _instantiated.AsReadOnly();}}
         List<GameObject> _instantiated = new List<GameObject>(); 
         
-        public GameObject Instantiate(GameObject original, string name = null, Transform parent = null, 
-            Vector3? position = null, Quaternion? rotation = null)
+        public GameObject Instantiate(
+            GameObject original, Vector3? position = null, Quaternion? rotation = null,
+            Transform parent = null, string name = null)
         {
             var initialPosition = (position != null) ? position.Value : Vector3.zero;
             var initialRotation = (rotation != null) ? rotation.Value : Quaternion.identity;

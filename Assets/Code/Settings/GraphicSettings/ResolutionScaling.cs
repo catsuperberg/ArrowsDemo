@@ -18,12 +18,6 @@ namespace Settings
             registry.Register(this, true, true);   
         }
         
-        void SetScaling()
-        {            
-            var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
-                urp.renderScale = Convert.ToSingle(Scaling);
-        }
-        
         internal override void SetFieldValue(string fieldName, string fieldValue)
         {
             switch(fieldName)
@@ -35,6 +29,12 @@ namespace Settings
                 default:
                     throw new MissingFieldException("No such field in this class: " + fieldName + " Class name: " + this.GetType().Name);
             }
+        }
+        
+        void SetScaling()
+        {            
+            var urp = (UniversalRenderPipelineAsset)GraphicsSettings.currentRenderPipeline;
+                urp.renderScale = Convert.ToSingle(Scaling);
         }
     }
 }

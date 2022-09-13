@@ -65,8 +65,9 @@ namespace Game.Microinteracions
         
         void SetMixerVolume()
         {
-            _mixerGroup.audioMixer.SetFloat("VolumeMusic", MathUtils.PartToNegativeDB(MusicVolume));
-            _source.mute = MusicVolume <= 0;
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>{                
+                _mixerGroup.audioMixer.SetFloat("VolumeMusic", MathUtils.PartToNegativeDB(MusicVolume));
+                _source.mute = MusicVolume <= 0;});
         }
     }        
 }

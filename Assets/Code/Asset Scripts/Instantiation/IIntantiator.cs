@@ -7,8 +7,9 @@ namespace AssetScripts.Instantiation
     public interface IInstatiator
     {
         public IList<GameObject> Instantiated {get;} 
-        public GameObject Instantiate(GameObject original, string name = null, Transform parent = null, 
-           Vector3? position = null, Quaternion? rotation = null);
+        public GameObject Instantiate(
+            GameObject original, Vector3? position = null, Quaternion? rotation = null,
+            Transform parent = null, string name = null);
         public Task UndoImplementationSpecifics();
         public void RedoImplementationSpecifics();
     }

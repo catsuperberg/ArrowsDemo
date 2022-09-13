@@ -9,15 +9,19 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents
         public readonly GameObject Track;
         public readonly GameObject Crossbow;
         public readonly GameObject Gates;
+        public readonly GameObject Scatter;
         public readonly GameObject Targets;
         public readonly GameObject GameObject;
         public float trackWidth {get; private set;} = 12;
         
-        public Playfield(GameObject track, GameObject crossbow, GameObject gates, GameObject targets, GameObject trackObject)
+        public Playfield(
+            GameObject track, GameObject crossbow, GameObject gates, 
+            GameObject scatter, GameObject targets, GameObject trackObject)
         {
             Track = track ?? throw new System.ArgumentNullException(nameof(track));
             Crossbow = crossbow ?? throw new System.ArgumentNullException(nameof(crossbow));
             Gates = gates ?? throw new System.ArgumentNullException(nameof(gates));
+            Scatter = scatter ?? throw new System.ArgumentNullException(nameof(scatter));
             Targets = targets ?? throw new System.ArgumentNullException(nameof(targets));  
             GameObject = trackObject ?? throw new System.ArgumentNullException(nameof(trackObject));
             
@@ -30,6 +34,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents
             Crossbow.transform.SetParent(GameObject.transform);
             Track.transform.SetParent(GameObject.transform);
             Gates.transform.SetParent(GameObject.transform);
+            Scatter.transform.SetParent(GameObject.transform);
             Targets.transform.SetParent(GameObject.transform);
         }
     }

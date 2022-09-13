@@ -160,153 +160,42 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             return points;
         }
         
-        GameObject CreateGatePairOnMainThread(GameObject gatePrefab, OperationPair pair, Vector3 position, Quaternion rotation)
-        {
-            var leftGate = CreateGateHiden(gatePrefab, pair.LeftOperation, true);
-            var rightGate = CreateGateHiden(gatePrefab, pair.RightOperation, false);
-            
-            var pairInstance = Instantiate(gameObject, position, rotation);
-            pairInstance.name = "Gate Pair";
-            UnityMainThreadDispatcher.Instance().Enqueue(() => InitializeGate(leftGate, pairInstance, _nextPairID)); // OPTIMIZATION_POINT register to be done later so to optimise creation loop for cache (first everyghing is generated, and then set to update in scene)
-            UnityMainThreadDispatcher.Instance().Enqueue(() => InitializeGate(rightGate, pairInstance, _nextPairID));
-            
-            _nextPairID++;
-            return pairInstance;        
-        }
                 
-        void InitializeGate(GameObject gate, GameObject pairInstance, int id)
-        {
-            if(gate == null)
-                return;
-            
-            gate.transform.SetParent(pairInstance.transform, false);  
-            gate.name = "Gate - " + id.ToString();                 
-        }
-        
-        
-        
+        List<GameObject> _scattered;
+        GameObject _scatterContainer;
         
         public async Task<GameObject> SpreadBackgroundScatterAsync(
             IEnumerable<IEnumerable<GameObject>> GroupsOfPrefabsToSpread, Spline track, 
             (float dencityCoefficient, float width) parameters, IInstatiator assetInstatiator)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {    
-                            
-                var scatterPlacer = new TrackBackgroundScatterPlacer(GroupsOfPrefabsToSpread, track, parameters);
-                var toInstantiate = scatterPlacer.SpreadAssets();                 
-                toInstantiate.ForEach(entry => 
-                    Instantiate(entry.prefab, position: entry.position, rotation: Quaternion.identity));   
+        {                        
             
-            }); 
-                
-            return null;
+            var scatterSemaphore = new SemaphoreSlim(0, 1);
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    var scatterPlacer = new TrackBackgroundScatterPlacer(GroupsOfPrefabsToSpread, track, parameters);
+                    var toInstantiate = scatterPlacer.SpreadAssets();                       
+                    StartCoroutine(ScatterCoroutine(toInstantiate, assetInstatiator, scatterSemaphore));});
+            await scatterSemaphore.WaitAsync();  
+            
+            return _scatterContainer;
         }
         
-        // Dictionary<GameObject, float> EnrichWithRadius(IEnumerable<GameObject> prefabs)
-        //     => prefabs.ToDictionary(entry => entry, entry => 
-        //         entry.GetComponent<Renderer>().bounds.extents.magnitude);// * entry.GetComponent<Transform>().localScale.x);
-        
-        // List<(GameObject prefab, Vector3 position)> ScatterAlongTheTrack(
-        //         IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs, Spline track,
-        //         (float dencityCoefficient, float width) parameters, Side side)
-        // {
-        //     var scattered = new List<(GameObject prefab, Vector3 position)>();
-        //     while(!EndRiched(scattered))
-        //         scattered.AddRange(GenerateIsland(scattered, groupsOfPrefabs));
-        //     return scattered;
-        // }
-        
-        // bool EndRiched(List<(GameObject prefab, Vector3 position)> scattered)
-        //     => FurthestCenter(scattered).z >= _trackEndZ;
-        
-        // Vector3 FurthestCenter(List<(GameObject prefab, Vector3 position)> scattered)
-        //     => scattered.Aggregate((e1, e2) => e1.position.z > e2.position.z ? e1 : e2).position;
-        
-        // List<(GameObject prefab, Vector3 position)> GenerateIsland(
-        //     List<(GameObject prefab, Vector3 position)> scattered, 
-        //     IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs)
-        // {
-        //     var islandScatter = new List<(GameObject prefab, Vector3 position)>();
-        //     var startZ = scattered.Any() ? FurthestCenter(scattered).z : _runUpLength*2;
-        //     var islandCount = 0;
-        //     var mainAssets = groupsOfPrefabs.ToArray()[GlobalRandom.RandomInt(0, groupsOfPrefabs.Count())].ToArray();
-        //     var additionalAssets = groupsOfPrefabs.ToArray()[GlobalRandom.RandomInt(0, groupsOfPrefabs.Count())].ToArray();
-        //     additionalAssets = (mainAssets != additionalAssets) ? additionalAssets : null;
+        IEnumerator ScatterCoroutine(
+            List<(GameObject prefab, Vector3 position, Quaternion rotation)> toInstantiate, 
+            IInstatiator assetInstatiator, SemaphoreSlim semaphore)
+        {
+            _scattered = new List<GameObject>(); 
             
-        //     do
-        //     {
-        //         var asset = mainAssets[GlobalRandom.RandomInt(0, mainAssets.Count())];
-        //         var position = Vector3.zero;
-        //         islandScatter.Add((prefab: asset.Key, position: position));
-        //     } while(DecideToStopIsland(islandScatter, groupsOfPrefabs.SelectMany(entry => entry).ToDictionary(x => x.Key, y => y.Value), islandCount++));
-            
-        //     return islandScatter;
-        // }
-        
-        // Vector3 PlaceAtRandomAngleInfront(KeyValuePair<GameObject, float> asset, List<(GameObject prefab, Vector3 position)> islandScattered)
-        // {
-            
-        //     return Vector3.zero;
-        // }
-        
-        // bool DecideToStopIsland(
-        //     List<(GameObject prefab, Vector3 position)> islandScattered, 
-        //     Dictionary<GameObject, float> combinedAssetRadii,
-        //     int islandCount)
-        // {
-        //     var islandArea = islandScattered
-        //                         .Sum(placed => Mathf.PI + Mathf.Pow(combinedAssetRadii[placed.prefab], 2));
-        //     var chance = (int)((_islandControllArea / islandArea)*100);
-        //     return GlobalRandom.RandomIntInclusive(0, 100) < chance;
-        // }
-            
-            
-            
-            
-            
-            
-        // List<(GameObject prefab, Vector3 position)> ScatterAlongTheTrack(
-        //         IEnumerable<Dictionary<GameObject, float>> groupsOfPrefabs, Spline track,
-        //         (float dencityCoefficient, float width) parameters)
-        // {Q
-        //     var scattered = new List<(GameObject prefab, Vector3 position)>();
-            
-        //     var positionOnTrack = _runUpLength;
-        //     var nextClumpChance = 20;
-        //     var group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
-            
-        //     while(positionOnTrack < track.Length)
-        //     {
-        //         if((GlobalRandom.RandomIntInclusive(0, nextClumpChance) > nextClumpChance-1))
-        //         {
-        //             group = GlobalRandom.RandomInt(0, groupsOfPrefabs.Count());
-        //             positionOnTrack += _runUpLength/2;
-        //         }
+            foreach(var asset in toInstantiate)
+            {
+                _scattered.Add(assetInstatiator.Instantiate(asset.prefab, asset.position, asset.rotation));
+                if(Time.deltaTime >= 0.01)
+                    yield return null;
+            }
+            _scatterContainer = Instantiate(gameObject, _track.gameObject.transform.position, Quaternion.identity);
+            _scatterContainer.name = "Background Scatter";  
+            _scattered.ForEach(entry => entry.transform.SetParent(_scatterContainer.transform));   
                     
-        //         var left = GlobalRandom.RandomBool();
-        //         var assetGroup = groupsOfPrefabs.ToArray()[group].ToArray();
-        //         var asset = assetGroup[GlobalRandom.RandomInt(0, assetGroup.Count())];
-        //         var position = Place(asset.Value, track.GetSampleAtDistance(positionOnTrack).location, parameters.width, scattered, left);         
-        //         positionOnTrack += asset.Value;
-        //         scattered.Add((asset.Key, position));         
-        //     }            
-            
-        //     return scattered;
-        // }
-        
-        // Vector3 Place(float radius, Vector3 pointAtTrack, float maxWidth, List<(GameObject prefab, Vector3 position)> alreadyPlaced, bool left)
-        // {
-        //     var insideKeepOutWidth = maxWidth * 0.35f;
-        //     var minDistanceFromTrack = radius + insideKeepOutWidth;
-        //     var initialOffset = minDistanceFromTrack >= maxWidth ? 
-        //         minDistanceFromTrack : 
-        //         (float)GlobalRandom.RandomDouble(minDistanceFromTrack, maxWidth);    
-                
-        //     initialOffset = left ? -initialOffset : initialOffset;        
-            
-        //     var position = pointAtTrack + new Vector3(initialOffset, 0, 0);
-        //     position.y = _scatterHeight;
-        //     return position;
-        // }
+            semaphore.Release();
+        }
     }
 }

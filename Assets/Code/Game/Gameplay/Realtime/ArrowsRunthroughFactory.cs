@@ -91,7 +91,7 @@ namespace Game.Gameplay.Realtime
             var targets = await _targetGenerator.GetTargetAsync(_targetPrefabs, targetScore, targetCountRange, instantiator);   
                         
             await PlaceAtTrackEnd(targets, track, new Vector3(0, -105, 105));            
-            await AssemblePlayfield(track, gates, targets, crossbow);            
+            await AssemblePlayfield(track, gates, backgroundScatter, targets, crossbow);            
             
             return _playfield;
         }
@@ -110,11 +110,13 @@ namespace Game.Gameplay.Realtime
             await PlaceAtTrackEndSemaphore.WaitAsync();  
         }
         
-        async Task AssemblePlayfield(Spline track, GameObject gates, GameObject targets, GameObject crossbow)
+        async Task AssemblePlayfield(
+            Spline track, GameObject gates, GameObject scatter,
+            GameObject targets, GameObject crossbow)
         {            
             var playfieldAsemblySemaphore = new SemaphoreSlim(0, 1);
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                StartCoroutine(PlayfieldAssemblyCoroutine(track, gates, targets, crossbow,
+                StartCoroutine(PlayfieldAssemblyCoroutine(track, gates, scatter, targets, crossbow,
                 playfieldAsemblySemaphore));});
             await playfieldAsemblySemaphore.WaitAsync();  
         }
@@ -126,10 +128,12 @@ namespace Game.Gameplay.Realtime
             yield return null;
         }
         
-        IEnumerator PlayfieldAssemblyCoroutine(Spline track, GameObject gates, GameObject targets, GameObject crossbow, SemaphoreSlim semaphore)
+        IEnumerator PlayfieldAssemblyCoroutine(
+            Spline track, GameObject gates, GameObject scatter,
+            GameObject targets, GameObject crossbow, SemaphoreSlim semaphore)
         {   
             var playfieldObject = new GameObject("playfield");   
-            _playfield = new Playfield(track.gameObject, crossbow, gates, targets, playfieldObject);
+            _playfield = new Playfield(track.gameObject, crossbow, gates, scatter, targets, playfieldObject);
             semaphore.Release();
             yield return null;
         }  

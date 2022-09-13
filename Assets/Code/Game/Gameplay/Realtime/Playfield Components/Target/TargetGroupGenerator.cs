@@ -51,7 +51,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         
         IEnumerator TargetGenerationCoroutine(SemaphoreSlim semaphore)
         {                   
-            var targetGroup = _assetInstatiator.Instantiate(_targetGroupPrefab, "Targets");          
+            var targetGroup = _assetInstatiator.Instantiate(_targetGroupPrefab, name: "Targets");          
             
             var targets = targetGroup.GetComponent<IGameObjectFillable>();            
             foreach(BigInteger score in _targetScores)

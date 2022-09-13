@@ -40,12 +40,12 @@ public class GameInstaller : MonoInstaller
         ComposeDiskAccess();
         ComposeUserContextRepository();  
         ComposeSettingsRepository();    
-        
-        ComposeAudio();  
+         
         ComposeSettings();   
         ComposeSkinsImport();
         ComposeUserContextManagement();
         ComposeMicrointeractions(); 
+        ComposeAudio(); 
         ComposeSkinShop();    
         
         Container.Bind<OperationExecutor>().AsTransient().NonLazy();
@@ -126,7 +126,7 @@ public class GameInstaller : MonoInstaller
         var nonVolatileStorage = new JsonStorage(new DiskAcessor());
         var _settingsRegistry = RegistryFactory.CreateRegistry("GameSettings", nonVolatileStorage);
         
-        var settingsRegistryManager = new SettingsRegistryManager(_settingsRegistry.Ingester, _settingsRegistry.Manager, _settingsRegistry.Reader);
+        var settingsRegistryManager = new SettingsRegistryManager(_settingsRegistry.Manager, _settingsRegistry.Reader);
         Container.Bind<IUpdatedNotification>().WithId("settingsNotifier").FromInstance(settingsRegistryManager).AsTransient(); 
         Container.Bind<IRegistryIngester>().WithId("settingsIngester").FromInstance(_settingsRegistry.Ingester).AsTransient(); 
         Container.Bind<IRegistryAccessor>().WithId("settingsAccessor").FromInstance(_settingsRegistry.Accessor).AsTransient(); 

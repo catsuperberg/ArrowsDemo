@@ -77,7 +77,7 @@ namespace Game.Gameplay.Realtime
             GameObject.Destroy(CurrentRunthroughContext.PlayfieldForRun.Crossbow);
             var oldField = CurrentRunthroughContext.PlayfieldForRun;
             var newContext = new RunthroughContext(
-                playfieldForRun: new Playfield(oldField.Track, newCrossbow, oldField.Gates, oldField.Targets, oldField.GameObject),
+                playfieldForRun: new Playfield(oldField.Track, newCrossbow, oldField.Gates, oldField.Scatter, oldField.Targets, oldField.GameObject),
                 follower: CurrentRunthroughContext.Follower,
                 projectile: CurrentRunthroughContext.Projectile,
                 instatiator: CurrentRunthroughContext.Instatiator,
