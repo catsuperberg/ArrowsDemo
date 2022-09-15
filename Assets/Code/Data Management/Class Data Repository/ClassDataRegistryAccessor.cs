@@ -8,6 +8,8 @@ namespace DataManagement
     {
         IRegistryBackend _registry;
         
+        public event EventHandler<ClassResetArgs> OnClassReset;
+        
         public ClassDataRegistryAccessor(IRegistryBackend registry) : base(registry)    
         {
             _registry = registry ?? throw new ArgumentNullException(nameof(registry));
@@ -46,7 +48,8 @@ namespace DataManagement
                 var defaultConfigurables = ConfigurableFieldUtils.GetInstanceFieldsWithCurrentValues((IConfigurable)tempInstance, classType);
                 _registry.OverrideClassData(classType.FullName, defaultConfigurables);
                 _registry.UpdateAllRegisteredOfClass(classType.FullName);
-                tempInstance = null;                
+                tempInstance = null;       
+                OnClassReset?.Invoke(this, new ClassResetArgs(classType));     
             }
         }
         

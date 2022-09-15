@@ -16,6 +16,7 @@ namespace Game.Gameplay.Meta.Skins
         
         public event EventHandler OnUpdated;
         protected SkinCollection _latestCollection;
+        protected virtual Type CollectionType() =>  throw new NotImplementedException();
         
         
         public SkinCollectionFactory(
@@ -35,7 +36,14 @@ namespace Game.Gameplay.Meta.Skins
             providers.Add(ExternalProvider());
             _latestCollection = CreateColletcion(_registryInjester, providers);
             _registryManager.OnRegisteredUpdated += PrepareCollectionAfterNonVolatileLoaded; // HACK _latestCollection ony needed so it's possible to clean up non valid stuff in non volatile storage
+            _registryAccessor.OnClassReset += UpdateOnReset;
             return _latestCollection;
+        }
+        
+        void UpdateOnReset(object caller, ClassResetArgs args)
+        {
+            if(args.ClassType == CollectionType())
+                PrepareCollectionAfterNonVolatileLoaded(this, EventArgs.Empty);       
         }
         
         void PrepareCollectionAfterNonVolatileLoaded(object caller, EventArgs args)

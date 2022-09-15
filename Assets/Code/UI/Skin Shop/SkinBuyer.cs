@@ -59,11 +59,11 @@ namespace UI
         
         public void Buy()
         {
-            _shopService.BuySkin(SkinName);
-            OnSkinBought?.Invoke(this, EventArgs.Empty);
+            if(_shopService.BuySkin(SkinName))
+                OnSkinBought?.Invoke(this, EventArgs.Empty);
         }
         
-        void UpdateAppearance()
+        public void UpdateAppearance()
         {
             BuyButton.interactable = _shopService.EnoughtSpendingForSkin(SkinName);
         }        

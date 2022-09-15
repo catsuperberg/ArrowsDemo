@@ -45,9 +45,6 @@ namespace DataManagement
         public void WriteToRegistry(List<ConfigurableClassData> configurablesToPush, bool overrideOnPresent)
             => _configurables.PushData(configurablesToPush, overrideOnPresent);
         
-        // public void OverrideConfigurables(ConfigurablesCollection newConfigurables)
-        //     => _configurables = newConfigurables;
-        
         public void OverrideClassData(string className, List<ConfigurableField> newData)
             => _configurables.SetRegisteredFields(className, newData);
         

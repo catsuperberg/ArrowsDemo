@@ -30,8 +30,19 @@
     "ClassName": "Game.Gameplay.Meta.Curencies.CurenciesContext",
     "Fields": [
       {
+        "Name": "CommonCoins",
+        "Value": "0",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
         "Name": "SkinTokens",
-        "Value": "1",
+        "Value": "0",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -42,18 +53,7 @@
       },
       {
         "Name": "LifetimeSpending",
-        "Value": "1115",
-        "Type": "System.Numerics.BigInteger",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
-        "Name": "CommonCoins",
-        "Value": "549",
+        "Value": "0",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -69,7 +69,7 @@
     "Fields": [
       {
         "Name": "CrossbowLevel",
-        "Value": "2",
+        "Value": "1",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -118,7 +118,7 @@
     "Fields": [
       {
         "Name": "BoughtSkins",
-        "Value": "[\"Bolt\",\"Arrow\",\"Pencil\"]",
+        "Value": "[\"Bolt\"]",
         "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -129,7 +129,7 @@
       },
       {
         "Name": "SelectedSkin",
-        "Value": "Pencil",
+        "Value": "Bolt",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -145,7 +145,7 @@
     "Fields": [
       {
         "Name": "BoughtSkins",
-        "Value": "[\"Wood\",\"ModernCarbon\"]",
+        "Value": "[\"Wood\"]",
         "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -156,7 +156,7 @@
       },
       {
         "Name": "SelectedSkin",
-        "Value": "ModernCarbon",
+        "Value": "Wood",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

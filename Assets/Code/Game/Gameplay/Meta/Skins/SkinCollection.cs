@@ -10,6 +10,11 @@ namespace Game.Gameplay.Meta.Skins
 {
     public class CrossbowSkinCollection : SkinCollection
     {
+        public CrossbowSkinCollection() 
+            : base()
+        {
+        }
+        
         public CrossbowSkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders) 
             : base(registry, skinProviders)
         {
@@ -18,6 +23,11 @@ namespace Game.Gameplay.Meta.Skins
     
     public class ProjectileSkinCollection : SkinCollection
     {
+        public ProjectileSkinCollection() 
+            : base()
+        {
+        }
+        
         public ProjectileSkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders) 
             : base(registry, skinProviders)
         {
@@ -37,17 +47,18 @@ namespace Game.Gameplay.Meta.Skins
         Dictionary<string, ISkinProvider> _accessibleSkins;
         List<ISkinProvider> _skinProviders;     
         
+        public SkinCollection()
+        {            
+        }
+        
         public SkinCollection(IRegistryIngester registry, List<ISkinProvider> skinProviders)
         {
             if(registry == null)
                 throw new ArgumentNullException("IRegistryIngester not provided or empty at: " + this.GetType().Name);
-            if(skinProviders == null || !skinProviders.Any())
-                throw new ArgumentNullException("List<ISkinProvider> not provided or empty at: " + this.GetType().Name);
                 
             registry.Register(this, true, true);
-            _skinProviders = skinProviders;            
+            _skinProviders = skinProviders ?? throw new ArgumentNullException(nameof(skinProviders));            
             AssembleAccessibleSkins();
-            // SelectFirstAccessibleIfSelectedInvalid();
         }
         
         void AssembleAccessibleSkins()

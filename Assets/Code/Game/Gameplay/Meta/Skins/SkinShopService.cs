@@ -33,6 +33,7 @@ namespace Game.Gameplay.Meta.Skins
         }
         
         public bool IsSelectedSkin(string name) => _skins.SelectedSkin == name;
+        public bool IsBoughtSkin(string name) => _skins.BoughtSkins.Contains(name);
             
         public List<string> BoughtSkins => _skins.BoughtSkins;
         
@@ -40,14 +41,15 @@ namespace Game.Gameplay.Meta.Skins
          
         public Sprite SkinIcon(string name) => _skins.GetSkinIcon(name);         
         
-        public void BuySkin(string name)
+        public bool BuySkin(string name)
         {
             if(!EnoughtTokens())
-                return;
+                return false;
                 
             ChargePlayerToken();
             _userRegistry.ApplyOperationOnRegisteredField(_skins.GetType(), nameof(SkinCollection.BoughtSkins),
                 OperationType.Append, JsonConvert.SerializeObject(new List<string>{name}));
+            return true;
         }
         
         public void SelectSkin(string name)

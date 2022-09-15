@@ -5,6 +5,7 @@ namespace DataManagement
 {
     public interface IRegistryAccessor : IRegistryValueReader
     {
+        public event EventHandler<ClassResetArgs> OnClassReset;
         public List<Type> GetRegisteredClasses();   
         public List<string> GetRegisteredFields(Type classType);            
         public void ResetRegisteredFieldsToDefault(Type classType);

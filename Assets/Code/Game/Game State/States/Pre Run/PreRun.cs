@@ -75,11 +75,17 @@ namespace Game.GameState
             _contextManager.RequestContextUpdate();
         }
         
-        void ProjectileSkinUpdated(object caller, EventArgs e)
-            => _contextManager.UpdateProjectileToSelected();
+        void ProjectileSkinUpdated(object caller, EventArgs e)     
+        {
+            if(_contextManager.CurrentRunthroughContext != null)
+                _contextManager.UpdateProjectileToSelected();
+        } 
             
-        void CrossbowSkinUpdated(object caller, EventArgs e)
-            => _contextManager.UpdateCrossbowToSelected();
+        void CrossbowSkinUpdated(object caller, EventArgs e)        
+        {
+            if(_contextManager.CurrentRunthroughContext != null)
+                _contextManager.UpdateCrossbowToSelected();
+        } 
         
         void OnDestroy()
         {

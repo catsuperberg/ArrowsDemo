@@ -51,9 +51,9 @@ namespace Game.Gameplay.Meta
             if(args.ClassName ==  typeof(UpgradeSystem.UpgradeContext).FullName)
                 NotifyAboutUpgrades(args.Fields);
             else if(args.ClassName ==  typeof(Skins.ProjectileSkinCollection).FullName)
-                NotifyAboutProjectileSkin(args.Fields);
+                NotifyAboutProjectileSkin(args);
             else if(args.ClassName ==  typeof(Skins.CrossbowSkinCollection).FullName)
-                NotifyAboutCrossbowSkin(args.Fields);
+                NotifyAboutCrossbowSkin(args);
             SaveToNonVolatile();
         }
         
@@ -63,17 +63,23 @@ namespace Game.Gameplay.Meta
                 OnNewRunthroughComponents?.Invoke(this, EventArgs.Empty);
         }
         
-        void NotifyAboutProjectileSkin(List<string> changedFields)
+        void NotifyAboutProjectileSkin(RegistryChangeArgs changedFields)
         {
-            if(changedFields.Contains(nameof(Skins.SkinCollection.SelectedSkin)))
+            if(changedFields.Fields.Contains(nameof(Skins.SkinCollection.SelectedSkin)) && BoughtNotEmpty(changedFields))
                 OnSelectedProjectileSkin?.Invoke(this, EventArgs.Empty);
         }
         
-        void NotifyAboutCrossbowSkin(List<string> changedFields)
+        
+        void NotifyAboutCrossbowSkin(RegistryChangeArgs changedFields)
         {
-            if(changedFields.Contains(nameof(Skins.SkinCollection.SelectedSkin)))
+            if(changedFields.Fields.Contains(nameof(Skins.SkinCollection.SelectedSkin)) && BoughtNotEmpty(changedFields))
                 OnSelectedCrossbowSkin?.Invoke(this, EventArgs.Empty);
         }
+        
+        bool BoughtNotEmpty(RegistryChangeArgs updated) //HACK needed to prevent resets from triggering update while new SkinCollections aren't initialized
+            => updated.Fields
+                .Where(entry => entry.Contains("Bought"))
+                .Any(entry => !(_registryReader.GetStoredValue(Type.GetType(updated.ClassName), entry) == "[]"));
         
         void SaveToNonVolatile()
             => _registryManager.SaveRegisteredToNonVolatile();

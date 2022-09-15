@@ -1,6 +1,7 @@
 using AssetScripts.AssetCreation;
 using DataAccess.DiskAccess.GameFolders;
 using DataManagement;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Game.Gameplay.Meta.Skins
         const string _skinFolderName = "Projectiles";
         const string _iconizerPrefabResourcePath = "iconizer";
         ExternalSkins _externalSkinGenerator;
+        override protected Type CollectionType() =>  typeof(ProjectileSkinCollection);
            
         public ProjectileCollectionFactory(
             [Inject(Id = "userRegistryIngester")] IRegistryIngester registryInjester,

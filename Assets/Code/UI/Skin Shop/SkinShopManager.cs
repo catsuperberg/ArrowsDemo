@@ -16,6 +16,24 @@ namespace UI
         Transform ContainerForElements;
         
         SkinShopService _shopService;
+        
+        void OnEnable()
+        {
+            if(_shopService == null)
+                return;
+            
+            ResetIfUnboughtScriptsWithSelectors();
+        }
+        
+        void ResetIfUnboughtScriptsWithSelectors()
+        {
+            var skinSelectors = gameObject.GetComponentsInChildren<SkinSelector>();
+            if(skinSelectors.Any(entry => !_shopService.IsBoughtSkin(entry.SkinName)))
+            {
+                ContainerForElements.Cast<Transform>().ToList().ForEach(entry => Destroy(entry.gameObject));
+                ConstructBase(_shopService);
+            }
+        }
 
         public void ConstructBase(SkinShopService shopService)
         {

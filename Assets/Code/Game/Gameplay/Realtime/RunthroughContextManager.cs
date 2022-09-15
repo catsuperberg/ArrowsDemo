@@ -83,7 +83,6 @@ namespace Game.Gameplay.Realtime
                 instatiator: CurrentRunthroughContext.Instatiator,
                 generationContext: CurrentRunthroughContext.GenerationContext);
             CurrentRunthroughContext = newContext;
-            
         }     
         
         void UpdateIfRequestsStopForMs(int timeMs)

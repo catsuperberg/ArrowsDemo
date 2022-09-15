@@ -60,7 +60,7 @@ namespace UI
             _shopService.SelectSkin(SkinName);
         }
         
-        void UpdateAppearance()
+        public void UpdateAppearance()
         {
             var skinSelected = _shopService.IsSelectedSkin(SkinName);
             SelectButton.interactable = !skinSelected;
