@@ -1,4 +1,5 @@
 using DataManagement;
+using Settings;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,17 +17,19 @@ namespace UI
         GameObject SliderChangerPrefab;
         [SerializeField]
         GameObject DropDownChangerPrefab;
+        [SerializeField]
+        GameObject SettingsButton;
         
-        IRegistryAccessor _settingsAccessor;        
+        IRegistryAccessor _settingsAccessor;   
+        ProgressReset.Factory _resetScriptFactory;     
         
         [Inject]
-        public void Initialize([Inject(Id = "settingsAccessor")] IRegistryAccessor registryAccessor)
+        public void Initialize([Inject(Id = "settingsAccessor")] IRegistryAccessor registryAccessor, ProgressReset.Factory resetScriptFactory)
         {
-            if(registryAccessor == null)
-                throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
-                                
-            _settingsAccessor = registryAccessor; 
+            _settingsAccessor = registryAccessor ?? throw new ArgumentNullException(nameof(registryAccessor)); 
+            _resetScriptFactory = resetScriptFactory ?? throw new ArgumentNullException(nameof(resetScriptFactory));
             CreateSettingChangers();  
+            CreateProgressResetButton();
         }
         
         void CreateSettingChangers()
@@ -62,6 +65,22 @@ namespace UI
                 var changer = changerGO.GetComponentInChildren<SettingsDropDownChanger>();
                 changer.AttachToValue(_settingsAccessor, classType, fieldName);
             }
+        }
+        
+        void CreateProgressResetButton()
+        {
+            var buttonGO = Instantiate(SettingsButton, Vector3.zero, Quaternion.identity, FillablePanel.transform);
+            var button = buttonGO.GetComponent<SettingsButton>();
+            var resetScript = _resetScriptFactory.Create();
+            resetScript.gameObject.transform.SetParent(buttonGO.transform);
+            button.AttachToValue("RESET PLAYER PROGRESS", resetScript);
+            
+            // var containerWithCallable = ProgressResetFactory.GetProgressResetWithInjestion();
+            // var progressReset = containerWithCallable.GetComponent<ICallable>();
+            // var buttonGO = Instantiate(SettingsButton, Vector3.zero, Quaternion.identity, FillablePanel.transform);
+            // containerWithCallable.transform.SetParent(buttonGO.transform);
+            // var button = buttonGO.GetComponent<SettingsButton>();
+            // button.AttachToValue("RESET PLAYER PROGRESS", progressReset);
         }
     }
 }

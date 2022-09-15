@@ -101,5 +101,21 @@
         }
       }
     ]
+  },
+  {
+    "ClassName": "Settings.DebugOverlay",
+    "Fields": [
+      {
+        "Name": "OverlayEnabled",
+        "Value": "False",
+        "Type": "System.Boolean",
+        "Metadata": {
+          "PrettyName": "Debug Overlay",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
   }
 ]

@@ -969,6 +969,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a749df5e56f6422ba9fe64d83915a89, type: 3}
+--- !u!1 &1688250933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+  m_PrefabInstance: {fileID: 689011762}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1693222323
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,9 +1263,10 @@ MonoBehaviour:
   _crossbowGenerator: {fileID: 1930980671}
   _targetGenerator: {fileID: 1693222325}
   _appStateFactory: {fileID: 1817678896}
-  MusicSource: {fileID: 1929351411}
-  SFXSource: {fileID: 249463871}
-  BackgroundScatterModels: {fileID: 11400000, guid: 6fd07a5292a678e49b684a1c8f18e24a, type: 2}
+  _musicSource: {fileID: 1929351411}
+  _SFXSource: {fileID: 249463871}
+  _backgroundScatterModels: {fileID: 11400000, guid: 6fd07a5292a678e49b684a1c8f18e24a, type: 2}
+  _debugOverlay: {fileID: 1688250933}
 --- !u!4 &1920852523
 Transform:
   m_ObjectHideFlags: 0

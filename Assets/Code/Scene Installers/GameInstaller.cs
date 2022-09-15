@@ -29,11 +29,13 @@ public class GameInstaller : MonoInstaller
     [SerializeField]
     private AppStateFactory _appStateFactory;
     [SerializeField]
-    AudioSource MusicSource;
+    AudioSource _musicSource;
     [SerializeField]
-    AudioSource SFXSource;
+    AudioSource _SFXSource;
     [SerializeField]
-    ScatterModels BackgroundScatterModels;
+    ScatterModels _backgroundScatterModels;
+    [SerializeField]
+    GameObject _debugOverlay;
     
     public override void InstallBindings()
     {      
@@ -55,7 +57,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
         Container.Bind<IProjectileProvider>().FromInstance(_projectileGenerator).AsSingle();  
-        Container.Bind<ScatterModels>().FromInstance(BackgroundScatterModels).AsSingle();  
+        Container.Bind<ScatterModels>().FromInstance(_backgroundScatterModels).AsSingle();  
                                                  
         Container.Bind<ICrossbowProvider>().FromInstance(_crossbowGenerator).AsSingle(); 
         Container.Bind<ProjectileInPlaceReplacer>().AsSingle().NonLazy();  
@@ -139,6 +141,10 @@ public class GameInstaller : MonoInstaller
         Container.Bind<GraphicsPresset>().AsSingle().NonLazy(); 
         Container.Bind<MusicService>().AsSingle().NonLazy(); 
         Container.Bind<SFXService>().AsSingle().NonLazy(); 
+        Container.Bind<GameObject>().WithId("DebugOverlay").FromInstance(_debugOverlay).AsTransient(); 
+        Container.Bind<DebugOverlay>().AsSingle().NonLazy(); 
+        
+        Container.BindFactory<ProgressReset, ProgressReset.Factory>().FromNewComponentOnNewGameObject();
     }  
     
     void ComposeMicrointeractions()
@@ -148,7 +154,7 @@ public class GameInstaller : MonoInstaller
     
     void ComposeAudio()
     {
-        Container.Bind<AudioSource>().WithId("Music").FromInstance(MusicSource).AsTransient();  
-        Container.Bind<AudioSource>().WithId("SFX").FromInstance(SFXSource).AsTransient();  
+        Container.Bind<AudioSource>().WithId("Music").FromInstance(_musicSource).AsTransient();  
+        Container.Bind<AudioSource>().WithId("SFX").FromInstance(_SFXSource).AsTransient();  
     }    
 }

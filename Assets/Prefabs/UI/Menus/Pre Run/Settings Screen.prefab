@@ -567,6 +567,7 @@ MonoBehaviour:
   ToggleChangerPrefab: {fileID: 5368649290037811340, guid: 7f4285b7d4f426143bb6d7c1cdd20906, type: 3}
   SliderChangerPrefab: {fileID: 5368649290037811340, guid: 8ac820ac52bf8af49824b4b1326786c7, type: 3}
   DropDownChangerPrefab: {fileID: 5368649290037811340, guid: 16ad469b5d660bf42a9ec4aa9e7bcaa4, type: 3}
+  SettingsButton: {fileID: 5368649290037811340, guid: eb1bc20bdd55d234ea6d8a9b5e25c67d, type: 3}
 --- !u!114 &2830130406183514112
 MonoBehaviour:
   m_ObjectHideFlags: 0
