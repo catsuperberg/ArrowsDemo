@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1896561388112300763}
-  - component: {fileID: 6361140800085200775}
+  - component: {fileID: 2549978664801166997}
   m_Layer: 0
   m_Name: Post Run (Fail)
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6361140800085200775
+--- !u!114 &2549978664801166997
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,7 +42,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1896561388112300760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d80438904afe6484ca3c2f7b9c39c8c4, type: 3}
+  m_Script: {fileID: 11500000, guid: aa0a220176594d447bf4f03b85569c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1896561388537407335
@@ -485,8 +485,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6361140800085200775}
-        m_TargetAssemblyTypeName: Game.GameState.PostRunFailedRun, Assembly-CSharp
+      - m_Target: {fileID: 2549978664801166997}
+        m_TargetAssemblyTypeName: Game.GameState.PostRunFailed, MainGame
         m_MethodName: RequestMenu
         m_Mode: 1
         m_Arguments:
@@ -1024,8 +1024,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6361140800085200775}
-        m_TargetAssemblyTypeName: Game.GameState.PostRunFailedRun, Assembly-CSharp
+      - m_Target: {fileID: 2549978664801166997}
+        m_TargetAssemblyTypeName: Game.GameState.PostRunFailed, MainGame
         m_MethodName: RequestRestart
         m_Mode: 1
         m_Arguments:

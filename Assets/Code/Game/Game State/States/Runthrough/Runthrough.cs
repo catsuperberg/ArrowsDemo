@@ -3,14 +3,16 @@ using Game.Gameplay.Realtime.GameplayComponents;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using Game.Gameplay.Realtime.PlayfieldComponents;
+using Game.GameState.Context;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UI;
 using UnityEngine;
 
 namespace Game.GameState
 {    
-    public class Runthrough : MonoBehaviour
+    public class Runthrough : MonoBehaviour, IRunRestarter
     {        
         [SerializeField]
         private RunthroughUI _UI;
@@ -33,30 +35,40 @@ namespace Game.GameState
         RewardCalculator _rewardCalculator;    
         IProjectile _projectile;    
         
-        public event EventHandler OnProceedToNextState;   
+        public event EventHandler OnProceedToNextState;  
+        
+        IRunRestarter _restarter;
+        public PostRunContext Context {get => _restarter.Context;} 
+        public event EventHandler OnProceedToRestart;
         
         void OnDestroy()
         {            
             DestroyRun();
+            _restarter.OnProceedToRestart -= RequestRestart;
         }
         
         public void Initialize(RunthroughContext runContext, RewardCalculator rewardCalculator)
         {
             if(runContext == null)
                 throw new ArgumentNullException("RunthroughContext not provided to " + this.GetType().Name);
-            if(rewardCalculator == null)
-                throw new ArgumentNullException("RewardCalculator not provided to " + this.GetType().Name);
                 
             _playfield = runContext.PlayfieldForRun;   
-            _rewardCalculator = rewardCalculator;      
+            _rewardCalculator = rewardCalculator ?? throw new ArgumentNullException(nameof(rewardCalculator));      
             _stateEnumerator = _statesToGoThrough.GetEnumerator();   
             
             _projectile = runContext.Projectile.GetComponent<IProjectile>();
             _projectile.OnUpdated += CheckForPlayerFail;
             AttachUIRequests();
             
-            _flyingState = new FlightThroughTrack(runContext.Follower, runContext.Projectile);
+            _flyingState = new FlightThroughTrack(runContext.Follower, runContext.Projectile); 
+            
+            _restarter = GetComponentsInChildren<IRunRestarter>()
+                .First(restarter => restarter.GetHashCode() != this.GetHashCode());
+            _restarter.OnProceedToRestart += RequestRestart;
         }
+        
+        void RequestRestart(object caller, EventArgs args)
+            => OnProceedToRestart?.Invoke(this, EventArgs.Empty);
         
         void CheckForPlayerFail(object caller, EventArgs args)
         {

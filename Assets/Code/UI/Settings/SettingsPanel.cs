@@ -1,7 +1,6 @@
 using DataManagement;
 using Settings;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -74,13 +73,6 @@ namespace UI
             var resetScript = _resetScriptFactory.Create();
             resetScript.gameObject.transform.SetParent(buttonGO.transform);
             button.AttachToValue("RESET PLAYER PROGRESS", resetScript);
-            
-            // var containerWithCallable = ProgressResetFactory.GetProgressResetWithInjestion();
-            // var progressReset = containerWithCallable.GetComponent<ICallable>();
-            // var buttonGO = Instantiate(SettingsButton, Vector3.zero, Quaternion.identity, FillablePanel.transform);
-            // containerWithCallable.transform.SetParent(buttonGO.transform);
-            // var button = buttonGO.GetComponent<SettingsButton>();
-            // button.AttachToValue("RESET PLAYER PROGRESS", progressReset);
         }
     }
 }

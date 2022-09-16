@@ -70,7 +70,7 @@ namespace Game.GameState
             else
             {
                 var postRunGO = Instantiate(PostRunFailedPrefab); 
-                var postRunComponent = postRunGO.GetComponent<PostRunFailedRun>();   
+                var postRunComponent = postRunGO.GetComponent<PostRunFailed>();   
                 postRunComponent.Initialize(_contextManager);  
                 postRun = postRunComponent;          
             }

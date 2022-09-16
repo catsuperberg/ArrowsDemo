@@ -93,14 +93,28 @@ namespace Game.GameState
             Destroy(_preRun.GameObject);
             _preRun = null;
             _runthrough.OnProceedToNextState += RunthroughFinished;
+            _runthrough.OnProceedToRestart += RunthroughFinishedRestart;
             _runthrough.StartRun();
         }
         
         void RunthroughFinished(object caller, EventArgs args)
         {
+            _runthrough.OnProceedToRestart -= RunthroughFinishedRestart;
             _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;  
             OnNextStateFinished?.Invoke(this, EventArgs.Empty);
             AdvanceState();
+            ProcessCurrentState();
+        }
+        
+        void RunthroughFinishedRestart(object caller, EventArgs args)
+        {
+            _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;  
+            _runthrough.OnProceedToNextState -= PreRunCalledStartRunthrough;  
+            OnNextStateFinished?.Invoke(this, EventArgs.Empty);
+            _postRunContext = _runthrough.Context;
+            AdvanceState(AppState.PreRun);
+            Destroy(_runthrough.gameObject);
+            _runthrough = null;
             ProcessCurrentState();
         }
         
@@ -169,6 +183,23 @@ namespace Game.GameState
             
             var hasNext =_stateEnumerator.MoveNext();
             if(!hasNext)
+            {
+                _stateEnumerator = _statesToGoThrough.GetEnumerator();  
+                _stateEnumerator.MoveNext();
+            }            
+            _state = _stateEnumerator.Current; 
+        }
+        
+        void AdvanceState(AppState stateToGo)
+        {     
+            AppState? state = null;  
+            while(_stateEnumerator.MoveNext() && state == null)
+            {
+                state = _stateEnumerator.Current == stateToGo ? _stateEnumerator.Current : null;
+            }
+            
+            
+            if(state == null)
             {
                 _stateEnumerator = _statesToGoThrough.GetEnumerator();  
                 _stateEnumerator.MoveNext();

@@ -40,8 +40,10 @@ namespace Game.GameState
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 FinishingScreen.SetActive(false);
+                FinishingScreen.GetComponent<Canvas>().enabled = true; // HACK needed to be active for script, but invisible
                 // PreAdTease.SetActive(false);
                 PauseScreen.SetActive(false);
+                PauseScreen.GetComponent<Canvas>().enabled = true; // HACK needed to be active for script, but invisible
                 });             
         }
         

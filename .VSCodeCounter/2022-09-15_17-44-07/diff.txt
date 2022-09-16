@@ -1,0 +1,157 @@
+Date : 2022-09-15 17:44:07
+Directory : c:\Unity\ArrowsDemo\Assets\Code
+Total : 84 files,  809 codes, -12 comments, 123 blanks, all 920 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C#       |         84 |        809 |        -12 |        123 |        920 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                              | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                 |         84 |        809 |        -12 |        123 |        920 |
+| Asset Scripts                                                                                                     |         17 |         21 |        -11 |         15 |         25 |
+| Asset Scripts\Asset Creation                                                                                      |         14 |         18 |        -11 |         15 |         22 |
+| Asset Scripts\Asset Creation\AssetCreationTests                                                                   |          2 |          6 |         -1 |         -1 |          4 |
+| Asset Scripts\Asset Creation\Crossbow                                                                             |          2 |         -1 |          0 |          2 |          1 |
+| Asset Scripts\Asset Creation\InjestData                                                                           |          1 |          0 |        -10 |         -1 |        -11 |
+| Asset Scripts\Asset Creation\Projectile                                                                           |          3 |         11 |          0 |          5 |         16 |
+| Asset Scripts\Instantiation                                                                                       |          3 |          3 |          0 |          0 |          3 |
+| Data Management                                                                                                   |          8 |         43 |         -7 |          8 |         44 |
+| Data Management\Class Data Repository                                                                             |          6 |         39 |         -3 |          7 |         43 |
+| Data Management\Class Data Repository\Configurable Container                                                      |          2 |         36 |          0 |          7 |         43 |
+| Data Management\Disk Access                                                                                       |          1 |         -2 |          0 |          0 |         -2 |
+| Data Management\Disk Access\Game Folders                                                                          |          1 |         -2 |          0 |          0 |         -2 |
+| Data Management\Serialization                                                                                     |          1 |          6 |         -4 |          1 |          3 |
+| Extension Methods                                                                                                 |          2 |        -90 |          0 |         -9 |        -99 |
+| Game                                                                                                              |         38 |        624 |         -1 |         86 |        709 |
+| Game Math                                                                                                         |          1 |          2 |          0 |          2 |          4 |
+| Game\Game State                                                                                                   |          3 |         23 |          1 |          5 |         29 |
+| Game\Game State\States                                                                                            |          3 |         23 |          1 |          5 |         29 |
+| Game\Game State\States\Ad                                                                                         |          1 |         17 |          1 |          4 |         22 |
+| Game\Game State\States\Pre Run                                                                                    |          1 |          8 |          0 |          1 |          9 |
+| Game\Gameplay                                                                                                     |         28 |        445 |         -2 |         65 |        508 |
+| Game\Gameplay\Meta                                                                                                |         17 |        206 |          0 |         23 |        229 |
+| Game\Gameplay\Meta\Curencies                                                                                      |          1 |        -14 |          0 |         -7 |        -21 |
+| Game\Gameplay\Meta\Skins                                                                                          |         14 |        223 |          0 |         35 |        258 |
+| Game\Gameplay\Meta\Skins\Injestion                                                                                |          5 |        245 |          0 |         49 |        294 |
+| Game\Gameplay\Meta\Upgrade System                                                                                 |          1 |        -16 |          0 |         -8 |        -24 |
+| Game\Gameplay\Meta\User Context                                                                                   |          1 |         13 |          0 |          3 |         16 |
+| Game\Gameplay\Realtime                                                                                            |         11 |        239 |         -2 |         42 |        279 |
+| Game\Gameplay\Realtime\Playfield Components                                                                       |          8 |        208 |          0 |         41 |        249 |
+| Game\Gameplay\Realtime\Playfield Components\Crossbow                                                              |          3 |         44 |          0 |          8 |         52 |
+| Game\Gameplay\Realtime\Playfield Components\Track                                                                 |          4 |        164 |          0 |         32 |        196 |
+| Game\Gameplay\Realtime\Playfield Components\Track\Track Items                                                     |          1 |          4 |          0 |          1 |          5 |
+| Game\Gameplay\Realtime\Runthrough Components                                                                      |          1 |         -5 |          0 |         -1 |         -6 |
+| Game\Gameplay\Realtime\Runthrough Components\Projectiles                                                          |          1 |         -5 |          0 |         -1 |         -6 |
+| Game\Microinteractions                                                                                            |          7 |        156 |          0 |         16 |        172 |
+| Game\Microinteractions\Music                                                                                      |          1 |         66 |          0 |          7 |         73 |
+| Game\Microinteractions\SFX                                                                                        |          4 |        109 |          0 |         17 |        126 |
+| Game\Microinteractions\Vibration                                                                                  |          2 |        -19 |          0 |         -8 |        -27 |
+| General Use Interfaces                                                                                            |          1 |          5 |          0 |          1 |          6 |
+| Scene Installers                                                                                                  |          1 |         28 |          0 |          3 |         31 |
+| Settings                                                                                                          |          4 |          3 |          0 |         -7 |         -4 |
+| Settings\GraphicSettings                                                                                          |          2 |        -28 |          0 |        -12 |        -40 |
+| UI                                                                                                                |          8 |         41 |          6 |          1 |         48 |
+| UI\Settings                                                                                                       |          3 |         68 |          7 |         10 |         85 |
+| UI\Settings\Buttons                                                                                               |          2 |         56 |          1 |          9 |         66 |
+| UI\Skin Shop                                                                                                      |          5 |        -27 |         -1 |         -9 |        -37 |
+| Utils                                                                                                             |          4 |        132 |          1 |         23 |        156 |
+| Utils\Extension Methods                                                                                           |          2 |         95 |          0 |         12 |        107 |
+| Utils\UtilTests                                                                                                   |          1 |         35 |          1 |          9 |         45 |
++-------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                          | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\PermanentSkinsDatabaseTests.cs    | C#       |          8 |         -1 |          0 |          7 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetCreationTests\RawModelLoaderTests.cs            | C#       |         -2 |          0 |         -1 |         -3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\AssetMaker.cs                                        | C#       |          2 |          0 |          2 |          4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Crossbow\CrossbowAssetMaker.cs                       | C#       |          2 |          0 |          2 |          4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Crossbow\CrossbowSkinInjester.cs                     | C#       |         -3 |          0 |          0 |         -3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\ISkinPrefabGenerator.cs                              | C#       |         13 |          0 |          4 |         17 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Iconizer.cs                                          | C#       |         -9 |          0 |          0 |         -9 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\InjestData\BasicInjestData.cs                        | C#       |          0 |        -10 |         -1 |        -11 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\PrefabIconGenerator.cs                               | C#       |         -9 |          0 |          1 |         -8 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\BundleProjectilePrefabGenerator.cs        | C#       |         12 |          0 |          3 |         15 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\ProjectileAssetMaker.cs                   | C#       |          2 |          0 |          2 |          4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\Projectile\ProjectileSkinInjester.cs                 | C#       |         -3 |          0 |          0 |         -3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\RawModelLoader.cs                                    | C#       |         -4 |          0 |          0 |         -4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Asset Creation\SkinPrefabGenerator.cs                               | C#       |          9 |          0 |          3 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\IIntantiator.cs                                       | C#       |          1 |          0 |          0 |          1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\InvisibleInstantiator.cs                              | C#       |          1 |          0 |          0 |          1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Asset Scripts\Instantiation\SimplseInstantiator.cs                                | C#       |          1 |          0 |          0 |          1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryAccessor.cs                | C#       |          2 |          0 |          1 |          3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\ClassDataRegistryBackend.cs                 | C#       |          0 |         -2 |         -1 |         -3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\ClassResetArgs.cs    | C#       |         13 |          0 |          2 |         15 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\Configurable Container\Configurable.cs      | C#       |         23 |          0 |          5 |         28 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IRegistryAccessor.cs                        | C#       |          1 |          0 |          0 |          1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Class Data Repository\IRegistryBackend.cs                         | C#       |          0 |         -1 |          0 |         -1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Disk Access\Game Folders\GameFolders.cs                           | C#       |         -2 |          0 |          0 |         -2 |
+| c:\Unity\ArrowsDemo\Assets\Code\Data Management\Serialization\JsonFileOperations.cs                               | C#       |          6 |         -4 |          1 |          3 |
+| c:\Unity\ArrowsDemo\Assets\Code\Extension Methods\BigIntegerExtensions.cs                                         | C#       |        -58 |          0 |         -7 |        -65 |
+| c:\Unity\ArrowsDemo\Assets\Code\Extension Methods\GameObjectExtensions.cs                                         | C#       |        -32 |          0 |         -2 |        -34 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game Math\MathUtils.cs                                                            | C#       |          2 |          0 |          2 |          4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\Ad\AdState.cs                                              | C#       |         17 |          1 |          4 |         22 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\AppStateFactory.cs                                         | C#       |         -2 |          0 |          0 |         -2 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Game State\States\Pre Run\PreRun.cs                                          | C#       |          8 |          0 |          1 |          9 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Curencies\CurenciesContext.cs                                  | C#       |        -14 |          0 |         -7 |        -21 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\AssetSkinProvider.cs                                     | C#       |        -43 |          0 |         -9 |        -52 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\CrossbowCollectionFactory.cs                             | C#       |         20 |          0 |          2 |         22 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ISkinProvider.cs                                         | C#       |        -13 |          0 |         -2 |        -15 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\Injestion\AssetSkinProvider.cs                           | C#       |         44 |          0 |          9 |         53 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\Injestion\ExternalSkinProvider.cs                        | C#       |         30 |          0 |          8 |         38 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\Injestion\ExternalSkins.cs                               | C#       |         95 |          0 |         19 |        114 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\Injestion\ISkinProvider.cs                               | C#       |         13 |          0 |          2 |         15 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\Injestion\PermanentSkinsDatabase.cs                      | C#       |         63 |          0 |         11 |         74 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\PermanentSkinsDatabase.cs                                | C#       |        -60 |          0 |        -12 |        -72 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\ProjectileCollectionFactory.cs                           | C#       |         20 |          0 |          2 |         22 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinCollection.cs                                        | C#       |         13 |          0 |          1 |         14 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinCollectionFactory.cs                                 | C#       |         11 |          0 |          1 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinResourse.cs                                          | C#       |         28 |          0 |          3 |         31 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Skins\SkinShopService.cs                                       | C#       |          2 |          0 |          0 |          2 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\Upgrade System\UpgradeContext.cs                               | C#       |        -16 |          0 |         -8 |        -24 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Meta\User Context\UserContextManager.cs                             | C#       |         13 |          0 |          3 |         16 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\ArrowsRunthroughFactory.cs                                 | C#       |         17 |          0 |          2 |         19 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Crossbow\CrossbowGenerator.cs         | C#       |         18 |          0 |          3 |         21 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Crossbow\CrossbowInPlaceReplacer.cs   | C#       |         18 |          0 |          4 |         22 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Crossbow\ICrossbowProvider.cs         | C#       |          8 |          0 |          1 |          9 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Playfield.cs                          | C#       |          0 |          0 |          1 |          1 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Track\ITrackPopulator.cs              | C#       |          2 |          0 |          0 |          2 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Track\Track Items\Ring.cs             | C#       |          4 |          0 |          1 |          5 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Track\TrackBackgroundScatterPlacer.cs | C#       |        149 |          0 |         28 |        177 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Playfield Components\Track\TrackFiller.cs                  | C#       |          9 |          0 |          3 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\Runthrough Components\Projectiles\ProjectileGenerator.cs   | C#       |         -5 |          0 |         -1 |         -6 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Gameplay\Realtime\RunthroughContextManager.cs                                | C#       |         19 |         -2 |          0 |         17 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\Music\MusicService.cs                                      | C#       |         66 |          0 |          7 |         73 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\SFX\SFXInteractor.cs                                       | C#       |         28 |          0 |          6 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\SFX\SFXPacket.cs                                           | C#       |         11 |          0 |          1 |         12 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\SFX\SFXService.cs                                          | C#       |         62 |          0 |         10 |         72 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\SFX\SoundEffect.cs                                         | C#       |          8 |          0 |          0 |          8 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\Vibration\VibrationInteractor.cs                           | C#       |         -4 |          0 |         -1 |         -5 |
+| c:\Unity\ArrowsDemo\Assets\Code\Game\Microinteractions\Vibration\VibrationService.cs                              | C#       |        -15 |          0 |         -7 |        -22 |
+| c:\Unity\ArrowsDemo\Assets\Code\General Use Interfaces\ICallable.cs                                               | C#       |          5 |          0 |          1 |          6 |
+| c:\Unity\ArrowsDemo\Assets\Code\Scene Installers\GameInstaller.cs                                                 | C#       |         28 |          0 |          3 |         31 |
+| c:\Unity\ArrowsDemo\Assets\Code\Settings\DebugOverlay.cs                                                          | C#       |         35 |          0 |          6 |         41 |
+| c:\Unity\ArrowsDemo\Assets\Code\Settings\GraphicSettings\GraphicsPresset.cs                                       | C#       |        -14 |          0 |         -6 |        -20 |
+| c:\Unity\ArrowsDemo\Assets\Code\Settings\GraphicSettings\ResolutionScaling.cs                                     | C#       |        -14 |          0 |         -6 |        -20 |
+| c:\Unity\ArrowsDemo\Assets\Code\Settings\SettingsRegistryManager.cs                                               | C#       |         -4 |          0 |         -1 |         -5 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Settings\Buttons\ProgressReset.cs                                              | C#       |         31 |          1 |          5 |         37 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Settings\Buttons\SettingsButton.cs                                             | C#       |         25 |          0 |          4 |         29 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Settings\SettingsPanel.cs                                                      | C#       |         12 |          6 |          1 |         19 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\CrossbowSkinShopManager.cs                                           | C#       |        -53 |          0 |        -12 |        -65 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\ProjectileSkinShopManager.cs                                         | C#       |        -53 |         -1 |        -12 |        -66 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\SkinBuyer.cs                                                         | C#       |         -2 |          0 |          0 |         -2 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\SkinSelector.cs                                                      | C#       |         -2 |          0 |         -1 |         -3 |
+| c:\Unity\ArrowsDemo\Assets\Code\UI\Skin Shop\SkinShopManager.cs                                                   | C#       |         83 |          0 |         16 |         99 |
+| c:\Unity\ArrowsDemo\Assets\Code\Utils\Extension Methods\BigIntegerExtensions.cs                                   | C#       |         63 |          0 |         10 |         73 |
+| c:\Unity\ArrowsDemo\Assets\Code\Utils\Extension Methods\GameObjectExtensions.cs                                   | C#       |         32 |          0 |          2 |         34 |
+| c:\Unity\ArrowsDemo\Assets\Code\Utils\PathUtils.cs                                                                | C#       |          2 |          0 |          2 |          4 |
+| c:\Unity\ArrowsDemo\Assets\Code\Utils\UtilTests\BigIntParseTests.cs                                               | C#       |         35 |          1 |          9 |         45 |
+| Total                                                                                                             |          |        809 |        -12 |        123 |        920 |
++-------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
