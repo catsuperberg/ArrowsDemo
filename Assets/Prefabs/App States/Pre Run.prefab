@@ -141,6 +141,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Pre Run
       objectReference: {fileID: 0}
+    - target: {fileID: 4534226838397116699, guid: f14460c95fb3cd1458d955754472b9f5, type: 3}
+      propertyPath: m_Color.g
+      value: 0.93426573
+      objectReference: {fileID: 0}
+    - target: {fileID: 4534226838397116699, guid: f14460c95fb3cd1458d955754472b9f5, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f14460c95fb3cd1458d955754472b9f5, type: 3}
 --- !u!114 &53868271608090484 stripped
