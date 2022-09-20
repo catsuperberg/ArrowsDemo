@@ -59,7 +59,7 @@
     "Fields": [
       {
         "Name": "Sensitivity",
-        "Value": "8",
+        "Value": "9.783274",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Sensitivity",
@@ -91,7 +91,7 @@
     "Fields": [
       {
         "Name": "SFXVolume",
-        "Value": "1",
+        "Value": "0.5507332",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Sound",

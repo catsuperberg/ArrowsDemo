@@ -56,7 +56,7 @@ namespace UI
             ResizeAndPositionChildren();
         }
 
-        void UpdateContainerSizeAndPosition( RectTransform container)
+        void UpdateContainerSizeAndPosition(RectTransform container)
         {
             var parentSize = _parentRectAsLimits.rect;
             var sizeToFitRows = _cellSize.y * _rows;
@@ -91,6 +91,7 @@ namespace UI
             var offsetY = padding.top + (_cellSize.y + _spacing.y) * positionInRow;
             SetChildAlongAxis(childElement, (int)RectTransform.Axis.Horizontal, offsetX, _cellSize.x);
             SetChildAlongAxis(childElement, (int)RectTransform.Axis.Vertical, offsetY, _cellSize.y);
+            childElement.transform.localScale = Vector3.one; // HACK keeps size on different resolutions
         }
 
         void PositionSingleChildAndKeepSize()

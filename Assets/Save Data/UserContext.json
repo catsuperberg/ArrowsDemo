@@ -31,7 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "769",
+        "Value": "691",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -42,7 +42,7 @@
       },
       {
         "Name": "SkinTokens",
-        "Value": "2",
+        "Value": "0",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -53,7 +53,7 @@
       },
       {
         "Name": "LifetimeSpending",
-        "Value": "2233",
+        "Value": "3538",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -80,7 +80,7 @@
       },
       {
         "Name": "ArrowLevel",
-        "Value": "6",
+        "Value": "8",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -118,7 +118,7 @@
     "Fields": [
       {
         "Name": "BoughtSkins",
-        "Value": "[\"Bolt\"]",
+        "Value": "[\"Bolt\",\"Arrow\"]",
         "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -145,7 +145,7 @@
     "Fields": [
       {
         "Name": "BoughtSkins",
-        "Value": "[\"Wood\"]",
+        "Value": "[\"Wood\",\"RedWood\"]",
         "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -156,7 +156,7 @@
       },
       {
         "Name": "SelectedSkin",
-        "Value": "Wood",
+        "Value": "RedWood",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
