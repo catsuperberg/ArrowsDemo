@@ -1,6 +1,7 @@
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using GameMath;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +14,12 @@ namespace Game.Gameplay.Realtime.OperationSequence
         float _coefficient = 0.7f;
         OperationPairsSequence _sequence = null;
         int _CPU_count = 1;
+        OperationFactory.Factory _opertionFactory;
         
-        RandomSequenceGenerator()
+        RandomSequenceGenerator(OperationFactory.Factory operationFactory)
         {
             _CPU_count = SystemInfo.processorCount;
+            _opertionFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory));
         }
         
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
@@ -25,9 +28,10 @@ namespace Game.Gameplay.Realtime.OperationSequence
             _sequence = null;
             var numThreads = _CPU_count - 1;
             CancellationTokenSource tokenSource= new CancellationTokenSource(); 
-            CancellationToken ct = tokenSource.Token;    
+            CancellationToken ct = tokenSource.Token;                
+            var operationFactories = new Queue<OperationFactory>(Enumerable.Repeat(_opertionFactory.Create(), numThreads));
             var threads = SpreadTaskToThreads(() => GenerateSequenceUntilSuccesfull(ct, 
-                    targetMaxResult, SpreadPercentage, context), tokenSource, numThreads);
+                    targetMaxResult, SpreadPercentage, context, operationFactories.Dequeue()), tokenSource, numThreads);
             Task.WaitAny(threads); 
             tokenSource.Cancel();              
             return _sequence;    
@@ -41,10 +45,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
             var results = new List<BigInteger>();           
             var forMedian = new List<BigInteger>();      
             Thread[] threads = new Thread[numThreads];
+            var operationFactories = new Queue<OperationFactory>(Enumerable.Repeat(_opertionFactory.Create(), numThreads));
             for(int thread = 0; thread < numThreads; thread++)
             {
                 threads[thread] = new System.Threading.Thread(() => {
-                    var result = SumOfRandomIterations(context, iterationsPerThread); results.Add(result); });
+                    var result = SumOfRandomIterations(context, iterationsPerThread, operationFactories.Dequeue()); results.Add(result); });
                 threads[thread].Start();
                 threads[thread].Join();
             }            
@@ -67,13 +72,13 @@ namespace Game.Gameplay.Realtime.OperationSequence
             return MathUtils.Median<BigInteger>(forMedian);
         }
         
-        BigInteger SumOfRandomIterations(SequenceContext context, int numberOfIterations)
+        BigInteger SumOfRandomIterations(SequenceContext context, int numberOfIterations, OperationFactory operationFactory)
         {             
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             
             var exec = new OperationExecutor();        
             OperationPairsSequence sequence;      
-            SequenceGenerator generator = new SequenceGenerator(exec); 
+            SequenceGenerator generator = new SequenceGenerator(exec, operationFactory); 
             var partialResult = new BigInteger(0);
             var tempResult = new BigInteger(0);
             for(int i = 0; i < numberOfIterations; i++)
@@ -86,11 +91,13 @@ namespace Game.Gameplay.Realtime.OperationSequence
             return BigInteger.Divide(partialResult, new BigInteger(numberOfIterations));            
         }
         
-        void GenerateSequenceUntilSuccesfull(CancellationToken token, BigInteger targetMaxResult, int SpreadPercentage, SequenceContext context)
+        void GenerateSequenceUntilSuccesfull(
+            CancellationToken token, BigInteger targetMaxResult, int SpreadPercentage, 
+            SequenceContext context, OperationFactory operationFactor)
         {
             float tempCoeff = _coefficient;
             var exec = new OperationExecutor();
-            SequenceGenerator generator = new SequenceGenerator(exec);
+            SequenceGenerator generator = new SequenceGenerator(exec, operationFactor);
             OperationPairsSequence sequence = new OperationPairsSequence(new List<OperationPair>{null}, 0);
             BigInteger result = new BigInteger(0);
             result += context.InitialValue;

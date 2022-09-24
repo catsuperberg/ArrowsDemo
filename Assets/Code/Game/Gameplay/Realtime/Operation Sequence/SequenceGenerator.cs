@@ -8,14 +8,13 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public class SequenceGenerator
     {     
         OperationExecutor _exec;
-        Random _rand;   
+        Random _rand;           
+        OperationFactory _opertionFactory;
         
-        public SequenceGenerator(OperationExecutor exec)
+        public SequenceGenerator(OperationExecutor exec, OperationFactory operationFactory)
         {                
-            if(exec == null)
-                throw new System.Exception("OperationExecutor not provided to SequenceGenerator");
-        
-            _exec = exec;
+            _exec = exec ?? throw new ArgumentNullException(nameof(exec));
+            _opertionFactory = operationFactory ?? throw new ArgumentNullException(nameof(operationFactory));
             _rand = new Random(this.GetHashCode());
         }
         
@@ -30,7 +29,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 do
                 {
                     tempResult = result;
-                    pair = new OperationPair();
+                    pair = new OperationPair(_opertionFactory);
                     tempResult = _exec.Perform(pair.BestOperation(tempResult, _exec), tempResult);                   
                 } while (tempResult < 1); // reroll if best choice can be less than 1
                 result = tempResult;
@@ -48,7 +47,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             List<OperationPair> newSequence = new List<OperationPair>();
             for(int i = 0; i < SequenceLength; i++)
             {
-                pair = new OperationPair();
+                pair = new OperationPair(_opertionFactory);
                 tempResult = pair.BestOperationResult(tempResult, _exec);
                 if(tempResult < 1)
                 {
@@ -56,7 +55,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                     do 
                     {                        
                         tempResult = result;
-                        tempOperation = new OperationInstance();
+                        tempOperation = _opertionFactory.GetRandom();
                         tempResult = _exec.Perform(tempOperation, tempResult);
                     } while (tempResult < 1); // reroll if best choice gives result less than 1 
                     var operations = new OperationInstance[] {pair.LeftOperation, tempOperation};
@@ -69,36 +68,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             }
             return new OperationPairsSequence(newSequence, result);
         }        
-        
-        // public OperationPairsSequence GetSequenceWithRandomPairs(int SequenceLength, int initValue = 1)
-        // {
-        //     var result = new BigInteger(initValue);
-        //     var tempResult = result;
-        //     List<OperationPair> newSequence = new List<OperationPair>();
-        //     for(int i = 0; i < SequenceLength; i++)
-        //     {                    
-        //         newSequence.Add(new OperationPair());
-        //     }
-        //     for(int i = 0; i < SequenceLength; i++)
-        //     {
-        //         tempResult = _exec.Perform(newSequence[i].BestOperation(initValue, _exec), tempResult);
-        //         if(tempResult < 1)
-        //         {
-        //             OperationInstance tempOperation;
-        //             do 
-        //             {                        
-        //                 tempResult = result;
-        //                 tempOperation = new OperationInstance();
-        //                 tempResult = _exec.Perform(tempOperation, tempResult);
-        //             } while (tempResult < 1); // reroll if best choice can be less than 1 
-        //             newSequence[i] = new OperationPair(newSequence[i].LeftOperation, tempOperation); // TODO randomise side selection
-        //         }
-                
-        //         result = tempResult;
-        //     }
-        //     return new OperationPairsSequence(newSequence, result);
-        // }        
-        
         
         public BigInteger CalculateBestResult(List<OperationPair> sequence, int initialValue)
         {                

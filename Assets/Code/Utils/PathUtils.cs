@@ -11,9 +11,8 @@ namespace Utils
             => Regex.Match(path.ReplaceBackSlashes(), "(?<=Resources/).*").ToString();
             
         public static string GetPathWithoutExtension(this string path)
-            => Regex.Match(path, @".*(?=\..*)").ToString();
-            
-             
+            => Regex.Match(path, @"(.*(?=\.))|(^.*$)").ToString();
+                         
         public static string GetAtResourcesWithNoExtension(this string path)
             => path.GetResourcesOnlyPath().GetPathWithoutExtension();
     }

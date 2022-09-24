@@ -6,5 +6,7 @@ namespace DataAccess.DiskAccess.GameFolders
         public string SettingsFolder {get;}
         public string SaveFolder {get;}
         public string AssetInjest {get;}
+        
+        public string ResourcesGameBalance {get;}
     }
 }

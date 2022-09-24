@@ -11,9 +11,7 @@ namespace AssetScripts.AssetCreation
 {
     public interface IAssetMaker<T>
     {
-        /// <summary>
-        /// returns list of SkinData with paths to assets filled
-        /// </summary>
+        /// <summary> returns list of SkinData with paths to assets filled </summary>
         public IEnumerable<T> MakeAssetsFromInjestable(); 
     }
     

@@ -5,12 +5,14 @@ using System.IO;
 
 namespace DataAccess.DiskAccess.GameFolders
 {
-    public class GameFolders :IGameFolders
+    public class GameFolders : IGameFolders
     {        
         public string SettingsFolder {get; private set;}
         public string SaveFolder {get; private set;}
         public string StreamingAssetsPath {get; private set;}
         public string AssetInjest {get; private set;}
+        
+        public string ResourcesGameBalance {get => "Assets/Code/Game/Game Design/Resources/Game Balance";}
         
         private string _baseFolder;
         

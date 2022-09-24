@@ -19,10 +19,10 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         }
         
         ///<summary> Creates operation pair with random operation instances </summary>
-        public OperationPair()
+        public OperationPair(OperationFactory operationFactory)
         {        
-            LeftOperation = new OperationInstance();
-            RightOperation = new OperationInstance();   
+            LeftOperation = operationFactory.GetRandom();
+            RightOperation = operationFactory.GetRandom();   
         }
         
         public OperationInstance BestOperation(BigInteger initialValue, OperationExecutor exec)

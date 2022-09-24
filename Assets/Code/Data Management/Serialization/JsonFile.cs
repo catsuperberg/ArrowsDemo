@@ -1,7 +1,8 @@
+using Newtonsoft.Json;
 using System.IO;
 using System.Text;
+using System.Threading;
 using UnityEngine;
-using Newtonsoft.Json;
 using Utils;
 
 namespace DataAccess.DiskAccess.Serialization
@@ -72,10 +73,28 @@ namespace DataAccess.DiskAccess.Serialization
         
         public static T LoadFromResources<T>(string filePath) where T : class
         {            
+            var tempString = filePath.GetAtResourcesWithNoExtension();
             var json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
             return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
         }
         
+        // public static T LoadFromResourcesOnMainThread<T>(string filePath) where T : class
+        // {            
+        //     TextAsset json = null;
+        //     // var semaphore = new SemaphoreSlim(0,1);
+        //     // UnityMainThreadDispatcher.Instance().Enqueue(() => {
+        //     //     Resources.LoadAsync
+        //     //     json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
+        //     //     semaphore.Release();
+        //     // });
+        //     // semaphore.Wait();
+        //     var jsonRequest = Resources.LoadAsync<TextAsset>(filePath.GetAtResourcesWithNoExtension());
+        //     while(!jsonRequest.isDone){}
+        //     json = jsonRequest.asset as TextAsset;
+        //     return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
+        // }
+        
         private static string withExtension(string fileName) => fileName + ".json";
-    }
+    }//"Assets/Code/Game/Game Design/Resources/Game Balance/GeneratedOperationFrequencies"
+    
 }

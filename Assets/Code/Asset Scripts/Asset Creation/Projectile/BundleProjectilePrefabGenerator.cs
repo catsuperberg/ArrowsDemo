@@ -21,7 +21,8 @@ namespace AssetScripts.AssetCreation
                 
         (GameObject fullPrefab, GameObject tempSkin) PrepareGameObject(GameObject skinObject)
         {
-            var projectile = GameObject.Instantiate(Resources.Load<GameObject>(_bundlePrefabPath.GetAtResourcesWithNoExtension())); 
+            var bunldeResource = Resources.Load<GameObject>(_bundlePrefabPath.GetAtResourcesWithNoExtension()); 
+            var projectile = GameObject.Instantiate(bunldeResource); 
             var tempSkinGO = GameObject.Instantiate(skinObject);
             tempSkinGO.name = skinObject.name;
             projectile.name = "Bundle_" + tempSkinGO.name;

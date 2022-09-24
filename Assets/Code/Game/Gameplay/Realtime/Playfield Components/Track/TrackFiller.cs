@@ -135,8 +135,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         
         void AddPairContainer(GameObject pair, (GameObject left, GameObject right) gates)
         {
-            var left = (gates.left != null) ? gates.left.GetComponent<Ring>().Operation : new OperationInstance(Operation.Blank, 0);
-            var right = (gates.right != null) ? gates.right.GetComponent<Ring>().Operation : new OperationInstance(Operation.Blank, 0);
+            var left = (gates.left != null) ? gates.left.GetComponent<Ring>().Operation : OperationInstance.blank;
+            var right = (gates.right != null) ? gates.right.GetComponent<Ring>().Operation : OperationInstance.blank;
             var pairContainer =  pair.AddComponent<OperationPairComponent>();
             pairContainer.Initialize(new OperationPair(left, right));
         }

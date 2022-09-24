@@ -11,6 +11,7 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Crossbow;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
+using GameDesign;
 using Game.Microinteracions;
 using Settings;
 using UnityEngine;
@@ -50,9 +51,8 @@ public class GameInstaller : MonoInstaller
         ComposeAudio(); 
         ComposeSkinShop();    
         
-        Container.Bind<OperationExecutor>().AsTransient().NonLazy();
-        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
-        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();
+        ComposeSequence();
+        
         Container.Bind<ISplineTrackProvider>().To<RandomizedSmoothTrackGenerator>().FromNewComponentOnNewGameObject().AsSingle();
         Container.Bind<ITrackPopulator>().To<TrackFiller>().FromNewComponentOnNewGameObject().AsSingle(); 
         Container.Bind<ITargetProvider>().FromInstance(_targetGenerator).AsSingle();  
@@ -157,4 +157,16 @@ public class GameInstaller : MonoInstaller
         Container.Bind<AudioSource>().WithId("Music").FromInstance(_musicSource).AsTransient();  
         Container.Bind<AudioSource>().WithId("SFX").FromInstance(_SFXSource).AsTransient();  
     }    
+    
+    void ComposeSequence()
+    {        
+        Container.Bind<OperationProbabilitiesFactory>().AsSingle();
+        Container.Bind<MathOperationProbabilities>()
+            .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson());
+        Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
+        
+        Container.Bind<OperationExecutor>().AsTransient().NonLazy();
+        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
+        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();    
+    }
 }
