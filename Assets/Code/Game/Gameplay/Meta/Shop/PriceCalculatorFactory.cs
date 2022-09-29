@@ -1,51 +1,44 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using DataAccess.DiskAccess.GameFolders;
+using DataAccess.DiskAccess.Serialization;
 using Game.Gameplay.Meta.UpgradeSystem;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Utils;
 
 namespace Game.Gameplay.Meta.Shop
 {
-    public static class PriceCalculatorFactory
+    public class PriceCalculatorFactory
     {
-        static List<IItemPriceCalculator> _calculatorsCache = new List<IItemPriceCalculator>();
+        const string _formualPrefix = "Formula";
+        Dictionary<string, IItemPriceCalculator> _calculators = new Dictionary<string, IItemPriceCalculator>();
         
-        public static IItemPriceCalculator GetCalculatorFor(string variableName)
+        IGameFolders _folders;        
+                   
+        public PriceCalculatorFactory(IGameFolders folders)
         {
-            IItemPriceCalculator priceCalculator;
-            switch (variableName)
-            {
-                case nameof(UpgradeContext.InitialArrowCount):
-                    priceCalculator = new InitialArrowsPrice();
-                    break;
-                case nameof(UpgradeContext.ArrowLevel):
-                    priceCalculator = new ArrowLevelPrice(); 
-                    break;
-                case nameof(UpgradeContext.CrossbowLevel):
-                    priceCalculator = new CrossbowLevelPrice(); 
-                    break;
-                case nameof(UpgradeContext.PassiveIncome):
-                    // priceCalculator = new PassiveIncomePrice(); 
-                    // break;
-                default:
-                    throw new Exception("Item price calculator factory doesn't know what to do with: " + variableName);
-            }
+            _folders = folders ?? throw new ArgumentNullException(nameof(folders));
+            var formulas = LoadAllFormulas();
+            _calculators = formulas
+                .Select(kvp => new KeyValuePair<string, IItemPriceCalculator>(kvp.Key, new UpgradePriceCalculator(kvp.Value)))
+                .ToDictionary(entry => entry.Key, entry => entry.Value);
             
-            _calculatorsCache.Add(priceCalculator);
-            
-            return priceCalculator;
+            if(_calculators == null || !_calculators.Any())
+                throw new Exception("No calculators were created by PriceCalculatorFactory");
         }
         
-        static IItemPriceCalculator GetFromCacheIfPresent(Type calculatorType)
-        {
-            var cachedCalculator = _calculatorsCache.First(instance => instance.GetType() == calculatorType);
-            return (cachedCalculator != null) ? cachedCalculator : CreateAndAddToCache(calculatorType);
-        }
+        public IItemPriceCalculator GetCalculatorFor(string variableName)
+            => _calculators[variableName] ?? throw new Exception($"couldn't find aprorpiet calculator for {variableName}");
         
-        static IItemPriceCalculator CreateAndAddToCache(Type calculatorType)
+        Dictionary<string, UpgradePriceFormula> LoadAllFormulas()
         {
-            var instance = (IItemPriceCalculator)Activator.CreateInstance(calculatorType);
-            _calculatorsCache.Add(instance);
-            return instance;
+            var fileNamesInFolder = Resources.LoadAll<TextAsset>(_folders.ResourcesGameBalance.GetAtResourcesWithNoExtension())
+                .Select(entry => entry.name); // HACK can't search resources folder
+            var formulaFiles = fileNamesInFolder.Where(name => name.StartsWith(_formualPrefix));
+            return formulaFiles.ToDictionary(
+                fileName => fileName.Split(_formualPrefix)[1], 
+                fileName => JsonFile.LoadFromResources<UpgradePriceFormula>(_folders.ResourcesGameBalance, fileName));
         }
     }
 }

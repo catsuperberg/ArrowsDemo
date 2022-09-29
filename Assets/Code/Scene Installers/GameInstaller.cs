@@ -2,6 +2,7 @@ using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using DataManagement;
 using Game.Gameplay.Meta;
+using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Meta.Skins;
 using Game.Gameplay.Realtime;
 using Game.Gameplay.Realtime.GameplayComponents.Projectiles;
@@ -11,8 +12,8 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Crossbow;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
-using GameDesign;
 using Game.Microinteracions;
+using GameDesign;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -49,7 +50,8 @@ public class GameInstaller : MonoInstaller
         ComposeUserContextManagement();
         ComposeMicrointeractions(); 
         ComposeAudio(); 
-        ComposeSkinShop();    
+        ComposeSkinShop();
+        ComposeUpgradeShop();     
         
         ComposeSequence();
         
@@ -98,6 +100,11 @@ public class GameInstaller : MonoInstaller
             Container.TryResolveId<SkinCollection>("crossbows"));
         Container.Bind<SkinShopService>().WithId("crossbowsShop").FromInstance(crossbowShopService); 
     } 
+    
+    void ComposeUpgradeShop()
+    {
+        Container.Bind<PriceCalculatorFactory>().AsSingle();
+    }
     
     void ComposeUserContextRepository()
     {

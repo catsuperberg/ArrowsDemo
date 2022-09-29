@@ -20,7 +20,7 @@
     "Fields": [
       {
         "Name": "CurrentQualityLevel",
-        "Value": "Medium",
+        "Value": "Ultra",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Graphics quality",
@@ -34,38 +34,6 @@
             "Very High",
             "Ultra"
           ]
-        }
-      }
-    ]
-  },
-  {
-    "ClassName": "Game.Microinteracions.VibrationService",
-    "Fields": [
-      {
-        "Name": "VibrationEnabled",
-        "Value": "True",
-        "Type": "System.Boolean",
-        "Metadata": {
-          "PrettyName": "Vibration",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      }
-    ]
-  },
-  {
-    "ClassName": "Input.ControllerComponents.TouchTranslationMovementController",
-    "Fields": [
-      {
-        "Name": "Sensitivity",
-        "Value": "9.783274",
-        "Type": "System.Single",
-        "Metadata": {
-          "PrettyName": "Sensitivity",
-          "MinValue": 3.0,
-          "MaxValue": 15.0,
-          "ValidOptions": null
         }
       }
     ]
@@ -91,7 +59,7 @@
     "Fields": [
       {
         "Name": "SFXVolume",
-        "Value": "0.5507332",
+        "Value": "1",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Sound",
@@ -113,6 +81,38 @@
           "PrettyName": "Debug Overlay",
           "MinValue": "NaN",
           "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Game.Microinteracions.VibrationService",
+    "Fields": [
+      {
+        "Name": "VibrationEnabled",
+        "Value": "True",
+        "Type": "System.Boolean",
+        "Metadata": {
+          "PrettyName": "Vibration",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      }
+    ]
+  },
+  {
+    "ClassName": "Input.ControllerComponents.TouchTranslationMovementController",
+    "Fields": [
+      {
+        "Name": "Sensitivity",
+        "Value": "8",
+        "Type": "System.Single",
+        "Metadata": {
+          "PrettyName": "Sensitivity",
+          "MinValue": 3.0,
+          "MaxValue": 15.0,
           "ValidOptions": null
         }
       }

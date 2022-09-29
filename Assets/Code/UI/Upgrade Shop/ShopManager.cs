@@ -26,12 +26,12 @@ namespace UI
         
         IUpgradeShopService _shopService;
                 
-        public void Initialize(IRegistryAccessor registryAccessor)
+        public void Initialize(IRegistryAccessor registryAccessor, PriceCalculatorFactory priceCalculatorFactory)
         {
             if(registryAccessor == null)
                 throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
                                 
-            _shopService = new UpgradeShopService(registryAccessor, typeof(UpgradeContext));
+            _shopService = new UpgradeShopService(registryAccessor, typeof(UpgradeContext), priceCalculatorFactory);
             InitializeBuyers();            
         }
         

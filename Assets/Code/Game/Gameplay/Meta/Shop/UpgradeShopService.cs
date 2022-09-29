@@ -13,11 +13,13 @@ namespace Game.Gameplay.Meta.Shop
     {
         private readonly IRegistryAccessor _registryAccessor;
         private readonly Type _upgradeContextType;
+        PriceCalculatorFactory _priceCalculators;
                 
-        public UpgradeShopService(IRegistryAccessor registryAccessor, Type upgradeContextType)
+        public UpgradeShopService(IRegistryAccessor registryAccessor, Type upgradeContextType, PriceCalculatorFactory priceCalculators)
         {
             _registryAccessor = registryAccessor ?? throw new ArgumentNullException(nameof(registryAccessor));
             _upgradeContextType = upgradeContextType ?? throw new ArgumentNullException(nameof(upgradeContextType));
+            _priceCalculators = priceCalculators ?? throw new ArgumentNullException(nameof(priceCalculators));
         }
         
         public bool EnoughFundsToUpgrade(string fieldName)
@@ -79,7 +81,7 @@ namespace Game.Gameplay.Meta.Shop
         BigInteger UpgradePrice(string fieldName) 
         {
             var itemLevel = Convert.ToInt32(_registryAccessor.GetStoredValue(_upgradeContextType, fieldName));
-            return PriceCalculatorFactory.GetCalculatorFor(fieldName).GetPrice(new PricingContext(itemLevel));
+            return _priceCalculators.GetCalculatorFor(fieldName).GetPrice(new PricingContext(itemLevel));
         }
     }
 }

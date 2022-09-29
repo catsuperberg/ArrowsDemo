@@ -9,9 +9,12 @@ namespace DataAccess.DiskAccess.Serialization
 {
     public static class JsonFile
     {
-        public static void SaveAsJson(object dataObject, string filePath, string fileName)
+        public static string ToJson(object dataObject)
+            => JsonConvert.SerializeObject(dataObject, Formatting.Indented); 
+        
+        public static void SaveAsJson(object dataObject, string folderPath, string fileName)
         {
-            FileStream stream = new FileStream(Path.Combine(filePath, withExtension(fileName)), FileMode.Create);        
+            FileStream stream = new FileStream(Path.Combine(folderPath, withExtension(fileName)), FileMode.Create);        
             string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();        
@@ -30,9 +33,9 @@ namespace DataAccess.DiskAccess.Serialization
             stream.Close();        
         }
         
-        public static T GetObjectFromFile<T>(string filePath, string fileName) where T : class
-        {
-            var pathToFile = Path.Combine(filePath, withExtension(fileName));
+        public static T GetObjectFromFile<T>(string folderPath, string fileName) where T : class
+        {            
+            var pathToFile = Path.Combine(folderPath, withExtension(fileName.GetPathWithoutExtension()));
             if(File.Exists(pathToFile))
             {
                 FileStream stream = new FileStream(pathToFile, FileMode.Open);
@@ -76,6 +79,12 @@ namespace DataAccess.DiskAccess.Serialization
             var tempString = filePath.GetAtResourcesWithNoExtension();
             var json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
             return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
+        }
+        
+        public static T LoadFromResources<T>(string fullPath, string fileName) where T : class
+        {            
+            var filePath = Path.Combine(fullPath, fileName);
+            return LoadFromResources<T>(filePath); 
         }
         
         // public static T LoadFromResourcesOnMainThread<T>(string filePath) where T : class

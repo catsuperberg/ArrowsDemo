@@ -16,7 +16,8 @@ public class PermanentSkinInjesterTests
 {
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/FullInjestSet/Crossbow";
     const string _testUpdateAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/InjestSetWithUpdates/Crossbow";
-    const string _tempAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Temp/Crossbow";const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
+    const string _tempAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Temp/Crossbow";
+    const string _testResourcesFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/Resources";
     const string _iconizerPrefabPath = "Assets/Code/Asset Scripts/Asset Creation/Resources/Iconizer.prefab";
     const string _testDatabaseJson = _testResourcesFolder + "/Crossbow.json";
     List<string> _skinNames;
