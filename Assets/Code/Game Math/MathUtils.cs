@@ -5,6 +5,56 @@ using System.Timers;
 
 namespace GameMath
 {
+    public static class WeightedRandom
+    {
+        public static Dictionary<float, T> FrequencyToWeights<T>(Dictionary<int, T> frequency)
+        {            
+            if(frequency == null || !frequency.Any())
+                throw new Exception("No values provided to convert to weights");
+                
+            var weights = new Dictionary<float, T>();
+            var sumOfOccurances = frequency.Sum(x => x.Key);
+            var occurrenceAccumulator = 0;
+            var sortedFrequency = from entry in frequency orderby entry.Key descending select entry;
+            foreach(var entry in sortedFrequency)
+            {
+                occurrenceAccumulator += entry.Key;
+                var weight = (float)occurrenceAccumulator / (float)sumOfOccurances;
+                weights.Add(weight, entry.Value);
+            }
+            return weights;
+        } 
+        
+        public static T NextFrom<T>(Dictionary<float, T> weightedValues)
+        {
+            if(weightedValues == null || !weightedValues.Any())
+                throw new Exception("No values provided to get next weighted random");
+            
+            var sortedWeights = from entry in weightedValues orderby entry.Key descending select entry;
+            var maxValue = sortedWeights.First().Key;
+            var random = GlobalRandom.RandomDouble(0, maxValue);
+            return sortedWeights.First(entry => random <= entry.Key).Value;
+            
+            // coeff = MathUtils.MathClamp(coeff, 0, 1);
+            // var mean = (max-min)*coeff + min;
+            // var stdDev = 3;
+            
+            // double u1 = 1.0-_rand.NextDouble(); //uniform(0,1] random doubles
+            // double u2 = 1.0-_rand.NextDouble();
+            // double randStdNormal = System.Math.Sqrt(-2.0 * System.Math.Log(u1)) * System.Math.Sin(2.0 * System.Math.PI * u2); //random normal(0,1)
+            // double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+            // randNormal = (double)MathUtils.MathClamp(randNormal, min, max);
+            
+            // return (int)System.Math.Round(randNormal); 
+        }
+        
+        public static T NextFrom<T>(Dictionary<int, T> frequency)
+        {
+            var weights = FrequencyToWeights(frequency);
+            return NextFrom(weights);
+        }
+    }
+    
     public class IntAutoCounter : IUpdatedNotification, IFinishNotification
     {
         public int InitialValue { get; }

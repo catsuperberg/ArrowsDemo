@@ -4,7 +4,12 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "MainGame"
+        "MainGame",
+        "Zenject",
+        "Zenject-TestFramework",
+        "Zenject-Editor",
+        "Unity.PerformanceTesting",
+        "Unity.PerformanceTesting.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

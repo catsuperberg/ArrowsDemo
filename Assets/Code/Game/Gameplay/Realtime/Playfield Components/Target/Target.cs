@@ -4,6 +4,27 @@ using UnityEngine;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
+    public class TargetDataOnly : IDamageable
+    {    
+        public BigInteger Points {get; private set;}
+        public BigInteger DamagePoints {get {return Points;}}
+        public TargetGrades Grade  {get; private set;}
+        
+        public TargetDataOnly(BigInteger points, TargetGrades grade)
+        {
+            Points = points;
+            Grade = grade;
+        }                
+                    
+        public void Damage(BigInteger value)
+        {                
+            if(value > Points)
+                throw new System.Exception("Triying to damage one target more than possible");
+            
+            Points -= value;
+        }
+    }
+    
     public class Target : MonoBehaviour, IDamageable
     {    
         [SerializeField]

@@ -6,7 +6,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         Divide,
         Add,
         Subtract,
-        Blank
+        Blank,
+        First = Multiply,
+        Last = Blank
     }
     
     static class OperationsMethods

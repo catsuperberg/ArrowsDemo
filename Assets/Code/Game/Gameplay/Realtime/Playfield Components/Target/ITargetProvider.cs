@@ -10,5 +10,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
     {
         public Task<GameObject> GetTargetAsync(List<GameObject> targetPrefabs, 
             BigInteger targetResult, (int Min, int Max) numberOfTargetsRange, IInstatiator assetInstatiator);
+        List<TargetDataOnly> GetDataOnlyTargets(BigInteger targetResult, (int Min, int Max) numberOfTargetsRange);
     }
 }

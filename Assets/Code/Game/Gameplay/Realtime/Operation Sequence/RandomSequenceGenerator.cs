@@ -11,6 +11,9 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public class RandomSequenceGenerator : ISequenceCalculator
     {        
+        const int _numIterationsForAverage = 2000;  
+        const int _generationTimout = 3000;
+        
         float _coefficient = 0.7f;
         OperationPairsSequence _sequence = null;
         int _CPU_count = 1;
@@ -29,30 +32,58 @@ namespace Game.Gameplay.Realtime.OperationSequence
             var numThreads = _CPU_count - 1;
             CancellationTokenSource tokenSource= new CancellationTokenSource(); 
             CancellationToken ct = tokenSource.Token;                
-            var operationFactories = new Queue<OperationFactory>(Enumerable.Repeat(_opertionFactory.Create(), numThreads));
-            var threads = SpreadTaskToThreads(() => GenerateSequenceUntilSuccesfull(ct, 
-                    targetMaxResult, SpreadPercentage, context, operationFactories.Dequeue()), tokenSource, numThreads);
-            Task.WaitAny(threads); 
-            tokenSource.Cancel();              
+            
+            var myTimer = new System.Timers.Timer();
+            myTimer.Elapsed += (caller, e) => {tokenSource.Cancel();};
+            myTimer.Interval = _generationTimout;
+            myTimer.Start();
+            
+            var operationFactories = Enumerable.Range(1, numThreads).Select(entry => _opertionFactory.Create());
+            var tasks = new List<Task<OperationPairsSequence>>();
+            foreach(var operationFactory in operationFactories)
+            {
+                var task = Task.Run(() => {return GenerateSequenceAsync(ct, targetMaxResult, SpreadPercentage, context, operationFactory);});
+                tasks.Add(task);
+            }
+            Task.WaitAny(tasks.ToArray());            
+            tokenSource.Cancel(); 
+            myTimer.Dispose();   
+            _sequence = tasks.FirstOrDefault(entry => entry.Result != null).Result;
+               
+            if(_sequence == null)
+                throw new System.Exception($"No sequence generated but trying to return.\n targetMaxResult was: {targetMaxResult}");         
             return _sequence;    
         }
+        
+        public BigInteger GetAverageSequenceResult(SequenceContext context)
+            => GetAverageSequenceResult(context, _numIterationsForAverage);
         
         public BigInteger GetAverageSequenceResult(SequenceContext context, int numberOfIterations)
         {
             var numThreads = 20;
             var medianCount = 4;
-            var iterationsPerThread = numberOfIterations/numThreads;            
-            var results = new List<BigInteger>();           
+            var iterationsPerThread = numberOfIterations/numThreads;           
             var forMedian = new List<BigInteger>();      
-            Thread[] threads = new Thread[numThreads];
-            var operationFactories = new Queue<OperationFactory>(Enumerable.Repeat(_opertionFactory.Create(), numThreads));
-            for(int thread = 0; thread < numThreads; thread++)
+            var operationFactories = Enumerable.Range(1, numThreads).Select(entry => _opertionFactory.Create());
+            var tasks = new List<Task<BigInteger>>();
+            
+            // var factorieGroups = new List<List<OperationFactory>>();
+            // foreach(var i in Enumerable.Range(1, numThreads))
+            //     factorieGroups.Add(Enumerable.Range(1, iterationsPerThread).Select(entry => _opertionFactory.Create()).ToList());
+            // var tasks = new List<Task<BigInteger>>();
+            // foreach(var factories in factorieGroups)
+            // {
+            //     var task = Task.Run(() => {return MeanOfIterationsAsync(context, iterationsPerThread, factories);});
+            //     tasks.Add(task);
+            // }
+            
+            foreach(var operationFactory in operationFactories)
             {
-                threads[thread] = new System.Threading.Thread(() => {
-                    var result = SumOfRandomIterations(context, iterationsPerThread, operationFactories.Dequeue()); results.Add(result); });
-                threads[thread].Start();
-                threads[thread].Join();
-            }            
+                var task = Task.Run(() => {return MeanOfIterationsAsync(context, iterationsPerThread, operationFactory);});
+                tasks.Add(task);
+            }
+            Task.WaitAll(tasks.ToArray());
+            var results = tasks.Select(entry => entry.Result).ToList();  
             var medianEveryN = numThreads / medianCount;   
             var tempResult = new BigInteger(0);       
             var count = 1;      
@@ -71,55 +102,78 @@ namespace Game.Gameplay.Realtime.OperationSequence
             }
             return MathUtils.Median<BigInteger>(forMedian);
         }
-        
-        BigInteger SumOfRandomIterations(SequenceContext context, int numberOfIterations, OperationFactory operationFactory)
-        {             
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                
+        // async Task<BigInteger> MeanOfIterationsAsync(SequenceContext context, int numberOfIterations, IEnumerable<OperationFactory> operationFactories)
+        async Task<BigInteger> MeanOfIterationsAsync(SequenceContext context, int numberOfIterations, OperationFactory operationFactory)
+        {                         
+            // var execs = new Queue<OperationExecutor>(Enumerable.Range(1, numberOfIterations).Select(entry => new OperationExecutor()));
+            // var generators = new Queue<SequenceGenerator>(Enumerable.Range(1, numberOfIterations).Select(entry => new SequenceGenerator(execs.Dequeue(), operationFactory)));
+            
+            // var tasks = Enumerable.Range(1, numberOfIterations)
+            //     .Select(entry => GenerateSequence(generators.Dequeue(), context, operationFactory))
+            //     .ToArray();
+                
+            // // var tasks = Enumerable.Range(1, numberOfIterations)
+            // //     .Select(entry => GenerateSequence(context, operationFactory))
+            // //     .ToArray();
+            
+            // Task.WaitAll(tasks);
+            // var results = tasks.Select(entry => entry.Result).ToList(); 
+            
+            // var exec = new OperationExecutor();        
+            // SequenceGenerator generator = new SequenceGenerator(exec, operationFactory); 
+            // var results = generator.GetSequences(context.NumberOfOperations, numberOfIterations, context.InitialValue).Select(entry => entry.BestPossibleResult);
             
             var exec = new OperationExecutor();        
-            OperationPairsSequence sequence;      
             SequenceGenerator generator = new SequenceGenerator(exec, operationFactory); 
-            var partialResult = new BigInteger(0);
-            var tempResult = new BigInteger(0);
-            for(int i = 0; i < numberOfIterations; i++)
-            {
-                sequence = generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue);
-                tempResult = sequence.ResultAtCreation;  
-                partialResult = BigInteger.Add(partialResult, tempResult);     
-            }
-                           
-            return BigInteger.Divide(partialResult, new BigInteger(numberOfIterations));            
+            var results = Enumerable.Range(1, numberOfIterations)
+                .Select(entry => generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue).BestPossibleResult);
+            
+            var sumOfResults = results.Aggregate(BigInteger.Add);                
+            return BigInteger.Divide(sumOfResults, new BigInteger(numberOfIterations));            
         }
         
-        void GenerateSequenceUntilSuccesfull(
+        
+        // async Task<BigInteger> GenerateSequence(SequenceGenerator generator, SequenceContext context, OperationFactory operationFactory)
+        // {
+        //     return generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue).BestPossibleResult;
+        // }
+        
+        // async Task<BigInteger> GenerateSequence(SequenceContext context, OperationFactory operationFactory)
+        // {
+        //     var exec = new OperationExecutor();        
+        //     SequenceGenerator generator = new SequenceGenerator(exec, operationFactory); 
+        //     return generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue).BestPossibleResult;
+        // }
+        
+        async Task<OperationPairsSequence> GenerateSequenceAsync(
             CancellationToken token, BigInteger targetMaxResult, int SpreadPercentage, 
             SequenceContext context, OperationFactory operationFactor)
         {
             float tempCoeff = _coefficient;
             var exec = new OperationExecutor();
-            SequenceGenerator generator = new SequenceGenerator(exec, operationFactor);
-            OperationPairsSequence sequence = new OperationPairsSequence(new List<OperationPair>{null}, 0);
+            var generator = new SequenceGenerator(exec, operationFactor);
+            OperationPairsSequence tempSequence;
             BigInteger result = new BigInteger(0);
             result += context.InitialValue;
             BigInteger spread = (new BigInteger(SpreadPercentage) * targetMaxResult)/new BigInteger(100);
-            do
+            while(!token.IsCancellationRequested)
             {
-                if(token.IsCancellationRequested)
-                    return;
-                sequence = generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue);  
-                result = sequence.ResultAtCreation;             
-            } while(BigInteger.Abs(targetMaxResult - result) >= spread);              
+                tempSequence = generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue);  
+                result = tempSequence.BestPossibleResult;  
+                if(BigInteger.Abs(targetMaxResult - result) < spread)
+                    return tempSequence;
+            }
             
-            if(_sequence == null)
-                _sequence = sequence;   
-        }
-        
-        Task[] SpreadTaskToThreads(System.Action action, CancellationTokenSource tokenSource, int numThreads)
-        { 
-            Task[] threads = new Task[numThreads];        
-            for(int thread = 0; thread < numThreads; thread++)
-                threads[thread] = Task.Run(action, tokenSource.Token);
-            return threads;
+            // do
+            // {
+            //     if(token.IsCancellationRequested)
+            //         break;
+            //     tempSequence = generator.GetSequenceWithRandomPairsOptimized(context.NumberOfOperations, context.InitialValue);  
+            //     result = tempSequence.BestPossibleResult;             
+            // } while(BigInteger.Abs(targetMaxResult - result) >= spread);    
+            
+            return null;
         }
     }    
 }

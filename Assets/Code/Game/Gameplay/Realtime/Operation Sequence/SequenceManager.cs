@@ -7,19 +7,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
     {        
         ISequenceCalculator _meta;
         IContextProvider _runContextProvider;
-                
-        const int _numIterationsForAverage = 2000;
-                
+                                
         public SequenceManager(ISequenceCalculator meta, IContextProvider runContextProvider)
-        {
-            if(meta == null)
-                throw new System.Exception("IMetaGame not provided to MetaManager");
-                
-            if(runContextProvider == null)
-                throw new System.Exception("IContextProvider isn't provided to RuntimeFactory");
-                
-            _runContextProvider = runContextProvider;                
-            _meta = meta;
+        {                
+            _runContextProvider = runContextProvider ?? throw new System.ArgumentNullException(nameof(runContextProvider));                
+            _meta = meta ?? throw new System.ArgumentNullException(nameof(meta));
         }
         
         public BigInteger GetNextTargetScore()
@@ -36,7 +28,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         BigInteger GenerateAverageTarget()
         {
-            return _meta.GetAverageSequenceResult(_runContextProvider.GetContext(), _numIterationsForAverage);
+            return _meta.GetAverageSequenceResult(_runContextProvider.GetContext());
         }
     }
 }

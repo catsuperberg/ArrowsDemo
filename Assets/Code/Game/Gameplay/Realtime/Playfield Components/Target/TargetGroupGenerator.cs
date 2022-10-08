@@ -2,6 +2,7 @@ using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.GeneralUseInterfaces;
 using GameMath;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
@@ -47,6 +48,16 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(TargetPlacementCoroutine(targetPlacementSemaphore));});
             await targetPlacementSemaphore.WaitAsync();    
             return _target;
+        }
+        
+        public List<TargetDataOnly> GetDataOnlyTargets(BigInteger targetResult, (int Min, int Max) numberOfTargetsRange)
+        {
+            _numberOfTargets = _rand.Next(numberOfTargetsRange.Min, numberOfTargetsRange.Max);
+            _targetScores = RandomBigIntListWithSetSum.Generate(targetResult, _numberOfTargets, spreadDeviation: (0.2f, 0.85f));  
+            var targets = _targetScores
+                .Select(entry => new TargetDataOnly(entry, (TargetGrades)_rand.Next(0, (int)TargetGrades.ENUM_END)))
+                .ToList();
+            return targets;
         }
         
         IEnumerator TargetGenerationCoroutine(SemaphoreSlim semaphore)

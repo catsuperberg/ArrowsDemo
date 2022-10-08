@@ -4,6 +4,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
     public class OperationPair 
     {
+        readonly OperationFactory _factory;
+        
         public OperationInstance LeftOperation {get; private set;}
         public OperationInstance RightOperation {get; private set;}
         
@@ -20,15 +22,27 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         ///<summary> Creates operation pair with random operation instances </summary>
         public OperationPair(OperationFactory operationFactory)
-        {        
-            LeftOperation = operationFactory.GetRandom();
-            RightOperation = operationFactory.GetRandom();   
+        {                    
+            _factory = operationFactory;   
+            Regenerate();
         }
+        
+        public void Regenerate()
+        {
+            LeftOperation = _factory.GetRandom();
+            RightOperation = _factory.GetRandom();            
+        }  
         
         public OperationInstance BestOperation(BigInteger initialValue, OperationExecutor exec)
         {
             var leftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
             return (leftIsBest) ? LeftOperation : RightOperation;
+        }
+        
+        public OperationInstance WorseOperation(BigInteger initialValue, OperationExecutor exec)
+        {
+            var leftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
+            return (leftIsBest) ? RightOperation : LeftOperation;
         }
         
         public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue, OperationExecutor exec)
