@@ -1,10 +1,60 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Timers;
 
 namespace GameMath
-{
+{        
+    
+    
+    public class BigIntMedianCalculator
+    {
+        IEnumerable<BigIntMedianCalculator> _loverLevelCalculators = null;
+        IEnumerable<BigInteger> _finalLevelValues = null;
+        
+        public BigIntMedianCalculator(IEnumerable<BigInteger> values, int groupsPerLevel, int levelDepth)
+        {
+            if(levelDepth == 1)
+            {
+                FinalLevelContructor(values);
+                return;
+            }
+            
+            var groups = Split(values, groupsPerLevel);
+            _loverLevelCalculators = groups.Select(entry => new BigIntMedianCalculator(entry, groupsPerLevel, levelDepth-1));
+        }       
+        
+        void FinalLevelContructor(IEnumerable<BigInteger> values)
+        {
+            _finalLevelValues = values;
+        }
+        
+        public BigInteger Calculate()
+            => (_finalLevelValues != null) ?
+                // BigInteger.Divide(_finalLevelValues.Aggregate(BigInteger.Add), _finalLevelValues.Count()) :
+                MathUtils.Median(_finalLevelValues.ToList()) :
+                MathUtils.Median(_loverLevelCalculators.Select(entry => entry.Calculate()).ToList());
+                
+        IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> data, int chunkSize)
+            => data.Select((x, idx) => new { index = idx, val = x})
+							.GroupBy(i => i.index / chunkSize)
+							.Select(g => g.Select(x => x.val));
+                            
+        BigInteger Median(IEnumerable<BigInteger> values)
+        {
+            int numberCount = values.Count();
+            int halfIndex = numberCount/2;
+            var sortedNumbers = values.OrderBy(n=>n);
+            BigInteger median;
+            if ((numberCount % 2) == 0)
+                median = ((sortedNumbers.ElementAt(halfIndex) + sortedNumbers.ElementAt((halfIndex - 1)))/ 2);
+            else 
+                median = sortedNumbers.ElementAt(halfIndex);
+            return 0;
+        }
+    }
+    
     public static class WeightedRandom
     {
         public static Dictionary<float, T> FrequencyToWeights<T>(Dictionary<int, T> frequency)

@@ -33,19 +33,19 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             RightOperation = _factory.GetRandom();            
         }  
         
-        public OperationInstance BestOperation(BigInteger initialValue, OperationExecutor exec)
+        public OperationInstance BestOperation(BigInteger initialValue)
         {
-            var leftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
+            var leftIsBest = LeftOperation.Perform(initialValue) > RightOperation.Perform(initialValue);
             return (leftIsBest) ? LeftOperation : RightOperation;
         }
         
-        public OperationInstance WorseOperation(BigInteger initialValue, OperationExecutor exec)
+        public OperationInstance WorseOperation(BigInteger initialValue)
         {
-            var leftIsBest = exec.Perform(LeftOperation, initialValue) > exec.Perform(RightOperation, initialValue);
+            var leftIsBest = LeftOperation.Perform(initialValue) > RightOperation.Perform(initialValue);
             return (leftIsBest) ? RightOperation : LeftOperation;
         }
         
-        public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue, OperationExecutor exec)
+        public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue)
         {
             OperationInstance otherOperation;
             if(operationToCheck == LeftOperation)
@@ -54,13 +54,13 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 otherOperation = LeftOperation;
             else
                 throw new System.Exception("No OperationInstance, equal to one to check, found in this pair");
-            return exec.Perform(operationToCheck, initialValue) >= exec.Perform(otherOperation, initialValue);
+            return operationToCheck.Perform(initialValue) >= otherOperation.Perform(initialValue);
         }
         
-        public BigInteger BestOperationResult(BigInteger initialValue, OperationExecutor exec)
+        public BigInteger BestOperationResult(BigInteger initialValue)
         {
-            var leftValue = exec.Perform(LeftOperation, initialValue);
-            var rightValue =  exec.Perform(RightOperation, initialValue);
+            var leftValue = LeftOperation.Perform(initialValue);
+            var rightValue =  RightOperation.Perform(initialValue);
             return (leftValue > rightValue) ? leftValue : rightValue;
         }
     }

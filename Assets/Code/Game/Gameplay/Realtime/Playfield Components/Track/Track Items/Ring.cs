@@ -15,16 +15,12 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         private TMP_Text _operationText;
         
         public OperationInstance Operation {get; private set;}
-        private OperationExecutor _exec;
         private bool _spent = false;
         
         public event EventHandler<MicrointeractionEventArgs> OnMicrointerationTriggered;
         
-        public void Initialize(OperationInstance newOperation, OperationExecutor exec)
-        {
-            if(exec == null)
-                throw new System.Exception("OperationExecutor not provided to Ring");
-            _exec = exec;                        
+        public void Initialize(OperationInstance newOperation)
+        {                       
             Operation = newOperation;
             UpdateApearance();
         }
@@ -34,8 +30,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         
         void UpdateApearance()
         {
-            if(_exec == null)
-                throw new System.Exception("Ring wasn't initialized");
             _operationText.text = Operation.Type.ToSymbol() + Operation.Value;
         }
         
@@ -44,9 +38,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
             if(_spent)
                 return initialValue;
                 
-            if(_exec == null)
-                throw new System.Exception("Ring wasn't initialized");
-            var newValue = _exec.Perform(Operation, initialValue);
+            var newValue = Operation.Perform(initialValue);
             SpendAllInList(FindRingsInPair());                
             bool isBestChoice = IsBestInPair(initialValue);
             ActivateVibration(isBestChoice);
@@ -73,7 +65,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems
         {
             var pairObjectContainer = gameObject.transform.parent.gameObject;
             var pair = pairObjectContainer.GetComponent<OperationPairComponent>().Pair;
-            return pair.IsBestOperation(Operation, initialValue, _exec);
+            return pair.IsBestOperation(Operation, initialValue);
         }
         
         void ActivateVibration(bool isPositive)

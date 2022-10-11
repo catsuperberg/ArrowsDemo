@@ -11,16 +11,14 @@ namespace Game.GameDesign
     {        
         GateSelector _gateSelector;
         IAdSelector _adSelector;
-        OperationExecutor _exec; 
         
         const float _finishingSceneSeconds = 3; // HACK copied from FinishingScene  
         const float _frameTimeSeconds = 0.016f;     
         
-        public VirtualPlayer(GateSelector gateSelector, IAdSelector adSelector, OperationExecutor exec)
+        public VirtualPlayer(GateSelector gateSelector, IAdSelector adSelector)
         {
             _gateSelector = gateSelector ?? throw new System.ArgumentNullException(nameof(gateSelector));
             _adSelector = adSelector ?? throw new System.ArgumentNullException(nameof(adSelector));
-            _exec = exec ?? throw new System.ArgumentNullException(nameof(exec));
         }
         
         public SimulationData PerformRunWithAdUntilSucessful(SimulationContext context)
@@ -55,7 +53,7 @@ namespace Game.GameDesign
             {
                 gateCount++;
                 var opertaion = _gateSelector.Choose(pair, runReward);
-                runReward = _exec.Perform(opertaion, runReward);
+                runReward = opertaion.Perform(runReward);
                 if(runReward <= 0)
                     break;
             }

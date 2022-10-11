@@ -700,7 +700,10 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: ZEN_MULTITHREADING
+    Server: ZEN_MULTITHREADING
+    Standalone: ZEN_MULTITHREADING
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}

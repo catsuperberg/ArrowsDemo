@@ -42,20 +42,18 @@ namespace Game.GameDesign
     
     public class GateSelector
     {
-        float _chanceOfWorseChoice;
-        readonly OperationExecutor _exec;        
+        float _chanceOfWorseChoice; 
         readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 
-        public GateSelector(float chanceOfWorseChoice, OperationExecutor exec)
+        public GateSelector(float chanceOfWorseChoice)
         {
             _chanceOfWorseChoice = chanceOfWorseChoice;
-            _exec = exec ?? throw new System.ArgumentNullException(nameof(exec));
         }
         
         public OperationInstance Choose(OperationPair pair, BigInteger initialValue)
         {
             var chanceCheck = _random.NextDouble();
-            return (chanceCheck >= _chanceOfWorseChoice) ? pair.BestOperation(initialValue, _exec) : pair.WorseOperation(initialValue, _exec);
+            return (chanceCheck >= _chanceOfWorseChoice) ? pair.BestOperation(initialValue) : pair.WorseOperation(initialValue);
         }
     }
 }

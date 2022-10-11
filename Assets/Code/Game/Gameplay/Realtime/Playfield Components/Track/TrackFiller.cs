@@ -16,7 +16,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
     public class TrackFiller : MonoBehaviour, ITrackPopulator
     {           
         Vector3 _gateOffset = new Vector3(4.5f, 4f, 0f);
-        OperationExecutor _exec;
         float _runUpLength = 40;
         int _nextPairID = 0;
         
@@ -30,15 +29,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         List<CurveSample> _pointsOnTrack;
         List<GameObject> _gatePairs;
         IInstatiator _assetInstatiator;
-        
-        [Inject]
-        public void Construct(OperationExecutor exec)
-        {
-            if(exec == null)
-                throw new System.Exception("OperationExecutor isn't provided to TrackFiller"); 
-                               
-            _exec = exec;
-        }
                     
         public async Task<GameObject> PlaceGatesAsync(GameObject gatePrefab, Spline track, OperationPairsSequence sequence, IInstatiator assetInstatiator)
         {
@@ -115,7 +105,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
                         _gateOffset.z);
                 var ring = _assetInstatiator.Instantiate(gatePrefab, name: (isLeft) ? "Left ring" : "Right ring", position: gatePosition);     
                 var ringLogic = ring.GetComponent<Ring>();
-                ringLogic.Initialize(operation, _exec);
+                ringLogic.Initialize(operation);
                 return ring;
             }                 
             else

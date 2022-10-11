@@ -30,14 +30,17 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         
     void ComposeSequence()
     {        
-        Container.Bind<IGameFolders>().To<GameFolders>().AsSingle();
+        var folders = new GameFolders();
+        // Container.Bind<IGameFolders>().FromInstance(folders);
+        var probabilitiesFactory = new OperationProbabilitiesFactory(folders);
         
-        Container.Bind<OperationProbabilitiesFactory>().AsSingle();
+        // Container.Bind<OperationProbabilitiesFactory>().AsTransient();
+        Container.Bind<OperationProbabilitiesFactory>().FromInstance(probabilitiesFactory).AsSingle();
         Container.Bind<MathOperationProbabilities>()
-            .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson());
+            .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson()).AsSingle();
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
-        Container.Bind<OperationExecutor>().AsTransient();
+        Container.Bind<IOperationDelegates>().To<OperationDelegates>().AsTransient();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();    
     }
@@ -51,6 +54,18 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         Measure.Method(() => {generator.GetAverageSequenceResult(context);})
             .WarmupCount(2)
             .MeasurementCount(50)
+            .Run();
+    }
+    
+    [Test, Performance, RequiresPlayMode(false)]
+    public void TestLateAverageGenerationPerformanceShort()
+    {        
+        var context = new SequenceContext(500, 3, 50, 8);
+        var generator = Container.Resolve<ISequenceCalculator>();
+        
+        Measure.Method(() => {generator.GetAverageSequenceResult(context);})
+            .WarmupCount(1)
+            .MeasurementCount(3)
             .Run();
     }
     
@@ -72,7 +87,7 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         var context = new SequenceContext(500, 3, 50, 8);
         var generator = Container.Resolve<ISequenceCalculator>();
         
-        var results = Enumerable.Range(1, 20).Select(entry => generator.GetAverageSequenceResult(context)).ToList();
+        var results = Enumerable.Range(1, 50).Select(entry => generator.GetAverageSequenceResult(context)).ToList();
         results.ForEach(entry => Debug.Log(entry.ParseToReadable()));
     }
     

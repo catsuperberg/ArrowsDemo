@@ -44,7 +44,7 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
             .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson());
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
-        Container.Bind<OperationExecutor>().AsTransient();
+        Container.Bind<IOperationDelegates>().To<OperationDelegates>().AsTransient();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();    
     }
@@ -56,10 +56,9 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     
     void ComposePlayer()
     {
-        var executor = new OperationExecutor();
-        var gateSelector = new GateSelector(GateSelectors.BadPlayer.Chance(), executor);
+        var gateSelector = new GateSelector(GateSelectors.BadPlayer.Chance());
         var adSelector = new AdSkipper();
-        var player = new VirtualPlayer(gateSelector, adSelector, executor);
+        var player = new VirtualPlayer(gateSelector, adSelector);
         Container.Bind<VirtualPlayer>().FromInstance(player).AsTransient(); 
     }
     
