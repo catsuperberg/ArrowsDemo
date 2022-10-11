@@ -31,7 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "807817995185404",
+        "Value": "807857247254461",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -53,7 +53,7 @@
       },
       {
         "Name": "LifetimeSpending",
-        "Value": "127856709942",
+        "Value": "127856771007",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -91,7 +91,7 @@
       },
       {
         "Name": "InitialArrowCount",
-        "Value": "32",
+        "Value": "33",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

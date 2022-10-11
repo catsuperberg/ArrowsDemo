@@ -35,9 +35,9 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         var probabilitiesFactory = new OperationProbabilitiesFactory(folders);
         
         // Container.Bind<OperationProbabilitiesFactory>().AsTransient();
-        Container.Bind<OperationProbabilitiesFactory>().FromInstance(probabilitiesFactory).AsSingle();
-        Container.Bind<MathOperationProbabilities>()
-            .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson()).AsSingle();
+        Container.Bind<OperationProbabilitiesFactory>().FromInstance(probabilitiesFactory).AsTransient();
+        // Container.Bind<MathOperationProbabilities>()
+        //     .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson()).AsSingle();
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
         Container.Bind<IOperationDelegates>().To<OperationDelegates>().AsTransient();

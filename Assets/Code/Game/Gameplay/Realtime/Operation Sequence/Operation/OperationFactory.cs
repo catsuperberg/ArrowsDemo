@@ -11,8 +11,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {    
     public class OperationFactory
     {          
-        IReadOnlyDictionary<float, Operation> _operationWeights;
-        int _cacheSize = 60;
+        int _cacheSize = 90;
+        List<OperationInstance> _instances = new List<OperationInstance>();
         
         Dictionary<Operation, int[]> _valueCaches;
         int _currentValueIndex;
@@ -25,7 +25,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         }
         
         Dictionary<Operation, int> _operationRepeats;
-        // ICache<Operation> _operationCache;
         ICache<float> _floatCache;
         ICache<OperationInstance> _instanceCache;
         
@@ -34,19 +33,15 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 
         public OperationFactory(OperationProbabilitiesFactory probabilities, IOperationDelegates operationDelegates)
         {
-            _operationWeights = probabilities?.GetFromGeneratedJson().OperationsKeyedByWeigh ?? throw new ArgumentNullException(nameof(probabilities)); 
             _rand = new System.Random(this.GetHashCode());
-            _operationDelegates = operationDelegates ?? throw new ArgumentNullException(nameof(operationDelegates));   
-            
-            _operationRepeats = probabilities.GetRepeatsForCertainCount(_cacheSize);
+            _operationDelegates = operationDelegates ?? throw new ArgumentNullException(nameof(operationDelegates));              
+            _operationRepeats = probabilities?.GetRepeatsForCertainCount(_cacheSize);
             
             Generate();   
         }
         
         void Generate()
         {    
-            // FillOperationRepeats();
-            // _operationCache = new ArrayCache<Operation>(GetRandomOperation, _cacheSize);
             _floatCache = new ArrayCache<float>(() => (float)_rand.NextDouble(), _cacheSize);
             _sqrtValues = new ArrayCache<float>(stdSqrt, _cacheSize);
             _sinValues = new ArrayCache<float>(stdSin, _cacheSize);
@@ -56,42 +51,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         void ReGenerate()
         { 
-            // _operationCache.Shuffle(_rand);  
             _floatCache.Shuffle(_rand);   
             _sqrtValues.Shuffle(_rand);   
             _sinValues.Shuffle(_rand);   
-            FillInstances();   
+            ReFillInstances();  
         }      
-        
-        // void FillOperationRepeats()
-        // {
-        //     var sortedKeys = from entry in _operationWeights orderby entry.Key descending select entry.Key;
-        //     var smallestKey = sortedKeys.Last();
-        //     var toSingleSmallestCoeff = 1f/smallestKey;
-        //     var intWeights = _operationWeights.ToDictionary(entry => entry.Value, entry => (int)MathF.Round(entry.Key * toSingleSmallestCoeff)); // flipped dictionary 
-        //     var coeffToCacheSize = _cacheSize/(float)(intWeights.Sum(entry => entry.Value));
-        //     if(coeffToCacheSize <= 1)   
-        //     {
-        //         _cacheSize = (int)(intWeights.Sum(entry => entry.Value));
-        //         coeffToCacheSize = 1;
-        //     }
-        //     var intRepeats = intWeights.ToDictionary(entry => entry.Key, entry => (int)MathF.Round(entry.Value * coeffToCacheSize));
-        //     var repeatsDeficit = _cacheSize - intWeights.Values.Sum();
-            
-        //     var sortedRepeats = from entry in intRepeats orderby entry.Value descending select entry;
-        //     var largestEntry = sortedRepeats.First();
-        //     var newLargestKey = largestEntry.Value + repeatsDeficit;
-            
-        //     var finalRepeats = sortedRepeats.ToDictionary(entry => entry.Key, entry => entry.Value);
-        //     if(!sortedRepeats.Any(entry => entry.Value == (largestEntry.Value)))
-        //     {
-        //         finalRepeats.Remove(largestEntry.Key);
-        //         finalRepeats.Add(largestEntry.Key, newLargestKey);
-        //     }
-            
-            
-        //     _operationRepeats = finalRepeats;
-        // }
         
         void FillValueCache()
         {
@@ -105,50 +69,29 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         void FillInstances()
         {
-            var instances = new List<OperationInstance>();
             foreach(var opearation in _operationRepeats)
             {
                 var type = opearation.Key;
                 var mathOperation = _operationDelegates.GetDelegate(type);
                 var reps = opearation.Value;
-                foreach(var rep in Enumerable.Range(0, reps))
-                    instances.Add(new OperationInstance(type, NextValue(type), mathOperation));
+                for(int rep = 0; rep < reps; rep++)
+                    _instances.Add(new OperationInstance(type, NextValue(type), mathOperation));
             }
-            _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(instances.ToArray(), ReGenerate);        
+            _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(_instances.ToArray(), ReGenerate);        
             _instanceCache.Shuffle(_rand);    
-            // _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(RandomInstance, _cacheSize, ReGenerate);
         }
         
-        Operation GetRandomOperation()
-        {              
-            var randomWeight = _rand.NextDouble();                      
-            foreach(var operation in _operationWeights)
-                if(randomWeight < operation.Key)
-                    return operation.Value;
-            throw new System.Exception("GetOperationWithProbabilityOptimized() couldn't find operation suitable for generated randomWeight");
+        void ReFillInstances()
+        {
+            _instances.ForEach(entry => entry.Update(NextValue(entry.Type)));
+            _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(_instances.ToArray(), ReGenerate);        
+            _instanceCache.Shuffle(_rand);  
         }
         
         public OperationInstance GetRandom()
         {
             return _instanceCache.Next();
-            // var state = GetRandomState();
-            // return new OperationInstance(state.type, state.value);
         }    
-        
-        // OperationInstance RandomInstance()
-        // {
-        //     // var state = GetRandomState();
-        //     // return new OperationInstance(state.type, state.value, _operationDelegates);
-        //     var operation = _operationCache.Next();
-        //     return new OperationInstance(operation, NextValue(operation), _operationDelegates);
-        // }          
-        
-        // (Operation type, int value) GetRandomState()
-        // {                        
-        //     var operation = GetOperationWithProbabilityOptimized(0.5f);
-        //     int value = RandomValue(operation);
-        //     return (operation, value);
-        // }
         
         int RandomValue(Operation type)
         {            
@@ -164,19 +107,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             }
         }
         
-        // Operation GetOperationWithProbabilityOptimized(float coeff)
-        // {    
-        //     return _operationCache.Next();
-            
-        //     // var randomIndex = _rand.Next(0,_operationCacheSize);
-        //     // return _operationCache[randomIndex];
-                     
-        //     // foreach(var operation in _operationWeights)
-        //     //     if(randomWeight < operation.Key)
-        //     //         return operation.Value;
-        //     // throw new System.Exception("GetOperationWithProbabilityOptimized() couldn't find operation suitable for generated randomWeight");
-        // }
-        
         
         ICache<float> _sqrtValues;
         ICache<float> _sinValues;        
@@ -185,11 +115,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         {               
             coeff = MathUtils.MathClamp(coeff, 0, 1);
             var mean = (max-min)*coeff + min;
-            var stdDev = 3;
-            
-            // var stdSqrtArgument = -2.0f * System.MathF.Log(stdUPoint());
-            // var stdSinArgument = 2.0f * System.MathF.PI * stdUPoint();
-            // var randStdNormal = System.MathF.Sqrt(stdSqrtArgument) * System.MathF.Sin(stdSinArgument); 
+            var stdDev = 3; 
             var randStdNormal = _sqrtValues.Next() * _sinValues.Next();
             var randNormal = mean + stdDev * randStdNormal; 
             randNormal = MathUtils.MathClamp(randNormal, min, max);

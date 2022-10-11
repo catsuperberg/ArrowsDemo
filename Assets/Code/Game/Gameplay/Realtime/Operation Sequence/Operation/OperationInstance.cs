@@ -7,7 +7,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public class OperationInstance
     {                    
         public readonly Operation Type;
-        public readonly int Value;    
+        public int Value;    
         
         Func<BigInteger, BigInteger, BigInteger> _execute;
         
@@ -30,6 +30,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             Type = type;
             Value = value;
             _execute = delegatedFunction;
+        }
+        
+        public void Update(int value)
+        {
+            Value = value;
         }
         
         public BigInteger Perform(BigInteger initialValue)

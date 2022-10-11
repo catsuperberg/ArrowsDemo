@@ -18,6 +18,9 @@ namespace GameDesign
             {Operation.Add, 27},
             {Operation.Subtract, 30},
             {Operation.Blank, 35}};
+            
+        static int _cachedSize = 0;
+        static Dictionary<Operation, int> _cachedReps;
                                     
         Dictionary<Operation, int> _generatedFrequencies;
             
@@ -42,6 +45,9 @@ namespace GameDesign
         
         public Dictionary<Operation, int> GetRepeatsForCertainCount(int operationCount)
         {
+            if(operationCount == _cachedSize)
+                return _cachedReps;
+            
             Dictionary<Operation, int> result;
             var coeff = (float)operationCount/(float)(_defaultFrequencies.Values.Sum());
             var floatRepeats = _generatedFrequencies.ToDictionary(kvp => kvp.Key, kvp => (float)(kvp.Value)*coeff);
@@ -54,7 +60,9 @@ namespace GameDesign
                 result = SubtractFromSmallest(sortedRepeats, deficit);
             else
                 result = sortedRepeats.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-                
+            
+            _cachedReps = result;
+            _cachedSize = _cachedReps.Count();
             // result.ToList().ForEach(entry => UnityEngine.Debug.Log($"Operation: {entry.Key.ToString()} Repeats: {entry.Value}"));
             return result;
         }
