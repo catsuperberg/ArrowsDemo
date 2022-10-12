@@ -11,18 +11,19 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {    
     public class OperationFactory
     {          
-        int _cacheSize = 90;
+        int _cacheSize = 64;  // must be base 2
         List<OperationInstance> _instances = new List<OperationInstance>();
         
-        Dictionary<Operation, int[]> _valueCaches;
-        int _currentValueIndex;
-        int NextValue(Operation type) 
-        {
-            var index = ++_currentValueIndex;
-            if(index >= _cacheSize)
-                _currentValueIndex = 0;
-            return _valueCaches[type][_currentValueIndex];
-        }
+        IOffsetCache<int> _valueCache;
+        // Dictionary<Operation, int[]> _valueCaches;
+        // int _currentValueIndex;
+        // int NextValue(Operation type) 
+        // {
+        //     var index = ++_currentValueIndex;
+        //     if(index >= _cacheSize)
+        //         _currentValueIndex = 0;
+        //     return _valueCaches[type][_currentValueIndex];
+        // }
         
         Dictionary<Operation, int> _operationRepeats;
         ICache<float> _floatCache;
@@ -33,9 +34,18 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 
         public OperationFactory(OperationProbabilitiesFactory probabilities, IOperationDelegates operationDelegates)
         {
-            _rand = new System.Random(this.GetHashCode());
-            _operationDelegates = operationDelegates ?? throw new ArgumentNullException(nameof(operationDelegates));              
+            _rand = new System.Random(this.GetHashCode());         
             _operationRepeats = probabilities?.GetRepeatsForCertainCount(_cacheSize);
+            _operationDelegates = operationDelegates ?? throw new ArgumentNullException(nameof(operationDelegates));     
+            
+            // Generate();   
+        }
+        
+        OperationFactory(Dictionary<Operation, int> repeats, IOperationDelegates operationDelegates)
+        {
+            _rand = new System.Random(this.GetHashCode());         
+            _operationRepeats = repeats;
+            _operationDelegates = operationDelegates;     
             
             Generate();   
         }
@@ -49,6 +59,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             FillInstances();     
         }
         
+        public OperationFactory Clone()
+            => new OperationFactory(_operationRepeats, _operationDelegates);
+        
         void ReGenerate()
         { 
             _floatCache.Shuffle(_rand);   
@@ -59,12 +72,33 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         void FillValueCache()
         {
-            _valueCaches = new Dictionary<Operation, int[]>();
-            _valueCaches.Add(Operation.Add, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Add)).ToArray());
-            _valueCaches.Add(Operation.Subtract, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Subtract)).ToArray());
-            _valueCaches.Add(Operation.Multiply, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Multiply)).ToArray());
-            _valueCaches.Add(Operation.Divide, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Divide)).ToArray());
-            _valueCaches.Add(Operation.Blank, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Blank)).ToArray());
+            var values = new int[_cacheSize * (int)Operation.Last];
+            FillArrayWithOffset(values, Operation.Add, _cacheSize);
+            FillArrayWithOffset(values, Operation.Subtract, _cacheSize);
+            FillArrayWithOffset(values, Operation.Multiply, _cacheSize);
+            FillArrayWithOffset(values, Operation.Divide, _cacheSize);
+            FillArrayWithOffset(values, Operation.Blank, _cacheSize);
+            
+            
+            // values.AddRange(Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Add)));
+            // values.AddRange(Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Subtract)));
+            // values.AddRange(Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Multiply)));
+            // values.AddRange(Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Divide)));
+            // values.AddRange(Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Blank)));
+            
+            _valueCache = new OffsetArrayCache<int>(values, _cacheSize);
+            // _valueCaches = new Dictionary<Operation, int[]>();
+            // _valueCaches.Add(Operation.Add, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Add)).ToArray());
+            // _valueCaches.Add(Operation.Subtract, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Subtract)).ToArray());
+            // _valueCaches.Add(Operation.Multiply, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Multiply)).ToArray());
+            // _valueCaches.Add(Operation.Divide, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Divide)).ToArray());
+            // _valueCaches.Add(Operation.Blank, Enumerable.Range(1, _cacheSize).Select(entry => RandomValue(Operation.Blank)).ToArray());
+        }
+        
+        void FillArrayWithOffset(int[] array, Operation type, int size)
+        {
+            var offset = type.ToOffset(size);
+            for(int i = offset; i < _cacheSize+offset; i++) array[i] = RandomValue(type);            
         }
         
         void FillInstances()
@@ -74,16 +108,27 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 var type = opearation.Key;
                 var mathOperation = _operationDelegates.GetDelegate(type);
                 var reps = opearation.Value;
+                // var operationPrototype = new OperationInstance(type, 1, mathOperation);
+                // for(int rep = 0; rep < reps; rep++)
+                //     _instances.Add(operationPrototype.Clone());
+                // _instances.AddRange(Enumerable.Repeat(operationPrototype, reps));
+                // for(int rep = 0; rep < reps; rep++)
+                // {
+                //     var newOperation = operationPrototype;
+                //     _instances.Add(newOperation);
+                // }
+                
                 for(int rep = 0; rep < reps; rep++)
-                    _instances.Add(new OperationInstance(type, NextValue(type), mathOperation));
+                    _instances.Add(new OperationInstance(type, _valueCache.Next(type.ToOffset(_cacheSize)), mathOperation));
             }
+            // _instances.ForEach(entry => entry.Update(NextValue(entry.Type)));  // Doesn't work for some reason
             _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(_instances.ToArray(), ReGenerate);        
             _instanceCache.Shuffle(_rand);    
         }
         
         void ReFillInstances()
         {
-            _instances.ForEach(entry => entry.Update(NextValue(entry.Type)));
+            _instances.ForEach(entry => entry.Update(_valueCache.Next(entry.Type.ToOffset(_cacheSize))));
             _instanceCache = new ArrayCacheWithEndDelegate<OperationInstance>(_instances.ToArray(), ReGenerate);        
             _instanceCache.Shuffle(_rand);  
         }
@@ -125,8 +170,10 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         
         
+        // float stdSqrt()
+        //     => System.MathF.Sqrt(stdSqrtArgument());
         float stdSqrt()
-            => System.MathF.Sqrt(stdSqrtArgument());
+            => System.MathF.Pow(stdSqrtArgument(), 0.5f);
         float stdSin()
             => System.MathF.Sin(stdSinArgument());
         float stdSqrtArgument()

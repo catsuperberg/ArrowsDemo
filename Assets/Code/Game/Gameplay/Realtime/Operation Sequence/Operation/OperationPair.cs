@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class OperationPair 
+    public struct OperationPair 
     {
         readonly OperationFactory _factory;
         
@@ -17,14 +17,16 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 throw new System.Exception("RighOperation isn't provided to OpetationsPair");
                 
             LeftOperation = left;
-            RightOperation = right;   
+            RightOperation = right; 
+            _factory = null;  
         }
         
         ///<summary> Creates operation pair with random operation instances </summary>
         public OperationPair(OperationFactory operationFactory)
         {                    
             _factory = operationFactory;   
-            Regenerate();
+            LeftOperation = _factory.GetRandom();
+            RightOperation = _factory.GetRandom();
         }
         
         public void Regenerate()

@@ -2,11 +2,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
     public enum Operation
     {   
-        Multiply,
-        Divide,
-        Add,
-        Subtract,
-        Blank,
+        Multiply = 1,
+        Divide = 2,
+        Add = 3,
+        Subtract = 4,
+        Blank = 5,
         First = Multiply,
         Last = Blank
     }
@@ -30,6 +30,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 default:
                     return "No symbol for operationType: " + operationType.ToString();
             }
+        }
+        
+        public static int ToOffset(this Operation operationType, int perOffsetSize)
+        {
+            return ((int)operationType-1)*perOffsetSize;
         }
     }
 }

@@ -110,7 +110,9 @@ namespace Game.Gameplay.Realtime.OperationSequence
             
             // var results = Enumerable.Range(1, _numThreads).Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, _opertionFactory.Create()).Result);
             
-            var results = Enumerable.Range(1, _numThreads).AsParallel().Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, _opertionFactory.Create()).Result);
+            var prototypeFactory = _opertionFactory.Create();
+            
+            var results = Enumerable.Range(1, _numThreads).AsParallel().Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, prototypeFactory.Clone()).Result);
             var allResults = results.SelectMany(entry => entry);
             
             // return MathUtils.Median(allResults.ToList());

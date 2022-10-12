@@ -4,7 +4,7 @@ using Utils;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class OperationInstance
+    public struct OperationInstance
     {                    
         public readonly Operation Type;
         public int Value;    
@@ -36,8 +36,15 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         {
             Value = value;
         }
+                
         
         public BigInteger Perform(BigInteger initialValue)
-            => _execute(initialValue, new BigInteger(Value));
+            => _execute(initialValue, new BigInteger(Value));            
+                
+        public static bool operator ==(OperationInstance i1, OperationInstance i2) 
+            => i1.Equals(i2);
+            
+        public static bool operator !=(OperationInstance i1, OperationInstance i2) 
+            => !i1.Equals(i2);
     }
 }
