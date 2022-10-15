@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Game.GameDesign
 {
-    public class SimulationContext
+    public struct SimulationContext
     {
         public readonly OperationPairsSequence Sequence;
         public readonly BigInteger TargetScore;
@@ -18,7 +18,7 @@ namespace Game.GameDesign
             OperationPairsSequence sequence, BigInteger targetScore, List<TargetDataOnly> targets, 
             BigInteger initialValue, float secondsPerGate)
         {
-            Sequence = sequence ?? throw new System.ArgumentNullException(nameof(sequence));
+            Sequence = sequence;
             TargetScore = targetScore;
             Targets = targets ?? throw new System.ArgumentNullException(nameof(targets));
             SecondsPerGate = secondsPerGate;

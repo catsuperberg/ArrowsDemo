@@ -10,40 +10,42 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         Random _rand;           
         OperationFactory _opertionFactory;
                 
-        int _cacheSize = 100;
-        OperationPair[] _pairCache;
-        int _currentPairIndex;
-        OperationPair NextPair() 
-        {
-            var index = ++_currentPairIndex;
-            if(index >= _cacheSize)
-                _currentPairIndex = 0;
-            return _pairCache[_currentPairIndex];
-        }
+        // int _cacheSize = 1;
+        // OperationPair[] _pairCache;
+        // int _currentPairIndex;
+        // OperationPair NextPair() 
+        // {
+        //     var index = ++_currentPairIndex;
+        //     if(index >= _cacheSize)
+        //         _currentPairIndex = 0;
+        //     return _pairCache[_currentPairIndex];
+        // }
         
         public SequenceGenerator(OperationFactory operationFactory)
         {                
             _opertionFactory = operationFactory ?? throw new ArgumentNullException(nameof(operationFactory));
             _rand = new Random(this.GetHashCode());
             
-            FillCache(_cacheSize);
+            // FillCache(_cacheSize);
         }        
         
         public OperationPairsSequence GetRandomSequence(int length, int initValue = 1)
         {                 
-            if(length > _cacheSize)
-                FillCache(length);
+            // FillCache(length);
+            // var previousResult = new BigInteger(initValue);
+            // BigInteger tempResult;
+            // var sequence = _pairCache.Take(length).ToList();
+            
             var previousResult = new BigInteger(initValue);
             BigInteger tempResult;
-            var sequence = _pairCache.Take(length).ToList();
-            sequence.ForEach(entry => entry.Regenerate());
-            foreach(var pair in sequence)
+            var sequence = _opertionFactory.GetInitialSequence(length);
+            for(int i = 0; i < length; i++)
             {
-                tempResult = pair.BestOperationResult(previousResult);
+                tempResult = sequence[i].BestOperationResult(previousResult);
                 while(tempResult <= 0)
                 {
-                    pair.Regenerate();
-                    tempResult = pair.BestOperationResult(previousResult);
+                    sequence[i] = _opertionFactory.GetRandomPair();
+                    tempResult = sequence[i].BestOperationResult(previousResult);
                 }
                 previousResult = tempResult;
             }
@@ -51,13 +53,15 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             return new OperationPairsSequence(sequence, previousResult);
         }      
         
-        void FillCache(int length)
-        {
-            _cacheSize = length;
-            _pairCache = Enumerable.Range(1, _cacheSize)
-                .Select(entry => new OperationPair(_opertionFactory))
-                .ToArray();
-        }
+        // void FillCache(int length)
+        // {
+        //     _cacheSize = length;
+        //     _pairCache = new OperationPair[_cacheSize];
+        //     for(int i = 0; i < _cacheSize; i++) _pairCache[i] = _opertionFactory.GetRandomPair();
+        //     // _pairCache = Enumerable.Range(1, _cacheSize)
+        //     //     .Select(entry => _opertionFactory.GetRandomPair())
+        //     //     .ToArray();
+        // }
         
         // void ChangeInvalidPair(OperationPair[] sequence, List<BigInteger> results, BigInteger initValue)
         // {

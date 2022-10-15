@@ -177,7 +177,7 @@ public class GameInstaller : MonoInstaller
         //     .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson()).AsSingle();
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
-        Container.Bind<IOperationDelegates>().To<OperationDelegates>().AsTransient();
+        Container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();  
     }

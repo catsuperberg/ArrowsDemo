@@ -32,7 +32,6 @@ namespace GameMath
         
         public BigInteger Calculate()
             => (_finalLevelValues != null) ?
-                // BigInteger.Divide(_finalLevelValues.Aggregate(BigInteger.Add), _finalLevelValues.Count()) :
                 MathUtils.Median(_finalLevelValues.ToList()) :
                 MathUtils.Median(_loverLevelCalculators.Select(entry => entry.Calculate()).ToList());
                 
@@ -383,13 +382,28 @@ namespace GameMath
         public static T Median<T>(this IList<T> list) where T : IComparable<T>
         {
             return list.NthOrderStatistic((list.Count - 1)/2);
-        }
+        }        
 
         public static double Median<T>(this IEnumerable<T> sequence, Func<T, double> getValue)
         {
             var list = sequence.Select(getValue).ToList();
             var mid = (list.Count - 1) / 2;
             return list.NthOrderStatistic(mid);
+        }
+        
+        public static T FastMedian<T>(T[] sourceNumbers) 
+        {
+            //Framework 2.0 version of this method. there is an easier way in F4        
+            if (sourceNumbers == null || sourceNumbers.Length == 0)
+                throw new System.Exception("Median of empty array not defined.");
+
+            //make sure the list is sorted, but use a new array
+            // T[] sortedPNumbers = (T[])sourceNumbers.Clone();
+            Array.Sort(sourceNumbers);
+
+            int size = sourceNumbers.Length;
+            int mid = size / 2;
+            return sourceNumbers[mid];
         }
     }    
 }

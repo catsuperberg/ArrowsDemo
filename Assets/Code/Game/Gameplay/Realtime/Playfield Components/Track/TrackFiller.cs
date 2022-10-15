@@ -23,7 +23,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         GameObject _allGates;
         GameObject _gatePrefab = null;
         Spline _track = null;
-        OperationPairsSequence _sequence = null;
+        OperationPairsSequence _sequence;
         float _positionIndent = 0;
         float _offsetOnTrack = 0;
         List<CurveSample> _pointsOnTrack;

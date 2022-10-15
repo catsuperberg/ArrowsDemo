@@ -4,17 +4,17 @@ using Utils;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public struct OperationInstance
+    public readonly struct OperationInstance
     {                    
         public readonly Operation Type;
-        public int Value;    
+        public readonly BigInteger Value;    
         
-        Func<BigInteger, BigInteger, BigInteger> _execute;
+        readonly Func<BigInteger, BigInteger, BigInteger> _execute;
         
-        public static OperationInstance _blankInstance = new OperationInstance(Operation.Blank, 0, new OperationDelegates());
+        public static OperationInstance _blankInstance = new OperationInstance(Operation.Blank, 0, (BigInteger i1, BigInteger i2) => {return 0;});
         public static OperationInstance blank {get => _blankInstance;}    
                 
-        public OperationInstance(Operation type, int value, IOperationDelegates delegates)
+        public OperationInstance(Operation type, int value, IOperationRules delegates)
         {
             if(!EnumUtils.InRange((int)type, (int)Operation.First, (int)Operation.Last))
                 throw new System.Exception("no valid type provided on OperationInstance creation, type was: " + type);
@@ -32,14 +32,34 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             _execute = delegatedFunction;
         }
         
-        public void Update(int value)
-        {
-            Value = value;
-        }
-                
+        // public void Update(int value)
+        // {
+        //     Value = value;
+        // }
+                                
         
         public BigInteger Perform(BigInteger initialValue)
-            => _execute(initialValue, new BigInteger(Value));            
+            => _execute(initialValue, Value);            
+                
+        
+        public override bool Equals(object obj) 
+        {
+            return obj is OperationInstance &&
+                Type == ((OperationInstance)obj).Type &&
+                Value == ((OperationInstance)obj).Value;
+        }
+        
+        public bool Equals(OperationInstance obj) 
+        {
+            return
+                Type == obj.Type &&
+                Value == obj.Value;
+        }
+        
+        public override int GetHashCode() 
+        {
+            return Type.GetHashCode() ^ Value.GetHashCode() ^ _execute.GetHashCode();
+        }  
                 
         public static bool operator ==(OperationInstance i1, OperationInstance i2) 
             => i1.Equals(i2);

@@ -11,32 +11,32 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public class RandomSequenceGenerator : ISequenceCalculator
     {       
-        const int _numIterationsForAverage = 64;  
+        const int _numIterationsForAverage = 32;  
         const int _generationTimout = 3000;
-        const int _medianLevels = 3;
-        const int _medianGroupsPerLevel = 4; // From top 
+        // const int _medianLevels = 3;
+        // const int _medianGroupsPerLevel = 4; // From top 
         
         float _coefficient = 0.7f;
-        OperationPairsSequence _sequence = null;
         int _CPU_count = 1;
         int _numThreads = 1;
-        OperationFactory.Factory _opertionFactory;
+        OperationFactory.Factory _opertionFactoryFactory;
+        OperationFactory _prototypeFactory;
         
         RandomSequenceGenerator(OperationFactory.Factory operationFactory)
         {
             _CPU_count = SystemInfo.processorCount;
             _numThreads = Mathf.Clamp((_CPU_count * 2) -1, 1, int.MaxValue);
-            _opertionFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory));            
+            _opertionFactoryFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory)); 
+            _prototypeFactory = _opertionFactoryFactory.Create();       
             
-            var minimalMedianCount = (int)Mathf.Pow(_medianGroupsPerLevel, _medianLevels);
-            if(minimalMedianCount > _numIterationsForAverage)
-                throw new System.Exception($"Wouldn't be able to calculate median with set levels and count.\nMinimal count : {minimalMedianCount}");
+            // var minimalMedianCount = (int)Mathf.Pow(_medianGroupsPerLevel, _medianLevels);
+            // if(minimalMedianCount > _numIterationsForAverage)
+            //     throw new System.Exception($"Wouldn't be able to calculate median with set levels and count.\nMinimal count : {minimalMedianCount}");
         }
         
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
             SequenceContext context)
         {        
-            _sequence = null;
             CancellationTokenSource tokenSource= new CancellationTokenSource(); 
             CancellationToken ct = tokenSource.Token;                
             
@@ -45,7 +45,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             generationTimout.Interval = _generationTimout;
             generationTimout.Start();
             
-            var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _opertionFactory.Create());  
+            var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone(context.NumberOfOperations));  
             var tasks = new List<Task<OperationPairsSequence>>();
             foreach(var operationFactory in operationFactories)
             {
@@ -55,11 +55,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
             Task.WaitAny(tasks.ToArray());            
             tokenSource.Cancel(); 
             generationTimout.Dispose();   
-            _sequence = tasks.FirstOrDefault(entry => entry.Result != null).Result;
+            var sequence = tasks.FirstOrDefault(entry => entry.Result != default(OperationPairsSequence)).Result;
                
-            if(_sequence == null)
+            if(sequence == default(OperationPairsSequence))
                 throw new System.Exception($"No sequence generated but trying to return.\n targetMaxResult was: {targetMaxResult}");         
-            return _sequence;    
+            return sequence;    
         }
         
         async Task<OperationPairsSequence> GenerateSequenceAsync(
@@ -80,7 +80,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
                     return tempSequence;
             }
             
-            return null;
+            return default(OperationPairsSequence);
         }
         
         public BigInteger GetAverageSequenceResult(SequenceContext context)
@@ -88,37 +88,18 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         public BigInteger GetAverageSequenceResult(SequenceContext context, int numberOfIterations)
         {
-            var iterationsPerThread = numberOfIterations/_numThreads;           
-            // var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _opertionFactory.Create());     
-            // var tasks = new List<Task<IEnumerable<BigInteger>>>();
-            // foreach(var operationFactory in operationFactories)
-            // {
-            //     var task = Task.Run(() => {return ResultsOfIterationsAsync(context, iterationsPerThread, operationFactory);});
-            //     tasks.Add(task);
-            // }
+            var iterationsPerThread = numberOfIterations/_numThreads;         
+            // var results = Enumerable.Range(0, _numThreads).AsParallel().Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, _prototypeFactory.Clone(context.NumberOfOperations)).Result);
+            // var allResults = results.SelectMany(entry => entry);
             
-            
-             
-            // var tasks = new List<Task<IEnumerable<BigInteger>>>();
-            // foreach(var i in Enumerable.Range(1, _numThreads))
-            // {
-            //     var task = Task.Run(() => {return ResultsOfIterationsAsync(context, iterationsPerThread, _opertionFactory.Create());});
-            //     tasks.Add(task);
-            // }
-            // Task.WaitAll(tasks.ToArray());
-            // var allResults = tasks.SelectMany(entry => entry.Result);
-            
-            // var results = Enumerable.Range(1, _numThreads).Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, _opertionFactory.Create()).Result);
-            
-            var prototypeFactory = _opertionFactory.Create();
-            
-            var results = Enumerable.Range(1, _numThreads).AsParallel().Select(entry => ResultsOfIterationsAsync(context, iterationsPerThread, prototypeFactory.Clone()).Result);
-            var allResults = results.SelectMany(entry => entry);
-            
+            var allResults = Enumerable.Range(0, _numThreads)
+                .AsParallel()
+                // .WithDegreeOfParallelism(_numThreads)
+                .Select(entry => new SequenceGenerator(_prototypeFactory.Clone(context.NumberOfOperations)).GetRandomSequence(context.NumberOfOperations, context.InitialValue).BestPossibleResult)
+                .ToArray();
+            // return Median(allResults);
+            return MathUtils.FastMedian(allResults);
             // return MathUtils.Median(allResults.ToList());
-            return Median(allResults);
-            // return allResults.First();
-            // return allResults.Aggregate(BigInteger.Add);
         }
         
         async Task<IEnumerable<BigInteger>> ResultsOfIterationsAsync(SequenceContext context, int numberOfIterations, OperationFactory operationFactory)
@@ -129,10 +110,10 @@ namespace Game.Gameplay.Realtime.OperationSequence
             return results;           
         }
         
-        BigInteger Median(IEnumerable<BigInteger> dataSet)
-        {
-            var calculator = new BigIntMedianCalculator(dataSet, _medianGroupsPerLevel, _medianLevels);
-            return calculator.Calculate();
-        }
+        // BigInteger Median(IEnumerable<BigInteger> dataSet)
+        // {
+        //     var calculator = new BigIntMedianCalculator(dataSet, _medianGroupsPerLevel, _medianLevels);
+        //     return calculator.Calculate();
+        // }
     }    
 }

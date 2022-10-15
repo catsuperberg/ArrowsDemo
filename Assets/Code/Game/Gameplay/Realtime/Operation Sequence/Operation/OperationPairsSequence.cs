@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class OperationPairsSequence
+    public readonly struct  OperationPairsSequence
     {
         public readonly BigInteger BestPossibleResult;
-        public IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
-        private IEnumerable<OperationPair> _sequence;
+        public readonly IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
+        private readonly IEnumerable<OperationPair> _sequence;
         
         public OperationPairsSequence(List<OperationPair> sequence, BigInteger generationTimeResult)
         {
@@ -27,5 +27,31 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             _sequence = sequence;            
             BestPossibleResult = generationTimeResult;
         }
+        
+        
+        public override bool Equals(object obj) 
+        {
+            return obj is OperationPairsSequence &&
+                BestPossibleResult == ((OperationPairsSequence)obj).BestPossibleResult &&
+                _sequence.GetHashCode() == ((OperationPairsSequence)obj)._sequence.GetHashCode();
+        }
+        
+        public bool Equals(OperationPairsSequence obj) 
+        {
+            return
+                BestPossibleResult == obj.BestPossibleResult &&
+                _sequence == obj._sequence;
+        }
+        
+        public override int GetHashCode() 
+        {
+            return BestPossibleResult.GetHashCode() ^ _sequence.GetHashCode();
+        }  
+                
+        public static bool operator ==(OperationPairsSequence i1, OperationPairsSequence i2) 
+            => i1.Equals(i2);
+            
+        public static bool operator !=(OperationPairsSequence i1, OperationPairsSequence i2) 
+            => !i1.Equals(i2);
     }
 }
