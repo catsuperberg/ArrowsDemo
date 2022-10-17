@@ -5,58 +5,29 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
     public readonly struct OperationPair
     {
-        const int _minFastValue = 18; // HACK because of max subtract 10 and min devision 2, after 18 FastLeftIsBest always works
-        
         public readonly OperationInstance LeftOperation;
         public readonly OperationInstance RightOperation;
-        readonly bool _leftIsBest;
+        readonly IOperationRules _rules;
+        readonly BestChoice _best;
         
-        public OperationPair(OperationInstance left, OperationInstance right)
+        public OperationPair(OperationInstance left, OperationInstance right, IOperationRules rules)
         {        
             LeftOperation = left;
             RightOperation = right;   
-            _leftIsBest = FastLeftIsBest(LeftOperation, RightOperation);   
-        }
-                 
+            _rules = rules;
+            _best = rules.ChooseFastBest(left.Identifier, right.Identifier);   
+        }                     
         
-        static bool FastLeftIsBest(OperationInstance left, OperationInstance right)
-        {
-            var letfType = ToValue((int)left.Type);
-            var rightType = ToValue((int)right.Type);
-            var typeResult = Math.Sign(rightType - letfType);
-            var dontSkip = TrueOnZero(typeResult);
-            var equalResult = SighnReverseOnNegative(Operation.Add - left.Type) ^ ((int)left.Value - (int)right.Value);
-            return Convert.ToBoolean(ZeroOnNegative(typeResult + (dontSkip & equalResult)));
-        }
-        
-        public static int ToValue(int operationType)
-            => operationType - (((operationType & 1) & (operationType >> 2))<<1);
-            // return (value & TrueOnNegative(value-5)) + (3 & TrueOnNegative(4-value));
-        
-        static int ZeroOnNegative(int value)
-            => (value >> 31) + 1;               
-            
-        static int TrueOnNegative(int value)
-            => value >> 31;      
-                    
-        static int TrueOnZero(int value)
-            => ((value ^ 1) & 1) << 31 >> 31;   
-            
-        static int SighnWithoutZero(int value)
-            => (value >> 31) | 0b01;    
-            
-        static int SighnReverseOnNegative(int value)
-        {
-            unchecked {return (int)(((uint)value) & 0x8000_0000);}; 
-        }     
+        public BigInteger BestOperationResult(BigInteger initialValue)
+            => BestOperationWithResult(initialValue);
         
         public OperationInstance BestOperation(BigInteger initialValue)
         {
-            if(initialValue > _minFastValue)
-                return FastBest();
+            if(initialValue >= _rules.MinInitless)
+                return OperationByChoice(_best);
             return FullBestOperation(initialValue);
         }        
-        
+                
         public OperationInstance FullBestOperation(BigInteger initialValue)
         {
             var leftIsBest = LeftOperation.Perform(initialValue) > RightOperation.Perform(initialValue);
@@ -65,20 +36,30 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public BigInteger BestOperationWithResult(BigInteger initialValue)
         {
-            if(initialValue > _minFastValue)
-                return FastBest().Perform(initialValue);
+            if(initialValue >= _rules.MinInitless)
+                return ResultByChoice(_best, initialValue);
             return FullBestOperationWithResult(initialValue);
         }
         
         public BigInteger FullBestOperationWithResult(BigInteger initialValue)
         {
-            var leftResult = LeftOperation.Perform(initialValue);
-            var rightResult = RightOperation.Perform(initialValue);
-            return (leftResult > rightResult) ? leftResult : rightResult;
+            var best = _rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, (int)initialValue);            
+            return ResultByChoice(best, initialValue);
         }
         
-        public OperationInstance FastBest()
-            => (_leftIsBest) ? LeftOperation : RightOperation;
+        public BigInteger ResultByChoice(BestChoice choice, BigInteger initialValue)       
+        {
+            if(choice == BestChoice.Right)
+                return RightOperation.Perform(initialValue);
+            return LeftOperation.Perform(initialValue);
+        }       
+        
+        public OperationInstance OperationByChoice(BestChoice choice)        
+        {
+            if(choice == BestChoice.Right)
+                return RightOperation;
+            return LeftOperation;
+        }        
         
         public OperationInstance WorseOperation(BigInteger initialValue)
         {
@@ -98,30 +79,21 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             return operationToCheck.Perform(initialValue) >= otherOperation.Perform(initialValue);
         }
         
-        public BigInteger BestOperationResult(BigInteger initialValue)
-            => BestOperationWithResult(initialValue);
         
         public override bool Equals(object obj) 
         {
             return obj is OperationPair &&
-                LeftOperation.Type == ((OperationPair)obj).LeftOperation.Type &&
-                LeftOperation.Value == ((OperationPair)obj).LeftOperation.Value &&
-                RightOperation.Type == ((OperationPair)obj).RightOperation.Type &&
-                RightOperation.Value == ((OperationPair)obj).RightOperation.Value;
+                LeftOperation.Identifier == ((OperationPair)obj).LeftOperation.Identifier;
         }
         
         public bool Equals(OperationPair obj) 
         {
-            return
-                LeftOperation.Type == obj.LeftOperation.Type &&
-                LeftOperation.Value == obj.LeftOperation.Value &&
-                RightOperation.Type == obj.RightOperation.Type &&
-                RightOperation.Value == obj.RightOperation.Value;
+            return LeftOperation.Identifier == obj.RightOperation.Identifier;
         }
         
         public override int GetHashCode() 
         {
-            return LeftOperation.GetHashCode() ^ RightOperation.GetHashCode();
+            return LeftOperation.Identifier ^ RightOperation.Identifier;
         }
         
         public static bool operator ==(OperationPair x, OperationPair y) 

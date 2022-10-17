@@ -58,7 +58,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
         {                  
             _allGates = Instantiate(gameObject, _track.gameObject.transform.position, Quaternion.identity);
             _allGates.name = "Gates";
-            var gates = new List<(GameObject left, GameObject right)>();
+            var gates = new List<(GameObject left, GameObject right, OperationPair operations)>();
             var gatePairs = new List<GameObject>();
             foreach(var operationPair in _sequence.Sequence)
                 gates.Add(InstatiateGatePair(operationPair));
@@ -88,11 +88,11 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             semaphore.Release();
         }
         
-        (GameObject left, GameObject right) InstatiateGatePair(OperationPair pair)
+        (GameObject left, GameObject right, OperationPair operations) InstatiateGatePair(OperationPair pair)
         {
             var leftGate = CreateGateHiden(_gatePrefab, pair.LeftOperation, true);
             var rightGate = CreateGateHiden(_gatePrefab, pair.RightOperation, false);
-            return (leftGate, rightGate);
+            return (leftGate, rightGate, pair);
         }        
         
         GameObject CreateGateHiden(GameObject gatePrefab, OperationInstance operation, bool isLeft)
@@ -112,7 +112,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
                 return null;
         }
         
-        GameObject EncapsulateGatePair((GameObject left, GameObject right) pair, GameObject allGates)
+        GameObject EncapsulateGatePair((GameObject left, GameObject right, OperationPair operations) pair, GameObject allGates)
         {
             var pairGO = Instantiate(gameObject, _track.gameObject.transform.position, Quaternion.identity);
             pairGO.name = "Gate pair";
@@ -123,12 +123,12 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             return pairGO;
         }
         
-        void AddPairContainer(GameObject pair, (GameObject left, GameObject right) gates)
+        void AddPairContainer(GameObject pair, (GameObject left, GameObject right, OperationPair operations) gates)
         {
             var left = (gates.left != null) ? gates.left.GetComponent<Ring>().Operation : OperationInstance.blank;
             var right = (gates.right != null) ? gates.right.GetComponent<Ring>().Operation : OperationInstance.blank;
             var pairContainer =  pair.AddComponent<OperationPairComponent>();
-            pairContainer.Initialize(new OperationPair(left, right));
+            pairContainer.Initialize(gates.operations);
         }
         
         void AddGateToPair(GameObject pair, GameObject gate)

@@ -7,7 +7,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public readonly struct OperationInstance
     {                    
         public readonly Operation Type;
-        public readonly BigInteger Value;    
+        public readonly BigInteger Value;   
+        public readonly int Identifier; 
         
         readonly Func<BigInteger, BigInteger, BigInteger> _execute;
         
@@ -21,6 +22,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             Type = type;
             Value = value;
             _execute = delegates.GetDelegate(Type);
+            Identifier = (((int)type) << 4) | value; // HACK shift by 5 bits because max value is 10 and fits in 4 bits;
         }
         
         public OperationInstance(Operation type, int value, Func<BigInteger, BigInteger, BigInteger> delegatedFunction)
@@ -30,13 +32,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             Type = type;
             Value = value;
             _execute = delegatedFunction;
-        }
-        
-        // public void Update(int value)
-        // {
-        //     Value = value;
-        // }
-                                
+            Identifier = (((int)type) << 4) | value; // HACK shift by 5 bits because max value is 10 and fits in 4 bits;
+        }                  
         
         public BigInteger Perform(BigInteger initialValue)
             => _execute(initialValue, Value);            
@@ -45,20 +42,18 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public override bool Equals(object obj) 
         {
             return obj is OperationInstance &&
-                Type == ((OperationInstance)obj).Type &&
-                Value == ((OperationInstance)obj).Value;
+                Identifier == ((OperationInstance)obj).Identifier;
         }
         
         public bool Equals(OperationInstance obj) 
         {
             return
-                Type == obj.Type &&
-                Value == obj.Value;
+                Identifier == obj.Identifier;
         }
         
         public override int GetHashCode() 
         {
-            return Type.GetHashCode() ^ Value.GetHashCode() ^ _execute.GetHashCode();
+            return (int)Type ^ (int)Value;
         }  
                 
         public static bool operator ==(OperationInstance i1, OperationInstance i2) 

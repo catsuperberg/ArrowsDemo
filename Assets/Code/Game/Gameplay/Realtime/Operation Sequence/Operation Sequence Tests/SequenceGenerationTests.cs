@@ -168,21 +168,21 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
     [Test, RequiresPlayMode(false)]
     public void TestFastLeftIsBest()
     {           
-        var delegates = new OperationRules();
+        var rules = new OperationRules();
         var pairsDifferentTypes = new List<OperationPair>();
         var value = 2;
         var types = Enumerable.Range((int)Operation.First, (int)Operation.Last);
         foreach(var type in types)
             foreach(var secondType in types.Where(entry => entry != type))
-                pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, value, delegates), new OperationInstance((Operation)secondType, value, delegates)));
+                pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, value, rules), new OperationInstance((Operation)secondType, value, rules), rules));
         
         var pairsSameTypes = new List<OperationPair>();   
         var less = 2;
         var more = 3;     
         foreach(var type in types)
         {
-            pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, more, delegates), new OperationInstance((Operation)type, less, delegates)));
-            pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, less, delegates), new OperationInstance((Operation)type, more, delegates)));
+            pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, more, rules), new OperationInstance((Operation)type, less, rules), rules));
+            pairsDifferentTypes.Add(new OperationPair(new OperationInstance((Operation)type, less, rules), new OperationInstance((Operation)type, more, rules), rules));
         }
     }   
 }

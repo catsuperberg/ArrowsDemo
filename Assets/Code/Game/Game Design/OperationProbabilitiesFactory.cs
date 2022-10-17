@@ -43,14 +43,17 @@ namespace GameDesign
                 (Path.Combine(_gameFolders.ResourcesGameBalance,_generatedFrequenciesName));
         }
         
-        public Dictionary<Operation, int> GetRepeatsForCertainCount(int operationCount)
+        public Dictionary<Operation, int> Frequencies()
+            => _generatedFrequencies;
+        
+        public static Dictionary<Operation, int> GetRepeatsForCertainCount(Dictionary<Operation, int> frequencies , int operationCount)
         {
             if(operationCount == _cachedSize)
                 return _cachedReps;
             
             Dictionary<Operation, int> result;
             var coeff = (float)operationCount/(float)(_defaultFrequencies.Values.Sum());
-            var floatRepeats = _generatedFrequencies.ToDictionary(kvp => kvp.Key, kvp => (float)(kvp.Value)*coeff);
+            var floatRepeats = frequencies.ToDictionary(kvp => kvp.Key, kvp => (float)(kvp.Value)*coeff);
             var intRepeats = floatRepeats.ToDictionary(kvp => kvp.Key, kvp => Math.Clamp((int)MathF.Round(kvp.Value), 1 , int.MaxValue));         
             var sortedRepeats = from entry in intRepeats orderby entry.Value descending select entry;
             var deficit = operationCount - intRepeats.Values.Sum();
@@ -62,19 +65,42 @@ namespace GameDesign
                 result = sortedRepeats.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             
             _cachedReps = result;
-            _cachedSize = _cachedReps.Count();
-            // result.ToList().ForEach(entry => UnityEngine.Debug.Log($"Operation: {entry.Key.ToString()} Repeats: {entry.Value}"));
+            _cachedSize = _cachedReps.Sum(kvp => kvp.Value);
             return result;
         }
         
-        Dictionary<Operation, int> AddToLargest(IOrderedEnumerable<KeyValuePair<Operation, int>> sortedDescending, int deficit)
+        // public Dictionary<Operation, int> GetRepeatsForCertainCount(int operationCount)
+        // {
+        //     if(operationCount == _cachedSize)
+        //         return _cachedReps;
+            
+        //     Dictionary<Operation, int> result;
+        //     var coeff = (float)operationCount/(float)(_defaultFrequencies.Values.Sum());
+        //     var floatRepeats = _generatedFrequencies.ToDictionary(kvp => kvp.Key, kvp => (float)(kvp.Value)*coeff);
+        //     var intRepeats = floatRepeats.ToDictionary(kvp => kvp.Key, kvp => Math.Clamp((int)MathF.Round(kvp.Value), 1 , int.MaxValue));         
+        //     var sortedRepeats = from entry in intRepeats orderby entry.Value descending select entry;
+        //     var deficit = operationCount - intRepeats.Values.Sum();
+        //     if(deficit > 0)
+        //         result = AddToLargest(sortedRepeats, deficit);
+        //     else if(deficit < 0)
+        //         result = SubtractFromSmallest(sortedRepeats, deficit);
+        //     else
+        //         result = sortedRepeats.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            
+        //     _cachedReps = result;
+        //     _cachedSize = _cachedReps.Count();
+        //     // result.ToList().ForEach(entry => UnityEngine.Debug.Log($"Operation: {entry.Key.ToString()} Repeats: {entry.Value}"));
+        //     return result;
+        // }
+        
+        static Dictionary<Operation, int> AddToLargest(IOrderedEnumerable<KeyValuePair<Operation, int>> sortedDescending, int deficit)
         {
             var oldEntry = sortedDescending.First();
             return ChangeValueOfKey(sortedDescending, oldEntry, oldEntry.Value + deficit);
         }
         
         
-        Dictionary<Operation, int> SubtractFromSmallest(IOrderedEnumerable<KeyValuePair<Operation, int>> sortedDescending, int deficit)
+        static Dictionary<Operation, int> SubtractFromSmallest(IOrderedEnumerable<KeyValuePair<Operation, int>> sortedDescending, int deficit)
         {
             var oldEntry = sortedDescending.LastOrDefault(kvp => kvp.Value + deficit > 0);
             if(oldEntry.Equals(default(KeyValuePair<Operation, int>)))
@@ -82,7 +108,7 @@ namespace GameDesign
             return ChangeValueOfKey(sortedDescending, oldEntry, oldEntry.Value + deficit);
         }
         
-        Dictionary<Operation, int> ChangeValueOfKey(
+        static Dictionary<Operation, int> ChangeValueOfKey(
             IOrderedEnumerable<KeyValuePair<Operation, int>> sorted, 
             KeyValuePair<Operation, int> oldEntry, int newValue)        
         {

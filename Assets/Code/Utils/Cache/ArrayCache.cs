@@ -16,7 +16,6 @@ namespace Utils
             _size = size;
             _values = new T[_size];
             for(int i = 0; i < _size; i++) _values[i] = generationDelegate();
-            // _values = Enumerable.Range(1, _size).Select(entry => generationDelegate()).ToArray();
         }
         
         public ArrayCache(T[] values)
@@ -40,12 +39,6 @@ namespace Utils
         
         public T Next() 
         {
-            // _currentIndex = ++_currentIndex % _size;
-            // _currentIndex = ++_currentIndex & (_size - 1);
-            // var index = ++_currentIndex;
-            // if(index >= _size)
-            //     _currentIndex = 0;
-            // return _values[_currentIndex];
             return _values[++_currentIndex % _size];
         }
     }    
