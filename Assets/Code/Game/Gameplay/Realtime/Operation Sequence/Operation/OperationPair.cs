@@ -18,32 +18,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             _best = rules.ChooseFastBest(left.Identifier, right.Identifier);   
         }                     
         
-        public BigInteger BestOperationResult(BigInteger initialValue)
-            => BestOperationWithResult(initialValue);
-        
-        public OperationInstance BestOperation(BigInteger initialValue)
+        public BigInteger BestResult(BigInteger initialValue)
         {
-            if(initialValue >= _rules.MinInitless)
-                return OperationByChoice(_best);
-            return FullBestOperation(initialValue);
-        }        
-                
-        public OperationInstance FullBestOperation(BigInteger initialValue)
-        {
-            var leftIsBest = LeftOperation.Perform(initialValue) > RightOperation.Perform(initialValue);
-            return (leftIsBest) ? LeftOperation : RightOperation;
-        }        
-        
-        public BigInteger BestOperationWithResult(BigInteger initialValue)
-        {
-            if(initialValue >= _rules.MinInitless)
-                return ResultByChoice(_best, initialValue);
-            return FullBestOperationWithResult(initialValue);
-        }
-        
-        public BigInteger FullBestOperationWithResult(BigInteger initialValue)
-        {
-            var best = _rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, (int)initialValue);            
+            var best = (initialValue >= _rules.MinInitless) ? _best : _rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue);
             return ResultByChoice(best, initialValue);
         }
         
@@ -63,9 +40,19 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public OperationInstance WorseOperation(BigInteger initialValue)
         {
-            var leftIsBest = LeftOperation.Perform(initialValue) > RightOperation.Perform(initialValue);
-            return (leftIsBest) ? RightOperation : LeftOperation;
+            if(initialValue >= _rules.MinInitless)
+                return OperationByChoice(_best.Oposite());
+            return OperationByChoice(_rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue).Oposite());
         }
+        
+        
+        public OperationInstance BestOperation(BigInteger initialValue)
+        {
+            if(initialValue >= _rules.MinInitless)
+                return OperationByChoice(_best);
+            return OperationByChoice(_rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue));
+        }        
+        
         
         public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue)
         {

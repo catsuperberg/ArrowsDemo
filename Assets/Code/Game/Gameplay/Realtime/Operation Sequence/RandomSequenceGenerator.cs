@@ -11,20 +11,18 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public class RandomSequenceGenerator : ISequenceCalculator
     {       
-        const int _numIterationsForAverage = 32;  
+        const int _numIterationsForAverage = 40;  
         const int _generationTimout = 3000;
         
-        int _CPU_count = 1;
         int _numThreads = 1;
-        OperationFactory.Factory _opertionFactoryFactory;
-        OperationFactory _prototypeFactory;
+        OperationFactory _prototypeFactory; // Beause cloning is faster than zenject
         
         RandomSequenceGenerator(OperationFactory.Factory operationFactory)
         {
-            _CPU_count = SystemInfo.processorCount;
-            _numThreads = Mathf.Clamp((_CPU_count * 2) -1, 1, int.MaxValue);
-            _opertionFactoryFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory)); 
-            _prototypeFactory = _opertionFactoryFactory.Create();       
+            var CPU_count = SystemInfo.processorCount;
+            _numThreads = Mathf.Clamp((int)((CPU_count/2)*0.75), 3, int.MaxValue);
+            var opertionFactoryFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory)); 
+            _prototypeFactory = opertionFactoryFactory.Create();       
         }
         
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
@@ -38,7 +36,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             generationTimout.Interval = _generationTimout;
             generationTimout.Start();
             
-            var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone(context.NumberOfOperations));  
+            var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone());  
             var tasks = new List<Task<OperationPairsSequence>>();
             foreach(var operationFactory in operationFactories)
             {
@@ -65,7 +63,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             BigInteger spread = (new BigInteger(SpreadPercentage) * targetMaxResult)/new BigInteger(100);
             while(!token.IsCancellationRequested)
             {
-                tempSequence = SequenceGenerator.GetRandomSequence(context.NumberOfOperations, operationFactory, context.InitialValue);  
+                tempSequence = GetRandomSequence(context.NumberOfOperations, operationFactory, context.InitialValue);  
                 result = tempSequence.BestPossibleResult;  
                 if(BigInteger.Abs(targetMaxResult - result) < spread)
                     return tempSequence;
@@ -82,15 +80,35 @@ namespace Game.Gameplay.Realtime.OperationSequence
             var iterationPerThread = numberOfIterations/_numThreads;
             var allResults = Enumerable.Range(0, _numThreads)
                 .AsParallel()
-                .Select(entry => ResultsOfIterations(context, iterationPerThread, _prototypeFactory.Clone(context.NumberOfOperations)));
+                .Select(entry => ResultsOfIterations(context, iterationPerThread, _prototypeFactory.Clone()));
             return MathUtils.FastMedian(allResults.SelectMany(entry => entry).ToArray());
         }
         
         IEnumerable<BigInteger> ResultsOfIterations(SequenceContext context, int numberOfIterations, OperationFactory operationFactory)
         {                                
             var results = Enumerable.Range(1, numberOfIterations)
-                .Select(entry => SequenceGenerator.GetRandomSequence(context.NumberOfOperations, operationFactory, context.InitialValue).BestPossibleResult);
+                .Select(entry => GetRandomSequence(context.NumberOfOperations, operationFactory, context.InitialValue).BestPossibleResult);
             return results;           
         }
+        
+                   
+        public static OperationPairsSequence GetRandomSequence(int length, OperationFactory operationFactory, int initValue = 1)
+        {                 
+            var previousResult = new BigInteger(initValue);
+            BigInteger tempResult;
+            var sequence = operationFactory.GetInitialSequence(length);
+            for(int i = 0; i < length; i++)
+            {
+                tempResult = sequence[i].BestResult(previousResult);
+                while(tempResult <= 0)
+                {
+                    sequence[i] = operationFactory.GetRandomPair();
+                    tempResult = sequence[i].BestResult(previousResult);
+                }
+                previousResult = tempResult;
+            }
+            
+            return new OperationPairsSequence(sequence, previousResult);
+        }    
     }    
 }

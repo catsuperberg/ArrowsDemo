@@ -37,10 +37,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             return ((int)operationType-1)*perOffsetSize;
         }
         
-        // public static int ToValue(this Operation operationType)
-        // {
-        //     var value = (int)operationType;
-        //     return value * (((4-value).GetHashCode() >> 31) + 1) + 3 * (((value-5).GetHashCode() >> 31) + 1);
-        // }
+        public static bool IsPositive(this Operation operationType)
+            => operationType <= Operation.Add;
     }
 }

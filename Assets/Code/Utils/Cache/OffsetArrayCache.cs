@@ -9,32 +9,40 @@ namespace Utils
     {
         int _currentIndex;
         int _size;
+        int _smallOffset;
+        int _bigSize;
+        int _bigOffset;
         T[] _values;
+        T[] _valuesRepeated;
         
-        public OffsetArrayCache(T[] values, int numberOfOffsets)
+        public OffsetArrayCache(T[] values, int numberOfOffsets, int bigSize)
         {
             _currentIndex = -1;  // HACK so that Next counts form 0 and not 1
             _values = values;
-            _size = values.Count()/numberOfOffsets;
+            _size = values.Count();
+            _smallOffset = _size/numberOfOffsets;
+            _bigSize = bigSize * numberOfOffsets;
+            _bigOffset = _bigSize/numberOfOffsets;
+            _valuesRepeated = new T[_bigSize];
+            RepeatUntilBigSize(numberOfOffsets);
         }
         
-        // public void Shuffle(Random rand)
-        // {
-        //     // rand.Shuffle(_values);
-        // }
+        public void RepeatUntilBigSize(int numberOfOffsets)
+        {
+            for(int offsetTier = 0; offsetTier < numberOfOffsets; offsetTier++)
+                for(int i = 0; i < _bigOffset; i++)
+                    _valuesRepeated[i+offsetTier*_bigOffset] = _values[(i % _smallOffset) + _smallOffset*offsetTier];
+            _currentIndex = -1; // HACK so that Next counts form 0 and not 1
+        }
         
         public T Next(int offset) 
         {
-            // _currentIndex = ++_currentIndex % _size;
-            // _currentIndex = ++_currentIndex & (_size - 1);
-            // var index = ++_currentIndex;
-            // if(index >= _size)
-            //     _currentIndex = 0;
-            // return _values[_currentIndex+offset];
-            var index = ++_currentIndex % _size + offset;
-            if(offset != 0)
-                index = _currentIndex % _size + offset;
-            return _values[index];
+            return _values[++_currentIndex % _smallOffset + offset];
+        }
+        
+        public T At(int index, int offset)
+        {
+            return _valuesRepeated[index+offset];
         }
     }    
 }

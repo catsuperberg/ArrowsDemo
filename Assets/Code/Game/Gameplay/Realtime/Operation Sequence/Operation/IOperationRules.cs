@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Collections.Generic;
 using System;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
@@ -6,11 +7,12 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public interface IOperationRules
     {
         public int MinInitless {get;}
+        IReadOnlyDictionary<Operation, int> OperationFrequencies{get;}
+        IReadOnlyDictionary<Operation, int> OperationRepeats(int count);
         public Func<BigInteger, BigInteger, BigInteger> GetDelegate(Operation action);
-        public int GetValueForType(Operation type, float stdSqrt, float stdSin, float coeff);
-        // public (int min, int max) GetRange(int actionInt);
-        public BestChoice ChooseBest(int leftIdentifier, int rightIdentifier, int initialValue);
+        public int GetValueForType(Operation type, float randStdNormal);
+        /// <summary> initialValue can't be higher or equal _minInitlessValue </summary>
+        public BestChoice ChooseBest(int leftIdentifier, int rightIdentifier, BigInteger initialValue);
         public BestChoice ChooseFastBest(int leftIdentifier, int rightIdentifier);
-        // public BestChoice ChooseFastBest(OperationInstance leftIdentifier, OperationInstance rightIdentifier);
     }
 }

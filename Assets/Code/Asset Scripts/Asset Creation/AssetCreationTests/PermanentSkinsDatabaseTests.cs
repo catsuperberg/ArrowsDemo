@@ -16,8 +16,7 @@ using UnityEngine.TestTools;
 
 using System.Text;
 
-[TestFixture]
-[RequiresPlayMode(false)]
+[TestFixture, RequiresPlayMode(false)]
 public class PermanentSkinsDatabaseTests
 {
     const string _testAssetsFolder = "Assets/Code/Asset Scripts/Asset Creation/AssetCreationTests/TestAssets/Crossbow";
@@ -80,7 +79,7 @@ public class PermanentSkinsDatabaseTests
         Directory.GetDirectories(_testResourcesFolder).ToList().ForEach(entry => AssetDatabase.DeleteAsset(entry));
     }
     
-    [Test]
+    [Test, RequiresPlayMode(false)]
     public void AddSkinsUniqueByNameTest()
     {
         _database.AddSkinsUniqueByName(_testData1);
@@ -92,7 +91,7 @@ public class PermanentSkinsDatabaseTests
         Assert.That(_database.Skins, Is.EquivalentTo(expectedData));
     }        
     
-    [Test]
+    [Test, RequiresPlayMode(false)]
     public void SetSkinsData()
     {
         _database.SetSkinsDataKeepOldPropertiesOnNull(_testData1);
@@ -108,7 +107,7 @@ public class PermanentSkinsDatabaseTests
         Assert.That(_database.Skins, Is.EquivalentTo(expectedData));
     }
     
-    [Test]
+    [Test, RequiresPlayMode(false)]
     public void SaveToPermanentTest()
     {
         Assert.That(_testDatabaseJson, Does.Not.Exist);  
@@ -117,7 +116,7 @@ public class PermanentSkinsDatabaseTests
         Assert.That(_testDatabaseJson, Does.Exist);  
     }
     
-    [Test]
+    [Test, RequiresPlayMode(false)]
     public void LoadDataFromFileTest()
     {  
         _database.AddSkinsUniqueByName(_testData1);

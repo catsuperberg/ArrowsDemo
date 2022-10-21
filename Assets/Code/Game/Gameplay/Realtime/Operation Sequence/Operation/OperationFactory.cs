@@ -1,9 +1,6 @@
-using GameDesign;
-using GameMath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Utils;
 using Zenject;
 using ExtensionMethods;
@@ -12,59 +9,45 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {    
     public class OperationFactory
     {          
-        int _pairCount = 5;
-        int _instanceCount = 5;
-        // List<OperationInstance> _instances = new List<OperationInstance>();
-        OperationInstance[] _instances;
-        int[] _randomIndexes;
+        const int _instanceCount = 80; 
+        const int _pairCount = _instanceCount/2;
+        IReadOnlyDictionary<Operation, int> _operationRepeats;
+              
+        ICache<float> _stdNormals;
+        IOffsetCache<int> _valueCache;  
         
-        IOffsetCache<int> _valueCache;        
-        ICache<float> _floatCache;
+        int[] _randomIndexes;
         ICache<OperationInstance> _instanceCache;
         ICache<OperationPair> _pairCache;
-        Dictionary<Operation, int> _operationFrequencies;
-        Dictionary<Operation, int> _operationRepeats;
         
         System.Random _rand;
         IOperationRules _operationRules;
-        
-        public OperationInstance GetRandom()
-            => _instanceCache.Next();
-        
+                
         public OperationPair GetRandomPair()
             => _pairCache.Next();
                         
         public OperationPair[] GetInitialSequence(int length)
-        {
-            var sequence = new OperationPair[length];
-            for(int i = 0; i < length; i ++) sequence[i] = new OperationPair(_instanceCache.Next(), _instanceCache.Next(), _operationRules);
-            return sequence;
+        {            
+            var result = _pairCache.GetChunkOrRepeated(length);
+            _pairCache.Shuffle(_rand);
+            return result;
         }
                 
-        public OperationFactory(OperationProbabilitiesFactory probabilities, IOperationRules operationRules)
+        public OperationFactory(IOperationRules operationRules)
         {
             _rand = new System.Random(this.GetHashCode());                   
             _operationRules = operationRules ?? throw new ArgumentNullException(nameof(operationRules));
-            _operationFrequencies = probabilities.Frequencies();
         }
         
-        public OperationFactory Clone(int numberOfOperations)
-            => new OperationFactory(_operationFrequencies, _operationRules, numberOfOperations);
+        public OperationFactory Clone()
+            => new OperationFactory(_operationRules, 0);
         
-        OperationFactory(Dictionary<Operation, int> frequencies, IOperationRules operationRules, int numberOfOperations)
+        OperationFactory(IOperationRules operationRules, int unnidedVariable)
         {
-            _rand = new System.Random(this.GetHashCode());         
-            _operationFrequencies = frequencies;
+            _rand = new System.Random(this.GetHashCode());  
             _operationRules = operationRules;     
             
-            // _pairCount = (int)decimal.Round((int)(numberOfOperations*3.5f), 0, MidpointRounding.ToEven);
-            // _instanceCount = (int)decimal.Round((int)(_pairCount*2*1.5f), 0, MidpointRounding.ToEven);
-            
-            _pairCount = 25;
-            _instanceCount = 60; 
-            
-            _operationRepeats = OperationProbabilitiesFactory.GetRepeatsForCertainCount(_operationFrequencies, _instanceCount);
-            _instances = new OperationInstance[_instanceCount];
+            _operationRepeats = operationRules.OperationRepeats(_instanceCount);
             
             _randomIndexes = Enumerable.Range(0, _instanceCount).ToArray();
             _rand.Shuffle(_randomIndexes);
@@ -74,43 +57,39 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         void Generate()
         {    
-            _floatCache = new ArrayCache<float>(() => (float)_rand.NextDouble(), 31);
-            _sqrtValues = new ArrayCache<float>(stdSqrt, 9);
-            _sinValues = new ArrayCache<float>(stdSin, 16);
+            _stdNormals = new ArrayCache<float>(() => {return stdSqrt()*stdSin();}, _instanceCount);
             FillValueCache();
             FillInstances();     
-            _pairCache = new ArrayCacheWithEndDelegate<OperationPair>(() => new OperationPair(_instanceCache.Next(), _instanceCache.Next(), _operationRules), _pairCount, ReGenerate);
-        }
+            var instance = 0;
+            _pairCache = new ArrayCacheWithEndDelegate<OperationPair>(() => new OperationPair(_instanceCache.At(instance++), _instanceCache.At(instance++), _operationRules), _pairCount, ReGenerate);
+        }  
         
-        void ReGenerate()
-        { 
-            // _floatCache.Shuffle(_rand);   
-            // _sqrtValues.Shuffle(_rand);   
-            // _sinValues.Shuffle(_rand);   
-            _instanceCache.Shuffle(_rand);
-            _pairCache = new ArrayCacheWithEndDelegate<OperationPair>(() => new OperationPair(_instanceCache.Next(), _instanceCache.Next(), _operationRules), _pairCount, ReGenerate);
-        }      
+        float stdSqrt() => System.MathF.Sqrt(-2.0f * System.MathF.Log(stdUPoint));
+        float stdSin() => System.MathF.Sin(2.0f * System.MathF.PI * stdUPoint);
+        float stdUPoint => 1.0f-(float)_rand.NextDouble(); 
         
         void FillValueCache()
         {
-            var numberOfOffsets = ((int)Operation.Last-1);
-            var values = new int[_instanceCount * numberOfOffsets]; // HACK no need for blank values
-            FillArrayWithOffset(values, Operation.Multiply, _instanceCount);
-            FillArrayWithOffset(values, Operation.Add, _instanceCount);
-            FillArrayWithOffset(values, Operation.Subtract, _instanceCount);
-            FillArrayWithOffset(values, Operation.Divide, _instanceCount);
-            _valueCache = new OffsetArrayCache<int>(values, numberOfOffsets);
+            var smallSize = _instanceCount/4;
+            var numberOfOffsets = ((int)Operation.Last-1); // HACK no need for blank values
+            var values = new int[smallSize * numberOfOffsets]; 
+            FillArrayWithOffset(values, Operation.Multiply, smallSize);
+            FillArrayWithOffset(values, Operation.Add, smallSize);
+            FillArrayWithOffset(values, Operation.Subtract, smallSize);
+            FillArrayWithOffset(values, Operation.Divide, smallSize);
+            _valueCache = new OffsetArrayCache<int>(values, numberOfOffsets, _instanceCount);
         }
         
         void FillArrayWithOffset(int[] array, Operation type, int size)
         {
             var offset = type.ToOffset(size);
-            // for(int i = offset; i < size+offset; i++) array[i] = RandomValue(type);  
-            for(int i = offset; i < size+offset; i++) array[i] = _operationRules.GetValueForType(type, _sqrtValues.Next(), _sinValues.Next(), _coeffs[type]);           
+            for(int i = offset; i < size+offset; i++) array[i] = _operationRules.GetValueForType(type, _stdNormals.At(i-offset));           
         }
+        
         
         void FillInstances()
         {
+            var _instances = new OperationInstance[_instanceCount];
             var index = 0;
             var repeatsWithoutBlank = _operationRepeats.Where(kvp => kvp.Key != Operation.Blank);
             foreach(var opearation in repeatsWithoutBlank)
@@ -120,99 +99,18 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 var reps = opearation.Value;
                 
                 for(int rep = 0; rep < reps; rep++)
-                    // _instances.Add(new OperationInstance(type, _valueCache.Next(type.ToOffset(_pairCount)), mathOperation));
-                    _instances[_randomIndexes[index++]] = new OperationInstance(type, _valueCache.Next(type.ToOffset(_instanceCount)), mathOperation); 
+                    _instances[_randomIndexes[index++]] = new OperationInstance(type, _valueCache.At(index, type.ToOffset(_instanceCount)), mathOperation); 
             }
             for(int i = 0; i < _operationRepeats[Operation.Blank]; i++) _instances[_randomIndexes[index++]] = OperationInstance.blank;
-            _instanceCache = new ArrayCache<OperationInstance>(_instances);        
-            // _instanceCache.Shuffle(_rand);    
-        }
+            _instanceCache = new ArrayCache<OperationInstance>(_instances, _instanceCount);   
+        }        
         
-        public static readonly Dictionary<Operation, float> _coeffs = new Dictionary<Operation, float>(){
-                    {Operation.Add, 0.1f},
-                    {Operation.Subtract, 0.5f},
-                    {Operation.Multiply, 0.03f},
-                    {Operation.Divide, 0.8f},
-                    {Operation.Blank, 0.1f}}; 
-        
-        // void ReFillInstances()
-        // {
-        //     _instances.ForEach(entry => entry.Update(_valueCache.Next(entry.Type.ToOffset(_pairCount))));
-        //     _instanceCache = new ArrayCache<OperationInstance>(_instances.ToArray());        
-        //     // _instanceCache.Shuffle(_rand);  
-        // }
-        
-        
-        // int RandomValue(Operation type)
-        // {            
-        //     if(type == Operation.Add)
-        //         return GetValueWithWeight(_operationRules.GetRange((int)type), 0.1f);
-        //     if(type == Operation.Subtract)
-        //         return GetValueWithWeight(_operationRules.GetRange((int)type), 0.5f);
-        //     if(type == Operation.Multiply)
-        //         return GetValueWithWeight(_operationRules.GetRange((int)type), 0.03f);
-        //     if(type == Operation.Divide)
-        //         return GetValueWithWeight(_operationRules.GetRange((int)type), 0.8f);
-        //     return 0;
-        // }
-        
-        // int RandomValue(Operation type)
-        // {            
-        //     switch (type)
-        //     {
-        //         case Operation.Add: return GetValueWithWeight((1, 10), 0.1f);
-        //         case Operation.Subtract: return GetValueWithWeight((1, 10), 0.5f);
-        //         case Operation.Multiply: return GetValueWithWeight((2, 4), 0.03f);
-        //         case Operation.Divide: return GetValueWithWeight((2, 5), 0.8f);
-        //         case Operation.Blank:
-        //         default: return 0;
-        //     }
-        // }
-        
-        // int RandomValue(Operation type)
-        // {            
-        //     float coeff;
-        //     switch (type)
-        //     {
-        //         case Operation.Multiply: coeff = 0.03f; break;
-        //         case Operation.Add: coeff = 0.1f; break;
-        //         case Operation.Subtract: coeff = 0.5f; break;
-        //         case Operation.Divide: coeff = 0.8f; break;
-        //         default:return 0;
-        //     }
-        //     return GetValueWithWeight(_operationRules.GetRange((int)type), coeff);
-        // }
-        
-        
-        ICache<float> _sqrtValues;
-        ICache<float> _sinValues;        
-        
-        // int GetValueWithWeight((int min, int max) range, float coeff) // coeff should be between 0 and 1
-        // {               
-        //     // coeff = MathUtils.MathClamp(coeff, 0, 1);
-        //     var mean = (range.max-range.min)*coeff + range.min;
-        //     var stdDev = 3; 
-        //     var randStdNormal = _sqrtValues.Next() * _sinValues.Next();
-        //     var randNormal = FastRound(mean + stdDev * randStdNormal); 
-            
-        //     return Math.Clamp(randNormal, range.min, range.max);
-        // }
-        
-        // static int FastRound(float value)
-        //     => (int)(value + 0.5d);
-        
-        // float stdSqrt()
-        //     => System.MathF.Sqrt(stdSqrtArgument());
-        float stdSqrt()
-            => System.MathF.Pow(stdSqrtArgument(), 0.5f);
-        float stdSin()
-            => System.MathF.Sin(stdSinArgument());
-        float stdSqrtArgument()
-            => -2.0f * System.MathF.Log(stdUPoint());
-        float stdSinArgument()
-            => 2.0f * System.MathF.PI * stdUPoint();
-        float stdUPoint()
-            => 1.0f-_floatCache.Next();   
+        void ReGenerate()
+        { 
+            _instanceCache.Shuffle(_rand);
+            var instance = 0;
+            _pairCache.Update(() => new OperationPair(_instanceCache.At(instance++), _instanceCache.At(instance++), _operationRules));
+        }      
         
         
         public class Factory : PlaceholderFactory<OperationFactory>

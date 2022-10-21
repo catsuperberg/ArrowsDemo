@@ -3,9 +3,6 @@ using ExtensionMethods;
 using Game.Gameplay.Meta.Shop;
 using NUnit.Framework;
 using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using UnityEngine;
@@ -15,8 +12,7 @@ public class UpgradeFormulaTests
 {
     const string _testJsonFilePath = "Assets/Code/Game/Game Design/Game Design Tests/Resources/formulaTest.json";
     
-    [Test]
-    [RequiresPlayMode(false)]
+    [Test, RequiresPlayMode(false)]
     public void JsonFileDeserialization()
     {        
         var createdFormula = new UpgradePriceFormula(new BigInteger(200), 1.1, 0.013, 1.2);
@@ -29,8 +25,7 @@ public class UpgradeFormulaTests
     }
         
     
-    [Test]
-    [RequiresPlayMode(false)]
+    [Test, RequiresPlayMode(false)]
     public void SerializationJsonNotEmpty()
     {
         var priceFormula = new UpgradePriceFormula(new BigInteger(200), 1.1, 0.013, 1.2);
@@ -42,8 +37,7 @@ public class UpgradeFormulaTests
     }
            
         
-    [Test]
-    [RequiresPlayMode(false)]
+    [Test, RequiresPlayMode(false)]
     public void FomulaAndOriginalCalculationTheSame()
     {
         var priceFormula = new UpgradePriceFormula(new BigInteger(200), 1.1, 0.013, 1.2);

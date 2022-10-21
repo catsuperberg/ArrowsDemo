@@ -166,19 +166,17 @@ public class GameInstaller : MonoInstaller
     }    
     
     void ComposeSequence()
-    {             
-        var folders = new GameFolders(); // HACK needed for multithreaded OperationFactory instantiation
-        // Container.Bind<IGameFolders>().FromInstance(folders);
-        var probabilitiesFactory = new OperationProbabilitiesFactory(folders);
+    {                     
+        var folders = new GameFolders();
+        var balanceConfig = JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
+        Container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
         
-        // Container.Bind<OperationProbabilitiesFactory>().AsTransient();
-        Container.Bind<OperationProbabilitiesFactory>().FromInstance(probabilitiesFactory).AsTransient();
-        // Container.Bind<MathOperationProbabilities>()
-        //     .FromResolveGetter<OperationProbabilitiesFactory>(factory => factory.GetFromGeneratedJson()).AsSingle();
+        Container.Bind<OperationProbabilitiesFactory>().AsTransient();
+        Container.Bind<OperationValueParametersFactory>().AsTransient();
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
         Container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
-        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();  
+        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();    
     }
 }

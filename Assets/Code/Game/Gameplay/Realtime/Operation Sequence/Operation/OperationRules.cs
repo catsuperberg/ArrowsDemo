@@ -1,18 +1,12 @@
-using System.Numerics;
+using GameDesign;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
-{  
-    public enum BestChoice
-    {
-        Left,
-        Right,
-        Both
-    }  
-    
-    public struct OperationRules : IOperationRules
+{      
+    public class OperationRules : IOperationRules
     {
         const int _startInitValue = 1;
         const int _minInitlessValue = 21; // HACK because of max subtract 10 and min devision 2, after 20 same results regardless of init value        
@@ -21,12 +15,14 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public static readonly Dictionary<int, BestChoice> _resultCache;
         public static readonly Dictionary<int, BestChoice> _fastResultCache;
         
+        
         static OperationRules()
         {
             var types = Enumerable.Range((int)Operation.First, (int)Operation.Last);
+            var baseParams = OperationValueParametersFactory.BaseValueParameters;
             var operationsWithValues = types
                 .Select(type => (Operation)type)
-                .Select(type => Enumerable.Range(_range[type].min, (_range[type].max - _range[type].min)+1)
+                .Select(type => Enumerable.Range(baseParams[type].min, (baseParams[type].max - baseParams[type].min)+1)
                     .Select(entry => new OperationInstance(type, entry, GetTypeDelegate(type))))
                 .SelectMany(entry => entry);
             var allPossiblePairs = new List<(OperationInstance left, OperationInstance right)>();
@@ -56,8 +52,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             return BestChoice.Both;
         }
         
-        public BestChoice ChooseBest(int leftIdentifier, int rightIdentifier, int initialValue)
-            => _resultCache[IdHash(leftIdentifier, rightIdentifier, initialValue)];
+        /// <summary> initialValue can't be higher or equal _minInitlessValue </summary>
+        public BestChoice ChooseBest(int leftIdentifier, int rightIdentifier, BigInteger initialValue)
+            => _resultCache[IdHash(leftIdentifier, rightIdentifier, (int)initialValue)];
             
         public BestChoice ChooseFastBest(int leftIdentifier, int rightIdentifier)
             => _fastResultCache[FastIdHash(leftIdentifier, rightIdentifier)];
@@ -70,43 +67,40 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             
         
         
-        public int GetValueForType(Operation type, float stdSqrt, float stdSin, float coeff) // coeff should be between 0 and 1
-        {               
-            // coeff = MathUtils.MathClamp(coeff, 0, 1);
-            var range = _range[type];
-            var mean = (range.max-range.min)*coeff + range.min;
+        OperationProbabilitiesFactory _probabilities;        
+        public IReadOnlyDictionary<Operation, int> OperationFrequencies {get => _probabilities.LoadedFrequencies;}
+        public IReadOnlyDictionary<Operation, int> OperationRepeats(int count)
+            => OperationProbabilitiesFactory.GetRepeatsForCertainCount(OperationFrequencies, count);
+        
+        readonly IReadOnlyDictionary<Operation, (int min, int max, float coeff)> _valueParameters;
+        
+        public OperationRules(OperationProbabilitiesFactory probabilities, OperationValueParametersFactory parameters)
+        {
+            _probabilities = probabilities ?? throw new ArgumentNullException(nameof(probabilities));
+            _valueParameters = parameters?.ValueParameters ?? throw new ArgumentNullException(nameof(parameters));
+        }              
+                  
+        public int GetValueForType(Operation type, float randStdNormal) 
+        {
+            var parameters = _valueParameters[type];
+            return GetValue(parameters.min, parameters.max, parameters.coeff, randStdNormal);
+        }
+        
+        static int GetValue(int min, int max, float coeff, float randStdNormal) 
+        {                           
+            var mean = (max-min)*coeff + min;
             var stdDev = 3; 
-            var randStdNormal = stdSqrt * stdSin;
             var randNormal = FastRound(mean + stdDev * randStdNormal); 
             
-            return Math.Clamp(randNormal, range.min, range.max);
+            return Math.Clamp(randNormal, min, max);
         }
         
         static int FastRound(float value)
             => (int)(value + 0.5d);
-            
-        public static readonly Dictionary<Operation, (int min, int max)> _range = new Dictionary<Operation, (int min, int max)>(){
-                    {Operation.Add, (1, 10)},
-                    {Operation.Subtract, (1, 10)},
-                    {Operation.Multiply, (2, 4)},
-                    {Operation.Divide, (2, 5)},
-                    {Operation.Blank, (0, 0)}}; 
-                
-        // public static readonly Dictionary<int, int> _rangeMin = new Dictionary<int, int>(){
-        //             {(int)Operation.Add, 1},
-        //             {(int)Operation.Subtract, 1},
-        //             {(int)Operation.Multiply, 2},
-        //             {(int)Operation.Divide, 2},
-        //             {(int)Operation.Blank, 0}}; 
+                     
                     
-        // public static readonly Dictionary<int, int> _rangeMax = new Dictionary<int, int>(){
-        //             {(int)Operation.Add, 10},
-        //             {(int)Operation.Subtract, 10},
-        //             {(int)Operation.Multiply, 4},
-        //             {(int)Operation.Divide, 5},
-        //             {(int)Operation.Blank, 0}}; 
         
-        public static readonly Dictionary<Operation, Func<BigInteger, BigInteger, BigInteger>> _delegates = new Dictionary<Operation, Func<BigInteger, BigInteger, BigInteger>>(){
+        static readonly Dictionary<Operation, Func<BigInteger, BigInteger, BigInteger>> _delegates = new Dictionary<Operation, Func<BigInteger, BigInteger, BigInteger>>(){
                     {Operation.Add, Addition},
                     {Operation.Subtract, Subtraction},
                     {Operation.Multiply, Multiplication},
@@ -119,12 +113,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public static Func<BigInteger, BigInteger, BigInteger> GetTypeDelegate(Operation action)
             => _delegates[action];
             
-        // public (int min, int max) GetRange(int actionInt)
-        //     => GetTypeRange(actionInt);
-            
-        // public static (int min, int max) GetTypeRange(int actionInt)
-        //     => (_rangeMin[actionInt], _rangeMax[actionInt]);
-        
         static BigInteger Addition(BigInteger initialValue, BigInteger operationValue)
             => BigInteger.Add(initialValue, operationValue);
         static BigInteger Subtraction(BigInteger initialValue, BigInteger operationValue)
