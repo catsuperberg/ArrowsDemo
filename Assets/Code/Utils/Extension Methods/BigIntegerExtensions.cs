@@ -1,4 +1,3 @@
-using PeterO.Numbers;
 using System;
 using System.Numerics;
 
@@ -59,15 +58,29 @@ namespace ExtensionMethods
     }   
     
     public static class BigIntegerFractionalPower
-    {            
+    {        
+        static readonly BigInteger _doubleBigInt = new BigInteger(Double.MaxValue);
+        
         public static BigInteger PowFractional(this BigInteger number, double fractionalExponent)
         {
-            var initialNumber = EDecimal.FromString(number.ToString());
-            var initialPower = EDecimal.FromDouble(fractionalExponent);
-            var power = initialPower * initialNumber.Log(EContext.Binary64);            
-            var result = power.Exp(EContext.Binary64);
-            var resultInt = result.ToEInteger();
-            return BigInteger.Parse(resultInt.ToString());
+            var intPower = (int)(Math.Floor(fractionalExponent));      
+            var fractionalPower = fractionalExponent - intPower;
+            
+            var intResult = BigInteger.Pow(number, intPower);            
+            
+            if(number >= _doubleBigInt)
+            {
+                var multiplier = (int)BigInteger.Divide(number, _doubleBigInt);
+                var multiplierPowered = Math.Pow(multiplier, fractionalPower);
+                var basePowered = new BigInteger(Math.Pow(Double.MaxValue, fractionalPower));
+                var fractionalResultBigInt = basePowered.multiplyByFraction(multiplierPowered);
+                return intResult*fractionalResultBigInt;
+            }
+            else 
+            {
+                var fractionalResultDouble = Math.Pow((double)number, fractionalPower);
+                return intResult.multiplyByFraction(fractionalResultDouble);
+            }            
         } 
     }      
 }

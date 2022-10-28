@@ -6,9 +6,9 @@ namespace Game.Gameplay.Realtime.OperationSequence
     public class SequenceManager : ISequenceManager//, IStateReportableProcess
     {        
         ISequenceCalculator _meta;
-        IContextProvider _runContextProvider;
+        ISequenceContextProvider _runContextProvider;
                                 
-        public SequenceManager(ISequenceCalculator meta, IContextProvider runContextProvider)
+        public SequenceManager(ISequenceCalculator meta, ISequenceContextProvider runContextProvider)
         {                
             _runContextProvider = runContextProvider ?? throw new System.ArgumentNullException(nameof(runContextProvider));                
             _meta = meta ?? throw new System.ArgumentNullException(nameof(meta));

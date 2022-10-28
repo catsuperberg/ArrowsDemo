@@ -125,7 +125,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<UserContext>().FromResolveGetter<UserContextFactory>(factory => factory.GetContext());
         Container.Bind<IUpgradeContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
         Container.Bind<ISkinContextNotifier>().WithId("userContextNotifier").To<UserContextManager>().AsTransient();
-        Container.Bind<IContextProvider>().To<UserContextConverter>().AsSingle();                 
+        Container.Bind<ISequenceContextProvider>().To<UserContextConverter>().AsSingle();                 
     }
     
     void ComposeSettingsRepository()

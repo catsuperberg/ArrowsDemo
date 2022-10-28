@@ -250,6 +250,14 @@ namespace GameMath
                 return _random.NextDouble() * (max - min) + min;
             }
         }
+        
+        public static double RandomDouble((double min, double max) range)
+        {
+            lock(_syncLock) // synchronize
+            {                
+                return _random.NextDouble() * (range.max - range.min) + range.min;
+            }
+        }
                 
         public static string RandomString(int length)
         {

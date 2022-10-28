@@ -1,5 +1,4 @@
 using ExtensionMethods;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -7,94 +6,51 @@ using System.Numerics;
 namespace GameMath
 {
     public static class RandomBigIntListWithSetSum
-    {
-        private const int fractionalCorrectionThreshold = 300;
-        
+    {        
         public static List<BigInteger> Generate(BigInteger sum, int size, (float min, float max) spreadDeviation)
         {            
             var meanValue = sum/size;        
             List<BigInteger> values = GenerateRandomValues(size, meanValue, spreadDeviation);             
-            values = CorrectValuesToMakeSum(values, sum);    
+            values = CorrectValuesToMeetSum(values, sum);    
             return values;
         }
         
-        static List<BigInteger> GenerateRandomValues(int size, BigInteger meanValue, (float min, float max) spreadDeviation)
-        {
-            var values = new List<BigInteger>();
-            for(int i = 0; i < size; i++)
-            {
-                var spread = meanValue.multiplyByFraction(
-                    GlobalRandom.RandomDouble(spreadDeviation.min, spreadDeviation.max)) * new BigInteger(MathUtils.RandomSign());
-                var value = meanValue+spread;
-                values.Add(value);
-            }
-            return values;
-        }        
+        static List<BigInteger> GenerateRandomValues(int size, BigInteger meanValue, (float min, float max) spreadRange)
+            => Enumerable.Range(0, size)
+                .Select(entry => meanValue + new BigInteger(GlobalRandom.RandomDouble(spreadRange) * MathUtils.RandomSign()) )
+                .ToList();
         
-        static List<BigInteger> CorrectValuesToMakeSum(List<BigInteger> values, BigInteger result)
+        static List<BigInteger> CorrectValuesToMeetSum(List<BigInteger> values, BigInteger result)
         {
             var tempValues = values;    
-            var timeStarted = DateTimeOffset.UtcNow.ToUnixTimeSeconds();        
-            while(SumOfTargets(tempValues) != result)
-            {
-                var correctionAmmount = result-SumOfTargets(tempValues);                    
-                if(result >= fractionalCorrectionThreshold && correctionAmmount >= fractionalCorrectionThreshold)
-                    tempValues = CorrectByFraction(tempValues, result); 
-                else
-                    tempValues = CorrectByIncrement(tempValues, result, correctionAmmount); 
-                
-                if(DateTimeOffset.UtcNow.ToUnixTimeSeconds() - timeStarted >= 40)
-                    throw new TimeoutException("Random BigInt list generation taking more than 40 seconds");
-            }
+            tempValues = CorrectByFraction(tempValues, result);           
+            tempValues = CorrectByIncrement(tempValues, result); 
             return tempValues;
         }
         
         static List<BigInteger> CorrectByFraction(List<BigInteger> values, BigInteger result)
-        {       
-            List<BigInteger> tempValues = new List<BigInteger>();           
-            var resultDeviation = System.Math.Exp(BigInteger.Log(result) - BigInteger.Log(SumOfTargets(values)));  
-            foreach(BigInteger entry in values)
-            {
-                var valueToAdd = entry.multiplyByFraction(resultDeviation);
-                valueToAdd = (valueToAdd < 1) ? 1 : valueToAdd;
-                tempValues.Add(entry.multiplyByFraction(resultDeviation));                
-            }
-            return tempValues;   
+        {                
+            var sum = values.Aggregate(BigInteger.Add); 
+            var resultDeviation = System.Math.Exp(BigInteger.Log(result) - BigInteger.Log(sum));  
+            return values.Select(value => value.multiplyByFraction(resultDeviation)).Select(value => (value < 1) ? 1 : value).ToList(); 
         }
         
-        static List<BigInteger> CorrectByIncrement(List<BigInteger> values, BigInteger result, BigInteger errorToCorrect)
-        {
-            List<BigInteger> tempValues = new List<BigInteger>();          
-            foreach(var value in values)  
-            {
-                if(errorToCorrect != 0)
-                {
-                    var valueWithError = value + errorToCorrect;
-                    if(valueWithError >= 1)
-                    {
-                        errorToCorrect = 0;                            
-                        tempValues.Add(valueWithError);
-                    }
-                    else if(valueWithError == 0)
-                    {                        
-                        errorToCorrect = -1;                            
-                        tempValues.Add(1);
-                    }
-                    else
-                    {
-                        errorToCorrect = valueWithError - 1;             
-                        tempValues.Add(1);
-                    }
-                }                
-                else
-                    tempValues.Add(value);
-            }
-            return tempValues;   
+        static List<BigInteger> CorrectByIncrement(List<BigInteger> values, BigInteger result)
+        {            
+            var sum = values.Aggregate(BigInteger.Add);
+            var errorToCorrect = result-sum;
+            return values.Select(entry => ChangeByAmount(entry, ref errorToCorrect)).ToList(); 
         }
-                
-        static BigInteger SumOfTargets(List<BigInteger> targetScores)
+        
+        static BigInteger ChangeByAmount(BigInteger value, ref BigInteger ammount)
         {
-            return targetScores.Aggregate((currentSum, item) => currentSum + item);
+            var newValue = value + ammount;
+            ammount = 0;
+            if(newValue > 0)
+                return newValue;
+            
+            ammount = 1 + value;
+            return 1;
         }
     }
 }

@@ -12,12 +12,19 @@ namespace Game.Gameplay.Meta.UpgradeSystem
         [StoredField]
         public int InitialArrowCount {get; private set;} = 1;
         [StoredField]
-        public int PassiveIncome {get; private set;} = 1;                  
-        
+        public int PassiveIncome {get; private set;} = 1;
+
         public UpgradeContext()
-        {                      
-        }    
-        
+        {
+        }
+
+        public UpgradeContext(int crossbowLevel, int arrowLevel, int initialArrowCount)
+        {
+            CrossbowLevel = crossbowLevel;
+            ArrowLevel = arrowLevel;
+            InitialArrowCount = initialArrowCount;
+        }
+
         public UpgradeContext(IRegistryIngester registry)
         {
             registry.Register(this, true, true);            

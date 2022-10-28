@@ -2,6 +2,7 @@ using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using ExtensionMethods;
 using Game.GameDesign;
+using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
@@ -39,6 +40,7 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
         var folders = new GameFolders();
         var balanceConfig = JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
         Container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
+        Container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
         
         Container.Bind<OperationProbabilitiesFactory>().AsTransient();
         Container.Bind<OperationValueParametersFactory>().AsTransient();
@@ -56,11 +58,15 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     
     void ComposePlayer()
     {
-        var gateSelector = new GateSelector(GateSelectors.BadPlayer.Chance());
+        var gateSelector = new GateSelector(GateSelectors.GoodPlayer.Chance());
         var adSelector = new AdSkipper();
-        var player = new VirtualPlayer(gateSelector, adSelector);
+        Container.Bind<PriceCalculatorFactory>().AsTransient();
+        Container.Bind<SimpleUpgradePricing>().AsTransient();
+        Container.Bind<HighestPriceBuyer>().AsTransient();
+        var upgradeBuyer = Container.Resolve<HighestPriceBuyer>();
+        var player = new VirtualPlayer(gateSelector, adSelector, upgradeBuyer);
         Container.Bind<VirtualPlayer>().FromInstance(player).AsTransient(); 
-    }
+    }    
     
     [Test, Performance, RequiresPlayMode(false)]
     public void SimulationPerformanceTest()
@@ -79,14 +85,14 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
         dataPoints.ToList().ForEach(PrintSimulationData);
     }
     
-    SimulationData RunSingleSimulation()
+    RunData RunSingleSimulation()
     {        
         var context = new SequenceContext(500, 3, 50, 8);
         var result = _simulator.Simulate(context);
         return result;
     }
     
-    void PrintSimulationData(SimulationData data)
+    void PrintSimulationData(RunData data)
     {        
         Debug.Log($"Score is              \t\t: {data.FinalScore}");
         Debug.Log($"TargetScore is       \t: {data.TargetScore}");

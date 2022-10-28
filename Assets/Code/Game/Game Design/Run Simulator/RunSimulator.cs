@@ -17,7 +17,7 @@ namespace Game.GameDesign
             _player = player ?? throw new System.ArgumentNullException(nameof(player));
         }
         
-        public SimulationData Simulate(SequenceContext generationContext)
+        public RunData Simulate(SequenceContext generationContext)
         {
             var simContext = GenerateContext(generationContext);        
             return _player.PerformRunWithAdUntilSucessful(simContext);

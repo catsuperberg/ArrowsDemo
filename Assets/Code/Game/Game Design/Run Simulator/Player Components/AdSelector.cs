@@ -5,7 +5,14 @@ using System.Collections.Generic;
 using System.Numerics;
 
 namespace Game.GameDesign
-{
+{    
+    public interface IAdSelector
+    {        
+        const float _adSeconds = 15;
+        
+        public AdReport AccountForAd();
+    }
+    
     public static class AdSelectorGrades
     {
         static Dictionary<int, IAdSelector> _gradeFrequencies = new Dictionary<int, IAdSelector>(){
@@ -27,13 +34,6 @@ namespace Game.GameDesign
             Multiplier = multiplier;
             SecondsToWatch = secondsToWatch;
         }
-    }
-    
-    public interface IAdSelector
-    {        
-        const float _adSeconds = 15;
-        
-        public AdReport AccountForAd();
     }
     
     public class FastAdSelector : IAdSelector

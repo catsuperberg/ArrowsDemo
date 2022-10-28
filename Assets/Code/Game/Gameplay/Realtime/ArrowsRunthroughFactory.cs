@@ -38,7 +38,7 @@ namespace Game.Gameplay.Realtime
                 
         IProjectileProvider _projectileGenerator;  
         
-        IContextProvider _runContextProvider;
+        ISequenceContextProvider _runContextProvider;
         ISequenceManager _sequenceManager;
         
         Playfield _playfield;
@@ -50,7 +50,7 @@ namespace Game.Gameplay.Realtime
         public void Construct(
             ISplineTrackProvider splineMeshGenerator, ITrackPopulator trackPopulator, 
             ITargetProvider targetGenerator, ICrossbowProvider crossbowGenerator,
-            IProjectileProvider projectileGenerator, IContextProvider runContextProvider,
+            IProjectileProvider projectileGenerator, ISequenceContextProvider runContextProvider,
             ISequenceManager sequenceManager, ScatterModels scatterModels)
         {               
             _splineMeshGenerator = splineMeshGenerator ?? throw new System.ArgumentNullException(nameof(splineMeshGenerator));
