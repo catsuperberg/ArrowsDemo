@@ -1,5 +1,3 @@
-using PeterO.Numbers;
-using System;
 using System.Numerics;
 
 namespace GameMath

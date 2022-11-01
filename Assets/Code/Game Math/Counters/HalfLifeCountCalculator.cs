@@ -1,4 +1,3 @@
-using PeterO.Numbers;
 using System;
 using System.Numerics;
 using ExtensionMethods;
@@ -8,17 +7,15 @@ namespace GameMath
     public class HalfLifeCountCalculator
     {
         double _halfLife;  
+        static double _logOfHalf = Math.Log(0.5);
         
         public HalfLifeCountCalculator(BigInteger startValue, BigInteger endValue, double timeToReachEnd)
         {            
             ExceptionOnInvalidEndValue(endValue);
             ExceptionOnCountUp(startValue, endValue);
-            
-            var count = EInteger.FromString(startValue.ToString());
-            var finalCount = EInteger.FromString(endValue.ToString());
-            var finalCountPart = EDecimal.FromEInteger(finalCount).Divide(EDecimal.FromEInteger(count), EContext.Binary64);            
-            var k = finalCountPart.Log(EContext.Binary64).Divide(EDecimal.FromDouble(timeToReachEnd), EContext.Binary64);
-            _halfLife = EDecimal.FromDouble(Math.Log(0.5)).Divide(k, EContext.Binary64).ToDouble();
+            var logOfFinalCountPart = BigInteger.Log(endValue) - BigInteger.Log(startValue);
+            var k = logOfFinalCountPart/timeToReachEnd;
+            _halfLife = _logOfHalf/k;
         }
         
         void ExceptionOnInvalidEndValue(BigInteger endValue)

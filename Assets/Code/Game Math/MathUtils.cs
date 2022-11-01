@@ -83,18 +83,6 @@ namespace GameMath
             var maxValue = sortedWeights.First().Key;
             var random = GlobalRandom.RandomDouble(0, maxValue);
             return sortedWeights.First(entry => random <= entry.Key).Value;
-            
-            // coeff = MathUtils.MathClamp(coeff, 0, 1);
-            // var mean = (max-min)*coeff + min;
-            // var stdDev = 3;
-            
-            // double u1 = 1.0-_rand.NextDouble(); //uniform(0,1] random doubles
-            // double u2 = 1.0-_rand.NextDouble();
-            // double randStdNormal = System.Math.Sqrt(-2.0 * System.Math.Log(u1)) * System.Math.Sin(2.0 * System.Math.PI * u2); //random normal(0,1)
-            // double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
-            // randNormal = (double)MathUtils.MathClamp(randNormal, min, max);
-            
-            // return (int)System.Math.Round(randNormal); 
         }
         
         public static T NextFrom<T>(Dictionary<int, T> frequency)

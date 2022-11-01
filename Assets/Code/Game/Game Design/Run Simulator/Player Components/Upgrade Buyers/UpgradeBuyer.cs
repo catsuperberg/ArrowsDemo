@@ -1,6 +1,4 @@
-using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Meta.UpgradeSystem;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
 using GameMath;
 using System;
 using System.Collections.Generic;
@@ -8,66 +6,34 @@ using System.Linq;
 using System.Numerics;
 
 namespace Game.GameDesign
-{        
-    public interface IUpgradeBuyer
-    {        
-        UpgradeResults BuyAll(UpgradeContext originalContext, BigInteger PointsToSpend);
-    }
-    
-    public class UpgradeResults
+{
+    public class UpgradeBuyerFactory
     {
-        public readonly UpgradeContext NewUpgrades;
-        public readonly int UpgradesBought;
-        public readonly BigInteger PointsLeft;
+        SimpleUpgradePricing _pricing;
+        
+        readonly Dictionary<int, IUpgradeBuyer> _gradeFrequencies;        
+        readonly IReadOnlyDictionary<Type, IUpgradeBuyer> _buyers;
 
-        public UpgradeResults(UpgradeContext newUpgrades, int upgradesBought, BigInteger pointsLeft)
+        public UpgradeBuyerFactory(SimpleUpgradePricing pricing)
         {
-            NewUpgrades = newUpgrades;
-            UpgradesBought = upgradesBought;
-            PointsLeft = pointsLeft;
+            _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
+            _gradeFrequencies = new Dictionary<int, IUpgradeBuyer>(){
+                    {3, new HighestPriceBuyer(_pricing)},
+                    {5, new LowestPriceBuyer(_pricing)},
+                    {2, new RandomBuyer(_pricing)}};
+            _buyers = new Dictionary<Type, IUpgradeBuyer>(){
+                    {typeof(HighestPriceBuyer), new HighestPriceBuyer(_pricing)},
+                    {typeof(LowestPriceBuyer), new LowestPriceBuyer(_pricing)},
+                    {typeof(RandomBuyer), new RandomBuyer(_pricing)}};
         }
+
+        public IUpgradeBuyer GetRandomGrade()
+            => WeightedRandom.NextFrom(_gradeFrequencies);
+            
+        public IUpgradeBuyer GetBuyer(Type type)
+            => _buyers[type];
     }
-    
-    // public static class UpgradeBuyerGrades
-    // {
-    //     static Dictionary<int, IUpgradeBuyer> _gradeFrequencies = new Dictionary<int, IAdSelector>(){
-    //                 {3, new FastAdSelector()},
-    //                 {5, new SlowAdSelector()},
-    //                 {2, new AdSkipper()}};                
-                
-    //     public static IUpgradeBuyer GetRandomGrade()
-    //         => WeightedRandom.NextFrom(_gradeFrequencies);
-    // }
-    
-    public class SimpleUpgradePricing
-    {      
-        PriceCalculatorFactory _priceCalculators;
-        
-        public SimpleUpgradePricing(PriceCalculatorFactory priceCalculators)
-        {
-            _priceCalculators = priceCalculators ?? throw new ArgumentNullException(nameof(priceCalculators));            
-        }
-        
-        public BigInteger UpgradePrice(string upgradeName, int currentLevel)
-            => _priceCalculators.GetCalculatorFor(upgradeName).GetPrice(new PricingContext(currentLevel));
-    }
-    
-    public class UpgradeContainer
-    {
-        public string Name;
-        public int Level;
-        public BigInteger Price {get => _getPrice(Name, Level);}
-        
-        Func<string, int, BigInteger> _getPrice;
-        
-        public UpgradeContainer(string name, int level, Func<string, int, BigInteger> priceFunction)
-        {
-            Name = name;
-            Level = level;
-            _getPrice = priceFunction;
-        }
-    }
-    
+
     public class HighestPriceBuyer : Buyer, IUpgradeBuyer 
     {
         IUpgradeBuyer _buyer;
@@ -163,25 +129,5 @@ namespace Game.GameDesign
             => from upgrade in upgrades 
                     orderby upgrade.Price ascending
                     select upgrade;        
-    }
-    
-    public class Buyer
-    {        
-        protected static List<UpgradeContainer> ContextToUpgrades(UpgradeContext context, SimpleUpgradePricing pricing)
-        {            
-            var upgrades = new List<UpgradeContainer>();
-            upgrades.Add(new UpgradeContainer(nameof(context.CrossbowLevel), context.CrossbowLevel, pricing.UpgradePrice));
-            upgrades.Add(new UpgradeContainer(nameof(context.ArrowLevel), context.ArrowLevel, pricing.UpgradePrice));
-            upgrades.Add(new UpgradeContainer(nameof(context.InitialArrowCount), context.InitialArrowCount, pricing.UpgradePrice));
-            return upgrades;
-        }
-        
-        protected static UpgradeContext UpgradesToContext(List<UpgradeContainer> upgrades)
-        {
-            var crossbowLevel = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.CrossbowLevel)).Level;
-            var arrowLevel = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.ArrowLevel)).Level;
-            var initialArrowCount = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.InitialArrowCount)).Level;
-            return new UpgradeContext(crossbowLevel, arrowLevel, initialArrowCount);
-        }
     }
 }

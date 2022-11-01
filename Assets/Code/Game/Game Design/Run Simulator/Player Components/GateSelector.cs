@@ -36,7 +36,7 @@ namespace Game.GameDesign
                     {5, GateSelectors.AveragePlayer.Chance()},
                     {2, GateSelectors.BadPlayer.Chance()}};                
                 
-        public static float GetRandomGrade()
+        public static float GetRandomGradeChance()
             => WeightedRandom.NextFrom(_gradeFrequencies);
     }
     

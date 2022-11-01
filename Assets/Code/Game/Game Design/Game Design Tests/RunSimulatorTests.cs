@@ -64,7 +64,9 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
         Container.Bind<SimpleUpgradePricing>().AsTransient();
         Container.Bind<HighestPriceBuyer>().AsTransient();
         var upgradeBuyer = Container.Resolve<HighestPriceBuyer>();
-        var player = new VirtualPlayer(gateSelector, adSelector, upgradeBuyer);
+        
+        var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
+        var player = new VirtualPlayer(actors);
         Container.Bind<VirtualPlayer>().FromInstance(player).AsTransient(); 
     }    
     
@@ -88,7 +90,7 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     RunData RunSingleSimulation()
     {        
         var context = new SequenceContext(500, 3, 50, 8);
-        var result = _simulator.Simulate(context);
+        var result = _simulator.Simulate(context, Container.Resolve<VirtualPlayer>().Actors);
         return result;
     }
     
@@ -98,7 +100,7 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
         Debug.Log($"TargetScore is       \t: {data.TargetScore}");
         Debug.Log($"BestPossibleResult is\t: {data.BestPossibleResult}");
         Debug.Log($"Readable score: {data.FinalScore.ParseToReadable()}");
-        Debug.Log($"Time taken is: {data.CombinedSeconds}");
+        Debug.Log($"Time taken is: {data.CombinedTime}");
         Debug.Log($"-------------------------------------------");
     }
 }

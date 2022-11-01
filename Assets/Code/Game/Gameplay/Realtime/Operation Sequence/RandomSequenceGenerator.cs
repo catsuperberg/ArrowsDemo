@@ -12,7 +12,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
     public class RandomSequenceGenerator : ISequenceCalculator
     {       
         const int _numIterationsForAverage = 40;  
-        const int _generationTimout = 3000;
+        const int _generationTimout = 300;
         
         int _numThreads = 1;
         OperationFactory _prototypeFactory; // Beause cloning is faster than zenject
@@ -33,11 +33,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
             
             var generationTimout = new System.Timers.Timer();
             generationTimout.Elapsed += (caller, e) => {tokenSource.Cancel();};
-            generationTimout.Interval = _generationTimout;
+            generationTimout.Interval = _generationTimout * context.NumberOfOperations;
             generationTimout.Start();
             
             var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone());  
-            var tasks = new List<Task<OperationPairsSequence>>();
+            var tasks = new List<Task<OperationPairsSequence?>>();
             foreach(var operationFactory in operationFactories)
             {
                 var task = Task.Run(() => {return GenerateSequenceAsync(ct, targetMaxResult, SpreadPercentage, context, operationFactory);});
@@ -46,14 +46,14 @@ namespace Game.Gameplay.Realtime.OperationSequence
             Task.WaitAny(tasks.ToArray());            
             tokenSource.Cancel(); 
             generationTimout.Dispose();   
-            var sequence = tasks.FirstOrDefault(entry => entry.Result != default(OperationPairsSequence)).Result;
+            var sequence = tasks.FirstOrDefault(entry => entry.Result != null)?.Result;
                
-            if(sequence == default(OperationPairsSequence))
-                throw new System.Exception($"No sequence generated but trying to return.\n targetMaxResult was: {targetMaxResult}");         
-            return sequence;    
+            if(sequence == null || sequence == default(OperationPairsSequence))
+                throw new System.Exception($"No sequence generated but trying to return.\ntargetMaxResult was: {targetMaxResult}");         
+            return (OperationPairsSequence)sequence;    
         }
         
-        async Task<OperationPairsSequence> GenerateSequenceAsync(
+        async Task<OperationPairsSequence?> GenerateSequenceAsync(
             CancellationToken token, BigInteger targetMaxResult, int SpreadPercentage, 
             SequenceContext context, OperationFactory operationFactory)
         {
@@ -69,7 +69,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
                     return tempSequence;
             }
             
-            return default(OperationPairsSequence);
+            return null;
         }
         
         public BigInteger GetAverageSequenceResult(SequenceContext context)

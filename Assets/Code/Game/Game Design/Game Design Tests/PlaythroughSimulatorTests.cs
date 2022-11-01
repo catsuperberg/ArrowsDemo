@@ -11,6 +11,7 @@ using GameMath;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -24,23 +25,24 @@ using Debug = UnityEngine.Debug;
 
 [TestFixture]
 public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
-{    
-    RunSimulator _simulator;
-    PlaythroughSimulator _playthrough;
-    
+{        
     BigInteger _bigNumber = new BigInteger(1868583826484823036);
     BigInteger _maxDouble = new BigInteger(double.MaxValue);
+    
+    UpgradeBuyerFactory _buyerFactory;
     
     [SetUp]
     public void TestSetup()
     {
         ComposeSequence();
         ComposeTargetGenerator();
-        ComposePlayer();
+        ComposePlayerActorFactories();
         Container.Bind<RunSimulator>().AsTransient();
-        Container.Bind<PlaythroughSimulator>().AsTransient();
-        _simulator = Container.Resolve<RunSimulator>();
-        _playthrough = Container.Resolve<PlaythroughSimulator>();
+        var endConditions = new PlaythroughEndConditions(
+            new System.TimeSpan(hours: 0, minutes: 40, seconds: 0), 
+            new System.TimeSpan(hours: 0, minutes: 3, seconds: 0),
+            BigInteger.Parse("1.0e20", NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint));
+        Container.Bind<PlaythroughEndConditions>().FromInstance(endConditions).AsTransient();
     }
         
     void ComposeSequence()
@@ -64,28 +66,70 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         Container.Bind<ITargetProvider>().To<TargetDataOnlyGenerator>().AsTransient();
     }
     
-    void ComposePlayer()
+    void ComposePlayerActorFactories()
     {
-        var gateSelector = new GateSelector(GateSelectors.AveragePlayer.Chance());
-        var adSelector = new AdSkipper();
         Container.Bind<PriceCalculatorFactory>().AsTransient();
         Container.Bind<SimpleUpgradePricing>().AsTransient();
-        Container.Bind<HighestPriceBuyer>().AsTransient();
-        Container.Bind<LowestPriceBuyer>().AsTransient();
-        Container.Bind<RandomBuyer>().AsTransient();
-        var upgradeBuyer = Container.Resolve<HighestPriceBuyer>();
-        var player = new VirtualPlayer(gateSelector, adSelector, upgradeBuyer);
-        Container.Bind<VirtualPlayer>().FromInstance(player).AsTransient(); 
+        Container.Bind<UpgradeBuyerFactory>().AsTransient();
+        _buyerFactory = Container.Resolve<UpgradeBuyerFactory>();        
     }  
+    
+    
+    PlaythroughSimulator CreatePlaythrough()
+    {        
+        var gateSelector = new GateSelector(GateSelectorGrades.GetRandomGradeChance());
+        var adSelector = AdSelectorGrades.GetRandomGrade();
+        
+        var upgradeBuyer = _buyerFactory.GetRandomGrade();         
+        var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
+        var player = new VirtualPlayer(actors);
+        return new PlaythroughSimulator(player, Container.Resolve<RunSimulator>(), Container.Resolve<PlaythroughEndConditions>());
+    }
+    
     
     [Test, RequiresPlayMode(false)]
     public void SimulateSinglePlaythrough()
     {        
-        var result = _playthrough.Simulate();
-        Debug.Log($"Runs per playthrough: {result.NumberOfRuns}");
-        Debug.Log($"Time to finish: {result.CombinedTime}");
-        Debug.Log($"Final reward: {result.Runs.Last().FinalScore.ParseToReadable()}");        
+        var playthrough = CreatePlaythrough();
+        var result = playthrough.Simulate();
+        PrintPlaythroughInfo(result); 
     }    
+    
+    [Test, RequiresPlayMode(false)]
+    public void SimulatePlaythroughsMultithreaded()
+    {        
+        var numberOfPlaytrhoughs = 50;
+        var threads = Mathf.Clamp((int)((SystemInfo.processorCount/2)*0.75), 3, int.MaxValue);
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
+            .Select(entry => CreatePlaythrough())
+            .ToList();
+        var results = playthroughs
+            .AsParallel()
+            .WithDegreeOfParallelism(threads)
+            .Select(playthrough => playthrough.Simulate())
+            .ToList();
+        stopwatch.Stop();
+        
+        Debug.Log("");
+        Debug.Log("MULTITHREADED PLAYTHORUGH SIMULATION RESULTS");
+        var timePer = stopwatch.Elapsed/numberOfPlaytrhoughs;
+        Debug.Log($"time per simulation: {timePer}");
+        Debug.Log("");
+        results.ForEach(PrintPlaythroughInfo);
+    }   
+    
+    void PrintPlaythroughInfo(PlaythroughData info)
+    {        
+        Debug.Log($"Runs per playthrough: {info.NumberOfRuns}");
+        Debug.Log($"Time to finish: {info.CombinedTime}");
+        Debug.Log($"Final reward: {info.Runs.Last().FinalScore.ParseToReadable()}");    
+        Debug.Log("============================================");   
+    }
+    
+    
+    
     
     [Test, RequiresPlayMode(false)]
     public void RandomBigIntListTest()

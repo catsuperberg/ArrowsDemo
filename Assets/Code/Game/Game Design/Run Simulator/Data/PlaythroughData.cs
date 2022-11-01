@@ -15,7 +15,10 @@ namespace Game.GameDesign
         {
             Runs = playthroughRuns ?? throw new System.ArgumentNullException(nameof(playthroughRuns));
             NumberOfRuns = Runs.Count();
-            CombinedTime = Runs.Aggregate(new TimeSpan(0), (sum, entry) => sum += entry.CombinedSeconds);
+            CombinedTime = CombineTime(Runs);
         }
+        
+        static public TimeSpan CombineTime(IEnumerable<RunData> runs)
+            => runs.Aggregate(new TimeSpan(0), (sum, entry) => sum += entry.CombinedTime);
     }
 }
