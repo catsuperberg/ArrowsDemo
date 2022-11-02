@@ -12,7 +12,8 @@ namespace Game.Gameplay.Realtime.OperationSequence
     public class RandomSequenceGenerator : ISequenceCalculator
     {       
         const int _numIterationsForAverage = 40;  
-        const int _generationTimout = 300;
+        const int _generationTimout = 100;
+        const int _exceptionTimout = 5000;
         
         int _numThreads = 1;
         OperationFactory _prototypeFactory; // Beause cloning is faster than zenject
@@ -28,29 +29,44 @@ namespace Game.Gameplay.Realtime.OperationSequence
         public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int SpreadPercentage,
             SequenceContext context)
         {        
-            CancellationTokenSource tokenSource= new CancellationTokenSource(); 
-            CancellationToken ct = tokenSource.Token;                
-            
-            var generationTimout = new System.Timers.Timer();
-            generationTimout.Elapsed += (caller, e) => {tokenSource.Cancel();};
-            generationTimout.Interval = _generationTimout * context.NumberOfOperations;
-            generationTimout.Start();
-            
-            var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone());  
-            var tasks = new List<Task<OperationPairsSequence?>>();
-            foreach(var operationFactory in operationFactories)
-            {
-                var task = Task.Run(() => {return GenerateSequenceAsync(ct, targetMaxResult, SpreadPercentage, context, operationFactory);});
-                tasks.Add(task);
-            }
-            Task.WaitAny(tasks.ToArray());            
-            tokenSource.Cancel(); 
-            generationTimout.Dispose();   
-            var sequence = tasks.FirstOrDefault(entry => entry.Result != null)?.Result;
-               
-            if(sequence == null || sequence == default(OperationPairsSequence))
-                throw new System.Exception($"No sequence generated but trying to return.\ntargetMaxResult was: {targetMaxResult}");         
+            OperationPairsSequence? sequence = null;            
+            var exceptionTimout = new System.Timers.Timer();
+            exceptionTimout.Elapsed += (caller, e) => {throw new System.Exception($"Sequence generation stoped by timeout.\ntargetMaxResult was: {targetMaxResult}");};
+            exceptionTimout.Interval = _exceptionTimout;
+            exceptionTimout.Start();
+            while (sequence == null)
+                sequence = TryGeneratingSequence(targetMaxResult, SpreadPercentage, context);
+            exceptionTimout.Stop();                      
             return (OperationPairsSequence)sequence;    
+        }
+        
+        OperationPairsSequence? TryGeneratingSequence(BigInteger targetMaxResult, int SpreadPercentage,
+            SequenceContext context)
+        {            
+            OperationPairsSequence? sequence = null;            
+            while(sequence == null)
+            {                
+                CancellationTokenSource tokenSource= new CancellationTokenSource(); 
+                CancellationToken ct = tokenSource.Token;                
+                
+                var generationTimout = new System.Timers.Timer();
+                generationTimout.Elapsed += (caller, e) => {tokenSource.Cancel();};
+                generationTimout.Interval = _generationTimout * context.NumberOfOperations;
+                generationTimout.Start();
+                
+                var operationFactories = Enumerable.Range(1, _numThreads).Select(entry => _prototypeFactory.Clone());  
+                var tasks = new List<Task<OperationPairsSequence?>>();
+                foreach(var operationFactory in operationFactories)
+                {
+                    var task = Task.Run(() => {return GenerateSequenceAsync(ct, targetMaxResult, SpreadPercentage, context, operationFactory);});
+                    tasks.Add(task);
+                }
+                Task.WaitAny(tasks.ToArray());            
+                tokenSource.Cancel(); 
+                generationTimout.Dispose();   
+                sequence = tasks.FirstOrDefault(entry => entry.Result != null)?.Result;
+            }
+            return sequence;
         }
         
         async Task<OperationPairsSequence?> GenerateSequenceAsync(

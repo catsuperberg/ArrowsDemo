@@ -64,11 +64,12 @@ namespace Game.GameDesign
             secondsToFinish += _finishingSceneSeconds;
                                    
             var ad = actors.AdSelector.AccountForAd();
-            
+            var adSeconds = ad.SecondsToWatch;            
             var finalScore = reward * new BigInteger(ad.Multiplier);
-            secondsToFinish += ad.SecondsToWatch;
             
-            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult, finalScore, secondsToFinish);
+            var levelRunTime = context.SecondsPerGate * context.Sequence.Sequence.Count();
+            
+            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult, finalScore, secondsToFinish, levelRunTime, adSeconds);
         }
         
         (BigInteger reward, int gatesTaken) SingleRunthrough(SimulationContext context, GateSelector selector)

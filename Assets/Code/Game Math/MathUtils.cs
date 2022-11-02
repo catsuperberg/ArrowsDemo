@@ -64,7 +64,7 @@ namespace GameMath
             var weights = new Dictionary<float, T>();
             var sumOfOccurances = frequency.Sum(x => x.Key);
             var occurrenceAccumulator = 0;
-            var sortedFrequency = from entry in frequency orderby entry.Key descending select entry;
+            var sortedFrequency = from entry in frequency orderby entry.Key ascending select entry;
             foreach(var entry in sortedFrequency)
             {
                 occurrenceAccumulator += entry.Key;
@@ -74,15 +74,16 @@ namespace GameMath
             return weights;
         } 
         
-        public static T NextFrom<T>(Dictionary<float, T> weightedValues)
+        public static T NextFrom<T>(Dictionary<float, T> weightedValues, Random rand = null)
         {
             if(weightedValues == null || !weightedValues.Any())
                 throw new Exception("No values provided to get next weighted random");
             
             var sortedWeights = from entry in weightedValues orderby entry.Key descending select entry;
-            var maxValue = sortedWeights.First().Key;
-            var random = GlobalRandom.RandomDouble(0, maxValue);
-            return sortedWeights.First(entry => random <= entry.Key).Value;
+            var maxValue = sortedWeights.Sum(entry => entry.Key);
+            var minValue = sortedWeights.Last().Key;
+            var random = rand != null ? (rand.NextDouble()*(maxValue-minValue)+minValue) : GlobalRandom.RandomDouble(minValue, maxValue);
+            return sortedWeights.First(entry => random >= entry.Key).Value;
         }
         
         public static T NextFrom<T>(Dictionary<int, T> frequency)
@@ -90,14 +91,20 @@ namespace GameMath
             var weights = FrequencyToWeights(frequency);
             return NextFrom(weights);
         }
+        
+        public static T NextFrom<T>(Dictionary<int, T> frequency, Random rand)
+        {
+            var weights = FrequencyToWeights(frequency);
+            return NextFrom(weights, rand);
+        }
     }
     
     public class IntAutoCounter : IUpdatedNotification, IFinishNotification
     {
-        public int InitialValue { get; }
-        public int ValueToStopAt { get; }
-        public int Increment { get; }
-        public int PeriodMs { get; }
+        public int InitialValue {get;}
+        public int ValueToStopAt {get;}
+        public int Increment {get;}
+        public int PeriodMs {get;}
         
         public int CurrentValue {get; private set;}
         private Timer _timer;

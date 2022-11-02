@@ -20,8 +20,8 @@ namespace Game.GameDesign
                     {5, new SlowAdSelector()},
                     {2, new AdSkipper()}};                
                 
-        public static IAdSelector GetRandomGrade()
-            => WeightedRandom.NextFrom(_gradeFrequencies);
+        public static IAdSelector GetRandomGrade(Random rand)
+            => WeightedRandom.NextFrom(_gradeFrequencies, rand);
     }
     
     public class AdReport

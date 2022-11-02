@@ -2,6 +2,7 @@ using Game.Gameplay.Realtime.OperationSequence.Operation;
 using GameMath;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Game.GameDesign
@@ -16,16 +17,15 @@ namespace Game.GameDesign
     
     public static class GateSelectorsExtension
     {
+        public static Dictionary<GateSelectors, float> GradeChances = new Dictionary<GateSelectors, float>(){
+                    {GateSelectors.PerfectPlayer, 0},
+                    {GateSelectors.GoodPlayer, 0.001f},
+                    {GateSelectors.AveragePlayer, 0.012f},
+                    {GateSelectors.BadPlayer, 0.15f}};    
+        
         public static float Chance(this GateSelectors enumValue) 
         {
-            switch (enumValue) 
-            {
-                case GateSelectors.PerfectPlayer: return 0;
-                case GateSelectors.GoodPlayer: return 0.001f;
-                case GateSelectors.AveragePlayer: return 0.012f;
-                case GateSelectors.BadPlayer: return 0.15f;
-                default: return 0;
-            }
+            return GradeChances[enumValue];
         }
     }
     
@@ -36,12 +36,17 @@ namespace Game.GameDesign
                     {5, GateSelectors.AveragePlayer.Chance()},
                     {2, GateSelectors.BadPlayer.Chance()}};                
                 
-        public static float GetRandomGradeChance()
-            => WeightedRandom.NextFrom(_gradeFrequencies);
+        public static float GetRandomGradeChance(Random rand)
+            => WeightedRandom.NextFrom(_gradeFrequencies, rand);
+            
+        public static GateSelectors Grade(float chance)
+            => GateSelectorsExtension.GradeChances.First(kvp => kvp.Value == chance).Key;
     }
     
     public class GateSelector
     {
+        public GateSelectors Grade 
+            => GateSelectorGrades.Grade(_chanceOfWorseChoice);
         float _chanceOfWorseChoice; 
         readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 

@@ -27,8 +27,8 @@ namespace Game.GameDesign
                     {typeof(RandomBuyer), new RandomBuyer(_pricing)}};
         }
 
-        public IUpgradeBuyer GetRandomGrade()
-            => WeightedRandom.NextFrom(_gradeFrequencies);
+        public IUpgradeBuyer GetRandomGrade(Random rand)
+            => WeightedRandom.NextFrom(_gradeFrequencies, rand);
             
         public IUpgradeBuyer GetBuyer(Type type)
             => _buyers[type];

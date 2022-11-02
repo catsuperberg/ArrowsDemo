@@ -1,13 +1,18 @@
-using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
-using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using System;
-using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Game.GameDesign
 {
+    public enum EndCondition
+    {
+        Score,
+        GameplayTime,
+        PlayTime
+    }
+    
     public class PlaythroughEndConditions
     {
         TimeSpan _playTime;
@@ -21,12 +26,19 @@ namespace Game.GameDesign
             _maxReward = maxReward;
         }
 
-        public bool Met(RunData data, TimeSpan combinedTime)
+        public bool MetAny(RunData data, TimeSpan combinedTime)
         {
-            var conditionScore = data.FinalScore >= _maxReward;
-            var conditionGameplayTime = data.GameplayTime >= _gameplayTimeOfRun;
-            var conditionPlayTime = combinedTime >= _playTime;
-            return conditionScore || conditionPlayTime || conditionPlayTime;
+            var met = ConditionsThatMet(data, combinedTime);
+            return met.Any();
+        }
+        
+        public IEnumerable<EndCondition> ConditionsThatMet(RunData data, TimeSpan combinedTime)
+        {
+            var met = new List<EndCondition>();
+            if(data.FinalScore >= _maxReward) met.Add(EndCondition.Score);
+            if(data.LevelRunTime >= _gameplayTimeOfRun) met.Add(EndCondition.GameplayTime);
+            if(combinedTime >= _playTime) met.Add(EndCondition.PlayTime);
+            return met;
         }
     }
     
@@ -50,6 +62,7 @@ namespace Game.GameDesign
         public PlaythroughData Simulate()
         {
             var results = new List<RunData>();
+            IEnumerable<EndCondition> endRichedConditions;
             RunData lastResult;
             SequenceContext sequenceContext = null;
             do
@@ -59,9 +72,10 @@ namespace Game.GameDesign
                 _player.RecieveReward(lastResult.FinalScore);                
                 _player.BuyUpgrades();
                 results.Add(lastResult);
-            }while(!_endConditions.Met(lastResult, PlaythroughData.CombineTime(results)));
+                endRichedConditions = _endConditions.ConditionsThatMet(lastResult, PlaythroughData.CombineTime(results));
+            }while(!endRichedConditions.Any());
             
-            return new PlaythroughData(results);
+            return new PlaythroughData(results, _player.HeaderString, _player.Context.UpgradesPerIteration, endRichedConditions);
         }
     }
 }
