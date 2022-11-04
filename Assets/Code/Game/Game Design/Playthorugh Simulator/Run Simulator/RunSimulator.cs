@@ -125,6 +125,10 @@ namespace Game.GameDesign
             }
             
             return newReward;
-        }        
+        }       
+        
+        public class Factory : Zenject.PlaceholderFactory<RunSimulator>
+        {
+        } 
     }
 }

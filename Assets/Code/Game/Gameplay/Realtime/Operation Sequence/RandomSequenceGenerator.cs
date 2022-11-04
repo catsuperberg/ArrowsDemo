@@ -15,13 +15,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
         const int _generationTimout = 100;
         const int _exceptionTimout = 5000;
         
-        int _numThreads = 1;
+        static int _numThreads = Mathf.Clamp((int)((System.Environment.ProcessorCount/2)*0.75), 3, int.MaxValue);
         OperationFactory _prototypeFactory; // Beause cloning is faster than zenject
-        
+                
         RandomSequenceGenerator(OperationFactory.Factory operationFactory)
         {
-            var CPU_count = SystemInfo.processorCount;
-            _numThreads = Mathf.Clamp((int)((CPU_count/2)*0.75), 3, int.MaxValue);
             var opertionFactoryFactory = operationFactory ?? throw new System.ArgumentNullException(nameof(operationFactory)); 
             _prototypeFactory = opertionFactoryFactory.Create();       
         }

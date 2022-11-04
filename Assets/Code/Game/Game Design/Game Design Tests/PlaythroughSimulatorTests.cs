@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using Unity.PerformanceTesting;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Zenject;
