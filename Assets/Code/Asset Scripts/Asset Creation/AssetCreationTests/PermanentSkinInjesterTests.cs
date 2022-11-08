@@ -101,8 +101,8 @@ public class PermanentSkinInjesterTests
     
     void VerifyEntiesInDatabase()
     {
-        Assert.That(_database._pathToDatabase, Does.Exist);
-        var newDatabase = new PermanentSkinsDatabase<CrossbowSkinData>(_database._pathToDatabase);
+        Assert.That(_database.PathToDatabase, Does.Exist);
+        var newDatabase = new PermanentSkinsDatabase<CrossbowSkinData>(_database.PathToDatabase);
         var skinNamesInDB = newDatabase.Skins.Select(entry => entry.Name);
         Assert.That(skinNamesInDB, Is.EquivalentTo(_skinNames));
     }

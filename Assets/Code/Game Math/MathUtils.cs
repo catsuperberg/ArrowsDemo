@@ -408,5 +408,5 @@ namespace GameMath
             int mid = size / 2;
             return sourceNumbers[mid];
         }
-    }    
+    }   
 }

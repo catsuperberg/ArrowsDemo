@@ -13,7 +13,7 @@ namespace Game.Gameplay.Meta.Skins
     {        
         public IList<T> Skins {get => _skins.AsReadOnly();}
         public string PathToDatabase {get => _pathToDatabase;}
-        public readonly string _pathToDatabase;
+        readonly string _pathToDatabase;
         [SerializeField]
         List<T> _skins;
         

@@ -82,3 +82,7 @@ Library/ScriptAssemblies/UnityEditor.TestRunner.dll
 Library/ScriptAssemblies/UnityEditor.UI.dll
 Library/ScriptAssemblies/UnityEngine.TestRunner.dll
 Library/ScriptAssemblies/UnityEngine.UI.dll
+
+**/Assets/Plugins/**
+!**/Assets/Plugins/**/
+!**/Assets/Plugins/**/*.dll.meta

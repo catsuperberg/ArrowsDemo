@@ -4,17 +4,12 @@ using Game.Gameplay.Meta.Skins;
 using GameMath;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-
-
-using System.Text;
 
 [TestFixture, RequiresPlayMode(false)]
 public class PermanentSkinsDatabaseTests
@@ -41,7 +36,10 @@ public class PermanentSkinsDatabaseTests
         _testData1 = allDataInChunks[0];
         _testData2 = allDataInChunks[1];
         
-        _database = new PermanentSkinsDatabase<ProjectileSkinData>(_testDatabaseJson);            
+        Assert.That(_testDatabaseJson, Does.Not.Exist);
+        Assert.That(_database, Is.Null);
+        _database = new PermanentSkinsDatabase<ProjectileSkinData>(_testDatabaseJson);    
+        Assert.That(!_database.Skins.Any());        
     }
     
     List<ProjectileSkinData> GenerateRandomData(int numberOfEntries)
@@ -71,17 +69,18 @@ public class PermanentSkinsDatabaseTests
     public void TestTeardown()
     {        
         ClearPrefabFolder();
+        _database = null;
     }
     
     void ClearPrefabFolder()
     {
-        Directory.GetFiles(_testResourcesFolder).ToList().ForEach(File.Delete);
+        Directory.GetFiles(_testResourcesFolder).ToList().ForEach(entry => AssetDatabase.DeleteAsset(entry));
         Directory.GetDirectories(_testResourcesFolder).ToList().ForEach(entry => AssetDatabase.DeleteAsset(entry));
     }
     
     [Test, RequiresPlayMode(false)]
     public void AddSkinsUniqueByNameTest()
-    {
+    {        
         _database.AddSkinsUniqueByName(_testData1);
         Assert.That(_database.Skins, Is.EquivalentTo(_testData1));
         var oneOldOneNew = new List<ProjectileSkinData>{_testData1.First(), _testData2.First()};
@@ -94,6 +93,7 @@ public class PermanentSkinsDatabaseTests
     [Test, RequiresPlayMode(false)]
     public void SetSkinsData()
     {
+        Assert.That(!_database.Skins.Any());
         _database.SetSkinsDataKeepOldPropertiesOnNull(_testData1);
         Assert.That(_database.Skins, Is.EquivalentTo(_testData1));
         var modifiedEntry = new ProjectileSkinData(

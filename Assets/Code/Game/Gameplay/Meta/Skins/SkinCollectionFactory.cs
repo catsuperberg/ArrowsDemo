@@ -14,7 +14,6 @@ namespace Game.Gameplay.Meta.Skins
         protected IRegistryAccessor _registryAccessor;
         protected IRegistryManager _registryManager;
         
-        public event EventHandler OnUpdated;
         protected SkinCollection _latestCollection;
         protected virtual Type CollectionType() =>  throw new NotImplementedException();
         

@@ -1,7 +1,6 @@
 using AssetScripts.Instantiation;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track.TrackItems;
-using GameMath;
 using SplineMesh;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +8,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using Zenject;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
 {
@@ -17,7 +15,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
     {           
         Vector3 _gateOffset = new Vector3(4.5f, 4f, 0f);
         float _runUpLength = 40;
-        int _nextPairID = 0;
         
         
         GameObject _allGates;
