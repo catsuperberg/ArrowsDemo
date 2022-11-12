@@ -1,9 +1,9 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using ExtensionMethods;
+using Game.GameDesign;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
-using GameDesign;
 using NUnit.Framework;
 using System.Linq;
 using System.Numerics;
@@ -52,7 +52,7 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         
         Measure.Method(() => {generator.GetAverageSequenceResult(context);})
             .WarmupCount(10)
-            .MeasurementCount(50)
+            .MeasurementCount(500)
             .Run();
     }
     
@@ -90,11 +90,10 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         Enumerable.Range(1,repeats).ToList().ForEach(entry => GenerateSequnce(averageTarget, generator, context));
     }    
     
-    
     void GenerateSequnce(BigInteger targer, ISequenceCalculator generator, SequenceContext context)
     {
         var spread = 15;
-        OperationPairsSequence sequence;
+        OperationPairsSequence sequence = default(OperationPairsSequence);
         
         try
         {
@@ -104,12 +103,11 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         {
             Debug.Log("Coulnd't generate sequence");
             Debug.Log(ex);
+            throw ex;
         }
                 
-        Assert.That(sequence, Is.Not.Null);
-        
-        var absoluteSpread = BigInteger.Abs(targer - sequence.BestPossibleResult);
+        var absoluteSpread = BigInteger.Abs(targer - sequence.BestPossibleResult());
         var percentSpread = BigInteger.Multiply(absoluteSpread, new BigInteger(100))/targer;
-        Debug.Log($"Sequence result: {sequence.BestPossibleResult.ParseToReadable()} Abs spread: {absoluteSpread.ParseToReadable()} Spread percents: {percentSpread}");
+        Debug.Log($"Sequence result: {sequence.BestPossibleResult().ParseToReadable()} Abs spread: {absoluteSpread.ParseToReadable()} Spread percents: {percentSpread}");
     }  
 }

@@ -6,46 +6,46 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
     public readonly struct  OperationPairsSequence
     {
-        public readonly BigInteger BestPossibleResult;
-        public readonly IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
-        private readonly IEnumerable<OperationPair> _sequence;
-        
-        public OperationPairsSequence(List<OperationPair> sequence, BigInteger generationTimeResult)
+        public readonly BigInteger BestPossibleResult () 
         {
-            if(sequence.Count == 0)
+            var accumulator = _initValue;
+            for(int i = 0; i < _sequence.Length; i++)
+                accumulator = _sequence[i].BestResult(accumulator);
+            return accumulator;
+        }
+        
+        public readonly int Length;
+        public readonly IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
+        readonly OperationPair[] _sequence;
+        readonly BigInteger _initValue;
+        
+        public OperationPairsSequence(OperationPair[] sequence, BigInteger initValue)
+        {  
+            Length = sequence.Length;    
+            if(Length == 0)
                 throw new System.Exception("OperationPairsSequence not presented with List of <OperationPair>");
             
-            _sequence = sequence;            
-            BestPossibleResult = generationTimeResult;
+            _sequence = sequence;   
+            _initValue = initValue;   
         }
-        
-        public OperationPairsSequence(IEnumerable<OperationPair> sequence, BigInteger generationTimeResult)
-        {
-            if(!sequence.Any())
-                throw new System.Exception("OperationPairsSequence not presented with List of <OperationPair>");
-                
-            _sequence = sequence;            
-            BestPossibleResult = generationTimeResult;
-        }
-        
         
         public override bool Equals(object obj) 
         {
             return obj is OperationPairsSequence &&
-                BestPossibleResult == ((OperationPairsSequence)obj).BestPossibleResult &&
+                // BestPossibleResult == ((OperationPairsSequence)obj).BestPossibleResult &&
                 _sequence.GetHashCode() == ((OperationPairsSequence)obj)._sequence.GetHashCode();
         }
         
         public bool Equals(OperationPairsSequence obj) 
         {
             return
-                BestPossibleResult == obj.BestPossibleResult &&
+                // BestPossibleResult == obj.BestPossibleResult &&
                 _sequence == obj._sequence;
         }
         
         public override int GetHashCode() 
         {
-            return BestPossibleResult.GetHashCode() ^ _sequence.GetHashCode();
+            return _initValue.GetHashCode() ^ _sequence.GetHashCode();
         }  
                 
         public static bool operator ==(OperationPairsSequence i1, OperationPairsSequence i2) 

@@ -6,10 +6,7 @@ using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
-using GameDesign;
-using GameMath;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
@@ -93,16 +90,17 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreaded()
     {        
-        var numberOfPlaytrhoughs = 80;
-        var threads = Mathf.Clamp((int)((SystemInfo.processorCount/2)*0.75), 3, int.MaxValue);
+        var numberOfPlaytrhoughs = 350;
+        var threads = Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
-        var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
-            .Select(entry => CreatePlaythrough())
-            .ToList();
-        var results = playthroughs
+        // var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
+        //     .Select(entry => CreatePlaythrough())
+        //     .ToList();
+        var results = Enumerable.Range(0, numberOfPlaytrhoughs)
             .AsParallel()
             .WithDegreeOfParallelism(threads)
+            .Select(entry => CreatePlaythrough())
             .Select(playthrough => playthrough.Simulate())
             .ToList();
         stopwatch.Stop();

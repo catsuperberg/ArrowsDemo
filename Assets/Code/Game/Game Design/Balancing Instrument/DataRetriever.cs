@@ -5,7 +5,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 
-namespace GameDesign
+namespace Game.GameDesign
 {
     public class DataRetriever 
     {

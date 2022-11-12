@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace GameDesign
+namespace Game.GameDesign
 {
     public class OperationValueParametersFactory
     {       

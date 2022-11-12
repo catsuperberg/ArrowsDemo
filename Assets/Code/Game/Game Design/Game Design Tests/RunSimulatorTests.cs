@@ -6,14 +6,9 @@ using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
-using GameDesign;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using Unity.PerformanceTesting;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Zenject;
 

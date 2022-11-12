@@ -21,7 +21,7 @@ namespace Game.GameDesign
                     {GateSelectors.PerfectPlayer, 0},
                     {GateSelectors.GoodPlayer, 0.001f},
                     {GateSelectors.AveragePlayer, 0.012f},
-                    {GateSelectors.BadPlayer, 0.15f}};    
+                    {GateSelectors.BadPlayer, 0.07f}};    
         
         public static float Chance(this GateSelectors enumValue) 
         {
@@ -45,9 +45,16 @@ namespace Game.GameDesign
     
     public class GateSelector
     {
+        const float SkillProgressCoeff = 0.92f;
         public GateSelectors Grade 
             => GateSelectorGrades.Grade(_chanceOfWorseChoice);
         float _chanceOfWorseChoice; 
+        float GetChance {get
+            {
+                var oldValue = _chanceOfWorseChoice;
+                _chanceOfWorseChoice *= SkillProgressCoeff;
+                return oldValue;
+            }} 
         readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 
         public GateSelector(float chanceOfWorseChoice)
@@ -58,7 +65,7 @@ namespace Game.GameDesign
         public OperationInstance Choose(OperationPair pair, BigInteger initialValue)
         {
             var chanceCheck = _random.NextDouble();
-            return (chanceCheck >= _chanceOfWorseChoice) ? pair.BestOperation(initialValue) : pair.WorseOperation(initialValue);
+            return (chanceCheck >= GetChance) ? pair.BestOperation(initialValue) : pair.WorseOperation(initialValue);
         }
     }
 }

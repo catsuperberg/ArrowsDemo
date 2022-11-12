@@ -1,4 +1,4 @@
-using GameDesign;
+using Game.GameDesign;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public class OperationRules : IOperationRules
     {
         const int _startInitValue = 1;
-        const int _minInitlessValue = 21; // HACK because of max subtract 10 and min devision 2, after 20 same results regardless of init value        
-        public int MinInitless {get => _minInitlessValue;}
+        public static BigInteger _minInitlessValue = 21; // HACK because of max subtract 10 and min devision 2, after 20 same results regardless of init value        
+        public BigInteger MinInitless {get => _minInitlessValue;}
         
-        public static readonly Dictionary<int, BestChoice> _resultCache;
-        public static readonly Dictionary<int, BestChoice> _fastResultCache;
+        static readonly IReadOnlyDictionary<int, BestChoice> _resultCache;
+        static readonly IReadOnlyDictionary<int, BestChoice> _fastResultCache;
         
         
         static OperationRules()
@@ -23,13 +23,13 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             var operationsWithValues = types
                 .Select(type => (Operation)type)
                 .Select(type => Enumerable.Range(baseParams[type].min, (baseParams[type].max - baseParams[type].min)+1)
-                    .Select(entry => new OperationInstance(type, entry, GetTypeDelegate(type))))
+                    .Select(entry => type != Operation.Blank ? new OperationInstance(type, entry, GetTypeDelegate(type)) : OperationInstance.blank))
                 .SelectMany(entry => entry);
             var allPossiblePairs = new List<(OperationInstance left, OperationInstance right)>();
             foreach(var leftOperation in operationsWithValues)
                 foreach(var rightOperation in operationsWithValues)
                     allPossiblePairs.Add((leftOperation, rightOperation));
-            var initValues = Enumerable.Range(_startInitValue, ((_minInitlessValue-1) - _startInitValue)+1);       
+            var initValues = Enumerable.Range(_startInitValue, (((int)_minInitlessValue-1) - _startInitValue)+1);       
             var cache = new Dictionary<int, BestChoice>();   
             foreach(var value in initValues)
                 foreach(var pair in allPossiblePairs)
@@ -37,7 +37,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             _resultCache = cache;  
             var fastCache = new Dictionary<int, BestChoice>(); 
             foreach(var pair in allPossiblePairs)
-                    fastCache.Add(FastIdHash(pair.left.Identifier, pair.right.Identifier), CalculateBestOperation(pair.left, pair.right, _minInitlessValue));
+                    fastCache.Add(FastIdHash(pair.left.Identifier, pair.right.Identifier), CalculateBestOperation(pair.left, pair.right, (int)_minInitlessValue));
             _fastResultCache = fastCache;
         }
         
@@ -54,6 +54,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         /// <summary> initialValue can't be higher or equal _minInitlessValue </summary>
         public BestChoice ChooseBest(int leftIdentifier, int rightIdentifier, BigInteger initialValue)
+            => _resultCache[IdHash(leftIdentifier, rightIdentifier, (int)initialValue)];
+            
+        public static BestChoice ChooseBestStatic(int leftIdentifier, int rightIdentifier, BigInteger initialValue)
             => _resultCache[IdHash(leftIdentifier, rightIdentifier, (int)initialValue)];
             
         public BestChoice ChooseFastBest(int leftIdentifier, int rightIdentifier)
@@ -104,8 +107,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                     {Operation.Add, Addition},
                     {Operation.Subtract, Subtraction},
                     {Operation.Multiply, Multiplication},
-                    {Operation.Divide, Division},
-                    {Operation.Blank, Keep}}; 
+                    {Operation.Divide, Division}};
+                    // {Operation.Blank, Keep}}; 
         
         public Func<BigInteger, BigInteger, BigInteger> GetDelegate(Operation action)
             => GetTypeDelegate(action);
@@ -114,14 +117,14 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             => _delegates[action];
             
         static BigInteger Addition(BigInteger initialValue, BigInteger operationValue)
-            => BigInteger.Add(initialValue, operationValue);
+            => initialValue+operationValue;
         static BigInteger Subtraction(BigInteger initialValue, BigInteger operationValue)
-            => BigInteger.Subtract(initialValue, operationValue);
+            => initialValue-operationValue;
         static BigInteger Multiplication(BigInteger initialValue, BigInteger operationValue)
-            => BigInteger.Multiply(initialValue, operationValue);
+            => initialValue*operationValue;
         static BigInteger Division(BigInteger initialValue, BigInteger operationValue)
-            => BigInteger.Divide(initialValue, operationValue);
-        static BigInteger Keep(BigInteger initialValue, BigInteger operationValue)
-            => initialValue;
+            => initialValue/operationValue;
+        // static BigInteger Keep(BigInteger initialValue, BigInteger operationValue)
+        //     => initialValue;
     }
 }

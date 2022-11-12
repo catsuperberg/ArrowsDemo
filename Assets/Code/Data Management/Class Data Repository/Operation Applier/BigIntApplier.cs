@@ -9,7 +9,7 @@ namespace DataManagement
         {
             var baseNumber = BigInteger.Parse(baseValue);
             var incrementNumber = BigInteger.Parse(incrementValue);
-            var result = new BigInteger(0);
+            var result = BigInteger.Zero;
             switch(typeOfOperation)
             {
                 case OperationType.Increase:

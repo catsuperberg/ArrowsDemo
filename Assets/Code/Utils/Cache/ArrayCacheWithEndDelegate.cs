@@ -1,11 +1,13 @@
-using System;
-using System.Linq;
 using ExtensionMethods;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Utils
 {   
     public class ArrayCacheWithEndDelegate<T> : ICache<T>
     {
+        public IReadOnlyCollection<T> Collection {get => _values.ToList().AsReadOnly();}
         int _currentIndex;
         int _size;
         T[] _values;

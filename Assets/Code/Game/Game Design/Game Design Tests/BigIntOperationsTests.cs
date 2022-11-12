@@ -6,7 +6,6 @@ using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
-using GameDesign;
 using GameMath;
 using NUnit.Framework;
 using System.Collections.Generic;

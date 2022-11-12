@@ -408,5 +408,28 @@ namespace GameMath
             int mid = size / 2;
             return sourceNumbers[mid];
         }
+                
+        public static T FastMedian<T>(IEnumerable<T> sourceNumbers) 
+        {
+            //Framework 2.0 version of this method. there is an easier way in F4        
+            if (sourceNumbers == null || !sourceNumbers.Any())
+                throw new System.Exception("Median of empty array not defined.");
+
+            var ordered = sourceNumbers.OrderBy(entry => entry);
+
+            int size = ordered.Count();
+            int mid = size / 2;
+            return ordered.ElementAt(mid);
+        }
+        
+        public static T FastMedianPreSorted<T>(IEnumerable<T> sortedNumbers) 
+        {      
+            if (sortedNumbers == null || !sortedNumbers.Any())
+                throw new System.Exception("Median of empty array not defined.");
+
+            int size = sortedNumbers.Count();
+            int mid = size / 2;
+            return sortedNumbers.ElementAt(mid);
+        }
     }   
 }

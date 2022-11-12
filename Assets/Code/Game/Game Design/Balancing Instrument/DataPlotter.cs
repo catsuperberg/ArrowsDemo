@@ -1,5 +1,4 @@
 using ExtensionMethods;
-using Game.GameDesign;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -7,18 +6,16 @@ using LiveChartsCore.SkiaSharpView.SKCharts;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameDesign
+namespace Game.GameDesign
 {
-    public class ChartDataPoints
+    public class ChartDataPoint
     {
         public readonly double X;
         public readonly double Y;
 
-        public ChartDataPoints(double x, double y)
+        public ChartDataPoint(double x, double y)
         {
             X = x;
             Y = y;
@@ -27,7 +24,9 @@ namespace GameDesign
     
     public class DataPlotter 
     {
-        public string PlotXYBase64(IEnumerable<ChartDataPoints> dataPoints, Vector2Int pictureSize)
+        const int _logBase = 10;  
+        
+        public Texture2D PlotXYLog(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
         {
             var chart = new SKCartesianChart
             {                
@@ -35,18 +34,18 @@ namespace GameDesign
                 Height = pictureSize.y,
                 Series = new ISeries[]
                 {
-                    new LineSeries<ChartDataPoints> 
+                    new LineSeries<ChartDataPoint> 
                     {                        
                         Mapping = (logPoint, chartPoint) =>
                         {
                             chartPoint.SecondaryValue = logPoint.X;
-                            chartPoint.PrimaryValue = Math.Log(logPoint.Y, 10); 
+                            chartPoint.PrimaryValue = Math.Log(logPoint.Y, _logBase); 
                         }, 
                         
                         Values = dataPoints,
                         Fill = new LinearGradientPaint(
                             new []{SKColors.Transparent, SKColors.Aquamarine}, 
-                            new SKPoint(0.4f, 1), new SKPoint(0.5f,-0.8f),
+                            new SKPoint(0.5f, 1), new SKPoint(0.5f,-0.8f),
                             tileMode: SKShaderTileMode.Clamp),
                         Stroke = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2},
                         GeometryFill = null,
@@ -59,7 +58,7 @@ namespace GameDesign
                     new Axis
                     {
                         MinStep = 1,
-                        Labeler = value => new System.Numerics.BigInteger(Math.Pow(10, value)).ParseToReadable(),
+                        Labeler = value => new System.Numerics.BigInteger(Math.Pow(_logBase, value)).ParseToReadable(),
                         LabelsPaint = new SolidColorPaint(SKColors.Beige),
                         SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
                     }
@@ -80,7 +79,71 @@ namespace GameDesign
             
             var image = chart.GetImage();            
             var data = image.Encode();
-            return Convert.ToBase64String(data.AsSpan());
+            var imageB64 = Convert.ToBase64String(data.AsSpan());
+                        
+            Texture2D texture = new Texture2D(1,1);
+            texture.LoadImage(Convert.FromBase64String(imageB64));  
+            return texture; 
+        } 
+        
+        public Texture2D PlotXY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
+        {
+            var chart = new SKCartesianChart
+            {                
+                Width = pictureSize.x,
+                Height = pictureSize.y,
+                Series = new ISeries[]
+                {
+                    new LineSeries<ChartDataPoint> 
+                    {                        
+                        Mapping = (logPoint, chartPoint) =>
+                        {
+                            chartPoint.SecondaryValue = logPoint.X;
+                            chartPoint.PrimaryValue = logPoint.Y; 
+                        }, 
+                        
+                        Values = dataPoints,
+                        Fill = new LinearGradientPaint(
+                            new []{SKColors.Transparent, SKColors.Aquamarine}, 
+                            new SKPoint(0.5f, 1), new SKPoint(0.5f,-0.8f),
+                            tileMode: SKShaderTileMode.Clamp),
+                        Stroke = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2},
+                        GeometryFill = null,
+                        GeometryStroke = null
+                    }
+                },
+                
+                YAxes = new List<Axis>
+                {
+                    new Axis
+                    {
+                        MinStep = 1,
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
+                    }
+                },
+                
+                XAxes = new List<Axis>
+                {
+                    new Axis
+                    {
+                        MinStep = 1,
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        TextSize = 12
+                    }
+                },
+                Background = SKColor.FromHsv(170,20,11)
+            };
+            
+            
+            var image = chart.GetImage();            
+            var data = image.Encode();
+            var imageB64 = Convert.ToBase64String(data.AsSpan());
+                        
+            Texture2D texture = new Texture2D(1,1);
+            texture.LoadImage(Convert.FromBase64String(imageB64));  
+            return texture; 
         }
+        
     }
 }

@@ -10,9 +10,9 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public readonly BigInteger Value;   
         public readonly int Identifier; 
         
-        readonly Func<BigInteger, BigInteger, BigInteger> _execute;
+        public readonly Func<BigInteger, BigInteger, BigInteger> _execute;
         
-        public static OperationInstance _blankInstance = new OperationInstance(Operation.Blank, 0, (BigInteger i1, BigInteger i2) => {return 0;});
+        public static OperationInstance _blankInstance = new OperationInstance(Operation.Blank, 0, (BigInteger initValue, BigInteger opValue) => {return initValue;});
         public static OperationInstance blank {get => _blankInstance;}    
                 
         public OperationInstance(Operation type, int value, IOperationRules delegates)

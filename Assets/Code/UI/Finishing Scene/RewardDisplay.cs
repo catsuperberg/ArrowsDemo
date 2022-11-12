@@ -13,7 +13,7 @@ namespace UI
         
         RewardCalculator _reward;
         
-        public BigInteger Count {get; private set;} = new BigInteger(0);
+        public BigInteger Count {get; private set;} = BigInteger.Zero;
                 
         public void Initialize(RewardCalculator reward)
         {

@@ -1,11 +1,13 @@
-using System;
-using System.Linq;
 using ExtensionMethods;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Utils
 {   
     public class ArrayCache<T> : ICache<T> 
     {
+        public IReadOnlyCollection<T> Collection {get => _values.ToList().AsReadOnly();}
         int _currentIndex;
         int _size;
         int _bigSize;
@@ -41,6 +43,15 @@ namespace Utils
             _bigSize = bigSize;
             _valuesRepeated = new T[_bigSize];
             RepeatUntilBigSize();
+        }
+        
+        public ArrayCache(T[] values)
+        {
+            _currentIndex = -1; // HACK so that Next counts form 0 and not 1
+            _values = values;
+            _size = values.Count();
+            _bigSize = _size;
+            _valuesRepeated = _values;
         }
                 
         public T[] GetChunkOrRepeated(int size)

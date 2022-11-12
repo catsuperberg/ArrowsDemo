@@ -6,7 +6,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
     public interface IOperationRules
     {
-        public int MinInitless {get;}
+        public BigInteger MinInitless {get;}
         IReadOnlyDictionary<Operation, int> OperationFrequencies{get;}
         IReadOnlyDictionary<Operation, int> OperationRepeats(int count);
         public Func<BigInteger, BigInteger, BigInteger> GetDelegate(Operation action);

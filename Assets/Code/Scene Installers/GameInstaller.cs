@@ -1,6 +1,7 @@
 using DataAccess.DiskAccess.GameFolders;
 using DataAccess.DiskAccess.Serialization;
 using DataManagement;
+using Game.GameDesign;
 using Game.Gameplay.Meta;
 using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Meta.Skins;
@@ -13,7 +14,6 @@ using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using Game.Gameplay.Realtime.PlayfieldComponents.Track;
 using Game.GameState;
 using Game.Microinteracions;
-using GameDesign;
 using Settings;
 using UnityEngine;
 using Zenject;

@@ -104,6 +104,6 @@ namespace ExtensionMethods
     public static class BigIntCalculations
     {
         public static BigInteger Mean(IEnumerable<BigInteger> values)
-            => values.Aggregate(new BigInteger(0),(sum, value) => sum += value)/values.Count();
+            => values.Aggregate(BigInteger.Zero,(sum, value) => sum += value)/values.Count();
     }
 }

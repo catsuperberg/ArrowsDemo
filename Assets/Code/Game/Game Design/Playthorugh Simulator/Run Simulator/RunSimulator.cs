@@ -69,7 +69,7 @@ namespace Game.GameDesign
             
             var levelRunTime = context.SecondsPerGate * context.Sequence.Sequence.Count();
             
-            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult, finalScore, secondsToFinish, levelRunTime, adSeconds);
+            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult(), finalScore, secondsToFinish, levelRunTime, adSeconds);
         }
         
         (BigInteger reward, int gatesTaken) SingleRunthrough(SimulationContext context, GateSelector selector)

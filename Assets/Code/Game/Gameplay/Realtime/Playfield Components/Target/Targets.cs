@@ -67,7 +67,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         {
             var targets = GetTargetComponents();
             
-            var sum = new BigInteger(0);
+            var sum = BigInteger.Zero;
             foreach(Target target in targets)
                 sum += target.Points;
             

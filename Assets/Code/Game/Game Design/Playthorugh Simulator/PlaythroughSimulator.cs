@@ -44,8 +44,6 @@ namespace Game.GameDesign
     
     public class PlaythroughSimulator
     {
-        const int _endPlaythroughGateCount = 50;    
-    
         readonly VirtualPlayer _player;
         readonly RunSimulator _runSimulator;
         readonly PlaythroughEndConditions _endConditions;

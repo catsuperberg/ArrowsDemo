@@ -5,9 +5,9 @@ using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
-using GameDesign;
 using System.Globalization;
 using System.Numerics;
+using UnityEditor;
 using Zenject;
 
 
@@ -27,6 +27,8 @@ public static class InstrumentInstaller
         ComposeFactoriesForPlaythroughFactory(container);
         container.Bind<PlaythroughSimulatorFactory>().AsTransient();
         container.Bind<DataRetriever>().AsTransient();
+        container.Bind<DataPlotter>().AsTransient();
+        container.Bind<BalanceController>().AsTransient();
     }
         
     static void ComposeSequence(DiContainer container)

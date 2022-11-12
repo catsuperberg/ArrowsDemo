@@ -38,9 +38,9 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Track
             _gatePrefab = gatePrefab;
             _track = track;
             _sequence = sequence;
-            _positionIndent = (_track.Length - _runUpLength) / (_sequence.Sequence.Count+1);
+            _positionIndent = (_track.Length - _runUpLength) / (_sequence.Length+1);
             _offsetOnTrack = _positionIndent + _runUpLength;  
-            _pointsOnTrack = CalculatePositionsForGates(_track, _sequence.Sequence.Count, _positionIndent, _offsetOnTrack);   
+            _pointsOnTrack = CalculatePositionsForGates(_track, _sequence.Length, _positionIndent, _offsetOnTrack);   
             
             var gateCreationSemaphore = new SemaphoreSlim(0, 1);
             UnityMainThreadDispatcher.Instance().Enqueue(() => {StartCoroutine(CreationCoroutine(gateCreationSemaphore));});

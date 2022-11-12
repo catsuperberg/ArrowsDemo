@@ -1,4 +1,4 @@
-namespace GameDesign
+namespace Game.GameDesign
 {
     public class GameBalanceConfiguration
     {
