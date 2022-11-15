@@ -134,16 +134,23 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         public BigInteger GetAverageSequenceResult(SequenceContext context, int numberOfIterations)
         {
-            var sequences = _operationFactories
-                .AsParallel()
-                .WithDegreeOfParallelism(_numThreads)
-                .Select(factory => 
-                    {
-                        var sequence = GenerateRandomSequence(context.NumberOfOperations, factory, context.InitialValue); 
-                        sequence.CalculateResult(); 
-                        return sequence;
-                    })
-                .ToList();
+            // var sequences = _operationFactories
+            //     .AsParallel()
+            //     .WithDegreeOfParallelism(_numThreads)
+            //     .Select(factory => 
+            //         {
+            //             var sequence = GenerateRandomSequence(context.NumberOfOperations, factory, context.InitialValue); 
+            //             sequence.CalculateResult(); 
+            //             return sequence;
+            //         })
+            //     .ToList();
+            
+            
+            var sequences = new List<OperationPairsSequence>();
+            foreach(var factory in _operationFactories)
+                sequences.Add(GenerateRandomSequence(context.NumberOfOperations, factory, context.InitialValue));
+            foreach(var sequence in sequences)
+                sequence.CalculateResult(); 
             
             _sortedSequencesWithResults = sequences
                 .OrderBy(entry => entry.BestPossibleResult);
