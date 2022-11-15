@@ -31,7 +31,7 @@ namespace Game.GameDesign
         SimulationContext GenerateContext(SequenceContext generationContext)
         {
             var targetScore = _sequenceCalculator.GetAverageSequenceResult(generationContext);            
-            var sequence = _sequenceCalculator.GenerateSequence(targetScore, spreadPercentage: 15, generationContext);
+            var sequence = _sequenceCalculator.GetSequenceInSpreadRange(targetScore, spreadPercentage: 15, generationContext);
             (int Min, int Max) targetCountRange = (1, MaxTargerCount(targetScore));  
             var targets = _targetGenerator.GetDataOnlyTargets(targetScore, targetCountRange);
             var secondsPerGate = (generationContext.Length/(float)generationContext.NumberOfOperations)/generationContext.ProjectileSpeed;            
@@ -67,9 +67,9 @@ namespace Game.GameDesign
             var adSeconds = ad.SecondsToWatch;            
             var finalScore = reward * new BigInteger(ad.Multiplier);
             
-            var levelRunTime = context.SecondsPerGate * context.Sequence.Sequence.Count();
+            var levelRunTime = context.SecondsPerGate * context.Sequence.Length;
             
-            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult(), finalScore, secondsToFinish, levelRunTime, adSeconds);
+            return new RunData(context.TargetScore, context.Sequence.CalculateResult(), finalScore, secondsToFinish, levelRunTime, adSeconds);
         }
         
         (BigInteger reward, int gatesTaken) SingleRunthrough(SimulationContext context, GateSelector selector)

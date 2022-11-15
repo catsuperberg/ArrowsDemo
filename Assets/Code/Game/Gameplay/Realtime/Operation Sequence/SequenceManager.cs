@@ -22,7 +22,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         public OperationPairsSequence GenerateSequence(BigInteger targetScore, int spread)
         {
-            var sequence = _meta.GenerateSequence(targetScore, spread, _runContextProvider.GetContext());            
+            var sequence = _meta.GetSequenceInSpreadRange(targetScore, spread, _runContextProvider.GetContext());            
             return sequence;
         }
         

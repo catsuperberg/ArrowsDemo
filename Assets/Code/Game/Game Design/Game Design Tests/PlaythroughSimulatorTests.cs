@@ -48,7 +48,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
         Container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
-        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
+        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
         Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();   
     }
     
@@ -90,17 +90,16 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreaded()
     {        
-        var numberOfPlaytrhoughs = 350;
+        var numberOfPlaytrhoughs = 80;
         var threads = Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
-        // var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
-        //     .Select(entry => CreatePlaythrough())
-        //     .ToList();
-        var results = Enumerable.Range(0, numberOfPlaytrhoughs)
+        var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
+            .Select(entry => CreatePlaythrough())
+            .ToList();
+        var results = playthroughs
             .AsParallel()
             .WithDegreeOfParallelism(threads)
-            .Select(entry => CreatePlaythrough())
             .Select(playthrough => playthrough.Simulate())
             .ToList();
         stopwatch.Stop();

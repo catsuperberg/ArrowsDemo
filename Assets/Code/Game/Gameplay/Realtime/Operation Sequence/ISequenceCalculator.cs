@@ -6,9 +6,10 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public interface ISequenceCalculator
     {
-        public OperationPairsSequence GenerateSequence(BigInteger targetMaxResult, int spreadPercentage,
+        OperationPairsSequence GetSequenceInSpreadRange(BigInteger targetMaxResult, int spreadPercentage,
             SequenceContext context);
-        public BigInteger GetAverageSequenceResult(SequenceContext context);
-        public BigInteger GetAverageSequenceResult(SequenceContext context, int numberOfIterations);
+        BigInteger GetAverageSequenceResult(SequenceContext context);
+        // BigInteger GetAverageSequenceResult(SequenceContext context, int numberOfIterations);
+        OperationPairsSequence GetRandomSequence(SequenceContext context);
     }    
 }

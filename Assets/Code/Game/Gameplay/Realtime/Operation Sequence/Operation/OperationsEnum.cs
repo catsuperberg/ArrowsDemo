@@ -37,7 +37,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             switch (operationType)
             {
                 case Operation.Multiply:
-                    return initValue+1;
+                    return initValue+2 & -2;
                 case Operation.Divide:
                     return initValue/5;
                 case Operation.Add:

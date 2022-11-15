@@ -4,29 +4,32 @@ using System.Linq;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public readonly struct  OperationPairsSequence
+    public class OperationPairsSequence
     {
-        public readonly BigInteger BestPossibleResult () 
+        public BigInteger CalculateResult() 
         {
-            var accumulator = _initValue;
-            for(int i = 0; i < _sequence.Length; i++)
-                accumulator = _sequence[i].BestResult(accumulator);
-            return accumulator;
+            var accumulator = InitValue;
+            for(int i = 0; i < Length; i++)
+                accumulator = _sequence.ElementAt(i).BestResult(accumulator);
+            BestPossibleResult = accumulator;
+            return BestPossibleResult;
         }
         
         public readonly int Length;
-        public readonly IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
-        readonly OperationPair[] _sequence;
-        readonly BigInteger _initValue;
+        public IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
+        readonly IEnumerable<OperationPair> _sequence;
+        public readonly BigInteger InitValue;
+        public BigInteger BestPossibleResult {get; private set;}
         
-        public OperationPairsSequence(OperationPair[] sequence, BigInteger initValue)
+        public OperationPairsSequence(IEnumerable<OperationPair> sequence, BigInteger initValue)
         {  
-            Length = sequence.Length;    
+            Length = sequence.Count();    
             if(Length == 0)
                 throw new System.Exception("OperationPairsSequence not presented with List of <OperationPair>");
             
             _sequence = sequence;   
-            _initValue = initValue;   
+            InitValue = initValue;   
+            BestPossibleResult = -1;
         }
         
         public override bool Equals(object obj) 
@@ -45,7 +48,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public override int GetHashCode() 
         {
-            return _initValue.GetHashCode() ^ _sequence.GetHashCode();
+            return InitValue.GetHashCode() ^ _sequence.GetHashCode();
         }  
                 
         public static bool operator ==(OperationPairsSequence i1, OperationPairsSequence i2) 

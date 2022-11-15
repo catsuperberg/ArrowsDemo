@@ -431,5 +431,14 @@ namespace GameMath
             int mid = size / 2;
             return sortedNumbers.ElementAt(mid);
         }
+        
+        public static int FastMedianIndexPreSorted<T>(IEnumerable<T> sortedNumbers) 
+        {      
+            if (sortedNumbers == null || !sortedNumbers.Any())
+                throw new System.Exception("Median of empty array not defined.");
+
+            int size = sortedNumbers.Count();
+            return size / 2;
+        }
     }   
 }

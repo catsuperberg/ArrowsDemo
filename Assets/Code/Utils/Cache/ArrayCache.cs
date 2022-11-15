@@ -7,7 +7,7 @@ namespace Utils
 {   
     public class ArrayCache<T> : ICache<T> 
     {
-        public IReadOnlyCollection<T> Collection {get => _values.ToList().AsReadOnly();}
+        public IReadOnlyCollection<T> Collection {get => _values;}
         int _currentIndex;
         int _size;
         int _bigSize;
