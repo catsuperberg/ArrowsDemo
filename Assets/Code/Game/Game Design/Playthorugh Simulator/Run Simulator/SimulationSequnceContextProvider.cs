@@ -5,7 +5,7 @@ using System;
 
 namespace Game.GameDesign
 {
-    public class SimulationSequnceContextProvider
+    public struct SimulationSequnceContextProvider
     {
         readonly PlayerContext _playerContext;
 

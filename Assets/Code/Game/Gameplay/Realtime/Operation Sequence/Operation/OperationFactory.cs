@@ -21,7 +21,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         ICache<OperationPair> _pairCache;
         ICache<OperationPair> _positivePairs;
         
-        System.Random _rand;
+        FastRandom _rand;
         public readonly IOperationRules OperationRules;
                 
         public OperationPair GetRandomPair()
@@ -39,7 +39,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 
         public OperationFactory(IOperationRules operationRules)
         {
-            _rand = new System.Random(this.GetHashCode());                   
+            _rand = new FastRandom(this.GetHashCode());                   
             OperationRules = operationRules ?? throw new ArgumentNullException(nameof(operationRules));
         }
         
@@ -51,17 +51,18 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
                 
         OperationFactory(IOperationRules operationRules, int unnidedVariable)
         {
-            _rand = new System.Random(this.GetHashCode());  
+            _rand = new FastRandom(this.GetHashCode());  
             OperationRules = operationRules;     
             
             _operationRepeats = operationRules.OperationRepeats(_instanceCount);
             
             _randomIndexes = Enumerable.Range(0, _instanceCount).ToArray();
-            _rand.Shuffle(_randomIndexes);
+            // _rand.Shuffle(_randomIndexes);
+            _randomIndexes.Shuffle(_rand);
             
             Generate();   
             var positivePairs = _pairCache.Collection.Where(entry => entry.LeftOperation.Type.IsPositive() || entry.RightOperation.Type.IsPositive());
-            _positivePairs = new ArrayCache<OperationPair>(positivePairs.ToArray(), positivePairs.Count());
+            _positivePairs = new ArrayCache<OperationPair>(positivePairs.ToArray());
         }
         
         void Generate()

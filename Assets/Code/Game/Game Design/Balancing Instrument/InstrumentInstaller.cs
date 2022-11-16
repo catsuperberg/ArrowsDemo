@@ -7,7 +7,6 @@ using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using System.Globalization;
 using System.Numerics;
-using UnityEditor;
 using Zenject;
 
 
@@ -43,8 +42,8 @@ public static class InstrumentInstaller
         container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
         container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
-        container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
-        container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();   
+        container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
+        container.Bind<ISequenceManager>().To<SequenceManager>().AsTransient();   
     }
     
     static void ComposeTargetGenerator(DiContainer container)

@@ -35,11 +35,11 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
             switch (grade)
             {
                 case TargetGrades.Common:
-                    return 1f;
-                case TargetGrades.Rare:
                     return 1.1f;
+                case TargetGrades.Rare:
+                    return 1.2f;
                 case TargetGrades.Legendary:
-                    return 1.25f;
+                    return 1.35f;
                 case TargetGrades.Epic:
                     return 1.6f;
                 default:

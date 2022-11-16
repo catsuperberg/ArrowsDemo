@@ -21,7 +21,7 @@ namespace Game.GameDesign
                     {GateSelectors.PerfectPlayer, 0},
                     {GateSelectors.GoodPlayer, 0.001f},
                     {GateSelectors.AveragePlayer, 0.012f},
-                    {GateSelectors.BadPlayer, 0.07f}};    
+                    {GateSelectors.BadPlayer, 0.09f}};    
         
         public static float Chance(this GateSelectors enumValue) 
         {
@@ -45,7 +45,7 @@ namespace Game.GameDesign
     
     public class GateSelector
     {
-        const float SkillProgressCoeff = 0.92f;
+        const float SkillProgressCoeff = 0.98f;
         public GateSelectors Grade 
             => GateSelectorGrades.Grade(_chanceOfWorseChoice);
         float _chanceOfWorseChoice; 

@@ -75,13 +75,13 @@ namespace ExtensionMethods
                 var multiplier = (int)BigInteger.Divide(number, _doubleBigInt);
                 var multiplierPowered = Math.Pow(multiplier, fractionalPower);
                 var basePowered = new BigInteger(Math.Pow(Double.MaxValue, fractionalPower));
-                var fractionalResultBigInt = basePowered.multiplyByFraction(multiplierPowered);
+                var fractionalResultBigInt = basePowered.multiplyByFractionFast(multiplierPowered);
                 return intResult*fractionalResultBigInt;
             }
             else 
             {
                 var fractionalResultDouble = Math.Pow((double)number, fractionalPower);
-                return intResult.multiplyByFraction(fractionalResultDouble);
+                return intResult.multiplyByFractionFast(fractionalResultDouble);
             }            
         } 
     }  
@@ -89,6 +89,8 @@ namespace ExtensionMethods
     
     public static class BigIntegerFractionalMultiplication
     {    
+        const int _finalMultiplier = 10_000; 
+        
         public static BigInteger multiplyByFraction(this BigInteger value, double multiplier)
         {
             int[] bits = decimal.GetBits((decimal)multiplier);
@@ -98,6 +100,14 @@ namespace ExtensionMethods
                                             (BigInteger)(uint)bits[0]);
             BigInteger denominator = BigInteger.Pow(10, (bits[3] >> 16) & 0xff);
             return value * numerator/denominator;
+        }       
+        
+        ///<summary> Can only be used for mulipliers of less than int.MaxValue/10_000 </summary>
+        public static BigInteger multiplyByFractionFast(this BigInteger value, double multiplier)
+        {
+            var finalMultiplier = _finalMultiplier;
+            var multiplyBy = (int)(multiplier * finalMultiplier);   
+            return (value*multiplyBy)/finalMultiplier;
         }        
     }      
     

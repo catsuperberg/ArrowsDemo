@@ -18,8 +18,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
                     
         public void Damage(BigInteger value)
         {                
-            if(value > Points)
-                throw new System.Exception("Triying to damage one target more than possible");
+            // if(value > Points)
+            //     throw new System.Exception("Triying to damage one target more than possible");
             
             Points -= value;
         }

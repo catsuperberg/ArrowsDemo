@@ -1,11 +1,6 @@
-using System;
-using System.Linq;
-using ExtensionMethods;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
-
 namespace Utils
 {   
-    public struct OffsetArrayCache<T> : IOffsetCache<T>
+    public class OffsetArrayCache<T> : IOffsetCache<T>
     {
         int _currentIndex;
         int _size;
@@ -19,30 +14,28 @@ namespace Utils
         {
             _currentIndex = -1;  // HACK so that Next counts form 0 and not 1
             _values = values;
-            _size = values.Count();
+            _size = values.Length;
             _smallOffset = _size/numberOfOffsets;
             _bigSize = bigSize * numberOfOffsets;
             _bigOffset = _bigSize/numberOfOffsets;
-            _valuesRepeated = new T[_bigSize];
             RepeatUntilBigSize(numberOfOffsets);
         }
         
         public void RepeatUntilBigSize(int numberOfOffsets)
         {
+            // var values = _values;
+            _valuesRepeated = new T[_bigSize];
             for(int offsetTier = 0; offsetTier < numberOfOffsets; offsetTier++)
                 for(int i = 0; i < _bigOffset; i++)
                     _valuesRepeated[i+offsetTier*_bigOffset] = _values[(i % _smallOffset) + _smallOffset*offsetTier];
+            // _valuesRepeated = valuesRepeatred;       
             _currentIndex = -1; // HACK so that Next counts form 0 and not 1
         }
         
         public T Next(int offset) 
-        {
-            return _values[++_currentIndex % _smallOffset + offset];
-        }
+            => _values[++_currentIndex % _smallOffset + offset];
         
         public T At(int index, int offset)
-        {
-            return _valuesRepeated[index+offset];
-        }
+            => _valuesRepeated[index+offset];
     }    
 }

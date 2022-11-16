@@ -17,13 +17,13 @@ namespace Game.GameDesign
         public PlayerContext(UpgradeContext upgrades, SequenceContext sequenceContext, BigInteger currencieCount, IEnumerable<int> upgradesPer)
         {
             Upgrades = upgrades ?? throw new System.ArgumentNullException(nameof(upgrades));
-            SequenceContext = sequenceContext ?? throw new System.ArgumentNullException(nameof(sequenceContext));
+            SequenceContext = sequenceContext;// ?? throw new System.ArgumentNullException(nameof(sequenceContext));
             CurrencieCount = currencieCount;
             _upgradesPerIteration = upgradesPer.ToList();
         }
         
         public PlayerContext(
-            PlayerContext original, IEnumerable<int> upgradesPer, UpgradeContext upgrades = null, SequenceContext sequenceContext = null, 
+            PlayerContext original, IEnumerable<int> upgradesPer, UpgradeContext upgrades = null, SequenceContext? sequenceContext = null, 
             BigInteger? currencieCount = null)
         {
             Upgrades = upgrades ?? original.Upgrades;

@@ -5,11 +5,13 @@ namespace DataManagement
 {
     public class BigIntApplier : IOperationApplier
     {
+        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        
         public string GetResultOfOperation(string baseValue, string incrementValue, OperationType typeOfOperation)
         {
             var baseNumber = BigInteger.Parse(baseValue);
             var incrementNumber = BigInteger.Parse(incrementValue);
-            var result = BigInteger.Zero;
+            BigInteger result;
             switch(typeOfOperation)
             {
                 case OperationType.Increase:

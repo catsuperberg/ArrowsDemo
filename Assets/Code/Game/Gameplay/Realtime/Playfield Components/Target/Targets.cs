@@ -12,6 +12,8 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
     public class Targets : MonoBehaviour, IGameObjectFillable, ITargetGroup, IDamageableWithTransforms, IMultiplierEventNotifier
     {
+        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        
         [SerializeField]
         private TMP_Text _CountIndicator;
         
@@ -53,9 +55,9 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
                 else
                 {
                     target.Damage(damageCount);
-                    damageCount = 0;
+                    damageCount = _zero;
                 }
-                if(damageCount <= 0)
+                if(damageCount <= _zero)
                     break;
             }
             
@@ -67,7 +69,7 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         {
             var targets = GetTargetComponents();
             
-            var sum = BigInteger.Zero;
+            var sum = _zero;
             foreach(Target target in targets)
                 sum += target.Points;
             
@@ -76,7 +78,6 @@ namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
         
         void UpdateAppearance()
         {
-            // _CountIndicator.text = Count.ToString("N0");
             _CountIndicator.text = Count.ParseToReadable();
         }
         

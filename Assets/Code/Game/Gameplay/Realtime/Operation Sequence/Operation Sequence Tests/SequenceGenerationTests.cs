@@ -173,9 +173,9 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
             throw ex;
         }
                 
-        var absoluteSpread = BigInteger.Abs(target - sequence.CalculateResult());
+        var absoluteSpread = BigInteger.Abs(target - sequence.BestPossibleResult);
         var percentSpread = BigInteger.Multiply(absoluteSpread, new BigInteger(100))/target;
         Assert.That(percentSpread <= spread, $"Actuall spread is higher then requested. Requested: {spread}, result: {percentSpread}");
-        Debug.Log($"Sequence result: {sequence.CalculateResult().ParseToReadable()} Abs spread: {absoluteSpread.ParseToReadable()} Spread percents: {percentSpread}");
+        Debug.Log($"Sequence result: {sequence.BestPossibleResult.ParseToReadable()} Abs spread: {absoluteSpread.ParseToReadable()} Spread percents: {percentSpread}");
     }  
 }

@@ -662,12 +662,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6805967e79d68a4cb3739694346ff2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SkipMultiplierField: {fileID: 5944509026012417433}
   AdMultiplierField: {fileID: 8257903208266405720}
   DefaultReward: {fileID: 7014221356582886052}
   MultipliedReward: {fileID: 2854514353463370957}
   PlayerCoinDisplay: {fileID: 5665256724714144910}
   _adMultiplier: 4
   _coinTransferTime: 0.8
+  _defaultMultiplier: 1
+  _skipMultiplierValue: 3
+  _skipMultiplierChance: 0.25
 --- !u!1 &2376246221814093942
 GameObject:
   m_ObjectHideFlags: 0

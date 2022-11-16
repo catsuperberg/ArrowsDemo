@@ -8,12 +8,14 @@ namespace UI
 {
     public class RewardDisplay : MonoBehaviour
     {        
+        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        
         [SerializeField]
         private TMP_Text RewardAmountString;
         
         RewardCalculator _reward;
         
-        public BigInteger Count {get; private set;} = BigInteger.Zero;
+        public BigInteger Count {get; private set;} = _zero;
                 
         public void Initialize(RewardCalculator reward)
         {

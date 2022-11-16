@@ -1,6 +1,6 @@
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class SequenceContext
+    public readonly struct SequenceContext
     {
         public readonly float Length;
         public readonly int InitialValue;

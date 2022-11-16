@@ -42,8 +42,8 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
         Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
         
         Container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
-        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsSingle();
-        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();   
+        Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
+        Container.Bind<ISequenceManager>().To<SequenceManager>().AsTransient();   
     }
     
     void ComposeTargetGenerator()
@@ -74,6 +74,37 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
             .Run();
     }
     
+    
+    [Test, Performance, RequiresPlayMode(false)]
+    public void TestSingleThreadedPerformance()
+    {        
+        var simultationsToDo = 50;
+        var range = Enumerable.Range(0, simultationsToDo);
+        Measure.Method(() => range
+                                .Select(entry => RunSingleSimulation())
+                                .ToList())
+            .WarmupCount(5)
+            .MeasurementCount(25)
+            .Run();
+    }
+    
+    [Test, Performance, RequiresPlayMode(false)]
+    public void TestMulithreadedPerformance()
+    {
+        var simultationsToDo = 50;
+        var range = Enumerable.Range(0, simultationsToDo);
+        var simulators = range.Select(entry => Container.Resolve<RunSimulator>()).ToList();
+        var threads = UnityEngine.Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
+        Measure.Method(() => simulators
+                                .AsParallel()
+                                .WithDegreeOfParallelism(threads)
+                                .Select(simulator => RunSingleSimulation(simulator))
+                                .ToList())
+            .WarmupCount(5)
+            .MeasurementCount(25)
+            .Run();
+    }
+    
     [Test, RequiresPlayMode(false)]
     public void RunMultipleSimulations()
     {
@@ -86,6 +117,14 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     {        
         var context = new SequenceContext(500, 3, 50, 8);
         var result = _simulator.Simulate(context, Container.Resolve<VirtualPlayer>().Actors);
+        return result;
+    }
+    
+    
+    RunData RunSingleSimulation(RunSimulator simulator)
+    {        
+        var context = new SequenceContext(500, 3, 50, 8);
+        var result = simulator.Simulate(context, Container.Resolve<VirtualPlayer>().Actors);
         return result;
     }
     

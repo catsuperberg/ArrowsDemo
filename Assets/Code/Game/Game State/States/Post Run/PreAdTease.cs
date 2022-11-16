@@ -11,6 +11,10 @@ namespace Game.GameState
 {    
     public class PreAdTease : MonoBehaviour
     {
+        readonly System.Random _random = new System.Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
+        
+        [SerializeField]        
+        private TMP_Text SkipMultiplierField;
         [SerializeField]        
         private TMP_Text AdMultiplierField;
         [SerializeField]        
@@ -34,6 +38,13 @@ namespace Game.GameState
         private int _adMultiplier = 4;
         [SerializeField]
         private double _coinTransferTime = 0.8;   
+        
+        [SerializeField]
+        private int _defaultMultiplier = 1;
+        [SerializeField]
+        private int _skipMultiplierValue = 3;
+        [SerializeField, Range(0, 1f)]
+        private float _skipMultiplierChance = 0.25f;
              
         private BigInteger _defaultReward;
         private BigInteger _multipliedReward;
@@ -113,8 +124,12 @@ namespace Game.GameState
         }
         
         public void Initialize(RunFinishContext finishContext, BigInteger PlayerCoins)
-        {
-            _defaultReward = finishContext.RewardForTheRun;
+        {            
+            var chanceCheck = _random.NextDouble();
+            _defaultMultiplier = (chanceCheck >= _skipMultiplierChance) ? _defaultMultiplier : _skipMultiplierValue;
+            _defaultReward = finishContext.RewardForTheRun * _defaultMultiplier;
+            
+            // _defaultReward = finishContext.RewardForTheRun;
             _originalPlayerCoins = PlayerCoins;
             _multipliedReward = _defaultReward*_adMultiplier;
             UpdateAppearance();
@@ -156,6 +171,7 @@ namespace Game.GameState
         void UpdateMultiplier()
         {
             AdMultiplierField.text = "X" + _adMultiplier.ToString();
+            SkipMultiplierField.text = "X" + _defaultMultiplier.ToString();
         }
         
         void UpdateDefaultReward()

@@ -33,7 +33,7 @@ public class BigIntOperationsTests : ZenjectUnitTestFixture
         var minValue = new BigInteger(20);
         var maxValue = _bigNumber;
         var range = new List<BigInteger>();
-        for(BigInteger value = minValue; value < maxValue; value = value.multiplyByFraction(1.07)) range.Add(value);        
+        for(BigInteger value = minValue; value < maxValue; value = value.multiplyByFractionFast(1.07)) range.Add(value);        
         range.AsParallel().ToList().ForEach(entry => GenerateIntList(entry, repeats));
     }
     

@@ -34,7 +34,8 @@ namespace GameMath
         {
             var timePower = timePassed/_halfLife;
             var frameCoeff = Math.Pow(0.5, timePower);
-            return startValue - (startValue.multiplyByFraction(frameCoeff));
+            // return startValue - (startValue.multiplyByFraction(frameCoeff));
+            return startValue - (startValue.multiplyByFractionFast(frameCoeff));
         }
     }
 }

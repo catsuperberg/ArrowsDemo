@@ -4,24 +4,15 @@ using System.Linq;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public class OperationPairsSequence
+    public readonly struct OperationPairsSequence : System.IComparable<OperationPairsSequence>
     {
-        public BigInteger CalculateResult() 
-        {
-            var accumulator = InitValue;
-            for(int i = 0; i < Length; i++)
-                accumulator = _sequence.ElementAt(i).BestResult(accumulator);
-            BestPossibleResult = accumulator;
-            return BestPossibleResult;
-        }
-        
         public readonly int Length;
         public IReadOnlyCollection<OperationPair> Sequence {get {return _sequence.ToList().AsReadOnly();}}
         readonly IEnumerable<OperationPair> _sequence;
         public readonly BigInteger InitValue;
-        public BigInteger BestPossibleResult {get; private set;}
+        public readonly BigInteger BestPossibleResult;
         
-        public OperationPairsSequence(IEnumerable<OperationPair> sequence, BigInteger initValue)
+        public OperationPairsSequence(IEnumerable<OperationPair> sequence, BigInteger initValue, BigInteger result)
         {  
             Length = sequence.Count();    
             if(Length == 0)
@@ -29,7 +20,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             
             _sequence = sequence;   
             InitValue = initValue;   
-            BestPossibleResult = -1;
+            BestPossibleResult = result;
         }
         
         public override bool Equals(object obj) 
@@ -56,5 +47,12 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             
         public static bool operator !=(OperationPairsSequence i1, OperationPairsSequence i2) 
             => !i1.Equals(i2);
+            
+        public int CompareTo(OperationPairsSequence incomingobject)
+        {            
+            OperationPairsSequence incomingemployee = incomingobject;
+            
+            return this.BestPossibleResult.CompareTo(incomingemployee.BestPossibleResult);
+        }
     }
 }

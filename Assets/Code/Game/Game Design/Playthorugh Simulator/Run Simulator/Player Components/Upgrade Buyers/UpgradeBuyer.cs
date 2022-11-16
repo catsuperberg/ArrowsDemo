@@ -96,15 +96,24 @@ namespace Game.GameDesign
     {
         private readonly SimpleUpgradePricing _pricing;
         Func<IEnumerable<UpgradeContainer>, IEnumerable<UpgradeContainer>> _sort;
+        RandomBuyer _randomBuyer;
+        const float _randomBuyerChance = 0.25f;
+        readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 
         public SortedBuyer(SimpleUpgradePricing pricing, bool HighestToLowest)
         {
             _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
             _sort = HighestToLowest ? SortHighToLow : SortLowToHigh;
+            _randomBuyer = new RandomBuyer(_pricing);
         } 
         
         public UpgradeResults BuyAll(UpgradeContext originalContext, BigInteger PointsToSpend)
         {
+            var chanceCheck = _random.NextDouble();
+            var useRandomInstead = chanceCheck < _randomBuyerChance;
+            if(useRandomInstead)
+                return _randomBuyer.BuyAll(originalContext, PointsToSpend);
+            
             var pointsLeft = PointsToSpend;
             var upgrades = ContextToUpgrades(originalContext, _pricing);
             var count = 0;            

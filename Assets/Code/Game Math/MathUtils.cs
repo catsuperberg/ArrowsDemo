@@ -440,5 +440,11 @@ namespace GameMath
             int size = sortedNumbers.Count();
             return size / 2;
         }
+        
+        public static int FastMedianIndexPreSortedUnchecked<T>(IEnumerable<T> sortedNumbers) 
+        {      
+            int size = sortedNumbers.Count();
+            return size / 2;
+        }
     }   
 }

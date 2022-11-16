@@ -62,7 +62,14 @@ namespace Game.GameDesign
     
     public class AdSkipper : IAdSelector
     {       
+        readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
+        const float _multiplierChange = 0.25f;
+        
         public AdReport AccountForAd()
-            => new AdReport(1, 0);
+        {            
+            var chanceCheck = _random.NextDouble();
+            var multiplier = (chanceCheck >= _multiplierChange) ? 1 : 3;
+            return new AdReport(multiplier, 0);
+        }
     }
 }

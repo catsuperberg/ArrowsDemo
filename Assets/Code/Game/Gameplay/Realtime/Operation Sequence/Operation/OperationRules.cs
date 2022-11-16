@@ -9,12 +9,11 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     public class OperationRules : IOperationRules
     {
         const int _startInitValue = 1;
-        public static BigInteger _minInitlessValue = 21; // HACK because of max subtract 10 and min devision 2, after 20 same results regardless of init value        
+        readonly static BigInteger _minInitlessValue = new BigInteger(21); // HACK because of max subtract 10 and min devision 2, after 20 same results regardless of init value        
         public BigInteger MinInitless {get => _minInitlessValue;}
         
         static readonly IReadOnlyDictionary<int, BestChoice> _resultCache;
-        static readonly IReadOnlyDictionary<int, BestChoice> _fastResultCache;
-        
+        static readonly IReadOnlyDictionary<int, BestChoice> _fastResultCache;        
         
         static OperationRules()
         {

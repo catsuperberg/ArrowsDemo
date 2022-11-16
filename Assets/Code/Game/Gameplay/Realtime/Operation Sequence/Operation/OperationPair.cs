@@ -9,6 +9,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public readonly OperationInstance RightOperation;
         readonly IOperationRules _rules;
         readonly BestChoice _best;
+        readonly BigInteger _minInitles;
         
         public OperationPair(OperationInstance left, OperationInstance right, IOperationRules rules)
         {        
@@ -16,11 +17,14 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             RightOperation = right;   
             _rules = rules;
             _best = rules.ChooseFastBest(left.Identifier, right.Identifier);   
+            _minInitles = _rules.MinInitless;
         }                     
         
         public BigInteger BestResult(BigInteger initialValue)
         {
-            var best = (initialValue >= _rules.MinInitless) ? _best : _rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue);
+            var best = (FullCaclulationNeeded(initialValue)) 
+            // var best = ((initialValue-_minInitles).Sign >= 0) 
+                ? _best : _rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue);
             return ResultByChoice(best, initialValue);
         }
         
@@ -40,7 +44,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public OperationInstance WorseOperation(BigInteger initialValue)
         {
-            if(initialValue >= _rules.MinInitless)
+            if(FullCaclulationNeeded(initialValue))
                 return OperationByChoice(_best.Oposite());
             return OperationByChoice(_rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue).Oposite());
         }
@@ -48,10 +52,14 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         
         public OperationInstance BestOperation(BigInteger initialValue)
         {
-            if(initialValue >= _rules.MinInitless)
+            if(FullCaclulationNeeded(initialValue))
                 return OperationByChoice(_best);
             return OperationByChoice(_rules.ChooseBest(LeftOperation.Identifier, RightOperation.Identifier, initialValue));
         }        
+        
+        bool FullCaclulationNeeded(BigInteger initValue)
+            // => (initValue.GetByteCount() > 1) ? true : initValue >= _minInitles;
+            => initValue >= _minInitles;
         
         
         public bool IsBestOperation(OperationInstance operationToCheck, BigInteger initialValue)

@@ -3,6 +3,7 @@ using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using GameMath;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
@@ -10,6 +11,8 @@ namespace Game.GameDesign
 {
     public class RunSimulator
     {        
+        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        
         const float _finishingSceneSeconds = 3; // HACK copied from FinishingScene  
         const float _frameTimeSeconds = 0.016f;     
         
@@ -50,13 +53,13 @@ namespace Game.GameDesign
         RunData PerformRunWithAdUntilSucessful(SimulationContext context, PlayerActors actors)
         {
             var gatesTaken = 0;
-            BigInteger reward = 0;
+            var reward = _zero;
             do
             {
                 var runthroughResult = SingleRunthrough(context, actors.GateSelector);
                 reward = runthroughResult.reward;
                 gatesTaken += runthroughResult.gatesTaken;
-            } while (reward <= 0);
+            } while (reward.Sign <= 0);
             
             var secondsToFinish = gatesTaken*context.SecondsPerGate;
             
@@ -69,7 +72,7 @@ namespace Game.GameDesign
             
             var levelRunTime = context.SecondsPerGate * context.Sequence.Length;
             
-            return new RunData(context.TargetScore, context.Sequence.CalculateResult(), finalScore, secondsToFinish, levelRunTime, adSeconds);
+            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult, finalScore, secondsToFinish, levelRunTime, adSeconds);
         }
         
         (BigInteger reward, int gatesTaken) SingleRunthrough(SimulationContext context, GateSelector selector)
@@ -81,7 +84,7 @@ namespace Game.GameDesign
                 gateCount++;
                 var opertaion = selector.Choose(pair, runReward);
                 runReward = opertaion.Perform(runReward);
-                if(runReward <= 0)
+                if(runReward.Sign <= 0)
                     break;
             }
             
@@ -93,35 +96,39 @@ namespace Game.GameDesign
             var newReward = rewardBeforeTargets;
             var damageCalculator = new ExponentialCountCalculator(rewardBeforeTargets, 0, _finishingSceneSeconds);
             var damagePool = rewardBeforeTargets;
-            var targetPool = context.Targets;
+            IEnumerable<TargetDataOnly> targetPool = context.Targets;
+            var targetCount = targetPool.Count();
             
-            while (damagePool > 0 && targetPool.Any())
+            while (damagePool.Sign > 0 && targetCount > 0)
             {
-                var emptyTargets = false;
+                // var emptyTargets = false;
                 var damage = damageCalculator.GetDeltaForGivenTime(damagePool, _frameTimeSeconds);
                 
                 foreach(var target in targetPool)
                 {
+                    if(target.Points.Sign <= 0)
+                        continue;
                     if(target.Points <= damage)
                     {
                         damagePool -= target.Points;
                         damage -= target.Points;
                         target.Damage(target.Points);
-                        newReward = newReward.multiplyByFraction(target.Grade.RewardMultiplier());
-                        emptyTargets = true;
+                        newReward = newReward.multiplyByFractionFast(target.Grade.RewardMultiplier());
+                        // emptyTargets = true;
+                        targetCount--;
                     }
                     else
                     {                        
                         damagePool -= target.Points;
                         target.Damage(damage);
-                        damage = 0;
+                        damage = _zero;
                     }
-                    if(damage <= 0)
+                    if(damage.Sign <= 0)
                         break;
                 }
                 
-                if (emptyTargets)                    
-                    targetPool = targetPool.Where(target => target.Points > 0).ToList();
+                // if (emptyTargets)        
+                //     targetPool = targetPool.Where(target => target.Points.Sign > 0);
             }
             
             return newReward;

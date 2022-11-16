@@ -62,7 +62,7 @@ namespace Game.GameDesign
             var results = new List<RunData>();
             IEnumerable<EndCondition> endRichedConditions;
             RunData lastResult;
-            SequenceContext sequenceContext = null;
+            SequenceContext sequenceContext;
             do
             {
                 sequenceContext = _player.Context.SequenceContext;

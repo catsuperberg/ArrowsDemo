@@ -23,7 +23,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents
         
         void MultiplierEventRecieved(object sender, MultiplierEventArgs arguments)
         {
-            Reward = Reward.multiplyByFraction(arguments.Multiplier);
+            Reward = Reward.multiplyByFractionFast(arguments.Multiplier);
             OnRewardChanged?.Invoke(this, EventArgs.Empty);
         }
     }
