@@ -1,4 +1,3 @@
-using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace Game.GameDesign
     {
         public readonly OperationPairsSequence Sequence;
         public readonly BigInteger TargetScore;
-        public readonly List<TargetDataOnly> Targets;
+        public readonly TargetDataOnly[] Targets;
         public readonly BigInteger InitialValue;
         public readonly float SecondsPerGate;
 
@@ -20,7 +19,7 @@ namespace Game.GameDesign
         {
             Sequence = sequence;
             TargetScore = targetScore;
-            Targets = targets ?? throw new System.ArgumentNullException(nameof(targets));
+            Targets = targets.ToArray() ?? throw new System.ArgumentNullException(nameof(targets));
             SecondsPerGate = secondsPerGate;
             InitialValue = initialValue;
         }

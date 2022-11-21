@@ -49,10 +49,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             => !i1.Equals(i2);
             
         public int CompareTo(OperationPairsSequence incomingobject)
-        {            
-            OperationPairsSequence incomingemployee = incomingobject;
-            
-            return this.BestPossibleResult.CompareTo(incomingemployee.BestPossibleResult);
-        }
+            => this.BestPossibleResult.CompareTo(incomingobject.BestPossibleResult);
     }
 }

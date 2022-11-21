@@ -50,7 +50,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
         static int GetNumberOfOperationsFromUpgrades(int crossbowLever, int overflowingArrowLevels)
         {
             var numberWithPart = 5 + (float)crossbowLever/2 + (float)overflowingArrowLevels/3;
-            var intBase = (int)MathF.Floor(numberWithPart);
+            var intBase = (int)Math.Floor(numberWithPart);
             var chancePart = numberWithPart - intBase;
             return (DecideOnAdditionalOperation(chancePart)) ? intBase + 1 : intBase;
         }

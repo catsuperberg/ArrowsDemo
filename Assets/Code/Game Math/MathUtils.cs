@@ -266,7 +266,7 @@ namespace GameMath
     public static class MathUtils
     {        
         public static float SecondsToMs(float time) => time * 1000;
-        public static float PartToNegativeDB(float partValue) => (partValue > 0) ?  UnityEngine.Mathf.Log10(Math.Clamp(partValue, 0, 1)) * 20 : -80.0f;
+        public static float PartToNegativeDB(float partValue) => (partValue > 0) ? (float)Math.Log10(Math.Clamp(partValue, 0, 1)) * 20 : -80.0f;
         
         public static T MathClamp<T>(T val, T min, T max) where T : IComparable<T>
         {

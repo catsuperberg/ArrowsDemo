@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Game.Gameplay.Realtime.OperationSequence.Operation
 {
-    public readonly struct OperationPair
+    public class OperationPair
     {
         public readonly OperationInstance LeftOperation;
         public readonly OperationInstance RightOperation;

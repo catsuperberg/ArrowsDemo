@@ -12,7 +12,7 @@ namespace Game.GameDesign
         {
             _buyerFactory = buyerFactory ?? throw new ArgumentNullException(nameof(buyerFactory));
             _runSimFactory = runSimFactory ?? throw new ArgumentNullException(nameof(runSimFactory));
-            _endConditions = endConditions ?? throw new ArgumentNullException(nameof(endConditions));
+            _endConditions = endConditions;
         }
 
         public PlaythroughSimulator CreateRandom()
@@ -21,7 +21,7 @@ namespace Game.GameDesign
             var gateSelector = new GateSelector(GateSelectorGrades.GetRandomGradeChance(rand));
             var adSelector = AdSelectorGrades.GetRandomGrade(rand);
             
-            var upgradeBuyer = _buyerFactory.GetRandomGrade(rand);         
+            var upgradeBuyer = _buyerFactory.GetBuyer(_buyerFactory.GetRandomGrade(rand)); 
             var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
             var player = new VirtualPlayer(actors);
             return new PlaythroughSimulator(player, _runSimFactory.Create(), _endConditions);

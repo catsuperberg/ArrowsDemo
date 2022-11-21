@@ -1,11 +1,9 @@
 using Game.Gameplay.Realtime.OperationSequence.Operation;
-using GameMath;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
-using UnityEngine;
 using Utils;
 
 using Timer = System.Timers.Timer;
@@ -14,18 +12,19 @@ namespace Game.Gameplay.Realtime.OperationSequence
 {
     public class RandomSequenceGenerator : ISequenceCalculator
     {                
-        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
-        static BigInteger _one = BigInteger.One; //HACK original properties construct new BigInteger every time
-        const int _numIterationsForAverage = 40;  
+        BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        BigInteger _one = BigInteger.One; //HACK original properties construct new BigInteger every time
+        const int _numIterationsForAverage = 35;  
+        const int _numFactories = 8;  
         const int _generationTimout = 80;
         
-        static int _numThreads = Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
+        int _numThreads = Math.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
         System.Random _rand = new System.Random(Guid.NewGuid().GetHashCode());
         OperationFactory _prototypeFactory; // Beause cloning is faster than zenject
         OperationFactory[] _operationFactories;
         IOperationRules _operationRules;
-        static IEnumerable<int> _threadRange = Enumerable.Range(0, _numThreads);
-        static IEnumerable<int> _iterationsRange = Enumerable.Range(0, _numIterationsForAverage);
+        IEnumerable<int> _threadRange;
+        IEnumerable<int> _iterationsRange = Enumerable.Range(0, _numIterationsForAverage);
         OperationPairsSequence[] _sortedSequencesWithResults = null;
         int _medianAt = -1;
                 
@@ -33,11 +32,11 @@ namespace Game.Gameplay.Realtime.OperationSequence
         {
             var opertionFactoryFactory = operationFactory ?? throw new ArgumentNullException(nameof(operationFactory)); 
             _prototypeFactory = opertionFactoryFactory.Create();   
-            _operationRules = _prototypeFactory.OperationRules;    
-            _operationFactories = _iterationsRange
-                .AsParallel()
-                .Select(entry => OperationFactory.FullConstructor(_operationRules))
-                .ToArray();
+            _operationRules = _prototypeFactory.OperationRules;   
+            _operationFactories = new OperationFactory[_numFactories];
+            _operationFactories[0] = _prototypeFactory; 
+            for(int i = 1; i < _numFactories; i++)
+                _operationFactories[i] = new OperationFactory(_operationRules);
         }
         
         public OperationPairsSequence GetSequenceInSpreadRange(BigInteger targetResult, int spreadPercents,
@@ -103,7 +102,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             var allSequences = _threadRange
                 .AsParallel()
                 .WithDegreeOfParallelism(_numThreads)
-                .Select(entry => OperationFactory.FullConstructor(_operationRules))
+                .Select(entry => new OperationFactory(_operationRules))
                 .Select(factory => GenerateSequence(ct, tokenSource, limits, context, factory))
                 .ToList();
             tokenSource.Cancel(); 
@@ -111,7 +110,7 @@ namespace Game.Gameplay.Realtime.OperationSequence
             return allSequences.FirstOrDefault(entry => entry != null);
         }
         
-        static OperationPairsSequence? GenerateSequence(
+        OperationPairsSequence? GenerateSequence(
             CancellationToken token, CancellationTokenSource tokenSource, NumberRange<BigInteger> limits, 
             SequenceContext context, OperationFactory operationFactory)
         {
@@ -133,47 +132,33 @@ namespace Game.Gameplay.Realtime.OperationSequence
         
         public BigInteger GetAverageSequenceResult(SequenceContext context)
         {
-            // var sequences = _operationFactories
-            //     .AsParallel()
-            //     .WithDegreeOfParallelism(_numThreads)
-            //     .Select(factory => GenerateRandomSequence(context.NumberOfOperations, factory, context.InitialValue))
-            //     .ToList();
-            
-            // var sequences = new List<OperationPairsSequence>();
-            // foreach(var factory in _operationFactories)
-            //     sequences.Add(GenerateRandomSequence(context.NumberOfOperations, factory, context.InitialValue));
-                
-            // _sortedSequencesWithResults = sequences
-            //     .OrderBy(entry => entry.BestPossibleResult).ToArray();
-            
             var sequences = new OperationPairsSequence[_numIterationsForAverage];
             for(int i = 0; i < sequences.Length; i++)
-                sequences[i] = GenerateRandomSequence(context.NumberOfOperations, _operationFactories[i], context.InitialValue);
+                sequences[i] = GenerateRandomSequence(context.NumberOfOperations, _operationFactories[i % _numFactories], context.InitialValue);
             
             Array.Sort(sequences);
             _sortedSequencesWithResults = sequences;
             
-            // _medianAt = MathUtils.FastMedianIndexPreSortedUnchecked(_sortedSequencesWithResults);
             _medianAt = _sortedSequencesWithResults.Length/2;
             return _sortedSequencesWithResults[_medianAt].BestPossibleResult;
         }
         
         public OperationPairsSequence GetRandomSequence(SequenceContext context)    
         {
-            var opFactory = OperationFactory.FullConstructor(_operationRules);
+            var opFactory = new OperationFactory(_operationRules);
             var sequence = opFactory.GetInitialSequence(context.NumberOfOperations);
             var result = LessThanOneReplacement(sequence, opFactory, context.InitialValue);
             return new OperationPairsSequence(sequence, context.InitialValue, result);
         }
                    
-        static OperationPairsSequence GenerateRandomSequence(int length, OperationFactory operationFactory, int initValue = 1)
+        OperationPairsSequence GenerateRandomSequence(int length, OperationFactory operationFactory, int initValue = 1)
         {                 
             var sequence = operationFactory.GetInitialSequence(length);
             var result = LessThanOneReplacement(sequence, operationFactory, initValue);
             return new OperationPairsSequence(sequence, initValue, result);
         }   
                 
-        static BigInteger LessThanOneReplacement(OperationPair[] sequence, OperationFactory operationFactory, int initialValue)
+        BigInteger LessThanOneReplacement(OperationPair[] sequence, OperationFactory operationFactory, int initialValue)
         {
             var accumulator = new BigInteger(initialValue);
             var tempResult = _zero;

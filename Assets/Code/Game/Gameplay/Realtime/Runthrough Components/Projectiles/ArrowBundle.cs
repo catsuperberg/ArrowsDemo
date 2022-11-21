@@ -98,7 +98,7 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
                     AddArrows(arrowsToAdd);
                 else if (arrowsToAdd < 0)
                 {
-                    var arrowsToDestroy = Mathf.Clamp(-arrowsToAdd, 0, _arrows.Count);
+                    var arrowsToDestroy = Math.Clamp(-arrowsToAdd, 0, _arrows.Count);
                     var arrowsAfterDestoy = _arrows.Count - arrowsToDestroy;
                     for(int i = _arrows.Count; i > arrowsAfterDestoy; i--)
                     {
@@ -185,8 +185,8 @@ namespace Game.Gameplay.Realtime.GameplayComponents.Projectiles
         {
             var position = transform.localPosition;
             var absRange = MovementWidth/2;
-            if(Mathf.Abs(position.x) > absRange)
-                position.x = Mathf.Sign(position.x) * absRange;   
+            if(Math.Abs(position.x) > absRange)
+                position.x = Math.Sign(position.x) * absRange;   
             position.y = UpwardOffset;
             transform.localPosition = position;               
         }        

@@ -7,6 +7,8 @@ using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.PerformanceTesting;
 using UnityEngine.TestTools;
@@ -34,8 +36,8 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     {        
         var folders = new GameFolders();
         var balanceConfig = JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
-        Container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
-        Container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
+        Container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsTransient();
+        Container.Bind<IGameFolders>().FromInstance(folders).AsTransient();
         
         Container.Bind<OperationProbabilitiesFactory>().AsTransient();
         Container.Bind<OperationValueParametersFactory>().AsTransient();
@@ -53,17 +55,21 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     
     void ComposePlayer()
     {
-        var gateSelector = new GateSelector(GateSelectors.GoodPlayer.Chance());
-        var adSelector = new AdSkipper();
         Container.Bind<PriceCalculatorFactory>().AsTransient();
         Container.Bind<SimpleUpgradePricing>().AsTransient();
-        Container.Bind<HighestPriceBuyer>().AsTransient();
-        var upgradeBuyer = Container.Resolve<HighestPriceBuyer>();
-        
-        var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
-        var player = new VirtualPlayer(actors);
+        var player = CreatePlayer();
         Container.Bind<VirtualPlayer>().FromInstance(player).AsTransient(); 
     }    
+    
+    VirtualPlayer CreatePlayer()
+    {
+        var upgradeBuyer = new SortedBuyer(Container.Resolve<SimpleUpgradePricing>(), SortTypes.SortHighToLow);
+        
+        var gateSelector = new GateSelector(GateSelectors.GoodPlayer.Chance());
+        var adSelector = new AdSkipper();
+        var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
+        return new VirtualPlayer(actors);
+    }
     
     [Test, Performance, RequiresPlayMode(false)]
     public void SimulationPerformanceTest()
@@ -78,27 +84,33 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     [Test, Performance, RequiresPlayMode(false)]
     public void TestSingleThreadedPerformance()
     {        
-        var simultationsToDo = 50;
+        var simultationsToDo = 25;
         var range = Enumerable.Range(0, simultationsToDo);
-        Measure.Method(() => range
-                                .Select(entry => RunSingleSimulation())
-                                .ToList())
+        var simulators = range.Select(entry => Container.Resolve<RunSimulator>()).ToList();
+        var players = range.Select(entry => CreatePlayer()).ToList();
+        var contexts = range.Select(entry => new SequenceContext(500, 3, 50, 8)).ToList();
+        var prerequisites = range.Select(index => (sim: simulators.ElementAt(index), player: players.ElementAt(index), context: contexts.ElementAt(index)));
+        Measure.Method(() => prerequisites.ToList()
+                                .ForEach(entry => RunMultipleSimulation(entry.sim, entry.player, entry.context, 20)))
             .WarmupCount(5)
-            .MeasurementCount(25)
+            .MeasurementCount(15)
             .Run();
     }
     
     [Test, Performance, RequiresPlayMode(false)]
     public void TestMulithreadedPerformance()
     {
-        var simultationsToDo = 50;
+        var simultationsToDo = 25;
         var range = Enumerable.Range(0, simultationsToDo);
         var simulators = range.Select(entry => Container.Resolve<RunSimulator>()).ToList();
-        var threads = UnityEngine.Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
-        Measure.Method(() => simulators
+        var players = range.Select(entry => CreatePlayer()).ToList();
+        var contexts = range.Select(entry => new SequenceContext(500, 3, 50, 8)).ToList();
+        var prerequisites = range.Select(index => (sim: simulators.ElementAt(index), player: players.ElementAt(index), context: contexts.ElementAt(index)));
+        var threads = Math.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
+        Measure.Method(() => prerequisites
                                 .AsParallel()
-                                .WithDegreeOfParallelism(threads)
-                                .Select(simulator => RunSingleSimulation(simulator))
+                                .WithDegreeOfParallelism(threads)                                
+                                .Select(entry => RunMultipleSimulation(entry.sim, entry.player, entry.context, 20))
                                 .ToList())
             .WarmupCount(5)
             .MeasurementCount(25)
@@ -121,11 +133,14 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     }
     
     
-    RunData RunSingleSimulation(RunSimulator simulator)
+    RunData RunSingleSimulation(RunSimulator simulator, VirtualPlayer player,  SequenceContext context)
+        => simulator.Simulate(context, player.Actors);
+        
+    static RunData[] RunMultipleSimulation(RunSimulator simulator, VirtualPlayer player,  SequenceContext context, int count)
     {        
-        var context = new SequenceContext(500, 3, 50, 8);
-        var result = simulator.Simulate(context, Container.Resolve<VirtualPlayer>().Actors);
-        return result;
+        var data = new RunData[count];
+        for(int i = 0; i < count; i++) data[i] = simulator.Simulate(context, player.Actors);
+        return data;
     }
     
     void PrintSimulationData(RunData data)

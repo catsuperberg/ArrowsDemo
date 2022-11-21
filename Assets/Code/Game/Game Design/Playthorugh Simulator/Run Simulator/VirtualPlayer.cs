@@ -64,7 +64,7 @@ namespace Game.GameDesign
             var sequenceContext = SimulationSequnceContextProvider.DefaultContext;
             Context = new PlayerContext(upgrades, sequenceContext, 0, new List<int>());
             ComposeHeaderString();
-        }
+        }       
         
         void ComposeHeaderString()
         {

@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Game.GameDesign
 {
-    public class UpgradeResults
+    public struct UpgradeResults
     {
         public readonly UpgradeContext NewUpgrades;
         public readonly int UpgradesBought;

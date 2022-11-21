@@ -29,7 +29,7 @@ namespace Game.Gameplay.Meta.Shop
         }
         
         public IItemPriceCalculator GetCalculatorFor(string variableName)
-            => _calculators[variableName] ?? throw new Exception($"couldn't find aprorpiet calculator for {variableName}");
+            => _calculators[variableName] ?? throw new Exception($"couldn't find appropriate calculator for {variableName}");
         
         Dictionary<string, UpgradePriceFormula> LoadAllFormulas()
         {

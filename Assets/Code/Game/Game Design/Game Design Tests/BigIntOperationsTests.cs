@@ -1,23 +1,13 @@
-using DataAccess.DiskAccess.GameFolders;
-using DataAccess.DiskAccess.Serialization;
 using ExtensionMethods;
-using Game.GameDesign;
-using Game.Gameplay.Meta.Shop;
-using Game.Gameplay.Realtime.OperationSequence;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
-using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using GameMath;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using Unity.PerformanceTesting;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Zenject;
-
-using Debug = UnityEngine.Debug;
 
 
 [TestFixture]
@@ -75,7 +65,7 @@ public class BigIntOperationsTests : ZenjectUnitTestFixture
         var values = Enumerable.Range(20, 150);
         var powers = new List<float>();
         for(float i = 0.5f; i <= 2.5f; i+=0.25f) powers.Add(i);
-        var mathResults = values.Select(value => powers.Select(power => new BigInteger(Mathf.RoundToInt(Mathf.Pow(value, power))))).SelectMany(x => x).ToList();
+        var mathResults = values.Select(value => powers.Select(power => new BigInteger(Math.Round(Math.Pow(value, power))))).SelectMany(x => x).ToList();
         var methodResults = values.Select(value => powers.Select(power => new BigInteger(value).PowFractional(power))).SelectMany(x => x).ToList();
         foreach(var index in Enumerable.Range(0, mathResults.Count()))
         {

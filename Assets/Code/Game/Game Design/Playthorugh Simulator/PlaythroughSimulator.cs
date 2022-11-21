@@ -13,7 +13,7 @@ namespace Game.GameDesign
         PlayTime
     }
     
-    public class PlaythroughEndConditions
+    public struct PlaythroughEndConditions
     {
         TimeSpan _playTime;
         TimeSpan _gameplayTimeOfRun;
@@ -53,7 +53,7 @@ namespace Game.GameDesign
         {
             _player = player ?? throw new System.ArgumentNullException(nameof(player));
             _runSimulator = runSimulator ?? throw new System.ArgumentNullException(nameof(runSimulator));
-            _endConditions = endConditions ?? throw new ArgumentNullException(nameof(endConditions));
+            _endConditions = endConditions;
             _contextProvider = new SimulationSequnceContextProvider(_player.Context);
         }        
         

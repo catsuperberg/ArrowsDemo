@@ -22,7 +22,7 @@ namespace Game.GameDesign
             ValueParameters = ParametersWithValueSwing(balance.OperationValuesSwing);
         }    
                
-        Dictionary<Operation, (int min, int max, float coeff)> ParametersWithValueSwing(float swing)
+        IReadOnlyDictionary<Operation, (int min, int max, float coeff)> ParametersWithValueSwing(float swing)
         {
             var newParameters = new Dictionary<Operation, (int min, int max, float coeff)>();
             foreach(var parameters in BaseValueParameters)

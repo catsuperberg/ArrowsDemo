@@ -47,7 +47,7 @@ namespace AssetScripts.AssetCreation
             var boundsRadius = objectToFit.GetComponent<MeshRenderer>()?.bounds.extents.magnitude ??
                 throw new Exception("No MeshRenderer found on object to iconize");
             var distanceToObject = Vector3.Distance(IconizerCamera.transform.position, objectToFit.transform.position);
-            var halfFOV = MathF.Asin(boundsRadius/distanceToObject);
+            var halfFOV = Math.Asin(boundsRadius/distanceToObject);
             var halfFOVdegrees = (float)((180 / Math.PI) * halfFOV);
             IconizerCamera.fieldOfView = halfFOVdegrees * 2 * _magicFitCoefficient;
         }

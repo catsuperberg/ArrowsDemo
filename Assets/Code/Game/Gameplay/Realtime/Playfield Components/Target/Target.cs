@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Gameplay.Realtime.PlayfieldComponents.Target
 {
-    public class TargetDataOnly : IDamageable
+    public struct TargetDataOnly : IDamageable
     {    
         public BigInteger Points {get; private set;}
         public BigInteger DamagePoints {get {return Points;}}

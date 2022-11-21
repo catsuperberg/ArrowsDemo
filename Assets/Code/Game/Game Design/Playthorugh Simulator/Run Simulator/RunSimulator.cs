@@ -3,21 +3,19 @@ using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using GameMath;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace Game.GameDesign
 {
     public class RunSimulator
     {        
-        static BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
+        BigInteger _zero = BigInteger.Zero; //HACK original properties construct new BigInteger every time
         
         const float _finishingSceneSeconds = 3; // HACK copied from FinishingScene  
         const float _frameTimeSeconds = 0.016f;     
         
         ISequenceCalculator _sequenceCalculator;
-        ITargetProvider _targetGenerator;
+        ITargetProvider _targetGenerator;        
         
         public RunSimulator(ISequenceCalculator sequenceCalculator, ITargetProvider targetGenerator)
         {
@@ -27,7 +25,7 @@ namespace Game.GameDesign
         
         public RunData Simulate(SequenceContext generationContext, PlayerActors actors)
         {
-            var simContext = GenerateContext(generationContext);        
+            var simContext = GenerateContext(generationContext);
             return PerformRunWithAdUntilSucessful(simContext, actors);
         }
         
@@ -96,39 +94,34 @@ namespace Game.GameDesign
             var newReward = rewardBeforeTargets;
             var damageCalculator = new ExponentialCountCalculator(rewardBeforeTargets, 0, _finishingSceneSeconds);
             var damagePool = rewardBeforeTargets;
-            IEnumerable<TargetDataOnly> targetPool = context.Targets;
-            var targetCount = targetPool.Count();
+            var targetPool = context.Targets;
+            var targetCount = targetPool.Length;
             
             while (damagePool.Sign > 0 && targetCount > 0)
             {
-                // var emptyTargets = false;
                 var damage = damageCalculator.GetDeltaForGivenTime(damagePool, _frameTimeSeconds);
                 
-                foreach(var target in targetPool)
+                for(int i = 0; i < targetPool.Length; i++)
                 {
-                    if(target.Points.Sign <= 0)
+                    if(targetPool[i].Points.Sign <= 0)
                         continue;
-                    if(target.Points <= damage)
+                    if(targetPool[i].Points <= damage)
                     {
-                        damagePool -= target.Points;
-                        damage -= target.Points;
-                        target.Damage(target.Points);
-                        newReward = newReward.multiplyByFractionFast(target.Grade.RewardMultiplier());
-                        // emptyTargets = true;
+                        damagePool -= targetPool[i].Points;
+                        damage -= targetPool[i].Points;
+                        targetPool[i].Damage(targetPool[i].Points);
+                        newReward = newReward.multiplyByFractionFast(targetPool[i].Grade.RewardMultiplier());
                         targetCount--;
                     }
                     else
                     {                        
-                        damagePool -= target.Points;
-                        target.Damage(damage);
+                        damagePool -= targetPool[i].Points;
+                        targetPool[i].Damage(damage);
                         damage = _zero;
                     }
                     if(damage.Sign <= 0)
                         break;
                 }
-                
-                // if (emptyTargets)        
-                //     targetPool = targetPool.Where(target => target.Points.Sign > 0);
             }
             
             return newReward;

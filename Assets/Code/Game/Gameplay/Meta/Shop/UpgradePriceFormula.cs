@@ -27,7 +27,7 @@ namespace Game.Gameplay.Meta.Shop
 
         public BigInteger Evaluate(int level)
         {
-            var power = _basePower + (0.013 * Math.Pow(level, 1.2));
+            var power = _basePower + (0.013f * Math.Pow(level, 1.2f));
             return _baseValue.PowFractional(power);
         }
     }

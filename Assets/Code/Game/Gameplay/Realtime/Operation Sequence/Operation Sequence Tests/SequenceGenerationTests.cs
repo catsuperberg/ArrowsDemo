@@ -178,4 +178,30 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
         Assert.That(percentSpread <= spread, $"Actuall spread is higher then requested. Requested: {spread}, result: {percentSpread}");
         Debug.Log($"Sequence result: {sequence.BestPossibleResult.ParseToReadable()} Abs spread: {absoluteSpread.ParseToReadable()} Spread percents: {percentSpread}");
     }  
+    
+    [Test, RequiresPlayMode(false)]
+    public void TestOperationRulesIDHash()
+    {
+        var rules = Container.Resolve<IOperationRules>();
+        var initialValues = Enumerable.Range(1, (short)rules.MinInitless)
+            .Select(value => (short)value);
+        var leftRightPairs = Enumerable.Range(1, 0x9F)
+            .Select(value => (short)value)
+            .Select(leftValue => Enumerable.Range(1, 0x9F)
+            .Select(value => (short)value)
+                .Select(rightValue => (left: leftValue, right: rightValue)))
+            .SelectMany(entry => entry);
+            
+        var hashes = initialValues
+            .Select(initValue => leftRightPairs.Select(pair => OperationRules.IdHash(pair.left, pair.right, initValue)))
+            .SelectMany(entry => entry)
+            .ToList();
+            
+        var repeats = hashes.GroupBy(x => x)
+              .Where(g => g.Count() > 1)
+              .Select(y => y.Key)
+              .ToList();
+        
+        Assert.That(repeats, Is.Empty);
+    }
 }

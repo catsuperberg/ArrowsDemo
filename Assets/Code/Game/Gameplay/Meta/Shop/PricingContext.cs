@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace Game.Gameplay.Meta.Shop
 {
-    public class PricingContext
+    public struct PricingContext
     {
         public readonly int ItemLevel;
 

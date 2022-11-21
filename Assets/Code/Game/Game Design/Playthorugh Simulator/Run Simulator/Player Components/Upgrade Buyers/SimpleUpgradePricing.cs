@@ -14,6 +14,7 @@ namespace Game.GameDesign
         }
         
         public BigInteger UpgradePrice(string upgradeName, int currentLevel)
-            => _priceCalculators.GetCalculatorFor(upgradeName).GetPrice(new PricingContext(currentLevel));
+            => _priceCalculators.GetCalculatorFor(upgradeName).GetPrice(currentLevel);
+            // => _priceCalculators.GetCalculatorFor(upgradeName).GetPrice(new PricingContext(currentLevel));
     }
 }

@@ -7,10 +7,14 @@ using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using UnityEngine;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using UnityEngine.TestTools;
 using Zenject;
 
@@ -29,12 +33,15 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         ComposeTargetGenerator();
         ComposePlayerActorFactories();
         Container.Bind<RunSimulator>().AsTransient();
-        var endConditions = new PlaythroughEndConditions(
+        var endConditions = NewEndConditions();
+        Container.Bind<PlaythroughEndConditions>().FromInstance(endConditions).AsTransient();
+    }
+    
+    PlaythroughEndConditions NewEndConditions()
+        => new PlaythroughEndConditions(
             new System.TimeSpan(hours: 0, minutes: 40, seconds: 0), 
             new System.TimeSpan(hours: 0, minutes: 3, seconds: 0),
             BigInteger.Parse("1.0e20", NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint));
-        Container.Bind<PlaythroughEndConditions>().FromInstance(endConditions).AsTransient();
-    }
         
     void ComposeSequence()
     {        
@@ -43,13 +50,12 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         Container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
         Container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
         
-        Container.Bind<OperationProbabilitiesFactory>().AsTransient();
-        Container.Bind<OperationValueParametersFactory>().AsTransient();
-        Container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
+        Container.Bind<OperationProbabilitiesFactory>().AsSingle();
+        Container.Bind<OperationValueParametersFactory>().AsSingle();
+        Container.BindFactory<OperationFactory, OperationFactory.Factory>().AsSingle();         
         
-        Container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
+        Container.Bind<IOperationRules>().To<OperationRules>().AsSingle();
         Container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
-        Container.Bind<ISequenceManager>().To<SequenceManager>().AsSingle();   
     }
     
     void ComposeTargetGenerator()
@@ -72,10 +78,10 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var gateSelector = new GateSelector(GateSelectorGrades.GetRandomGradeChance(rand));
         var adSelector = AdSelectorGrades.GetRandomGrade(rand);
         
-        var upgradeBuyer = _buyerFactory.GetRandomGrade(rand);         
+        var upgradeBuyer = _buyerFactory.GetBuyer(_buyerFactory.GetRandomGrade(rand)); 
         var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
         var player = new VirtualPlayer(actors);
-        return new PlaythroughSimulator(player, Container.Resolve<RunSimulator>(), Container.Resolve<PlaythroughEndConditions>());
+        return new PlaythroughSimulator(player, Container.Resolve<RunSimulator>(), NewEndConditions());
     }
     
     
@@ -89,19 +95,72 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     
     [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreaded()
-    {        
-        var numberOfPlaytrhoughs = 80;
-        var threads = Mathf.Clamp((int)((System.Environment.ProcessorCount/2)-1), 3, int.MaxValue);
-        var stopwatch = new System.Diagnostics.Stopwatch();
-        stopwatch.Start();
+    {             
+        var numberOfPlaytrhoughs = 350;     
+        var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
+            .Select(entry => CreatePlaythrough())
+            .ToList();   
+        var results = SimulatePlaythroughs(playthroughs);
+        
+        Debug.Log("");
+        Debug.Log("MULTITHREADED PLAYTHORUGH SIMULATION RESULTS");
+        var timePer = results.time/results.count;
+        Debug.Log($"time per simulation: {timePer}");
+        Debug.Log("");
+        
+        results.results.ToList().ForEach(PrintPlaythroughInfo);
+    }   
+    
+    [Test, RequiresPlayMode(false)]
+    public void SimulatePlaythroughsMultithreadedPerformanceOnly()
+    {                
+        var numberOfPlaytrhoughs = 350;     
         var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
             .Select(entry => CreatePlaythrough())
             .ToList();
-        var results = playthroughs
-            .AsParallel()
-            .WithDegreeOfParallelism(threads)
-            .Select(playthrough => playthrough.Simulate())
-            .ToList();
+        var results = SimulatePlaythroughs(playthroughs);
+        
+        Debug.Log("");
+        Debug.Log("MULTITHREADED PLAYTHORUGH SIMULATION RESULTS");
+        var timePer = results.time/results.count;
+        Debug.Log($"time per simulation: {timePer}");
+        Debug.Log("");
+    }   
+    
+    [Test, RequiresPlayMode(false)]
+    public void SimulatePlaythroughsMultithreadedFullPipeline()
+    {                
+        var numberOfPlaytrhoughs = 350;    
+        var playthroughRange = Enumerable.Range(0, numberOfPlaytrhoughs); 
+        var threads = Math.Clamp((int)((System.Environment.ProcessorCount/2)*0.75), 3, int.MaxValue);        
+        var stopwatch = new System.Diagnostics.Stopwatch();   
+        stopwatch.Start();
+        
+        var results = new ConcurrentBag<PlaythroughData>();
+        
+        var options = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = threads};
+        var linkOptions = new DataflowLinkOptions() {PropagateCompletion = true};
+        
+        
+        var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData>
+            (simulator => simulator.Simulate(), options);
+        var resultBlock = new ActionBlock<PlaythroughData>
+            (data => results.Add(data), options);
+                        
+        // spreadBlock.LinkTo(simulationBlock, linkOptions);
+        simulationBlock.LinkTo(resultBlock, linkOptions);
+        
+        // Task.WaitAny(spreadBlock.SendAsync(playthroughs));
+        
+        for(int i = 0; i < numberOfPlaytrhoughs; i++)
+            simulationBlock.Post(CreatePlaythrough());
+        // playthroughRange
+        //     .AsParallel()
+        //     .WithDegreeOfParallelism(threads)
+        //     .ForAll(entry => simulationBlock.Post(CreatePlaythrough()));
+        simulationBlock.Complete();
+        Task.WaitAny(resultBlock.Completion);
+            
         stopwatch.Stop();
         
         Debug.Log("");
@@ -109,8 +168,37 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var timePer = stopwatch.Elapsed/numberOfPlaytrhoughs;
         Debug.Log($"time per simulation: {timePer}");
         Debug.Log("");
-        results.ForEach(PrintPlaythroughInfo);
     }   
+    
+    (IEnumerable<PlaythroughData> results, System.TimeSpan time, int count) SimulatePlaythroughs(IEnumerable<PlaythroughSimulator> playthroughs)
+    {
+        var threads = Math.Clamp((int)((System.Environment.ProcessorCount/2)*0.75), 3, int.MaxValue);
+        // var threads = 2;
+        var stopwatch = new System.Diagnostics.Stopwatch();   
+        stopwatch.Start();
+        
+        var results = new ConcurrentBag<PlaythroughData>();
+        
+        var options = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = threads};
+        var linkOptions = new DataflowLinkOptions() {PropagateCompletion = true};
+        
+        var spreadBlock = new TransformManyBlock<IEnumerable<PlaythroughSimulator>, PlaythroughSimulator>
+            (simulators => simulators, options);
+        var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData>
+            (simulator => simulator.Simulate(), options);
+        var resultBlock = new ActionBlock<PlaythroughData>
+            (data => results.Add(data), options);
+                        
+        spreadBlock.LinkTo(simulationBlock, linkOptions);
+        simulationBlock.LinkTo(resultBlock, linkOptions);
+        
+        Task.WaitAny(spreadBlock.SendAsync(playthroughs));
+        spreadBlock.Complete();
+        Task.WaitAny(resultBlock.Completion);
+            
+        stopwatch.Stop();
+        return (results, stopwatch.Elapsed, playthroughs.Count());
+    }
     
     void PrintPlaythroughInfo(PlaythroughData info)
     {                

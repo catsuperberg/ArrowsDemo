@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Utils;
@@ -11,7 +10,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     {          
         const int _instanceCount = 80; 
         const int _pairCount = _instanceCount/2;
-        IReadOnlyDictionary<Operation, int> _operationRepeats;
+        static IReadOnlyDictionary<Operation, int> _operationRepeats;
+        // static IReadOnlyDictionary<Operation, int> _cachesRepeats;
               
         ICache<float> _stdNormals;
         IOffsetCache<int> _valueCache;  
@@ -35,29 +35,17 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             var result = _pairCache.GetChunkOrRepeated(length);
             _pairCache.Shuffle(_rand);
             return result;
-        }
+        }    
                 
         public OperationFactory(IOperationRules operationRules)
-        {
-            _rand = new FastRandom(this.GetHashCode());                   
-            OperationRules = operationRules ?? throw new ArgumentNullException(nameof(operationRules));
-        }
-        
-        public OperationFactory Clone()
-            => new OperationFactory(OperationRules, 0);
-            
-        public static OperationFactory FullConstructor(IOperationRules operationRules)
-            => new OperationFactory(operationRules, 0);
-                
-        OperationFactory(IOperationRules operationRules, int unnidedVariable)
         {
             _rand = new FastRandom(this.GetHashCode());  
             OperationRules = operationRules;     
             
-            _operationRepeats = operationRules.OperationRepeats(_instanceCount);
+            if(_operationRepeats == null)
+                _operationRepeats = operationRules.OperationRepeats(_instanceCount);
             
             _randomIndexes = Enumerable.Range(0, _instanceCount).ToArray();
-            // _rand.Shuffle(_randomIndexes);
             _randomIndexes.Shuffle(_rand);
             
             Generate();   
