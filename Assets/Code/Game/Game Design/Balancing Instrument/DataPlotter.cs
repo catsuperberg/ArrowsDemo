@@ -1,5 +1,6 @@
 using ExtensionMethods;
 using LiveChartsCore;
+using LiveChartsCore.Drawing;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace Game.GameDesign
 {
-    public class ChartDataPoint
+    public struct ChartDataPoint
     {
         public readonly double X;
         public readonly double Y;
@@ -25,8 +26,13 @@ namespace Game.GameDesign
     public class DataPlotter 
     {
         const int _logBase = 10;  
+        IPaint<LiveChartsCore.SkiaSharpView.Drawing.SkiaSharpDrawingContext> _gradientPaint = new LinearGradientPaint(
+                            new []{SKColors.Transparent, SKColors.Aquamarine}, 
+                            new SKPoint(0.5f, 1), new SKPoint(0.5f,-0.8f),
+                            tileMode: SKShaderTileMode.Clamp);
+        IPaint<LiveChartsCore.SkiaSharpView.Drawing.SkiaSharpDrawingContext> _strokePaint = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2};
         
-        public Texture2D PlotXYLog(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
+        public string PlotXYLog(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
         {
             var chart = new SKCartesianChart
             {                
@@ -43,11 +49,8 @@ namespace Game.GameDesign
                         }, 
                         
                         Values = dataPoints,
-                        Fill = new LinearGradientPaint(
-                            new []{SKColors.Transparent, SKColors.Aquamarine}, 
-                            new SKPoint(0.5f, 1), new SKPoint(0.5f,-0.8f),
-                            tileMode: SKShaderTileMode.Clamp),
-                        Stroke = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2},
+                        Fill = _gradientPaint,
+                        Stroke = _strokePaint,
                         GeometryFill = null,
                         GeometryStroke = null
                     }
@@ -80,13 +83,12 @@ namespace Game.GameDesign
             var image = chart.GetImage();            
             var data = image.Encode();
             var imageB64 = Convert.ToBase64String(data.AsSpan());
-                        
-            Texture2D texture = new Texture2D(1,1);
-            texture.LoadImage(Convert.FromBase64String(imageB64));  
-            return texture; 
+            chart = null;        
+                       
+            return imageB64;
         } 
         
-        public Texture2D PlotXY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
+        public string PlotXY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
         {
             var chart = new SKCartesianChart
             {                
@@ -103,11 +105,8 @@ namespace Game.GameDesign
                         }, 
                         
                         Values = dataPoints,
-                        Fill = new LinearGradientPaint(
-                            new []{SKColors.Transparent, SKColors.Aquamarine}, 
-                            new SKPoint(0.5f, 1), new SKPoint(0.5f,-0.8f),
-                            tileMode: SKShaderTileMode.Clamp),
-                        Stroke = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2},
+                        Fill = _gradientPaint,
+                        Stroke = _strokePaint,
                         GeometryFill = null,
                         GeometryStroke = null
                     }
@@ -136,13 +135,12 @@ namespace Game.GameDesign
             };
             
             
-            var image = chart.GetImage();            
+            var image = chart.GetImage();  
+            chart = null;          
             var data = image.Encode();
             var imageB64 = Convert.ToBase64String(data.AsSpan());
-                        
-            Texture2D texture = new Texture2D(1,1);
-            texture.LoadImage(Convert.FromBase64String(imageB64));  
-            return texture; 
+            
+            return imageB64;
         }
         
     }

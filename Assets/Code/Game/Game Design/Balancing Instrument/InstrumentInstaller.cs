@@ -37,13 +37,12 @@ public static class InstrumentInstaller
         container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
         container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
         
-        container.Bind<OperationProbabilitiesFactory>().AsTransient();
-        container.Bind<OperationValueParametersFactory>().AsTransient();
-        container.BindFactory<OperationFactory, OperationFactory.Factory>().NonLazy();         
+        container.Bind<OperationProbabilitiesFactory>().AsSingle();
+        container.Bind<OperationValueParametersFactory>().AsSingle();
+        container.BindFactory<OperationFactory, OperationFactory.Factory>().AsSingle();         
         
-        container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
+        container.Bind<IOperationRules>().To<OperationRules>().AsSingle();
         container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
-        container.Bind<ISequenceManager>().To<SequenceManager>().AsTransient();   
     }
     
     static void ComposeTargetGenerator(DiContainer container)

@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace Game.GameDesign
 {
@@ -17,50 +15,44 @@ namespace Game.GameDesign
             _factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
         }
         
-        async public Task<IEnumerable<PlaythroughData>> SimulateForStatistics(int uniquePlaythroughsCount, IProgress<SimProgressReport> progress)
+        async public Task<IEnumerable<PlaythroughData>> SimulateForStatistics(int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress)
         {
             var progressReport = new SimProgressReport(uniquePlaythroughsCount);
             progress.Report(progressReport);
-            var playthroughs = Enumerable.Range(0, uniquePlaythroughsCount)
-                .Select(entry => _factory.CreateRandom())
-                .ToList();
-            // var results = playthroughs
-            //     .AsParallel()
-            //     .WithDegreeOfParallelism(_numThreads)
-            //     .Select(playthrough => SimulateAndReport(playthrough, progress, progressReport))
-            //     .ToList();
-            // return results;
-            return await Simulate(playthroughs, progress, progressReport);
-        }
-        
-        async Task<IEnumerable<PlaythroughData>> Simulate(IEnumerable<PlaythroughSimulator> playthroughs, IProgress<SimProgressReport> progress, SimProgressReport report)
-        {
-            var results = new ConcurrentBag<PlaythroughData>();        
-            var options = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = _numThreads};
-            var linkOptions = new DataflowLinkOptions() {PropagateCompletion = true};
+            var playthroughsPerSimulator = DividePlaythroughsBetweenSimulators(uniquePlaythroughsCount, repeatsPerSimulator);
             
-            var spreadBlock = new TransformManyBlock<IEnumerable<PlaythroughSimulator>, PlaythroughSimulator>
-                (simulators => simulators, options);
-            var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData>
-                (simulator => SimulateAndReport(simulator, progress, report), options);
-            var resultBlock = new ActionBlock<PlaythroughData>
-                (data => results.Add(data), options);
-                            
-            spreadBlock.LinkTo(simulationBlock, linkOptions);
-            simulationBlock.LinkTo(resultBlock, linkOptions);
+            var results = playthroughsPerSimulator
+                .AsParallel()
+                .WithDegreeOfParallelism(_numThreads)
+                .Select(repeats => 
+                    {
+                        var result = _factory.CreateRandom().Simulate(repeats); 
+                        Report(progress, progressReport, repeats);
+                        return result;
+                    })
+                .SelectMany(resultArray => resultArray)
+                .ToArray();   
             
-            await spreadBlock.SendAsync(playthroughs);
-            spreadBlock.Complete();
-            await resultBlock.Completion;
             return results;
         }
         
-        PlaythroughData SimulateAndReport(PlaythroughSimulator playthrough, IProgress<SimProgressReport> progress, SimProgressReport report)
+        IEnumerable<int> DividePlaythroughsBetweenSimulators(int playthroughsCount, int repeatsPerSimulator)
         {
-            var result = playthrough.Simulate(); 
-            report.IncrementDone();
+            if(repeatsPerSimulator > playthroughsCount)
+                throw new Exception("Failed to divide playthroughs between simulators repeatsPerSimulator can't be higher than playthroughsCount");
+            var repeatsRange = new List<int>();
+            repeatsRange = Enumerable.Repeat(repeatsPerSimulator, playthroughsCount/repeatsPerSimulator).ToList();
+            var partialSimulator = playthroughsCount%repeatsPerSimulator;
+            if(partialSimulator != 0)
+                repeatsRange.Add(partialSimulator); 
+            return repeatsRange;
+        }
+        
+        void Report(IProgress<SimProgressReport> progress, SimProgressReport report, int count)
+        {
+            for(int i = 0; i < count; i++)
+                report.IncrementDone();
             progress.Report(report);
-            return result;
         }
     }
 }

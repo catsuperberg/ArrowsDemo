@@ -13,11 +13,11 @@ namespace Game.GameDesign
         PlayTime
     }
     
-    public struct PlaythroughEndConditions
+    public class PlaythroughEndConditions
     {
-        TimeSpan _playTime;
-        TimeSpan _gameplayTimeOfRun;
-        BigInteger _maxReward;
+        readonly TimeSpan _playTime;
+        readonly TimeSpan _gameplayTimeOfRun;
+        readonly BigInteger _maxReward;
 
         public PlaythroughEndConditions(TimeSpan playTime, TimeSpan runTime, BigInteger maxReward)
         {
@@ -59,6 +59,7 @@ namespace Game.GameDesign
         
         public PlaythroughData Simulate()
         {
+            _player.Reset();
             var results = new List<RunData>();
             IEnumerable<EndCondition> endRichedConditions;
             RunData lastResult;
@@ -74,6 +75,14 @@ namespace Game.GameDesign
             }while(!endRichedConditions.Any());
             
             return new PlaythroughData(results, _player.HeaderString, _player.Context.UpgradesPerIteration, endRichedConditions);
+        }
+        
+        public PlaythroughData[] Simulate(int count)
+        {
+            var result = new PlaythroughData[count];
+            for(int i = 0; i < result.Length; i++)
+                result[i] = Simulate();
+            return result;
         }
     }
 }

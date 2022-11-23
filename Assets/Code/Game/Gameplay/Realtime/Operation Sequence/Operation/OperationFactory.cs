@@ -11,7 +11,6 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         const int _instanceCount = 80; 
         const int _pairCount = _instanceCount/2;
         static IReadOnlyDictionary<Operation, int> _operationRepeats;
-        // static IReadOnlyDictionary<Operation, int> _cachesRepeats;
               
         ICache<float> _stdNormals;
         IOffsetCache<int> _valueCache;  

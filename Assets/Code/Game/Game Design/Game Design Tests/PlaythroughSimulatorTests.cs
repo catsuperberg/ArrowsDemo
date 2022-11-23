@@ -94,6 +94,14 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     }    
     
     [Test, RequiresPlayMode(false)]
+    public void SimulateMultipleOnOneSimulator()
+    {        
+        var playthrough = CreatePlaythrough();
+        var results = playthrough.Simulate(10);
+        results.ToList().ForEach(PrintPlaythroughInfo); 
+    }    
+    
+    [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreaded()
     {             
         var numberOfPlaytrhoughs = 350;     
@@ -114,7 +122,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreadedPerformanceOnly()
     {                
-        var numberOfPlaytrhoughs = 350;     
+        var numberOfPlaytrhoughs = 2350;     
         var playthroughs = Enumerable.Range(0, numberOfPlaytrhoughs)
             .Select(entry => CreatePlaythrough())
             .ToList();
@@ -130,8 +138,8 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     [Test, RequiresPlayMode(false)]
     public void SimulatePlaythroughsMultithreadedFullPipeline()
     {                
-        var numberOfPlaytrhoughs = 350;    
-        var playthroughRange = Enumerable.Range(0, numberOfPlaytrhoughs); 
+        var numberOfPlaytrhoughs = 2350;  
+        var playerRepeats = 5;  
         var threads = Math.Clamp((int)((System.Environment.ProcessorCount/2)*0.75), 3, int.MaxValue);        
         var stopwatch = new System.Diagnostics.Stopwatch();   
         stopwatch.Start();
@@ -139,26 +147,24 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var results = new ConcurrentBag<PlaythroughData>();
         
         var options = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = threads};
+        var halfOptions = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = threads/2};
+        var dualOptions = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = 2};
+        var threeOptions = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = 3};
+        var singleOptions = new ExecutionDataflowBlockOptions() {MaxDegreeOfParallelism = 1};
         var linkOptions = new DataflowLinkOptions() {PropagateCompletion = true};
         
-        
-        var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData>
-            (simulator => simulator.Simulate(), options);
-        var resultBlock = new ActionBlock<PlaythroughData>
-            (data => results.Add(data), options);
+        var spreadBlock = new TransformManyBlock<int, PlaythroughSimulator>
+            (count => Enumerable.Range(0, count).Select(index => CreatePlaythrough()).ToArray(), threeOptions);
+        var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData[]>
+            (simulator => simulator.Simulate(playerRepeats), options);
+        var resultBlock = new ActionBlock<PlaythroughData[]>
+            (data => {for(int i = 0; i < data.Length; i++){results.Add(data[i]);};}, dualOptions);
                         
-        // spreadBlock.LinkTo(simulationBlock, linkOptions);
+        spreadBlock.LinkTo(simulationBlock, linkOptions);
         simulationBlock.LinkTo(resultBlock, linkOptions);
         
-        // Task.WaitAny(spreadBlock.SendAsync(playthroughs));
-        
-        for(int i = 0; i < numberOfPlaytrhoughs; i++)
-            simulationBlock.Post(CreatePlaythrough());
-        // playthroughRange
-        //     .AsParallel()
-        //     .WithDegreeOfParallelism(threads)
-        //     .ForAll(entry => simulationBlock.Post(CreatePlaythrough()));
-        simulationBlock.Complete();
+        Task.WaitAny(spreadBlock.SendAsync(numberOfPlaytrhoughs/playerRepeats));
+        spreadBlock.Complete();
         Task.WaitAny(resultBlock.Completion);
             
         stopwatch.Stop();
@@ -169,6 +175,40 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         Debug.Log($"time per simulation: {timePer}");
         Debug.Log("");
     }   
+    
+    
+    [Test, RequiresPlayMode(false)]
+    public void SimulatePlaythroughsMultithreadedLinqRepeats()
+    {                
+        var numberOfPlaytrhoughs = 2350;  
+        var repeatsPerSimulator = 4;  
+        var repeatsRange = new List<int>();
+        repeatsRange = Enumerable.Repeat(repeatsPerSimulator, numberOfPlaytrhoughs/repeatsPerSimulator).ToList();
+        var partialSimulator = numberOfPlaytrhoughs%repeatsPerSimulator;
+        if(partialSimulator != 0)
+            repeatsRange.Add(partialSimulator);
+        
+        var threads = Math.Clamp((int)((System.Environment.ProcessorCount/2)*0.75), 3, int.MaxValue);        
+        var stopwatch = new System.Diagnostics.Stopwatch();   
+        stopwatch.Start();
+        
+        var results = repeatsRange
+            .AsParallel()
+            .WithDegreeOfParallelism(threads)
+            .Select(repeats => CreatePlaythrough().Simulate(repeats))
+            .SelectMany(resultArray => resultArray)
+            .ToArray();                        
+            
+        stopwatch.Stop();
+        
+        Assert.That(results.Length, Is.EqualTo(numberOfPlaytrhoughs));
+        
+        Debug.Log("");
+        Debug.Log("MULTITHREADED PLAYTHORUGH SIMULATION RESULTS");
+        var timePer = stopwatch.Elapsed/numberOfPlaytrhoughs;
+        Debug.Log($"time per simulation: {timePer}");
+        Debug.Log("");
+    } 
     
     (IEnumerable<PlaythroughData> results, System.TimeSpan time, int count) SimulatePlaythroughs(IEnumerable<PlaythroughSimulator> playthroughs)
     {

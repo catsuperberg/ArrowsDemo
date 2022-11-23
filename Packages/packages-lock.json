@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.looooong.asyncimageloader": {
+      "version": "https://github.com/Looooong/UnityAsyncImageLoader.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.burst": "1.5.4",
+        "com.unity.mathematics": "1.2.1"
+      },
+      "hash": "96335b57074e28aad777f9a585e1b0447b5eadf1"
+    },
     "com.siccity.gltfutility": {
       "version": "https://github.com/siccity/gltfutility.git",
       "depth": 0,

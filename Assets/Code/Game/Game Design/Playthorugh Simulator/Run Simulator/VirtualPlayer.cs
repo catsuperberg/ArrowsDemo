@@ -58,13 +58,17 @@ namespace Game.GameDesign
         
         public VirtualPlayer(PlayerActors actors)
         {
-            Actors = actors;
-            
+            Actors = actors;            
+            Reset();
+            ComposeHeaderString();
+        }       
+        
+        public void Reset()
+        {
             var upgrades = new UpgradeContext();
             var sequenceContext = SimulationSequnceContextProvider.DefaultContext;
             Context = new PlayerContext(upgrades, sequenceContext, 0, new List<int>());
-            ComposeHeaderString();
-        }       
+        }
         
         void ComposeHeaderString()
         {

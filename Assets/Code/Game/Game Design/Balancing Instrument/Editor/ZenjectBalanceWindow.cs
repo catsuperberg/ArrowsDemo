@@ -1,9 +1,3 @@
-using ExtensionMethods;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
@@ -13,13 +7,13 @@ namespace Game.GameDesign
     public class ZenjectBalanceWindow : ZenjectEditorWindow
     {                
         const int _graphHeight = 280; 
-        const int _defaultPlayersToSimulate = 350; 
-        int _uniquePlayersToSimulate = _defaultPlayersToSimulate; 
+        const int _defaultPlaythroughsToRun = 800; 
+        const int _defaultSimulatorRepeats = 4; 
+        int _uniquePlaythroughsToRun = _defaultPlaythroughsToRun; 
+        int _uniqueSimulatorRepeats = _defaultSimulatorRepeats; 
         
-        BalanceController _balanceController;
-        
-        Rect _graphRect = new Rect();    
-        
+        BalanceController _balanceController;      
+        Rect _graphRect;    
         
         public override void InstallBindings()
         {
@@ -33,17 +27,19 @@ namespace Game.GameDesign
         
         override public void OnGUI()
         {   
-            _uniquePlayersToSimulate = EditorGUILayout.IntSlider(
-                "Players To Simulate", _uniquePlayersToSimulate, 25, 5000, GUILayout.MaxWidth(380));
+            _uniquePlaythroughsToRun = EditorGUILayout.IntSlider(
+                "Playthroughs To Simulate", _uniquePlaythroughsToRun, 25, 5000, GUILayout.MaxWidth(380));
+            _uniqueSimulatorRepeats = EditorGUILayout.IntSlider(
+                "Simulator Repeats", _uniqueSimulatorRepeats, 1, 20, GUILayout.MaxWidth(380));
             
             
             if(GUILayout.Button("Simulate"))
                 _ = System.Threading.Tasks.Task.Run(CallSimulation);
             
-            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));      
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));   
             RenderGraph(GraphType.RewardPerRun);   
-            RenderGraph(GraphType.UpgradesPerRun);   
-            EditorGUILayout.EndVertical();                
+            RenderGraph(GraphType.UpgradesPerRun);  
+            EditorGUILayout.EndVertical();     
         }
         
         void RenderGraph(GraphType type)
@@ -52,13 +48,16 @@ namespace Game.GameDesign
                 type.Label(), new GUIStyle(GUI.skin.label) 
                     {alignment = TextAnchor.MiddleCenter, fontSize = 16, fontStyle = FontStyle.Bold}, 
                 GUILayout.Height(EditorGUIUtility.singleLineHeight*1.5f));  
-            _graphRect = EditorGUILayout.GetControlRect(hasLabel: true, height:_graphHeight);
+            if(Event.current.type == EventType.Repaint)   
+                _graphRect = EditorGUILayout.GetControlRect(hasLabel: true, height:_graphHeight); 
+            else
+                EditorGUILayout.GetControlRect(hasLabel: true, height:_graphHeight);
             EditorGUI.DrawPreviewTexture(_graphRect, _balanceController.DrawGraph(type, _graphRect), null, scaleMode: ScaleMode.ScaleToFit); 
         }
             
         async void CallSimulation()
         {
-            _balanceController.SimulatePlaythroughs(_uniquePlayersToSimulate);
+            _balanceController.SimulatePlaythroughs(_uniquePlaythroughsToRun, _uniqueSimulatorRepeats);
         }     
     }
 }
