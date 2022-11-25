@@ -31,9 +31,9 @@ namespace Game.GameDesign
         
         /// <summary> Only works on main thread </summary>
         public Texture2D GetGraph(GraphType type, Vector2Int textureSize)
-            => _graphs.TryGetValue(type, out var graph) ? graph.GraphTexture(textureSize) : GetOldGraph(type, textureSize);
+            => _graphs.TryGetValue(type, out var graph) ? graph.GetTexture(textureSize) : GetOldGraph(type, textureSize);
             
         Texture2D GetOldGraph(GraphType type, Vector2Int textureSize)
-            => _oldGraphs.TryGetValue(type, out var graph) ? graph.GraphTexture(textureSize) : _noDataTexture;
+            => _oldGraphs.TryGetValue(type, out var graph) ? graph.GetTexture(textureSize) : _noDataTexture;
     }
 }

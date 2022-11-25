@@ -12,8 +12,7 @@ namespace Game.GameDesign
         public BalanceController(DataRetriever dataRetriever, DataProcessing dataAnalizer)
         {
             _dataRetriever = dataRetriever ?? throw new ArgumentNullException(nameof(dataRetriever));
-            _dataAnalizer = dataAnalizer ?? throw new ArgumentNullException(nameof(dataAnalizer));
-            
+            _dataAnalizer = dataAnalizer ?? throw new ArgumentNullException(nameof(dataAnalizer));            
         }
         
         public async void SimulatePlaythroughs(int playthroughsToSimulate, int repeatsPerSimulator)

@@ -8,13 +8,11 @@ using UnityEngine;
 
 namespace Game.GameDesign
 {        
-    public class TimeToReward : IGraphAnalizer
+    public class TimeToReward : GraphAnalizer, IGraphAnalizer
     {
         public GraphType Type {get => GraphType.TimeToReward;}
         ColumnDataPoints _data;
-        DataPlotter _dataPlotter;      
-        Texture2D _cachedTexture;      
-        Vector2Int _cachedDimensions;    
+        DataPlotter _dataPlotter;         
         
         public TimeToReward(IEnumerable<PlaythroughData> simulationResults, DataPlotter dataPlotter)
         {                        
@@ -24,7 +22,7 @@ namespace Game.GameDesign
             
             var targetReward = BigInteger.Parse(
                 "1.0e20", NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint); // TODO End conditions should be selectable from GUI
-            var rewardLevels = PlaythroughData.LogarithmicRewardsList(targetReward, 10);
+            var rewardLevels = PlaythroughData.LogarithmicRewardsList(targetReward, 20);
             var perPlaythroughTimeLists = simulationResults
                 .SelectMany(result => result.TimeToRewards(rewardLevels))
                 .ToList();
@@ -43,18 +41,7 @@ namespace Game.GameDesign
         }
         
         /// <summary> Only works on main thread </summary>
-        public Texture2D GraphTexture(Vector2Int dimensions)
-        {
-            if(_cachedTexture != null && dimensions == _cachedDimensions)
-                return _cachedTexture;
-            
-            var texture = new Texture2D(1,1, TextureFormat.RGBA32, false, false);
-            var base64Image = _dataPlotter.PlotColumns(_data, dimensions); 
-            texture.LoadImage(Convert.FromBase64String(base64Image));
-            
-            _cachedTexture = texture;
-            _cachedDimensions = dimensions;
-            return _cachedTexture;
-        }
+        public Texture2D GetTexture(Vector2Int dimensions)
+            => GraphTexture(dimensions, () => _dataPlotter.PlotColumns(_data, dimensions, (value) => $"{TimeSpan.FromSeconds(value):mm\\:ss}"));
     }
 }

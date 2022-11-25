@@ -6,6 +6,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using SkiaSharp;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ namespace Game.GameDesign
                             tileMode: SKShaderTileMode.Clamp);
         IPaint<LiveChartsCore.SkiaSharpView.Drawing.SkiaSharpDrawingContext> _strokePaint = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2};
         SKColor _backgroundColor = SKColor.FromHsv(170,20,11);
+        
+        static string DefaultLabeler(double value) => value.ToString();
         
         
         public string PlotXYLog(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
@@ -110,6 +113,9 @@ namespace Game.GameDesign
         }
         
         public string PlotColumns(ColumnDataPoints dataPoints, Vector2Int pictureSize)
+            => PlotColumns(dataPoints, pictureSize, DefaultLabeler);
+        
+        public string PlotColumns(ColumnDataPoints dataPoints, Vector2Int pictureSize, Func<double, string> yLabeler)
         {
             var chart = new SKCartesianChart
             {
@@ -121,12 +127,12 @@ namespace Game.GameDesign
                         Values = dataPoints.Values,
                         Fill = _gradientPaint,
                         Stroke = _strokePaint
-                    }},
-                
+                    }},                
                 
                 YAxes = new List<Axis> {new Axis
                     {
                         MinStep = 1,
+                        Labeler = value => yLabeler(value),
                         LabelsPaint = new SolidColorPaint(SKColors.Beige),
                         SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
                     }},
@@ -136,7 +142,8 @@ namespace Game.GameDesign
                         Labels = dataPoints.Labels,
                         MinStep = 1,
                         LabelsPaint = new SolidColorPaint(SKColors.Beige),
-                        TextSize = 12
+                        TextSize = 12,
+                        LabelsRotation = -45
                     }},
                 Background = _backgroundColor
             };

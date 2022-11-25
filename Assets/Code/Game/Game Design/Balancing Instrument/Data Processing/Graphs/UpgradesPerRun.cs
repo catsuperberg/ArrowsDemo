@@ -5,13 +5,11 @@ using UnityEngine;
 
 namespace Game.GameDesign
 {        
-    public class UpgradesPerRun : IGraphAnalizer
+    public class UpgradesPerRun : GraphAnalizer, IGraphAnalizer
     {
         public GraphType Type {get => GraphType.UpgradesPerRun;}
         ChartDataPoint[] _data;
-        DataPlotter _dataPlotter; 
-        Texture2D _cachedTexture;      
-        Vector2Int _cachedDimensions;       
+        DataPlotter _dataPlotter;      
         
         public UpgradesPerRun(IEnumerable<PlaythroughData> simulationResults, DataPlotter dataPlotter)
         {                        
@@ -37,18 +35,7 @@ namespace Game.GameDesign
         }
         
         /// <summary> Only works on main thread </summary>
-        public Texture2D GraphTexture(Vector2Int dimensions)
-        {
-            if(_cachedTexture != null && dimensions == _cachedDimensions)
-                return _cachedTexture;
-            
-            var texture = new Texture2D(1,1, TextureFormat.RGBA32, false, false);
-            var base64Image = _dataPlotter.PlotXY(_data, dimensions); 
-            texture.LoadImage(Convert.FromBase64String(base64Image));
-            
-            _cachedTexture = texture;
-            _cachedDimensions = dimensions;
-            return _cachedTexture;
-        }
+        public Texture2D GetTexture(Vector2Int dimensions)
+            => GraphTexture(dimensions, () => _dataPlotter.PlotXY(_data, dimensions));
     }
 }
