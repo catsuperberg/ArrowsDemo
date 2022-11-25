@@ -21,8 +21,8 @@ namespace Game.GameDesign
         public IReadOnlyDictionary<BigInteger, TimeSpan> TimeToRewards(IEnumerable<BigInteger> rewards) 
         {
             var ascendingReward = from reward in rewards orderby reward ascending select reward;  
-            if(ascendingReward.Last() > Runs.Last().FinalScore)
-                throw new ArgumentOutOfRangeException($"Largest reward: {ascendingReward.Last()} higher than best run: {Runs.Last().FinalScore}");
+            // if(ascendingReward.Last() > Runs.Last().FinalScore)
+            //     throw new ArgumentOutOfRangeException($"Largest reward: {ascendingReward.Last()} higher than best run: {Runs.Last().FinalScore}");
             return ascendingReward
                 .ToDictionary(reward => reward, reward => Runs
                     .TakeWhile(run => run.FinalScore < reward)

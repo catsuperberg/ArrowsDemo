@@ -39,6 +39,7 @@ namespace Game.GameDesign
             EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));   
             RenderGraph(GraphType.RewardPerRun);   
             RenderGraph(GraphType.UpgradesPerRun);  
+            RenderGraph(GraphType.TimeToReward);  
             EditorGUILayout.EndVertical();     
         }
         

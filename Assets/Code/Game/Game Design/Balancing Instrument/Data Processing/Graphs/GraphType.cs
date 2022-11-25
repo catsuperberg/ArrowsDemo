@@ -15,6 +15,7 @@ namespace Game.GameDesign
             {
                 case GraphType.RewardPerRun: return "Average reward at certain run";
                 case GraphType.UpgradesPerRun: return "Average number of Upgrades at certain run";
+                case GraphType.TimeToReward: return "Average time to get to reward level";
                 default: return "No label implemented";
             }
         }

@@ -27,6 +27,7 @@ public static class InstrumentInstaller
         container.Bind<PlaythroughSimulatorFactory>().AsTransient();
         container.Bind<DataRetriever>().AsTransient();
         container.Bind<DataPlotter>().AsTransient();
+        container.Bind<DataProcessing>().AsTransient();
         container.Bind<BalanceController>().AsTransient();
     }
         
