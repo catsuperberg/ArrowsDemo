@@ -69,6 +69,50 @@ namespace Game.GameDesign
             return RenderChart(chart);
         } 
         
+        public string PlotXLogY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
+        {
+            var chart = new SKCartesianChart
+            {                
+                Width = pictureSize.x,
+                Height = pictureSize.y,
+                Series = new ISeries[]
+                {
+                    new LineSeries<ChartDataPoint> 
+                    {                        
+                        Mapping = (logPoint, chartPoint) =>
+                        {
+                            chartPoint.SecondaryValue = Math.Log(logPoint.X, _logBase);
+                            chartPoint.PrimaryValue = logPoint.Y; 
+                        }, 
+                        
+                        Values = dataPoints,
+                        Fill = _gradientPaint,
+                        Stroke = _strokePaint,
+                        GeometryFill = null,
+                        GeometryStroke = null
+                    }
+                },
+                
+                YAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
+                    }},
+                
+                XAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        Labeler = value => new System.Numerics.BigInteger(Math.Pow(_logBase, value)).ParseToReadable(),
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        TextSize = 12
+                    }},
+                Background = _backgroundColor
+            };
+            
+            return RenderChart(chart);
+        } 
+        
         public string PlotXY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
         {
             var chart = new SKCartesianChart

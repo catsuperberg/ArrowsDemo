@@ -29,6 +29,7 @@ namespace Game.GameDesign
             
             _graphs.Add(GraphType.RewardPerRun, new RewardPerRun(simulationResults, _dataPlotter));
             _graphs.Add(GraphType.UpgradesPerRun, new UpgradesPerRun(simulationResults, _dataPlotter));
+            _graphs.Add(GraphType.UpgradesPerReward, new UpgradesPerReward(simulationResults, _dataPlotter));
             _graphs.Add(GraphType.TimeToReward, new TimeToReward(simulationResults, _dataPlotter));  
             
             _values.Add(SimValueType.PlaythroughTime, new PlaythroughTime(simulationResults));
