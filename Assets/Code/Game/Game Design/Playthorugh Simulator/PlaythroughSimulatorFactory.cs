@@ -4,15 +4,13 @@ namespace Game.GameDesign
 {
     public class PlaythroughSimulatorFactory
     {
-        PlaythroughEndConditions _endConditions;
         UpgradeBuyerFactory _buyerFactory;
         RunSimulator.Factory _runSimFactory;
 
-        public PlaythroughSimulatorFactory(UpgradeBuyerFactory buyerFactory, RunSimulator.Factory runSimFactory, PlaythroughEndConditions endConditions)
+        public PlaythroughSimulatorFactory(UpgradeBuyerFactory buyerFactory, RunSimulator.Factory runSimFactory)
         {
             _buyerFactory = buyerFactory ?? throw new ArgumentNullException(nameof(buyerFactory));
             _runSimFactory = runSimFactory ?? throw new ArgumentNullException(nameof(runSimFactory));
-            _endConditions = endConditions;
         }
 
         public PlaythroughSimulator CreateRandom()
@@ -24,7 +22,7 @@ namespace Game.GameDesign
             var upgradeBuyer = _buyerFactory.GetBuyer(_buyerFactory.GetRandomGrade(rand)); 
             var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
             var player = new VirtualPlayer(actors);
-            return new PlaythroughSimulator(player, _runSimFactory.Create(), _endConditions);
+            return new PlaythroughSimulator(player, _runSimFactory.Create());
         }
     }
 }

@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 
 namespace ExtensionMethods
 {
+    public static class BigIntegerHelper
+    { 
+        public static BigInteger ParseFromScientific(string value)
+            => BigInteger.Parse(value, NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint);
+    }
+    
     public static class BigIntegerParseToReadable
     {       
         public static int _perPeriod = 3;

@@ -34,11 +34,11 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         ComposePlayerActorFactories();
         Container.Bind<RunSimulator>().AsTransient();
         var endConditions = NewEndConditions();
-        Container.Bind<PlaythroughEndConditions>().FromInstance(endConditions).AsTransient();
+        Container.Bind<CompletionConditions>().FromInstance(endConditions).AsTransient();
     }
     
-    PlaythroughEndConditions NewEndConditions()
-        => new PlaythroughEndConditions(
+    CompletionConditions NewEndConditions()
+        => new CompletionConditions(
             new System.TimeSpan(hours: 0, minutes: 40, seconds: 0), 
             new System.TimeSpan(hours: 0, minutes: 3, seconds: 0),
             BigInteger.Parse("1.0e20", NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint));
@@ -81,7 +81,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var upgradeBuyer = _buyerFactory.GetBuyer(_buyerFactory.GetRandomGrade(rand)); 
         var actors = new PlayerActors(gateSelector, adSelector, upgradeBuyer);
         var player = new VirtualPlayer(actors);
-        return new PlaythroughSimulator(player, Container.Resolve<RunSimulator>(), NewEndConditions());
+        return new PlaythroughSimulator(player, Container.Resolve<RunSimulator>());
     }
     
     
@@ -89,7 +89,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     public void SimulateSinglePlaythrough()
     {        
         var playthrough = CreatePlaythrough();
-        var result = playthrough.Simulate();
+        var result = playthrough.Simulate(NewEndConditions());
         PrintPlaythroughInfo(result); 
     }    
     
@@ -97,7 +97,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
     public void SimulateMultipleOnOneSimulator()
     {        
         var playthrough = CreatePlaythrough();
-        var results = playthrough.Simulate(10);
+        var results = playthrough.Simulate(10, NewEndConditions());
         results.ToList().ForEach(PrintPlaythroughInfo); 
     }    
     
@@ -156,7 +156,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var spreadBlock = new TransformManyBlock<int, PlaythroughSimulator>
             (count => Enumerable.Range(0, count).Select(index => CreatePlaythrough()).ToArray(), threeOptions);
         var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData[]>
-            (simulator => simulator.Simulate(playerRepeats), options);
+            (simulator => simulator.Simulate(playerRepeats, NewEndConditions()), options);
         var resultBlock = new ActionBlock<PlaythroughData[]>
             (data => {for(int i = 0; i < data.Length; i++){results.Add(data[i]);};}, dualOptions);
                         
@@ -195,7 +195,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var results = repeatsRange
             .AsParallel()
             .WithDegreeOfParallelism(threads)
-            .Select(repeats => CreatePlaythrough().Simulate(repeats))
+            .Select(repeats => CreatePlaythrough().Simulate(repeats, NewEndConditions()))
             .SelectMany(resultArray => resultArray)
             .ToArray();                        
             
@@ -225,7 +225,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         var spreadBlock = new TransformManyBlock<IEnumerable<PlaythroughSimulator>, PlaythroughSimulator>
             (simulators => simulators, options);
         var simulationBlock = new TransformBlock<PlaythroughSimulator, PlaythroughData>
-            (simulator => simulator.Simulate(), options);
+            (simulator => simulator.Simulate(NewEndConditions()), options);
         var resultBlock = new ActionBlock<PlaythroughData>
             (data => results.Add(data), options);
                         

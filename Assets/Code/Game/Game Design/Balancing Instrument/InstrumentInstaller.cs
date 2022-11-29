@@ -5,8 +5,6 @@ using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Realtime.OperationSequence;
 using Game.Gameplay.Realtime.OperationSequence.Operation;
 using Game.Gameplay.Realtime.PlayfieldComponents.Target;
-using System.Globalization;
-using System.Numerics;
 using Zenject;
 
 
@@ -18,11 +16,6 @@ public static class InstrumentInstaller
         ComposeTargetGenerator(container);
         ComposePlayerActorFactories(container);
         container.Bind<RunSimulator>().AsTransient();
-        var endConditions = new PlaythroughEndConditions(
-            new System.TimeSpan(hours: 0, minutes: 40, seconds: 0), 
-            new System.TimeSpan(hours: 0, minutes: 3, seconds: 0),
-            BigInteger.Parse("1.0e20", NumberStyles.AllowExponent | NumberStyles.AllowDecimalPoint));
-        container.Bind<PlaythroughEndConditions>().FromInstance(endConditions).AsTransient();
         ComposeFactoriesForPlaythroughFactory(container);
         container.Bind<PlaythroughSimulatorFactory>().AsTransient();
         container.Bind<DataRetriever>().AsTransient();

@@ -15,7 +15,9 @@ namespace Game.GameDesign
             _factory = factory ?? throw new System.ArgumentNullException(nameof(factory));
         }
         
-        async public Task<IEnumerable<PlaythroughData>> SimulateForStatistics(int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress)
+        async public Task<IEnumerable<PlaythroughData>> SimulateForStatistics(
+            int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress, 
+            CompletionConditions completionConditions)
         {
             var progressReport = new SimProgressReport(uniquePlaythroughsCount);
             progress.Report(progressReport);
@@ -26,7 +28,7 @@ namespace Game.GameDesign
                 .WithDegreeOfParallelism(_numThreads)
                 .Select(repeats => 
                     {
-                        var result = _factory.CreateRandom().Simulate(repeats); 
+                        var result = _factory.CreateRandom().Simulate(repeats, completionConditions); 
                         Report(progress, progressReport, repeats);
                         return result;
                     })
