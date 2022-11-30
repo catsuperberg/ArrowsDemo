@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace Game.GameDesign
 {        
@@ -19,24 +20,35 @@ namespace Game.GameDesign
             
             
             var rewardsWithUpgrades = simulationResults
-                .Select(result => (runs: result.Runs, upgrades: result.UpgradesPerRun))
-                .Select(playthrough => playthrough.runs.Zip(playthrough.upgrades, (run, upgrade) => new {reward = run.FinalScore, upgradeCount = upgrade}))
+                .Select(playthrough => playthrough.Runs
+                    .Where(run => run.FinalScore <= playthrough.CompletionConditions.RewardLimit)
+                    .Zip(playthrough.UpgradesPerRun, (run, upgrade) => new {reward = run.FinalScore, upgradeCount = upgrade}))
                 .SelectMany(playthroughs => playthroughs)
                 .ToList();
                 
             var averagedUpgradesPerReward = rewardsWithUpgrades
                 .GroupBy(entry => entry.reward)
-                .Select(group => (result: group.Key, upgrades: group.Select(entry => entry.upgradeCount).Average()))
-                .OrderBy(entry => entry.result)
-                .Where(entry => entry.result != System.Numerics.BigInteger.Zero)
-                .ToList();
+                .Select(group => (reward: group.Key, upgradeCount: group.Select(entry => entry.upgradeCount).Average()))
+                .OrderBy(entry => entry.reward)
+                .Where(entry => entry.reward != System.Numerics.BigInteger.Zero)
+                .ToList();                
                 
-            var dataPoints = averagedUpgradesPerReward.Select(upgradesPer => new ChartDataPoint((double)upgradesPer.result, upgradesPer.upgrades));
+            var window = 40;
+            var outputSize = 500;            
+            var smoothedValues = averagedUpgradesPerReward
+                .MovingAverage(entry => entry.upgradeCount, (item, value) => (reward: item.reward, upgradeCount: value), window)
+                .Where(entry => !Double.IsNaN(entry.upgradeCount))
+                .SimplifyToSize(outputSize)
+                .ToList();
+
+                
+            var dataPoints = smoothedValues
+                .Select(upgradesPer => new ChartDataPoint((double)upgradesPer.reward, upgradesPer.upgradeCount));
             _data = dataPoints.ToArray();
         }
         
         /// <summary> Only works on main thread </summary>
         public Texture2D GetTexture(Vector2Int dimensions)
-            => GraphTexture(dimensions, () => _dataPlotter.PlotXLogY(_data, dimensions));
+            => GraphTexture(dimensions, () => _dataPlotter.PlotXLogYLog(_data, dimensions));
     }
 }

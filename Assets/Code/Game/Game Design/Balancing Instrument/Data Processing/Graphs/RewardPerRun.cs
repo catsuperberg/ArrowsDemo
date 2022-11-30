@@ -21,14 +21,13 @@ namespace Game.GameDesign
             var maxRuns = simulationResults
                 .Select(result => result.Runs.Count())
                 .Max();
-            var range = Enumerable.Range(0, maxRuns);
-            var averageRewards = range
+            var averageRewards = Enumerable.Range(0, maxRuns)
                 .Select(runNumber => (double)BigIntCalculations.Mean(simulationResults.Select(result => result.Runs.ElementAtOrDefault(runNumber))
                     .Where(run => run != null)
                     .Select(run => run.FinalScore)))
                     .ToList(); 
-            
-            var dataPoints = range.Select(run => new ChartDataPoint(run, averageRewards.ElementAt(run)));
+                    
+            var dataPoints = averageRewards.Select((value, index) => new ChartDataPoint(index, value));
             _data = dataPoints.ToArray();
         }
         

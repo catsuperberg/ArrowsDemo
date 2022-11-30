@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace Game.GameDesign
 {        
@@ -25,10 +26,15 @@ namespace Game.GameDesign
             var groupedUpgrades = upgradesPerRun
                 .GroupBy(indexedValue => indexedValue.index)
                 .ToList();
-                
+            
+            
+            var window = 7;
             var upgradeCounts = groupedUpgrades
                 .ToDictionary(entry => entry.FirstOrDefault().index, entry => entry.Select(indexed => indexed.value).Average())                
-                .OrderBy(entry => entry.Key);
+                .OrderBy(entry => entry.Key)
+                .MovingAverage(entry => entry.Value, (kvp, value) => new KeyValuePair<int, double>(kvp.Key, value), window)
+                .Where(entry => !Double.IsNaN(entry.Value))
+                .ToList();
                 
             var dataPoints = upgradeCounts.Select(runs => new ChartDataPoint(runs.Key, runs.Value));
             _data = dataPoints.ToArray();

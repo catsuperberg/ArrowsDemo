@@ -247,7 +247,7 @@ public class PlaythroughSimulatorTests : ZenjectUnitTestFixture
         Debug.Log($"Runs per playthrough: {info.NumberOfRuns}");
         Debug.Log($"Time to finish: {info.CombinedTime}");
         Debug.Log($"Final reward: {info.Runs.Last().FinalScore.ParseToReadable()}");   
-        var reasonString = info.FinishReasons.Aggregate("", (text, entry) => text += $"{entry};");
+        var reasonString = info.ComplitionReasons.Aggregate("", (text, entry) => text += $"{entry};");
         Debug.Log($"Reasons to finish: {reasonString}");   
         Debug.Log("");   
         

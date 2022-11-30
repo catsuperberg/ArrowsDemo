@@ -6,7 +6,6 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.SKCharts;
 using SkiaSharp;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -96,6 +95,51 @@ namespace Game.GameDesign
                 YAxes = new List<Axis> {new Axis
                     {
                         MinStep = 1,
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
+                    }},
+                
+                XAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        Labeler = value => new System.Numerics.BigInteger(Math.Pow(_logBase, value)).ParseToReadable(),
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        TextSize = 12
+                    }},
+                Background = _backgroundColor
+            };
+            
+            return RenderChart(chart);
+        } 
+        
+        public string PlotXLogYLog(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)
+        {
+            var chart = new SKCartesianChart
+            {                
+                Width = pictureSize.x,
+                Height = pictureSize.y,
+                Series = new ISeries[]
+                {
+                    new LineSeries<ChartDataPoint> 
+                    {                        
+                        Mapping = (logPoint, chartPoint) =>
+                        {
+                            chartPoint.SecondaryValue = Math.Log(logPoint.X, _logBase);
+                            chartPoint.PrimaryValue = Math.Log(logPoint.Y, _logBase);
+                        }, 
+                        
+                        Values = dataPoints,
+                        Fill = _gradientPaint,
+                        Stroke = _strokePaint,
+                        GeometryFill = null,
+                        GeometryStroke = null
+                    }
+                },
+                
+                YAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        Labeler = value => Math.Pow(_logBase, value).ToString(),
                         LabelsPaint = new SolidColorPaint(SKColors.Beige),
                         SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
                     }},

@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Game.GameDesign
 {
-    public enum EndCondition
+    public enum ComplitionCondition
     {
         Reward,
         GameplayTime,
@@ -65,12 +65,12 @@ namespace Game.GameDesign
             return met.Any();
         }
         
-        public IEnumerable<EndCondition> ConditionsThatMet(RunData data, TimeSpan combinedTime)
+        public IEnumerable<ComplitionCondition> ConditionsThatMet(RunData data, TimeSpan combinedTime)
         {
-            var met = new List<EndCondition>();
-            if(data.FinalScore >= RewardLimit) met.Add(EndCondition.Reward);
-            if(data.LevelRunTime >= LongestRunTime) met.Add(EndCondition.GameplayTime);
-            if(combinedTime >= PlayTime) met.Add(EndCondition.PlayTime);
+            var met = new List<ComplitionCondition>();
+            if(data.FinalScore >= RewardLimit) met.Add(ComplitionCondition.Reward);
+            if(data.LevelRunTime >= LongestRunTime) met.Add(ComplitionCondition.GameplayTime);
+            if(combinedTime >= PlayTime) met.Add(ComplitionCondition.PlayTime);
             return met;
         }
     }

@@ -12,7 +12,8 @@ namespace Game.GameDesign
         public readonly int NumberOfRuns;
         public readonly TimeSpan CombinedTime;
         public readonly string PlayerHeader;
-        public readonly IEnumerable<EndCondition> FinishReasons;
+        public readonly IEnumerable<ComplitionCondition> ComplitionReasons;
+        public readonly CompletionConditions CompletionConditions;
         public readonly IReadOnlyCollection<int> UpgradesPerRun;
         public IReadOnlyCollection<TimeSpan> TimePerRun 
             {get => Runs.Select(entry => entry.CombinedTime).ToList().AsReadOnly();}
@@ -21,8 +22,6 @@ namespace Game.GameDesign
         public IReadOnlyDictionary<BigInteger, TimeSpan> TimeToRewards(IEnumerable<BigInteger> rewards) 
         {
             var ascendingReward = from reward in rewards orderby reward ascending select reward;  
-            // if(ascendingReward.Last() > Runs.Last().FinalScore)
-            //     throw new ArgumentOutOfRangeException($"Largest reward: {ascendingReward.Last()} higher than best run: {Runs.Last().FinalScore}");
             return ascendingReward
                 .ToDictionary(reward => reward, reward => Runs
                     .TakeWhile(run => run.FinalScore < reward)
@@ -41,14 +40,15 @@ namespace Game.GameDesign
 
         public PlaythroughData(
             IEnumerable<RunData> playthroughRuns, string playerString, IReadOnlyCollection<int> upgradesPer, 
-            IEnumerable<EndCondition> finishReasons)
+            IEnumerable<ComplitionCondition> finishReasons, CompletionConditions completionConditions)
         {
             Runs = playthroughRuns ?? throw new System.ArgumentNullException(nameof(playthroughRuns));
             NumberOfRuns = Runs.Count();
             CombinedTime = CombineTime(Runs);
             PlayerHeader = playerString;
-            UpgradesPerRun = upgradesPer;
-            FinishReasons = finishReasons;
+            UpgradesPerRun = upgradesPer ?? throw new ArgumentNullException(nameof(upgradesPer));
+            ComplitionReasons = finishReasons ?? throw new ArgumentNullException(nameof(finishReasons));
+            CompletionConditions = completionConditions ?? throw new ArgumentNullException(nameof(completionConditions));
         }
         
         static public TimeSpan CombineTime(IEnumerable<RunData> runs)

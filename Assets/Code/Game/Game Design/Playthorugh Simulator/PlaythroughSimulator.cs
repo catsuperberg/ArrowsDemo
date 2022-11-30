@@ -21,7 +21,7 @@ namespace Game.GameDesign
         {
             _player.Reset();
             var results = new List<RunData>();
-            IEnumerable<EndCondition> endRichedConditions;
+            IEnumerable<ComplitionCondition> complitionReasons;
             RunData lastResult;
             SequenceContext sequenceContext;
             do
@@ -31,10 +31,10 @@ namespace Game.GameDesign
                 _player.RecieveReward(lastResult.FinalScore);                
                 _player.BuyUpgrades();
                 results.Add(lastResult);
-                endRichedConditions = completionConditions.ConditionsThatMet(lastResult, PlaythroughData.CombineTime(results));
-            }while(!endRichedConditions.Any());
+                complitionReasons = completionConditions.ConditionsThatMet(lastResult, PlaythroughData.CombineTime(results));
+            }while(!complitionReasons.Any());
             
-            return new PlaythroughData(results, _player.HeaderString, _player.Context.UpgradesPerIteration, endRichedConditions);
+            return new PlaythroughData(results, _player.HeaderString, _player.Context.UpgradesPerIteration, complitionReasons, completionConditions);
         }
         
         public PlaythroughData[] Simulate(int count, CompletionConditions completionConditions)
