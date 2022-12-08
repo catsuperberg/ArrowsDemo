@@ -86,3 +86,7 @@ Library/ScriptAssemblies/UnityEngine.UI.dll
 **/Assets/Plugins/**
 !**/Assets/Plugins/**/
 !**/Assets/Plugins/**/*.dll.meta
+
+.local-chromium/
+.VSCodeCounter/
+arrowsDemo_BurstDebugInformation_DoNotShip/
