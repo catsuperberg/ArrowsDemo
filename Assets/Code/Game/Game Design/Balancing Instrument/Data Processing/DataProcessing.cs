@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utils;
 
@@ -33,6 +34,8 @@ namespace Game.GameDesign
             _graphs.Add(GraphType.TimeToReward, new TimeToReward(simulationResults, _dataPlotter));  
             
             _values.Add(SimValueType.PlaythroughTime, new PlaythroughTime(simulationResults));
+            _values.Add(SimValueType.GateSelectorStats, new GateSelectorStats(simulationResults));
+            _values.Add(SimValueType.AdSelectorStats, new AdSelectorStats(simulationResults));            
         }
         
         

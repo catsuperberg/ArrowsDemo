@@ -66,6 +66,8 @@ namespace Game.GameDesign
             RenderGraph(GraphType.UpgradesPerReward);
             RenderGraph(GraphType.TimeToReward);
             DisplayValue(SimValueType.PlaythroughTime);
+            DisplayValue(SimValueType.GateSelectorStats);
+            DisplayValue(SimValueType.AdSelectorStats);
             EditorGUILayout.EndVertical();
         }
 
@@ -115,8 +117,20 @@ namespace Game.GameDesign
                     {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Normal});
             GUILayout.Label(
                 _balanceController.GetValue(type), new GUIStyle(GUI.skin.textField) 
-                    {alignment = TextAnchor.MiddleLeft, fontSize = 16}, GUILayout.MaxWidth(150));
-            EditorGUILayout.EndVertical();     
+                    {alignment = TextAnchor.MiddleLeft, fontSize = 16}, GUILayout.MaxWidth(400));
+            EditorGUILayout.EndHorizontal();     
+        }
+        
+        void DisplayBigValue(SimValueType type)
+        {
+            // EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));  
+            GUILayout.Label(
+                type.Label(), new GUIStyle(GUI.skin.label) 
+                    {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Normal});
+            GUILayout.Label(
+                _balanceController.GetValue(type), new GUIStyle(GUI.skin.textArea) 
+                    {alignment = TextAnchor.MiddleLeft, fontSize = 16});
+            // EditorGUILayout.EndVertical();     
         }
             
         async void CallSimulation()

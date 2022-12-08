@@ -15,7 +15,8 @@ namespace Game.GameDesign
         const float _frameTimeSeconds = 0.016f;     
         
         ISequenceCalculator _sequenceCalculator;
-        ITargetProvider _targetGenerator;        
+        ITargetProvider _targetGenerator;       
+        uint _rightGates,_wrongGates = 0;
         
         public RunSimulator(ISequenceCalculator sequenceCalculator, ITargetProvider targetGenerator)
         {
@@ -70,7 +71,11 @@ namespace Game.GameDesign
             
             var levelRunTime = context.SecondsPerGate * context.Sequence.Length;
             
-            return new RunData(context.TargetScore, context.Sequence.BestPossibleResult, finalScore, secondsToFinish, levelRunTime, adSeconds);
+            var gateDecisions = new GateChoices(_rightGates, _wrongGates);
+            
+            return new RunData(
+                context.TargetScore, context.Sequence.BestPossibleResult, finalScore, 
+                secondsToFinish, levelRunTime, gateDecisions, ad.Multiplier, adSeconds);
         }
         
         (BigInteger reward, int gatesTaken) SingleRunthrough(SimulationContext context, GateSelector selector)
@@ -81,6 +86,10 @@ namespace Game.GameDesign
             {
                 gateCount++;
                 var opertaion = selector.Choose(pair, runReward);
+                if(pair.BestOperation(runReward) == opertaion)
+                    _rightGates++;
+                else
+                    _wrongGates++;
                 runReward = opertaion.Perform(runReward);
                 if(runReward.Sign <= 0)
                     break;

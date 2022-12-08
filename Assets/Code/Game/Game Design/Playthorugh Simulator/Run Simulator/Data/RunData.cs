@@ -12,10 +12,13 @@ namespace Game.GameDesign
         public readonly TimeSpan LevelRunTime;
         public readonly TimeSpan AdSeconds;
         public readonly TimeSpan CombinedTime;
+        public readonly GateChoices GateDecisions;
+        public readonly float AdMultiplier;
 
         public RunData(
-            BigInteger targetScore, BigInteger bestPossibleResult, BigInteger finalScore, 
-            float gameplaySeconds, float levelRunSeconds, float adSeconds = 0)
+            BigInteger targetScore, BigInteger bestPossibleResult, BigInteger finalScore,
+            float gameplaySeconds, float levelRunSeconds, GateChoices gateDecisions,
+            float adMultiplier, float adSeconds = 0)
         {
             TargetScore = targetScore;
             BestPossibleResult = bestPossibleResult;
@@ -24,6 +27,8 @@ namespace Game.GameDesign
             AdSeconds = TimeSpan.FromSeconds(adSeconds);
             CombinedTime = GameplayTime + AdSeconds;
             LevelRunTime = TimeSpan.FromSeconds(levelRunSeconds);
+            GateDecisions = gateDecisions ?? throw new ArgumentNullException(nameof(gateDecisions));
+            AdMultiplier = adMultiplier;
         }
     }
 }

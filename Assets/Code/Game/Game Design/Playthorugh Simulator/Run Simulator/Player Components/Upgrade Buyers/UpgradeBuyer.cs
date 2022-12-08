@@ -85,8 +85,6 @@ namespace Game.GameDesign
         
         public static void SortHighToLow(UpgradeContainer[] upgrades, FastRandom rand)
             => Array.Sort<UpgradeContainer>(upgrades, new Comparison<UpgradeContainer>((i1, i2) => i2.CompareTo(i1)));
-            // Array.Sort(upgrades);
-            // Array.Reverse(upgrades);
                     
         public static void SortLowToHigh(UpgradeContainer[] upgrades, FastRandom rand)
             => Array.Sort(upgrades);   

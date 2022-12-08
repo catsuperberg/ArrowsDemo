@@ -87,23 +87,7 @@ namespace DataAccess.DiskAccess.Serialization
             return LoadFromResources<T>(filePath); 
         }
         
-        // public static T LoadFromResourcesOnMainThread<T>(string filePath) where T : class
-        // {            
-        //     TextAsset json = null;
-        //     // var semaphore = new SemaphoreSlim(0,1);
-        //     // UnityMainThreadDispatcher.Instance().Enqueue(() => {
-        //     //     Resources.LoadAsync
-        //     //     json = Resources.Load<TextAsset>(filePath.GetAtResourcesWithNoExtension());
-        //     //     semaphore.Release();
-        //     // });
-        //     // semaphore.Wait();
-        //     var jsonRequest = Resources.LoadAsync<TextAsset>(filePath.GetAtResourcesWithNoExtension());
-        //     while(!jsonRequest.isDone){}
-        //     json = jsonRequest.asset as TextAsset;
-        //     return (json?.text != null) ? JsonConvert.DeserializeObject<T>(json.text) : null;  
-        // }
-        
         private static string withExtension(string fileName) => fileName + ".json";
-    }//"Assets/Code/Game/Game Design/Resources/Game Balance/GeneratedOperationFrequencies"
+    }
     
 }
