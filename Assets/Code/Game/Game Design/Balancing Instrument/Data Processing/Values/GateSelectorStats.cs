@@ -8,7 +8,7 @@ namespace Game.GameDesign
     public class GateSelectorStats : IValueAnalizer
     {
         public SimValueType Type {get => SimValueType.GateSelectorStats;} 
-        float _wrongGateChance;      
+        public readonly float WrongGateChance;      
         
         public GateSelectorStats(IEnumerable<PlaythroughData> simulationResults)
         {                        
@@ -21,10 +21,10 @@ namespace Game.GameDesign
                 .Sum(entry => entry.GateDecisions.RightCount);
             float wrongCount = runs
                 .Sum(entry => entry.GateDecisions.WrongCount);
-            _wrongGateChance = wrongCount/(rightCount+wrongCount);
+            WrongGateChance = wrongCount/(rightCount+wrongCount);
         }  
         
         public string GetValue()
-            => $"Chance of wrong gate: {NumberFormater.RoundSmallValue(_wrongGateChance*100, 2).ToString()}%";
+            => $"Chance of wrong gate: {NumberFormater.RoundSmallValue(WrongGateChance*100, 2).ToString()}%";
     }
 }

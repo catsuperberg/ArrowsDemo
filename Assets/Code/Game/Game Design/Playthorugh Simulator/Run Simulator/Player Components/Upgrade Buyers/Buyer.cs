@@ -1,6 +1,4 @@
 using Game.Gameplay.Meta.UpgradeSystem;
-// using System.Collections.Generic;
-// using System.Linq;
 
 namespace Game.GameDesign
 {
@@ -17,9 +15,6 @@ namespace Game.GameDesign
         
         protected static UpgradeContext UpgradesToContext(UpgradeContainer[] upgrades)
         {
-            // var crossbowLevel = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.CrossbowLevel)).Level;
-            // var arrowLevel = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.ArrowLevel)).Level;
-            // var initialArrowCount = upgrades.FirstOrDefault(entry => entry.Name is nameof(UpgradeContext.InitialArrowCount)).Level;
             var crossbowLevel = upgrades[0].Level;
             var arrowLevel = upgrades[1].Level;
             var initialArrowCount = upgrades[2].Level;

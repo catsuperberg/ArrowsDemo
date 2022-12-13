@@ -1,39 +1,9 @@
 using Game.Gameplay.Meta.UpgradeSystem;
-using Game.Gameplay.Realtime.OperationSequence.Operation;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace Game.GameDesign
 {
-    public class PlayerContext
-    {
-        public readonly UpgradeContext Upgrades;
-        public readonly SequenceContext SequenceContext;
-        public readonly BigInteger CurrencieCount;
-        public IReadOnlyCollection<int> UpgradesPerIteration {get => _upgradesPerIteration.AsReadOnly();}
-        List<int> _upgradesPerIteration;
-
-        public PlayerContext(UpgradeContext upgrades, SequenceContext sequenceContext, BigInteger currencieCount, IEnumerable<int> upgradesPer)
-        {
-            Upgrades = upgrades ?? throw new System.ArgumentNullException(nameof(upgrades));
-            SequenceContext = sequenceContext;// ?? throw new System.ArgumentNullException(nameof(sequenceContext));
-            CurrencieCount = currencieCount;
-            _upgradesPerIteration = upgradesPer.ToList();
-        }
-        
-        public PlayerContext(
-            PlayerContext original, IEnumerable<int> upgradesPer, UpgradeContext upgrades = null, SequenceContext? sequenceContext = null, 
-            BigInteger? currencieCount = null)
-        {
-            Upgrades = upgrades ?? original.Upgrades;
-            SequenceContext = sequenceContext ?? original.SequenceContext;
-            CurrencieCount = currencieCount ?? original.CurrencieCount;
-            _upgradesPerIteration = original.UpgradesPerIteration.ToList();
-            _upgradesPerIteration.AddRange(upgradesPer);
-        }
-    }
-    
     public struct PlayerActors
     {        
         public readonly GateSelector GateSelector;
@@ -50,11 +20,13 @@ namespace Game.GameDesign
     
     public class VirtualPlayer
     {        
-        public PlayerContext Context {get; private set;}
+        public PlayerContext Context {get => _context;}
+        protected PlayerContext _context;
         
         public readonly PlayerActors Actors;
         public string HeaderString {get; private set;}
         
+        protected int _rewardsCount = 0;
         
         public VirtualPlayer(PlayerActors actors)
         {
@@ -67,7 +39,8 @@ namespace Game.GameDesign
         {
             var upgrades = new UpgradeContext();
             var sequenceContext = SimulationSequnceContextProvider.DefaultContext;
-            Context = new PlayerContext(upgrades, sequenceContext, 0, new List<int>());
+            _context = new PlayerContext(upgrades, sequenceContext, 0, new List<int>(), BuyerType.Invalid);
+            _rewardsCount = 0;
         }
         
         void ComposeHeaderString()
@@ -78,19 +51,42 @@ namespace Game.GameDesign
             HeaderString += $"UpgradeBuyer: {Actors.UpgradeBuyer.GetType().Name} ";
         }
         
-        public void BuyUpgrades()
+        virtual public void BuyUpgrades()
         {
-            var results = Actors.UpgradeBuyer.BuyAll(Context.Upgrades, Context.CurrencieCount);
-            var sequenceProvider = new SimulationSequnceContextProvider(Context);
+            var results = Actors.UpgradeBuyer.BuyAll(_context.Upgrades, _context.CurrencieCount);
+            var sequenceProvider = new SimulationSequnceContextProvider(_context);
             var sequence = sequenceProvider.GetContext();
-            Context = new PlayerContext(
-                Context, new List<int>{results.UpgradesBought}, upgrades: results.NewUpgrades, 
-                sequenceContext: sequence, currencieCount: results.PointsLeft);            
+            _context = new PlayerContext(
+                _context, new List<int>{results.UpgradesBought}, buyerType: results.TypeUsed, 
+                upgrades: results.NewUpgrades, sequenceContext: sequence, currencieCount: results.PointsLeft);            
         }
         
         public void RecieveReward(BigInteger rewardAmount)
         {
-            Context = new PlayerContext(Context, new List<int>(), currencieCount: Context.CurrencieCount + rewardAmount);
+            _context = new PlayerContext(_context, new List<int>(), currencieCount: _context.CurrencieCount + rewardAmount);
+            _rewardsCount++;
         }      
+    }
+    
+    public class AverageVirtualPlayer : VirtualPlayer
+    {
+        CountBuyer _buyer;
+        UpgradeAtRunIndexCalculator _upgradeCountCalculator;
+        
+        public AverageVirtualPlayer(PlayerActors actors, CountBuyer buyer, UpgradeAtRunIndexCalculator upgradeCountCalculator) : base(actors)
+        {
+            _buyer = buyer ?? throw new System.ArgumentNullException(nameof(buyer));
+            _upgradeCountCalculator = upgradeCountCalculator ?? throw new System.ArgumentNullException(nameof(upgradeCountCalculator));
+        }
+        
+        override public void BuyUpgrades()
+        {
+            var results = _buyer.BuyAll(_context.Upgrades, _upgradeCountCalculator.GetUpgradeCount(_rewardsCount));
+            var sequenceProvider = new SimulationSequnceContextProvider(_context);
+            var sequence = sequenceProvider.GetContext();
+            base._context = new PlayerContext(
+                _context, new List<int>{results.UpgradesBought}, buyerType: results.TypeUsed, 
+                upgrades: results.NewUpgrades, sequenceContext: sequence, currencieCount: results.PointsLeft);   
+        }
     }
 }

@@ -27,22 +27,28 @@ namespace Game.GameDesign
             _balanceController = Container.Resolve<BalanceController>();
         }
                 
-        [MenuItem("Window/Game/Game Balance (zenject)")]
+        [MenuItem("Window/Game/Game Balance")]
         public static ZenjectBalanceWindow GetOrCreateWindow()
-            => EditorWindow.GetWindow<ZenjectBalanceWindow>("Game Balance (zenject)");
+            => EditorWindow.GetWindow<ZenjectBalanceWindow>("Game Balance");
         
         override public void OnGUI()
         {
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos, false, false);
 
-            DefineSimulationView();
+            DefineView();
 
             EditorGUILayout.EndScrollView();
 
         }
 
-        private void DefineSimulationView()
-        {
+        private void DefineView()
+        {                      
+            DefineSimulation();
+            DefineAveragedSimulation();
+        }
+        
+        private void DefineSimulation()
+        {            
             EditorGUILayout.BeginVertical("Box");
             GUILayout.Label(
                 "Simulation", new GUIStyle(GUI.skin.label)
@@ -53,8 +59,7 @@ namespace Game.GameDesign
             if (GUILayout.Button("Simulate"))
                 _ = System.Threading.Tasks.Task.Run(CallSimulation);
 
-            DefineSimulationResults();
-
+            DefineSimulationResults();  
             EditorGUILayout.EndVertical();
         }
 
@@ -95,6 +100,33 @@ namespace Game.GameDesign
                 "Max Reward", _completionConditions.MaxReward.ToString("#.0e0")));
             EditorGUILayout.EndVertical();
         }
+        
+        private void DefineAveragedSimulation()
+        {
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));
+            GUILayout.Label(
+                "Average player simulation", new GUIStyle(GUI.skin.label)
+                { alignment = TextAnchor.MiddleCenter, fontSize = 16, fontStyle = FontStyle.Bold });
+            
+            if (GUILayout.Button("Simulate"))
+                _ = System.Threading.Tasks.Task.Run(CallAverageSimulation);
+            
+            DefineAverageResults();
+            
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void DefineAverageResults()
+        {
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));            
+            DisplayValue(SimValueType.AveragePlaythroughTime);
+            RenderGraph(GraphType.AverageRewardPerRun);
+            RenderGraph(GraphType.AverageUpgradesPerRun);
+            RenderGraph(GraphType.AverageUpgradesPerReward);
+            RenderGraph(GraphType.AverageTimeToReward);
+            EditorGUILayout.EndVertical();
+        }
+        
 
         void RenderGraph(GraphType type)
         {            
@@ -123,19 +155,22 @@ namespace Game.GameDesign
         
         void DisplayBigValue(SimValueType type)
         {
-            // EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));  
             GUILayout.Label(
                 type.Label(), new GUIStyle(GUI.skin.label) 
                     {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Normal});
             GUILayout.Label(
                 _balanceController.GetValue(type), new GUIStyle(GUI.skin.textArea) 
                     {alignment = TextAnchor.MiddleLeft, fontSize = 16});
-            // EditorGUILayout.EndVertical();     
         }
             
         async void CallSimulation()
         {
             _balanceController.SimulatePlaythroughs(_uniquePlaythroughsToRun, _uniqueSimulatorRepeats, _completionConditions.ToConditions());
         }     
+        
+        async void CallAverageSimulation()
+        {
+            _balanceController.SimulateAveragePlayer(30, _completionConditions.ToConditions());            
+        }
     }
 }

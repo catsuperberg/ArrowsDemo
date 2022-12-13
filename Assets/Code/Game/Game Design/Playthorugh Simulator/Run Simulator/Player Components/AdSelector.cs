@@ -72,4 +72,17 @@ namespace Game.GameDesign
             return new AdReport(multiplier, 0);
         }
     }
+    
+    public class StaticAdSelector : IAdSelector
+    {       
+        float _multiplier;
+        
+        public StaticAdSelector(float multiplier)
+        {
+            _multiplier = multiplier;
+        }
+        
+        public AdReport AccountForAd()
+            => new AdReport(_multiplier, IAdSelector._adSeconds);
+    }
 }

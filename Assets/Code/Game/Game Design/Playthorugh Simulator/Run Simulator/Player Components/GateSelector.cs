@@ -12,7 +12,8 @@ namespace Game.GameDesign
         PerfectPlayer,
         GoodPlayer,
         AveragePlayer,
-        BadPlayer
+        BadPlayer,
+        CustomPlayer
     }
     
     public static class GateSelectorsExtension
@@ -40,26 +41,31 @@ namespace Game.GameDesign
             => WeightedRandom.NextFrom(_gradeFrequencies, rand);
             
         public static GateSelectors Grade(float chance)
-            => GateSelectorsExtension.GradeChances.First(kvp => kvp.Value == chance).Key;
+        {
+            if(GateSelectorsExtension.GradeChances.ContainsValue(chance))  
+                return GateSelectorsExtension.GradeChances.First(kvp => kvp.Value == chance).Key;
+            return GateSelectors.CustomPlayer;
+        }
     }
     
     public class GateSelector
     {
-        const float SkillProgressCoeff = 0.98f;
+        float skillProgressCoeff = 0.98f;
         public GateSelectors Grade 
             => GateSelectorGrades.Grade(_chanceOfWorseChoice);
         float _chanceOfWorseChoice; 
         float GetChance {get
             {
                 var oldValue = _chanceOfWorseChoice;
-                _chanceOfWorseChoice *= SkillProgressCoeff;
+                _chanceOfWorseChoice *= skillProgressCoeff;
                 return oldValue;
             }} 
         readonly Random _random = new Random(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 
-        public GateSelector(float chanceOfWorseChoice)
+        public GateSelector(float chanceOfWorseChoice, bool skillProgression = true)
         {
             _chanceOfWorseChoice = chanceOfWorseChoice;
+            skillProgressCoeff = skillProgression ? skillProgressCoeff : 1f;
         }
         
         public OperationInstance Choose(OperationPair pair, BigInteger initialValue)

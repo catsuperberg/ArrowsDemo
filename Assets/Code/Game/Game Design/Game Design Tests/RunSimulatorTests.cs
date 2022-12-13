@@ -63,7 +63,7 @@ public class RunSimulatorTests : ZenjectUnitTestFixture
     
     VirtualPlayer CreatePlayer()
     {
-        var upgradeBuyer = new SortedBuyer(Container.Resolve<SimpleUpgradePricing>(), SortTypes.SortHighToLow);
+        var upgradeBuyer = new SortedBuyer(Container.Resolve<SimpleUpgradePricing>(), BuyerType.HighestPriceFirst);
         
         var gateSelector = new GateSelector(GateSelectors.GoodPlayer.Chance());
         var adSelector = new AdSkipper();

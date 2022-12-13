@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace Game.GameDesign
 {
@@ -16,15 +18,35 @@ namespace Game.GameDesign
         }
         
         public async void SimulatePlaythroughs(int playthroughsToSimulate, int repeatsPerSimulator, CompletionConditions completionConditions)
+        {                  
+            var playthroughsResults = await SimulatePlaythroughsWithProgressBar(
+                (progressIndicator) => _dataRetriever.SimulateForStatistics(playthroughsToSimulate, repeatsPerSimulator, progressIndicator, completionConditions));
+            
+            _dataProcessor.AnalizeSimulationResults(playthroughsResults);   
+        }    
+                
+        public async void SimulateAveragePlayer(int playthroughsToSimulate, CompletionConditions completionConditions)
         {            
+            if(_dataProcessor.AveragePlayer == null)
+                return;
+            
+            var playthroughsResults = await SimulatePlaythroughsWithProgressBar(
+                (progressIndicator) => _dataRetriever.SimulateAverage(playthroughsToSimulate, 1, progressIndicator, completionConditions, _dataProcessor.AveragePlayer));
+            
+            _dataProcessor.AnalizeAveragePlayer(playthroughsResults);   
+        }      
+        
+        async Task<IEnumerable<PlaythroughData>> SimulatePlaythroughsWithProgressBar(
+            Func<Progress<SimProgressReport>, Task<IEnumerable<PlaythroughData>>> simulate)
+        {
             var barId = Progress.Start("Simulation progress");        
             var progressIndicator = new Progress<SimProgressReport>(progress => 
                     Progress.Report(barId, progress.Part(), $"Count: {progress.FinishedCount} / {progress.CountToFinish}"));        
-            var playthroughsResults = await _dataRetriever.SimulateForStatistics(playthroughsToSimulate, repeatsPerSimulator, progressIndicator, completionConditions);  
+            var playthroughsResults = await simulate(progressIndicator);  
             Progress.Remove(barId);
             
-            _dataProcessor.AnalizeSimulationResults(playthroughsResults);   
-        }     
+            return playthroughsResults;
+        }
         
         /// <summary> Only works on main thread </summary>
         public Texture2D DrawGraph(GraphType graph, Rect textureSize)

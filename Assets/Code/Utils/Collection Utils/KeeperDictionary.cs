@@ -20,6 +20,20 @@ namespace Utils
             _values.Add(key, value);
         }
         
+        public void Remove(Tone key)
+        {
+            _previousValues = _values;
+            _values.Remove(key);
+        }
+        
+        public void Replace(Tone key,Ttwo value)
+        {
+            _previousValues = _values;
+            if(!_values.TryGetValue(key, out var temp))
+                _values.Add(key, value);
+            _values[key] = value;
+        }
+        
         public void ClearCurrent()
         {
             _previousValues = _values;

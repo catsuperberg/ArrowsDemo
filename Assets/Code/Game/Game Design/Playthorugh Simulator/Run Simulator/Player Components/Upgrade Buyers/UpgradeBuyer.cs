@@ -4,50 +4,56 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using Utils;
-using ExtensionMethods;
 
 namespace Game.GameDesign
 {
     public class UpgradeBuyerFactory
-    {
+    {        
         SimpleUpgradePricing _pricing;
         
-        readonly Dictionary<int, Action<UpgradeContainer[], FastRandom>> _gradeFrequencies;     
+        readonly Dictionary<int, BuyerType> _gradeFrequencies;     
 
         public UpgradeBuyerFactory(SimpleUpgradePricing pricing)
         {
             _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
-            _gradeFrequencies = new Dictionary<int, Action<UpgradeContainer[], FastRandom>>(){
-                    {4, SortTypes.SortHighToLow},
-                    {3, SortTypes.SortLowToHigh},
-                    {2, SortTypes.SortRandom}};
+            _gradeFrequencies = new Dictionary<int, BuyerType>(){
+                    {4, BuyerType.HighestPriceFirst},
+                    {3, BuyerType.LowestPriceFirst},
+                    {2, BuyerType.RandomAffordable}};
         }
 
-        public Action<UpgradeContainer[], FastRandom> GetRandomGrade(Random rand)
+        public BuyerType GetRandomGrade(Random rand)
             => WeightedRandom.NextFrom(_gradeFrequencies, rand);
             
-        public IUpgradeBuyer GetBuyer(Action<UpgradeContainer[], FastRandom> sortType)
-            => new SortedBuyer(_pricing, sortType);
+        public IUpgradeBuyer GetBuyer(BuyerType buyerType)
+            => new SortedBuyer(_pricing, buyerType);            
+            
+        public CountBuyer GetCountBuyer(WeightedBuyerTypeProvider typeProvider)
+            => new CountBuyer(_pricing, typeProvider);
     }
     
     public class SortedBuyer : Buyer, IUpgradeBuyer
     {
-        private readonly SimpleUpgradePricing _pricing;
-        Action<UpgradeContainer[], FastRandom> _sort;
+        SimpleUpgradePricing _pricing;
+        BuyerType _assignedType;
+        Action<UpgradeContainer[], FastRandom> _assignedSortFunction;
         const float _randomBuyerChance = 0.25f;
         FastRandom _randFast = new FastRandom(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
 
-        public SortedBuyer(SimpleUpgradePricing pricing, Action<UpgradeContainer[], FastRandom> sort)
+        public SortedBuyer(SimpleUpgradePricing pricing, BuyerType type)
         {
             _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
-            _sort = sort;
+            _assignedType = type;
+            _assignedSortFunction = Sort.ByType(_assignedType);
         } 
         
         public UpgradeResults BuyAll(UpgradeContext originalContext, BigInteger PointsToSpend)
         {
             var chanceCheck = _randFast.NextDouble();
             var useRandomInstead = chanceCheck < _randomBuyerChance;
-            var sort = useRandomInstead ? SortTypes.Random(_randFast) : _sort;
+            
+            var type = useRandomInstead ? RandomType() : _assignedType;
+            var sortFunction = useRandomInstead ? Sort.ByType(type) : _assignedSortFunction;
             
             var pointsLeft = PointsToSpend;
             var upgrades = ContextToUpgrades(originalContext, _pricing);
@@ -55,7 +61,7 @@ namespace Game.GameDesign
             while (true)
             {
                 int upgradeToBuy = -1;
-                sort(upgrades, _randFast);
+                sortFunction(upgrades, _randFast);
                 for(int i = 0; i < upgrades.Length; i++)
                     if(upgrades[i].Price <= pointsLeft)
                         {upgradeToBuy = i; break;}   
@@ -65,31 +71,53 @@ namespace Game.GameDesign
                 upgrades[upgradeToBuy].IncrementLevel();
                 count++;
             }            
-            return new UpgradeResults(UpgradesToContext(upgrades), count, pointsLeft);
+            return new UpgradeResults(UpgradesToContext(upgrades), count, pointsLeft, type);
+        }
+        
+        BuyerType RandomType()
+            => (BuyerType)_randFast.Next((int)BuyerType.Count);
+    }
+    
+    public class CountBuyer : Buyer
+    {
+        SimpleUpgradePricing _pricing;
+        WeightedBuyerTypeProvider _typeProvider;
+        
+        Random _rand = new Random(Guid.NewGuid().GetHashCode());
+        FastRandom _randFast = new FastRandom(Guid.NewGuid().GetHashCode() + DateTime.Now.GetHashCode());
+        
+        public CountBuyer(SimpleUpgradePricing pricing, WeightedBuyerTypeProvider typeProvider)
+        {
+            _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
+            _typeProvider = typeProvider ?? throw new ArgumentNullException(nameof(typeProvider));
+        }
+        
+        public UpgradeResults BuyAll(UpgradeContext originalContext, int UpgradesToBuy)
+        {
+            var type = _typeProvider.NextBuyerType(_rand);
+            
+            var sortFunction = Sort.ByType(type);
+            
+            var upgrades = ContextToUpgrades(originalContext, _pricing);
+            var count = 0;            
+            while (count < UpgradesToBuy)
+            {
+                int upgradeToBuy = -1;
+                sortFunction(upgrades, _randFast);
+                for(int i = 0; i < upgrades.Length; i++)
+                    {upgradeToBuy = i; break;}   
+                
+                if(upgradeToBuy == -1) break;
+                upgrades[upgradeToBuy].IncrementLevel();
+                count++;
+            }            
+            return new UpgradeResults(UpgradesToContext(upgrades), count, 0, type);
         }
     }
     
-    public static class SortTypes
-    {  
-        public static Action<UpgradeContainer[], FastRandom> Random(FastRandom rand)
-        {
-            var index = rand.Next(3);
-            switch(index)
-            {
-                case 0: return SortHighToLow;
-                case 1: return SortLowToHigh;
-                case 2: return SortRandom;
-                default: throw new Exception($"No sort type like this: {index}");
-            }
-        }
-        
-        public static void SortHighToLow(UpgradeContainer[] upgrades, FastRandom rand)
-            => Array.Sort<UpgradeContainer>(upgrades, new Comparison<UpgradeContainer>((i1, i2) => i2.CompareTo(i1)));
-                    
-        public static void SortLowToHigh(UpgradeContainer[] upgrades, FastRandom rand)
-            => Array.Sort(upgrades);   
-            
-        public static void SortRandom(UpgradeContainer[] upgrades, FastRandom rand)
-            => upgrades.Shuffle(rand);  
+    public class UnimplimentedBuyer : Buyer, IUpgradeBuyer
+    {        
+        public UpgradeResults BuyAll(UpgradeContext originalContext, BigInteger PointsToSpend)
+            => throw new NotImplementedException();
     }
 }

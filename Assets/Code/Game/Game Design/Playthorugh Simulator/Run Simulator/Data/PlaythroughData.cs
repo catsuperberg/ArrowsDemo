@@ -15,6 +15,7 @@ namespace Game.GameDesign
         public readonly IEnumerable<ComplitionCondition> ComplitionReasons;
         public readonly CompletionConditions CompletionConditions;
         public readonly IReadOnlyCollection<int> UpgradesPerRun;
+        public readonly IReadOnlyCollection<BuyerType> BuyerTypePerRun;
         public IReadOnlyCollection<TimeSpan> TimePerRun 
             {get => Runs.Select(entry => entry.CombinedTime).ToList().AsReadOnly();}
         public IReadOnlyCollection<TimeSpan> LevelTimePerRun 
@@ -39,14 +40,16 @@ namespace Game.GameDesign
         }
 
         public PlaythroughData(
-            IEnumerable<RunData> playthroughRuns, string playerString, IReadOnlyCollection<int> upgradesPer, 
-            IEnumerable<ComplitionCondition> finishReasons, CompletionConditions completionConditions)
+            IEnumerable<RunData> playthroughRuns, string playerString, IReadOnlyCollection<int> upgradesPer,
+            IReadOnlyCollection<BuyerType> buyerTypePer, IEnumerable<ComplitionCondition> finishReasons, 
+            CompletionConditions completionConditions)
         {
             Runs = playthroughRuns ?? throw new System.ArgumentNullException(nameof(playthroughRuns));
             NumberOfRuns = Runs.Count();
             CombinedTime = CombineTime(Runs);
             PlayerHeader = playerString;
             UpgradesPerRun = upgradesPer ?? throw new ArgumentNullException(nameof(upgradesPer));
+            BuyerTypePerRun = buyerTypePer ?? throw new ArgumentNullException(nameof(buyerTypePer));
             ComplitionReasons = finishReasons ?? throw new ArgumentNullException(nameof(finishReasons));
             CompletionConditions = completionConditions ?? throw new ArgumentNullException(nameof(completionConditions));
         }

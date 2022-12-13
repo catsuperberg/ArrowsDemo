@@ -8,7 +8,7 @@ namespace Game.GameDesign
     public class AdSelectorStats : IValueAnalizer
     {
         public SimValueType Type {get => SimValueType.AdSelectorStats;}   
-        float _averageAdMultiplier;  
+        public readonly float AverageAdMultiplier;  
         
         public AdSelectorStats(IEnumerable<PlaythroughData> simulationResults)
         {                        
@@ -21,10 +21,10 @@ namespace Game.GameDesign
             var multipliers = runs
                 .Select(run => run.AdMultiplier)
                 .ToList();
-            _averageAdMultiplier = multipliers.Average();
+            AverageAdMultiplier = multipliers.Average();
         }  
         
         public string GetValue()
-            => $"Average ad multiplier: {NumberFormater.RoundSmallValue(_averageAdMultiplier, 2).ToString()}";
+            => $"Average ad multiplier: {NumberFormater.RoundSmallValue(AverageAdMultiplier, 2).ToString()}";
     }
 }

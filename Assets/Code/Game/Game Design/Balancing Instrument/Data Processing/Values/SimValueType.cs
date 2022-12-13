@@ -4,7 +4,8 @@ namespace Game.GameDesign
     {        
         PlaythroughTime,
         GateSelectorStats,
-        AdSelectorStats
+        AdSelectorStats,        
+        AveragePlaythroughTime
     }
     
     public static class ValueTypeExtensions
@@ -16,6 +17,7 @@ namespace Game.GameDesign
                 case SimValueType.PlaythroughTime: return "Average time to completion";
                 case SimValueType.GateSelectorStats: return "Average gate selector";
                 case SimValueType.AdSelectorStats: return "Average ad selector";
+                case SimValueType.AveragePlaythroughTime: return "Time to completion for average player";
                 default: return "No label implemented";
             }
         }

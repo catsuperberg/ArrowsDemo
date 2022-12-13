@@ -5,8 +5,12 @@ namespace Game.GameDesign
         RewardPerRun,
         UpgradesPerRun,
         UpgradesPerReward,
-        TimeToReward,
-        UpgradesFormulaCurve
+        TimeToReward,        
+        
+        AverageRewardPerRun,
+        AverageUpgradesPerRun,
+        AverageUpgradesPerReward,
+        AverageTimeToReward
     }
     
     public static class GraphTypeExtensions
@@ -19,7 +23,11 @@ namespace Game.GameDesign
                 case GraphType.UpgradesPerRun: return "Average number of Upgrades at certain run";
                 case GraphType.UpgradesPerReward: return "Upgrades at reward";
                 case GraphType.TimeToReward: return "Average time to get to reward level";
-                case GraphType.UpgradesFormulaCurve: return "Upgrades at reward computed from formula";
+                
+                case GraphType.AverageRewardPerRun: return "Reward at certain run for average player";
+                case GraphType.AverageUpgradesPerRun: return "Number of Upgrades at certain run for average player";
+                case GraphType.AverageUpgradesPerReward: return "Upgrades at reward for average player";
+                case GraphType.AverageTimeToReward: return "Time to get to reward level for average player";                
                 default: return "No label implemented";
             }
         }

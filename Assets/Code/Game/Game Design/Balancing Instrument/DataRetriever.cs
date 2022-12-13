@@ -19,6 +19,21 @@ namespace Game.GameDesign
             int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress, 
             CompletionConditions completionConditions)
         {
+            return await Simulate(uniquePlaythroughsCount, repeatsPerSimulator, progress, completionConditions, _factory.CreateRandom);
+        }
+        
+        async public Task<IEnumerable<PlaythroughData>> SimulateAverage(
+            int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress, 
+            CompletionConditions completionConditions, AveragePlayerData playerData)
+        {
+            Func<PlaythroughSimulator> creationMethod = () => _factory.CreateAverage(playerData);
+            return await Simulate(uniquePlaythroughsCount, repeatsPerSimulator, progress, completionConditions, creationMethod);
+        }
+        
+        async Task<IEnumerable<PlaythroughData>> Simulate(
+            int uniquePlaythroughsCount, int repeatsPerSimulator, IProgress<SimProgressReport> progress, 
+            CompletionConditions completionConditions, Func<PlaythroughSimulator> CreatePlaythrough)
+        {
             var progressReport = new SimProgressReport(uniquePlaythroughsCount);
             progress.Report(progressReport);
             var playthroughsPerSimulator = DividePlaythroughsBetweenSimulators(uniquePlaythroughsCount, repeatsPerSimulator);
@@ -28,7 +43,7 @@ namespace Game.GameDesign
                 .WithDegreeOfParallelism(_numThreads)
                 .Select(repeats => 
                     {
-                        var result = _factory.CreateRandom().Simulate(repeats, completionConditions); 
+                        var result = CreatePlaythrough().Simulate(repeats, completionConditions); 
                         Report(progress, progressReport, repeats);
                         return result;
                     })

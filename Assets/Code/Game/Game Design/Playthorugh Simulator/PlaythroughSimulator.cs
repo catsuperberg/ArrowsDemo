@@ -34,7 +34,9 @@ namespace Game.GameDesign
                 complitionReasons = completionConditions.ConditionsThatMet(lastResult, PlaythroughData.CombineTime(results));
             }while(!complitionReasons.Any());
             
-            return new PlaythroughData(results, _player.HeaderString, _player.Context.UpgradesPerIteration, complitionReasons, completionConditions);
+            return new PlaythroughData(
+                results, _player.HeaderString, _player.Context.UpgradesPerIteration, 
+                _player.Context.BuyerTypePerIteration, complitionReasons, completionConditions);
         }
         
         public PlaythroughData[] Simulate(int count, CompletionConditions completionConditions)
