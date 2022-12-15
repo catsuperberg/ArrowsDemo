@@ -10,7 +10,6 @@ using System.Linq;
 using System.Numerics;
 using Unity.PerformanceTesting;
 using UnityEngine.TestTools;
-using Utils;
 using Zenject;
 
 using Debug = UnityEngine.Debug;
@@ -42,7 +41,7 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
     public void MakeGameBalanceConfiguration()
     {
         var folders = new GameFolders();
-        var config = new GameBalanceConfiguration(1, 1);
+        var config = new GameBalanceConfiguration(1, 1, 200, 1, 1);
         JsonFile.SaveAsJson(config, folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
     }
     
@@ -127,35 +126,6 @@ public class SequenceGenerationTests : ZenjectUnitTestFixture
                     return accumulator;
                 });
     }
-    
-    // [Test, RequiresPlayMode(false)]
-    // public void MiniMathSameOrderAsFull()
-    // {           
-    //     Enumerable.Range(0, 20).ToList().ForEach(entry => GenerateAndCompareResultAndFast());
-    // }    
-    
-    // void GenerateAndCompareResultAndFast()
-    // {        
-    //     var repeats = 40;
-    //     var context = new SequenceContext(500, 3, 50, 8);
-    //     var generator = Container.Resolve<ISequenceCalculator>();        
-    //     var averageTarget = generator.GetAverageSequenceResult(context);  
-    //     Debug.Log($"Target is: {averageTarget}");
-    //     var results = Enumerable.Range(1,repeats)
-    //         .Select(entry => generator.GetRandomSequence(context))
-    //         .Select(sequence => (result: sequence.BestPossibleResult(), fastResult: sequence.MiniResult(), sequence: sequence))
-    //         .ToList();
-        
-    //     var orderedResults = results.OrderBy(entry => entry.result).ToList();
-    //     var orderedFast = results.OrderBy(entry => entry.fastResult).ToList();
-        
-    //     Debug.Log("Results comparison");
-    //     orderedResults.ForEach(entry => Debug.Log($"{entry.result} | {entry.fastResult}"));
-    //     Debug.Log("");
-        
-    //     foreach(var index in Enumerable.Range(0, orderedResults.Count()))
-    //         Assert.That(orderedResults.ElementAt(index).sequence, Is.EqualTo(orderedFast.ElementAt(index).sequence));
-    // }
     
     void GenerateSequnce(BigInteger target, ISequenceCalculator generator, SequenceContext context)
     {

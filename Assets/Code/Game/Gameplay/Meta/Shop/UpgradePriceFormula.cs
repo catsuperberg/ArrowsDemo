@@ -9,26 +9,36 @@ namespace Game.Gameplay.Meta.Shop
     public class UpgradePriceFormula
     {
         [JsonProperty]
-        BigInteger _baseValue;
+        public readonly BigInteger BaseValue;
         [JsonProperty]
-        double _basePower;
+        public readonly double BasePower;
         [JsonProperty]
-        double _baseIncrement;
+        public readonly double BaseIncrement;
         [JsonProperty]
-        double _IncrementPower;
+        public readonly double IncrementPower;
 
         public UpgradePriceFormula(BigInteger baseValue, double basePower, double baseIncrement, double incrementPower)
         {
-            _baseValue = baseValue;
-            _basePower = basePower;
-            _baseIncrement = baseIncrement;
-            _IncrementPower = incrementPower;
+            BaseValue = baseValue;
+            BasePower = basePower;
+            BaseIncrement = baseIncrement;
+            IncrementPower = incrementPower;
+        }
+        
+        public UpgradePriceFormula(
+            UpgradePriceFormula prototype, BigInteger? baseValue = null, double? basePower = null, 
+            double? baseIncrement = null, double? incrementPower = null)
+        {
+            BaseValue = baseValue ?? prototype.BaseValue;
+            BasePower = basePower ?? prototype.BasePower;
+            BaseIncrement = baseIncrement ?? prototype.BaseIncrement;
+            IncrementPower = incrementPower ?? prototype.IncrementPower;
         }
 
         public BigInteger Evaluate(int level)
         {
-            var power = _basePower + (0.013 * Math.Pow(level, 1.2));
-            return _baseValue.PowFractional(power);
+            var power = BasePower + (BaseIncrement * Math.Pow(level, IncrementPower));
+            return BaseValue.PowFractional(power);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Game.GameDesign
             _balanceController = Container.Resolve<BalanceController>();
         }
                 
-        [MenuItem("Window/Game/Game Balance")]
+        [MenuItem("Window/Game Design/Game Balance")]
         public static ZenjectBalanceWindow GetOrCreateWindow()
             => EditorWindow.GetWindow<ZenjectBalanceWindow>("Game Balance");
         

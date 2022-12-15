@@ -1,4 +1,7 @@
 {
   "OperationFrequencySwing": 1.0,
-  "OperationValuesSwing": 1.0
+  "OperationValuesSwing": 1.0,
+  "CheapestUpgradeStartingPrice": 80,
+  "PriceIncreaseSteepness": 1,
+  "LatePriceIncreaseSpeedup": 1
 }
