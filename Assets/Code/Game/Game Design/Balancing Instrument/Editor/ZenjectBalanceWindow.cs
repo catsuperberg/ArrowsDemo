@@ -18,6 +18,8 @@ namespace Game.GameDesign
         CompletionConditions.Controlls _completionConditions = 
             new CompletionConditions.Controlls(40, 3, BigIntegerHelper.ParseFromScientific("1.0e20"));
         
+        GameBalanceConfiguration.Controlls _balance = new GameBalanceConfiguration.Controlls(1, 1, 200, 1, 1);
+        
         BalanceController _balanceController;      
         Rect _graphRect;    
         
@@ -27,16 +29,14 @@ namespace Game.GameDesign
             _balanceController = Container.Resolve<BalanceController>();
         }
                 
-        [MenuItem("Window/Game Design/Game Balance")]
+        [MenuItem("Window/Game Design/Balancing")]
         public static ZenjectBalanceWindow GetOrCreateWindow()
-            => EditorWindow.GetWindow<ZenjectBalanceWindow>("Game Balance");
+            => EditorWindow.GetWindow<ZenjectBalanceWindow>("Balancing");
         
         override public void OnGUI()
         {
             _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos, false, false);
-
             DefineView();
-
             EditorGUILayout.EndScrollView();
 
         }
@@ -45,6 +45,7 @@ namespace Game.GameDesign
         {                      
             DefineSimulation();
             DefineAveragedSimulation();
+            DefinePriceManipulation();
         }
         
         private void DefineSimulation()
@@ -54,16 +55,16 @@ namespace Game.GameDesign
                 "Simulation", new GUIStyle(GUI.skin.label)
                 { alignment = TextAnchor.MiddleCenter, fontSize = 16, fontStyle = FontStyle.Bold });
 
-            DefineSimulationParameters();
+            SimulationParameters();
 
             if (GUILayout.Button("Simulate"))
                 _ = System.Threading.Tasks.Task.Run(CallSimulation);
 
-            DefineSimulationResults();  
+            SimulationResults();  
             EditorGUILayout.EndVertical();
         }
 
-        private void DefineSimulationResults()
+        private void SimulationResults()
         {
             EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));
             RenderGraph(GraphType.RewardPerRun);
@@ -76,9 +77,9 @@ namespace Game.GameDesign
             EditorGUILayout.EndVertical();
         }
 
-        private void DefineSimulationParameters()
+        private void SimulationParameters()
         {
-            DefineCompletionConditions();
+            CompletionConditions();
 
             _uniquePlaythroughsToRun = EditorGUILayout.IntSlider(
                 "Playthroughs To Simulate", _uniquePlaythroughsToRun, 25, 5000, GUILayout.MaxWidth(380));
@@ -86,7 +87,7 @@ namespace Game.GameDesign
                 "Simulator Repeats", _uniqueSimulatorRepeats, 1, 20, GUILayout.MaxWidth(380));
         }
 
-        private void DefineCompletionConditions()
+        private void CompletionConditions()
         {
             EditorGUILayout.BeginVertical("Box");
             GUILayout.Label(
@@ -111,12 +112,12 @@ namespace Game.GameDesign
             if (GUILayout.Button("Simulate"))
                 _ = System.Threading.Tasks.Task.Run(CallAverageSimulation);
             
-            DefineAverageResults();
+            ResultsForAverage();
             
             EditorGUILayout.EndVertical();
         }
         
-        private void DefineAverageResults()
+        private void ResultsForAverage()
         {
             EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));            
             DisplayValue(SimValueType.AveragePlaythroughTime);
@@ -124,6 +125,41 @@ namespace Game.GameDesign
             RenderGraph(GraphType.AverageUpgradesPerRun);
             RenderGraph(GraphType.AverageUpgradesPerReward);
             RenderGraph(GraphType.AverageTimeToReward);
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void DefinePriceManipulation()
+        {
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));
+            GUILayout.Label(
+                "Upgrade pricing", new GUIStyle(GUI.skin.label)
+                { alignment = TextAnchor.MiddleCenter, fontSize = 16, fontStyle = FontStyle.Bold });
+                
+            PriceControlls();
+            
+            if (GUILayout.Button("Simulate"))
+                _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);       
+                
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));     
+            RenderGraph(GraphType.UpgradePricing);                
+            EditorGUILayout.EndVertical();
+                
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void PriceControlls()
+        {
+            EditorGUILayout.BeginVertical("Box");
+            GUILayout.Label(
+                "Price balance: ", new GUIStyle(GUI.skin.label)
+                {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Bold});
+                
+            _balance.CheapestUpgradeStartingPrice = EditorGUILayout.IntSlider(
+                "Cheapest Upgrade Starting Price", _balance.CheapestUpgradeStartingPrice, 20, 20_000, GUILayout.MaxWidth(380));
+            _balance.PriceIncreaseSteepness = EditorGUILayout.Slider(
+                "Price Increase Steepness", _balance.PriceIncreaseSteepness, 0.2f, 2.3f, GUILayout.MaxWidth(380));
+            _balance.LatePriceIncreaseSpeedup = EditorGUILayout.Slider(
+                "Late Price Increase Speedup", _balance.LatePriceIncreaseSpeedup, 0.2f, 1.15f, GUILayout.MaxWidth(380));
             EditorGUILayout.EndVertical();
         }
         
@@ -171,6 +207,11 @@ namespace Game.GameDesign
         async void CallAverageSimulation()
         {
             _balanceController.SimulateAveragePlayer(30, _completionConditions.ToConditions());            
+        }
+        
+        async void PriceGraphGeneration()
+        {
+            _balanceController.GeneratePriceGraphs(_balance.ToConfiguration());            
         }
     }
 }

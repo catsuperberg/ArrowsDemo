@@ -7,6 +7,7 @@ using LiveChartsCore.SkiaSharpView.SKCharts;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.GameDesign
@@ -20,6 +21,8 @@ namespace Game.GameDesign
                             tileMode: SKShaderTileMode.Clamp);
         IPaint<LiveChartsCore.SkiaSharpView.Drawing.SkiaSharpDrawingContext> _strokePaint = new SolidColorPaint(SKColors.Beige) {StrokeThickness = 2};
         SKColor _backgroundColor = SKColor.FromHsv(170,20,11);
+        
+        SKColor[] ColorSelection = {SKColors.Yellow, SKColors.SteelBlue, SKColors.LimeGreen, SKColors.Aqua, SKColors.Red, SKColors.Beige};
         
         static string DefaultLabeler(double value) => value.ToString();
         
@@ -66,6 +69,54 @@ namespace Game.GameDesign
             };
             
             return RenderChart(chart);
+        } 
+        
+        public string PlotXYLogMultiple(Dictionary<string, IEnumerable<ChartDataPoint>> multiSeries, Vector2Int pictureSize)
+        {            
+            var chart = new SKCartesianChart
+            {                
+                Width = pictureSize.x,
+                Height = pictureSize.y,                
+                
+                Series = multiSeries
+                            .Select((entry, index) => 
+                                new LineSeries<ChartDataPoint> 
+                                {            
+                                    Name = entry.Key,  
+                                    Mapping = (logPoint, chartPoint) =>
+                                    {
+                                        chartPoint.SecondaryValue = logPoint.X;
+                                        chartPoint.PrimaryValue = Math.Log(logPoint.Y, _logBase); 
+                                    }, 
+                                    
+                                    Values = entry.Value,
+                                    Fill = null,
+                                    Stroke = new SolidColorPaint(ColorSelection[index%ColorSelection.Length]) {StrokeThickness = 3},
+                                    GeometryFill = null,
+                                    GeometryStroke = null,
+                                })
+                            .ToArray(),
+                
+                YAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        Labeler = value => new System.Numerics.BigInteger(Math.Pow(_logBase, value)).ParseToReadable(),
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        SeparatorsPaint = new SolidColorPaint(SKColors.Beige) { StrokeThickness = 1 } 
+                    }},
+                
+                XAxes = new List<Axis> {new Axis
+                    {
+                        MinStep = 1,
+                        LabelsPaint = new SolidColorPaint(SKColors.Beige),
+                        TextSize = 12
+                    }},
+                Background = _backgroundColor,
+                LegendPosition = LiveChartsCore.Measure.LegendPosition.Right,
+                LegendFontPaint = new SolidColorPaint(SKColors.Beige)
+            };
+            
+            return RenderChart(chart);            
         } 
         
         public string PlotXLogY(IEnumerable<ChartDataPoint> dataPoints, Vector2Int pictureSize)

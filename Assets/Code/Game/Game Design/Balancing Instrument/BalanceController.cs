@@ -1,20 +1,23 @@
+using Game.Gameplay.Meta.Shop;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using System.Threading.Tasks;
 
 namespace Game.GameDesign
 {
     public class BalanceController 
     {        
         DataRetriever _dataRetriever;
-        DataProcessing _dataProcessor;          
+        DataProcessing _dataProcessor;   
+        PriceCalculatorFactory _priceCalculatorFactory;       
 
-        public BalanceController(DataRetriever dataRetriever, DataProcessing dataAnalizer)
+        public BalanceController(DataRetriever dataRetriever, DataProcessing dataAnalizer, PriceCalculatorFactory priceCalculatorFactory)
         {
             _dataRetriever = dataRetriever ?? throw new ArgumentNullException(nameof(dataRetriever));
-            _dataProcessor = dataAnalizer ?? throw new ArgumentNullException(nameof(dataAnalizer));            
+            _dataProcessor = dataAnalizer ?? throw new ArgumentNullException(nameof(dataAnalizer));
+            _priceCalculatorFactory = priceCalculatorFactory ?? throw new ArgumentNullException(nameof(priceCalculatorFactory));
         }
         
         public async void SimulatePlaythroughs(int playthroughsToSimulate, int repeatsPerSimulator, CompletionConditions completionConditions)
@@ -35,6 +38,12 @@ namespace Game.GameDesign
             
             _dataProcessor.AnalizeAveragePlayer(playthroughsResults);   
         }      
+        
+        public async void GeneratePriceGraphs(GameBalanceConfiguration balance)
+        {   
+            var pricing = new PriceCalculatorFactory(balance);
+            _dataProcessor.AnalizePricing(pricing.UpgradePriceFormulas);  
+        }  
         
         async Task<IEnumerable<PlaythroughData>> SimulatePlaythroughsWithProgressBar(
             Func<Progress<SimProgressReport>, Task<IEnumerable<PlaythroughData>>> simulate)

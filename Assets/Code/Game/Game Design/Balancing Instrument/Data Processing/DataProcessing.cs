@@ -1,3 +1,4 @@
+using Game.Gameplay.Meta.Shop;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,6 +62,11 @@ namespace Game.GameDesign
             _graphs.Replace(GraphType.AverageUpgradesPerRun, new UpgradesPerRun(simulationResults, _dataPlotter));
             _graphs.Replace(GraphType.AverageUpgradesPerReward, new UpgradesPerReward(simulationResults, _dataPlotter));
             _graphs.Replace(GraphType.AverageTimeToReward, new TimeToReward(simulationResults, _dataPlotter));               
+        }
+        
+        public void AnalizePricing(Dictionary<string, UpgradePriceFormula> priceFormulas)
+        {
+            _graphs.Replace(GraphType.UpgradePricing, new PriceAtLevel(priceFormulas, _dataPlotter));             
         }
         
         
