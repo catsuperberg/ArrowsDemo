@@ -26,22 +26,22 @@ public static class InstrumentInstaller
     
     public static void RebindBalance(DiContainer container, GameBalanceConfiguration balance)
     {
-        container.Unbind<GameBalanceConfiguration>();
-        container.Bind<GameBalanceConfiguration>().FromInstance(balance).AsTransient();
+        container.Rebind<GameBalanceConfiguration>().FromInstance(balance).AsTransient();
     }
         
     static void ComposeSequence(DiContainer container, GameBalanceConfiguration balance)
     {        
         var folders = new GameFolders();
-        var balanceConfig = balance ?? JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
-        container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsTransient();
         container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
         
-        container.Bind<OperationProbabilitiesFactory>().AsSingle();
-        container.Bind<OperationValueParametersFactory>().AsSingle();
-        container.BindFactory<OperationFactory, OperationFactory.Factory>().AsSingle();         
+        var balanceConfig = balance ?? JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
+        container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsTransient();
         
-        container.Bind<IOperationRules>().To<OperationRules>().AsSingle();
+        container.Bind<OperationProbabilitiesFactory>().AsTransient();
+        container.Bind<OperationValueParametersFactory>().AsTransient();
+        container.BindFactory<OperationFactory, OperationFactory.Factory>().AsTransient();         
+        
+        container.Bind<IOperationRules>().To<OperationRules>().AsTransient();
         container.Bind<ISequenceCalculator>().To<RandomSequenceGenerator>().AsTransient();
     }
     

@@ -1,5 +1,6 @@
 using Game.GameDesign;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -52,10 +53,22 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
             
         
         
-        OperationProbabilitiesFactory _probabilities;        
+        OperationProbabilitiesFactory _probabilities; 
+        IReadOnlyDictionary<Operation, int> _repeats = new Dictionary<Operation, int>();     
+        int _repeatsCount = 0;  
         public IReadOnlyDictionary<Operation, int> OperationFrequencies {get => _probabilities.LoadedFrequencies;}
         public IReadOnlyDictionary<Operation, int> OperationRepeats(int count)
-            => _probabilities.GetRepeatsForCertainCount(count);
+            => GetRepeats(count);
+            
+        IReadOnlyDictionary<Operation, int> GetRepeats(int count)
+        {
+            if(_repeatsCount == count)
+                return _repeats;
+                
+            _repeats = _probabilities.GetRepeatsForCertainCount(count);
+            _repeatsCount = count;
+            return _repeats;
+        }
         
         readonly IReadOnlyDictionary<Operation, (int min, int max, float coeff)> _valueParameters;
                 

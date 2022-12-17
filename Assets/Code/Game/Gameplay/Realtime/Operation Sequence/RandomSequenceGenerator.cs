@@ -42,7 +42,8 @@ namespace Game.Gameplay.Realtime.OperationSequence
         public OperationPairsSequence GetSequenceInSpreadRange(BigInteger targetResult, int spreadPercents,
             SequenceContext context)
         {            
-            BigInteger spread = (new BigInteger(spreadPercents) * targetResult)/new BigInteger(100);     
+            BigInteger spread = (new BigInteger(spreadPercents) * targetResult)/new BigInteger(100);
+            spread = spread < 1 ? 1 : spread;     
             var range = new NumberRange<BigInteger>(targetResult-spread, targetResult+spread);
             return GetSequenceFromGenerated(targetResult, range) ?? GenerateUntilSucessful(targetResult, range, context);
         }

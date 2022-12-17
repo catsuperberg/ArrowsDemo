@@ -10,7 +10,7 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
     {          
         const int _instanceCount = 80; 
         const int _pairCount = _instanceCount/2;
-        static IReadOnlyDictionary<Operation, int> _operationRepeats;
+        IReadOnlyDictionary<Operation, int> _operationRepeats;
               
         ICache<float> _stdNormals;
         IOffsetCache<int> _valueCache;  
@@ -39,10 +39,8 @@ namespace Game.Gameplay.Realtime.OperationSequence.Operation
         public OperationFactory(IOperationRules operationRules)
         {
             _rand = new FastRandom(this.GetHashCode());  
-            OperationRules = operationRules;     
-            
-            if(_operationRepeats == null)
-                _operationRepeats = operationRules.OperationRepeats(_instanceCount);
+            OperationRules = operationRules;                 
+            _operationRepeats = operationRules.OperationRepeats(_instanceCount);
             
             _randomIndexes = Enumerable.Range(0, _instanceCount).ToArray();
             _randomIndexes.Shuffle(_rand);

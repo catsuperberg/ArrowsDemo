@@ -49,10 +49,11 @@ namespace Game.GameDesign
         }
 
         private void DefineView()
-        {                      
+        {                 
+            DefinePriceManipulation();
+            DefineLevelGeneration();     
             DefineSimulation();
             DefineAveragedSimulation();
-            DefinePriceManipulation();
         }
         
         private void DefineSimulation()
@@ -144,15 +145,15 @@ namespace Game.GameDesign
                 
             PriceControlls();
             
-            if (GUILayout.Button("Simulate"))
+            if (GUILayout.Button("Simulate Price Progression"))
                 _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);  
             if (GUILayout.Button("Apply"))
-                ApplyConfiguration();  
+                {ApplyConfiguration(); _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);}   
             if (GUILayout.Button("Save Configuration"))
                 SaveConfiguration();     
             EditorGUILayout.Space();
             if (GUILayout.Button("Reload Configuration"))
-                ReloadConfiguration();           
+                {ReloadConfiguration(); _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);}           
                 
             EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));     
             RenderGraph(GraphType.UpgradePricing);                
@@ -169,11 +170,45 @@ namespace Game.GameDesign
                 {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Bold});
                 
             _balance.CheapestUpgradeStartingPrice = EditorGUILayout.IntSlider(
-                "Cheapest Upgrade Starting Price", _balance.CheapestUpgradeStartingPrice, 20, 20_000, GUILayout.MaxWidth(380));
+                "Cheapest base Price", _balance.CheapestUpgradeStartingPrice, 20, 20_000, GUILayout.MaxWidth(460));
             _balance.PriceIncreaseSteepness = EditorGUILayout.Slider(
-                "Price Increase Steepness", _balance.PriceIncreaseSteepness, 0.1f, 3f, GUILayout.MaxWidth(380));
+                "Price Increase Steepness", _balance.PriceIncreaseSteepness, 0.1f, 3f, GUILayout.MaxWidth(460));
             _balance.LatePriceIncreaseSpeedup = EditorGUILayout.Slider(
-                "Late Price Increase Speedup", _balance.LatePriceIncreaseSpeedup, 0.1f, 3f, GUILayout.MaxWidth(380));
+                "Graph form coeff", _balance.LatePriceIncreaseSpeedup, 0.1f, 3f, GUILayout.MaxWidth(460));
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void DefineLevelGeneration()
+        {
+            EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));
+            GUILayout.Label(
+                "Level generation", new GUIStyle(GUI.skin.label)
+                { alignment = TextAnchor.MiddleCenter, fontSize = 16, fontStyle = FontStyle.Bold });
+                
+            LevelGenerationControlls();
+            
+            if (GUILayout.Button("Apply"))
+                ApplyConfiguration();  
+            if (GUILayout.Button("Save Configuration"))
+                SaveConfiguration();     
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reload Configuration"))
+                ReloadConfiguration();  
+                
+            EditorGUILayout.EndVertical();            
+        }
+        
+        private void LevelGenerationControlls()
+        {
+            EditorGUILayout.BeginVertical("Box");
+            GUILayout.Label(
+                "Level genertion balance: ", new GUIStyle(GUI.skin.label)
+                {alignment = TextAnchor.MiddleLeft, fontSize = 16, fontStyle = FontStyle.Bold});
+                
+            _balance.OperationFrequencySwing = EditorGUILayout.Slider(
+                "Better operations coeff", _balance.OperationFrequencySwing, 0.6f, 3f, GUILayout.MaxWidth(460));
+            _balance.OperationValuesSwing = EditorGUILayout.Slider(
+                "Better values coeff", _balance.OperationValuesSwing, 0.6f, 3f, GUILayout.MaxWidth(460));
             EditorGUILayout.EndVertical();
         }
         
@@ -230,8 +265,7 @@ namespace Game.GameDesign
         
         async void ApplyConfiguration()
         {
-            ReinstallWithNewConfiguration();    
-            _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);     
+            ReinstallWithNewConfiguration();        
         }
         
         void SaveConfiguration()
