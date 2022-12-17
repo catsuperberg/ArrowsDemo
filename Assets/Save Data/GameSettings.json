@@ -75,7 +75,7 @@
     "Fields": [
       {
         "Name": "OverlayEnabled",
-        "Value": "True",
+        "Value": "False",
         "Type": "System.Boolean",
         "Metadata": {
           "PrettyName": "Debug Overlay",

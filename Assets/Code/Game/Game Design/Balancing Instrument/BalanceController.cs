@@ -1,6 +1,9 @@
+using DataAccess.DiskAccess.GameFolders;
+using DataAccess.DiskAccess.Serialization;
 using Game.Gameplay.Meta.Shop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -11,13 +14,21 @@ namespace Game.GameDesign
     {        
         DataRetriever _dataRetriever;
         DataProcessing _dataProcessor;   
-        PriceCalculatorFactory _priceCalculatorFactory;       
+        PriceCalculatorFactory _priceCalculatorFactory;      
+        IGameFolders _gameFolders;
+        
+        string _balanceFilePath;
 
-        public BalanceController(DataRetriever dataRetriever, DataProcessing dataAnalizer, PriceCalculatorFactory priceCalculatorFactory)
+        public BalanceController(
+            DataRetriever dataRetriever, DataProcessing dataAnalizer, PriceCalculatorFactory priceCalculatorFactory,
+            IGameFolders gameFolders)
         {
             _dataRetriever = dataRetriever ?? throw new ArgumentNullException(nameof(dataRetriever));
             _dataProcessor = dataAnalizer ?? throw new ArgumentNullException(nameof(dataAnalizer));
             _priceCalculatorFactory = priceCalculatorFactory ?? throw new ArgumentNullException(nameof(priceCalculatorFactory));
+            _gameFolders = gameFolders ?? throw new ArgumentNullException(nameof(gameFolders));
+            
+            _balanceFilePath = Path.Combine(_gameFolders.WithFullBasePath(_gameFolders.ResourcesGameBalance), GameBalanceConfiguration.MainConfigurationName);
         }
         
         public async void SimulatePlaythroughs(int playthroughsToSimulate, int repeatsPerSimulator, CompletionConditions completionConditions)
@@ -56,6 +67,12 @@ namespace Game.GameDesign
             
             return playthroughsResults;
         }
+        
+        public GameBalanceConfiguration LoadConfiguration()
+            => JsonFile.LoadFromResourcesAnyThread<GameBalanceConfiguration>(_balanceFilePath);
+            
+        public void SaveConfiguration(GameBalanceConfiguration balance)
+            => JsonFile.SaveAsJson(balance, _balanceFilePath);
         
         /// <summary> Only works on main thread </summary>
         public Texture2D DrawGraph(GraphType graph, Rect textureSize)

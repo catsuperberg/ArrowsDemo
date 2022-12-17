@@ -27,6 +27,13 @@ namespace Game.GameDesign
         {
             InstrumentInstaller.Compose(Container);
             _balanceController = Container.Resolve<BalanceController>();
+            _balance = new GameBalanceConfiguration.Controlls(_balanceController.LoadConfiguration());
+        }
+        
+        void ReinstallWithNewConfiguration()
+        {            
+            InstrumentInstaller.RebindBalance(Container, _balance.ToConfiguration());
+            _balanceController = Container.Resolve<BalanceController>();
         }
                 
         [MenuItem("Window/Game Design/Balancing")]
@@ -138,7 +145,14 @@ namespace Game.GameDesign
             PriceControlls();
             
             if (GUILayout.Button("Simulate"))
-                _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);       
+                _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);  
+            if (GUILayout.Button("Apply"))
+                ApplyConfiguration();  
+            if (GUILayout.Button("Save Configuration"))
+                SaveConfiguration();     
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reload Configuration"))
+                ReloadConfiguration();           
                 
             EditorGUILayout.BeginVertical("Box", GUILayout.ExpandWidth(true));     
             RenderGraph(GraphType.UpgradePricing);                
@@ -157,9 +171,9 @@ namespace Game.GameDesign
             _balance.CheapestUpgradeStartingPrice = EditorGUILayout.IntSlider(
                 "Cheapest Upgrade Starting Price", _balance.CheapestUpgradeStartingPrice, 20, 20_000, GUILayout.MaxWidth(380));
             _balance.PriceIncreaseSteepness = EditorGUILayout.Slider(
-                "Price Increase Steepness", _balance.PriceIncreaseSteepness, 0.2f, 2.3f, GUILayout.MaxWidth(380));
+                "Price Increase Steepness", _balance.PriceIncreaseSteepness, 0.1f, 3f, GUILayout.MaxWidth(380));
             _balance.LatePriceIncreaseSpeedup = EditorGUILayout.Slider(
-                "Late Price Increase Speedup", _balance.LatePriceIncreaseSpeedup, 0.2f, 1.15f, GUILayout.MaxWidth(380));
+                "Late Price Increase Speedup", _balance.LatePriceIncreaseSpeedup, 0.1f, 3f, GUILayout.MaxWidth(380));
             EditorGUILayout.EndVertical();
         }
         
@@ -212,6 +226,22 @@ namespace Game.GameDesign
         async void PriceGraphGeneration()
         {
             _balanceController.GeneratePriceGraphs(_balance.ToConfiguration());            
+        }
+        
+        async void ApplyConfiguration()
+        {
+            ReinstallWithNewConfiguration();    
+            _ = System.Threading.Tasks.Task.Run(PriceGraphGeneration);     
+        }
+        
+        void SaveConfiguration()
+        {
+            _balanceController.SaveConfiguration(_balance.ToConfiguration());             
+        }
+        
+        void ReloadConfiguration()
+        {
+            _balance = new GameBalanceConfiguration.Controlls(_balanceController.LoadConfiguration());             
         }
     }
 }

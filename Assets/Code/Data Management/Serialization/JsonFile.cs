@@ -22,13 +22,14 @@ namespace DataAccess.DiskAccess.Serialization
         
         public static void SaveAsJson<T>(T dataObject, string filePath)
         {
+            var pathToFile = withExtension(filePath.GetPathWithoutExtension());
             string json = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
             if(json == "{}" || json == "[]")
                 throw new System.Exception("Empty json generated");
                 
-            if(File.Exists(filePath))
-                File.Delete(filePath);
-            FileStream stream = new FileStream(filePath, FileMode.Create);   
+            if(File.Exists(pathToFile))
+                File.Delete(pathToFile);
+            FileStream stream = new FileStream(pathToFile, FileMode.Create);   
             stream.Write(Encoding.ASCII.GetBytes(json), 0,Encoding.ASCII.GetByteCount(json));        
             stream.Close();        
         }
@@ -56,9 +57,10 @@ namespace DataAccess.DiskAccess.Serialization
         
         public static T GetObjectFromFile<T>(string filePath) where T : class
         {
-            if(File.Exists(filePath))
+            var pathToFile = withExtension(filePath.GetPathWithoutExtension());
+            if(File.Exists(pathToFile))
             {
-                FileStream stream = new FileStream(filePath, FileMode.Open);
+                FileStream stream = new FileStream(pathToFile, FileMode.Open);
                 string json;
                 using(var sr = new StreamReader(stream)){
                     json = sr.ReadToEnd();
@@ -69,7 +71,7 @@ namespace DataAccess.DiskAccess.Serialization
             }
             else
             {
-                Debug.Log("No file at: " + filePath);
+                Debug.Log("No file at: " + pathToFile);
                 return null;
             }
         }
@@ -87,7 +89,21 @@ namespace DataAccess.DiskAccess.Serialization
             return LoadFromResources<T>(filePath); 
         }
         
+        #if UNITY_EDITOR
+        
+        public static T LoadFromResourcesAnyThread<T>(string filePath) where T : class
+        {            
+            return GetObjectFromFile<T>(filePath);  
+        }
+        
+        public static T LoadFromResourcesAnyThread<T>(string fullPath, string fileName) where T : class
+        {            
+            var filePath = Path.Combine(fullPath, fileName);
+            return LoadFromResourcesAnyThread<T>(filePath); 
+        }
+        
+        #endif
+        
         private static string withExtension(string fileName) => fileName + ".json";
-    }
-    
+    }     
 }

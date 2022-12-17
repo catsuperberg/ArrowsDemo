@@ -8,5 +8,6 @@ namespace DataAccess.DiskAccess.GameFolders
         public string AssetInjest {get;}
         
         public string ResourcesGameBalance {get;}
+        public string WithFullBasePath(string path);
     }
 }

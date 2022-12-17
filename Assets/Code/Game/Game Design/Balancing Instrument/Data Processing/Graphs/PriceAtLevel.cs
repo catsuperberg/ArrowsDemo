@@ -31,7 +31,9 @@ namespace Game.GameDesign
         IEnumerable<ChartDataPoint> GenerateSeries(UpgradePriceFormula formula)
         {
             return Enumerable.Range(1, _maxLevel)
-                .Select(index => new ChartDataPoint(index, (double)formula.Evaluate(index)))
+                .Select(index => (i: index, value: formula.Evaluate(index)))
+                .Where(entry => entry.value <= new System.Numerics.BigInteger(double.MaxValue)) // ignore unplottable values
+                .Select(entry => new ChartDataPoint(entry.i, (double)entry.value))
                 .ToList();
         }
         

@@ -72,7 +72,12 @@ namespace Game.GameDesign
         } 
         
         public string PlotXYLogMultiple(Dictionary<string, IEnumerable<ChartDataPoint>> multiSeries, Vector2Int pictureSize)
-        {            
+        {     
+            var maxDisplayableValue = double.Parse("1.00E250"); // because labeler gonna create labels with higher than max double value even when limiting by max double        
+            multiSeries = multiSeries
+                            .ToDictionary(series => series.Key, series => series.Value
+                                .Where(dataPoints => dataPoints.Y < maxDisplayableValue));
+                  
             var chart = new SKCartesianChart
             {                
                 Width = pictureSize.x,

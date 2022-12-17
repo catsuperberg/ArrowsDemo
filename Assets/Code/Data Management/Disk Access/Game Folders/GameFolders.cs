@@ -14,11 +14,13 @@ namespace DataAccess.DiskAccess.GameFolders
         
         public string ResourcesGameBalance {get => "Assets/Code/Game/Game Design/Resources/Game Balance";}
         
+        private string _assetsFolder;
         private string _baseFolder;
         
         public GameFolders()
         {
-            _baseFolder = GetValidBaseFolder();
+            _assetsFolder = GetValidBaseFolder();
+            _baseFolder = _assetsFolder.Replace("/Assets", "");
                                 
             SettingsFolder = getFolderOrCreateWhereAllowed("Settings Data");
             SaveFolder = getFolderOrCreateWhereAllowed("Save Data");
@@ -32,9 +34,12 @@ namespace DataAccess.DiskAccess.GameFolders
             Debug.Log("AssetInjest: " + AssetInjest);
         }
         
+        public string WithFullBasePath(string path)
+            => Path.Combine(_baseFolder, path);
+        
         private string getFolderOrCreateWhereAllowed(string folderName)
         {          
-            var fullFolder = Path.Combine(_baseFolder, folderName);
+            var fullFolder = Path.Combine(_assetsFolder, folderName);
             Uri fullFolderUri;
             if(Uri.TryCreate(fullFolder, UriKind.RelativeOrAbsolute, out fullFolderUri))
                 if(Directory.Exists(fullFolder))

@@ -31,18 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "2692",
-        "Type": "System.Numerics.BigInteger",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
-        "Name": "SkinTokens",
-        "Value": "16",
+        "Value": "17655101",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -53,7 +42,18 @@
       },
       {
         "Name": "LifetimeSpending",
-        "Value": "25369",
+        "Value": "420638586",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "SkinTokens",
+        "Value": "5",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -68,8 +68,8 @@
     "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
     "Fields": [
       {
-        "Name": "CrossbowLevel",
-        "Value": "11",
+        "Name": "ArrowLevel",
+        "Value": "43",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -79,8 +79,8 @@
         }
       },
       {
-        "Name": "ArrowLevel",
-        "Value": "11",
+        "Name": "CrossbowLevel",
+        "Value": "28",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -91,7 +91,7 @@
       },
       {
         "Name": "InitialArrowCount",
-        "Value": "1",
+        "Value": "31",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -117,9 +117,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.ProjectileSkinCollection",
     "Fields": [
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Bolt\",\"Arrow\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "Pencil",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -128,9 +128,9 @@
         }
       },
       {
-        "Name": "SelectedSkin",
-        "Value": "Arrow",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Bolt\",\"Pencil\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -144,9 +144,9 @@
     "ClassName": "Game.Gameplay.Meta.Skins.CrossbowSkinCollection",
     "Fields": [
       {
-        "Name": "BoughtSkins",
-        "Value": "[\"Wood\",\"RedWood\"]",
-        "Type": "System.Collections.Generic.List`1[System.String]",
+        "Name": "SelectedSkin",
+        "Value": "ModernRedWoodGold",
+        "Type": "System.String",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",
@@ -155,9 +155,9 @@
         }
       },
       {
-        "Name": "SelectedSkin",
-        "Value": "RedWood",
-        "Type": "System.String",
+        "Name": "BoughtSkins",
+        "Value": "[\"Wood\",\"ModernRedWoodGold\"]",
+        "Type": "System.Collections.Generic.List`1[System.String]",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
           "MinValue": "NaN",

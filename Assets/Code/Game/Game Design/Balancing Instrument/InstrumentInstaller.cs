@@ -9,10 +9,10 @@ using Zenject;
 
 
 public static class InstrumentInstaller
-{
-    public static void Compose(DiContainer container)
+{    
+    public static void Compose(DiContainer container, GameBalanceConfiguration balance = null)
     {
-        ComposeSequence(container);
+        ComposeSequence(container, balance);
         ComposeTargetGenerator(container);
         ComposePlayerActorFactories(container);
         container.Bind<RunSimulator>().AsTransient();
@@ -23,12 +23,18 @@ public static class InstrumentInstaller
         container.Bind<DataProcessing>().AsTransient();
         container.Bind<BalanceController>().AsTransient();
     }
+    
+    public static void RebindBalance(DiContainer container, GameBalanceConfiguration balance)
+    {
+        container.Unbind<GameBalanceConfiguration>();
+        container.Bind<GameBalanceConfiguration>().FromInstance(balance).AsTransient();
+    }
         
-    static void ComposeSequence(DiContainer container)
+    static void ComposeSequence(DiContainer container, GameBalanceConfiguration balance)
     {        
         var folders = new GameFolders();
-        var balanceConfig = JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
-        container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsSingle();
+        var balanceConfig = balance ?? JsonFile.LoadFromResources<GameBalanceConfiguration>(folders.ResourcesGameBalance, GameBalanceConfiguration.MainConfigurationName);
+        container.Bind<GameBalanceConfiguration>().FromInstance(balanceConfig).AsTransient();
         container.Bind<IGameFolders>().FromInstance(folders).AsSingle();
         
         container.Bind<OperationProbabilitiesFactory>().AsSingle();
@@ -53,6 +59,6 @@ public static class InstrumentInstaller
     static void ComposeFactoriesForPlaythroughFactory(DiContainer container)
     {
         container.Bind<UpgradeBuyerFactory>().AsTransient();  
-        container.BindFactory<RunSimulator, RunSimulator.Factory>().NonLazy();         
+        container.BindFactory<RunSimulator, RunSimulator.Factory>().AsTransient();         
     }
 }
