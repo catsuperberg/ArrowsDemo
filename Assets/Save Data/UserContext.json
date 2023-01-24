@@ -31,7 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "7937460035",
+        "Value": "43609295438",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -42,7 +42,7 @@
       },
       {
         "Name": "LifetimeSpending",
-        "Value": "89737297045",
+        "Value": "155487211058",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -53,7 +53,7 @@
       },
       {
         "Name": "SkinTokens",
-        "Value": "8",
+        "Value": "9",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -68,8 +68,8 @@
     "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
     "Fields": [
       {
-        "Name": "ArrowLevel",
-        "Value": "66",
+        "Name": "InitialArrowCount",
+        "Value": "53",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -90,8 +90,8 @@
         }
       },
       {
-        "Name": "InitialArrowCount",
-        "Value": "47",
+        "Name": "ArrowLevel",
+        "Value": "66",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",

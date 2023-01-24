@@ -89,14 +89,13 @@ namespace Game.Gameplay.Realtime
         {
             _multiRequestFilterTimer?.Dispose();
             _multiRequestFilterTimer = new Timer(timeMs);
-            _multiRequestFilterTimer.Elapsed += UpdateOnContextChange;
+            _multiRequestFilterTimer.Elapsed += (caller, args) => {UpdateOnContextChange(caller, args);  _multiRequestFilterTimer = null;};
             _multiRequestFilterTimer.Enabled = true;
         }
         
         void UpdateOnContextChange(object caller, EventArgs args)
         {
             _multiRequestFilterTimer?.Dispose();
-            _multiRequestFilterTimer = null;
             StartUpdate();
         }
                 
