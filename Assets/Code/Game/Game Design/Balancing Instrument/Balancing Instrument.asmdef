@@ -1,0 +1,20 @@
+{
+    "name": "BalancingInstrument",
+    "rootNamespace": "",
+    "references": [
+        "GUID:90a40cef300d70a4d8ee1e8e1f0f8135",
+        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4",
+        "GUID:d0acddb179989574c8355991596bd3e6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

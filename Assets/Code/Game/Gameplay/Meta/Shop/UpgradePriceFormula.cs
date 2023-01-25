@@ -17,6 +17,7 @@ namespace Game.Gameplay.Meta.Shop
         [JsonProperty]
         public readonly double IncrementPower;
 
+        [JsonConstructor]
         public UpgradePriceFormula(BigInteger baseValue, double basePower, double baseIncrement, double incrementPower)
         {
             BaseValue = baseValue;

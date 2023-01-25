@@ -21,7 +21,7 @@ public class UpgradeFormulaTests
         var deserializedFormula = JsonFile.GetObjectFromFile<UpgradePriceFormula>(_testJsonFilePath);
         Assert.That(_testJsonFilePath, Does.Exist);
         CompareToOriginalCalculations(deserializedFormula);
-        // File.Delete(_testJsonFilePath);
+        System.IO.File.Delete(_testJsonFilePath);
     }
         
     

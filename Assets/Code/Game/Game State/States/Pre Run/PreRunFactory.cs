@@ -48,7 +48,7 @@ namespace Game.GameState
             var preRun = preRunGO.GetComponent<PreRun>();
             preRun.Initialize(_upgradesNotifier, _skinNotifier, _contextManager);
             var upgradeShop = preRunGO.GetComponentInChildren<ShopManager>();
-            upgradeShop.Initialize(_userContextAccessor, _priceCalculatorFactory);
+            upgradeShop.Initialize(_userContextAccessor, _upgradesNotifier, _priceCalculatorFactory);
             return preRun;
         }
     }

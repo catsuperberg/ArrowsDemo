@@ -20,7 +20,7 @@
     "Fields": [
       {
         "Name": "CurrentQualityLevel",
-        "Value": "Ultra",
+        "Value": "Medium",
         "Type": "System.String",
         "Metadata": {
           "PrettyName": "Graphics quality",
@@ -107,7 +107,7 @@
     "Fields": [
       {
         "Name": "Sensitivity",
-        "Value": "8",
+        "Value": "7.182966",
         "Type": "System.Single",
         "Metadata": {
           "PrettyName": "Sensitivity",

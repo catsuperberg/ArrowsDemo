@@ -1,9 +1,9 @@
 using DataManagement;
-using Game.Gameplay.Meta.Curencies;
+using Game.Gameplay.Meta;
 using Game.Gameplay.Meta.Shop;
 using Game.Gameplay.Meta.UpgradeSystem;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace UI
@@ -24,23 +24,27 @@ namespace UI
             nameof(UpgradeContext.CrossbowLevel),
             nameof(UpgradeContext.InitialArrowCount)};
         
+        IUpgradeContextNotifier _upgradesNotifier; 
         IUpgradeShopService _shopService;
                 
-        public void Initialize(IRegistryAccessor registryAccessor, PriceCalculatorFactory priceCalculatorFactory)
+        public void Initialize(IRegistryAccessor registryAccessor, IUpgradeContextNotifier upgradesNotifier, PriceCalculatorFactory priceCalculatorFactory)
         {
             if(registryAccessor == null)
                 throw new System.Exception("IRegistryAccessor isn't provided to " + this.GetType().Name);
                                 
             _shopService = new UpgradeShopService(registryAccessor, typeof(UpgradeContext), priceCalculatorFactory);
-            InitializeBuyers();            
+            InitializeBuyers();     
+            _upgradesNotifier = upgradesNotifier ?? throw new System.ArgumentNullException(nameof(upgradesNotifier));
+            _upgradesNotifier.OnNewRunthroughComponents += UpdateBuyersText;     
         }
         
-        // public void ResetPlayerProgress()
-        // {
-        //     _userContextAccessor.ResetRegisteredFieldsToDefault(typeof(UpgradeContext));
-        //     _userContextAccessor.ResetRegisteredFieldsToDefault(typeof(CurenciesContext));
-        //     ChangerManager.refreshAllValues();
-        // }
+        void UpdateBuyersText(object caller, EventArgs e)
+        {            
+            CrossbowBuyer.updateValueText();
+            ArrowsBuyer.updateValueText();
+            ArrowCountBuyer.updateValueText();
+            // PassiveIncomeBuyer.updateValueText();
+        }
         
         void InitializeBuyers()
         {          

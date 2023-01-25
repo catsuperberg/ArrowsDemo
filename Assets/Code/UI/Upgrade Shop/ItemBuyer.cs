@@ -1,13 +1,8 @@
-using DataManagement;
 using ExtensionMethods;
 using Game.Gameplay.Meta.Shop;
-using Game.Gameplay.Meta.Curencies;
-using Game.Gameplay.Meta.UpgradeSystem;
 using System;
-using System.Numerics;
 using TMPro;
 using UnityEngine;
-using static GameMath.FibonacciUtils;
 
 namespace UI
 {    
@@ -25,11 +20,8 @@ namespace UI
         
         
         public void AttachToValue(IUpgradeShopService shopService, string fieldName)
-        {
-            if(shopService == null)
-                throw new NullReferenceException("No IUpgradeShopService implimentation provided to: " + this.GetType().Name);
-            
-            _shopService = shopService;
+        {            
+            _shopService = shopService ?? throw new NullReferenceException("No IUpgradeShopService implimentation provided to: " + this.GetType().Name);
             _fieldName = fieldName;            
             if(NameText != null)
                 NameText.text = _fieldName;
@@ -45,10 +37,10 @@ namespace UI
         public void BuyItem(string increment = "1")
         {
             if(_shopService.EnoughFundsToUpgrade(_fieldName))
-            {
                 _shopService.BuyUpgrade(_fieldName);
-                updateValueText();
-            }
+            // {
+            //     updateValueText();
+            // }
         }
     }
 }

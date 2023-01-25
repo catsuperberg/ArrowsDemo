@@ -31,18 +31,7 @@
     "Fields": [
       {
         "Name": "CommonCoins",
-        "Value": "43609295438",
-        "Type": "System.Numerics.BigInteger",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
-        "Name": "LifetimeSpending",
-        "Value": "155487211058",
+        "Value": "0",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -53,7 +42,18 @@
       },
       {
         "Name": "SkinTokens",
-        "Value": "9",
+        "Value": "0",
+        "Type": "System.Numerics.BigInteger",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "LifetimeSpending",
+        "Value": "0",
         "Type": "System.Numerics.BigInteger",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -68,19 +68,8 @@
     "ClassName": "Game.Gameplay.Meta.UpgradeSystem.UpgradeContext",
     "Fields": [
       {
-        "Name": "InitialArrowCount",
-        "Value": "53",
-        "Type": "System.Int32",
-        "Metadata": {
-          "PrettyName": "Undefined attribute name",
-          "MinValue": "NaN",
-          "MaxValue": "NaN",
-          "ValidOptions": null
-        }
-      },
-      {
         "Name": "CrossbowLevel",
-        "Value": "41",
+        "Value": "1",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
@@ -91,7 +80,18 @@
       },
       {
         "Name": "ArrowLevel",
-        "Value": "66",
+        "Value": "1",
+        "Type": "System.Int32",
+        "Metadata": {
+          "PrettyName": "Undefined attribute name",
+          "MinValue": "NaN",
+          "MaxValue": "NaN",
+          "ValidOptions": null
+        }
+      },
+      {
+        "Name": "InitialArrowCount",
+        "Value": "1",
         "Type": "System.Int32",
         "Metadata": {
           "PrettyName": "Undefined attribute name",
